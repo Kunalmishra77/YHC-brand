@@ -266,7 +266,13 @@ function roundRobinOwner(): string {
   return pool[counts.indexOf(min)]?.id ?? 'u-priya';
 }
 
-export function holdSlot(input: { customerId: string; startsAt: Date; concern: HairConcern }): Appointment {
+export function holdSlot(input: {
+  customerId: string;
+  startsAt: Date;
+  concern: HairConcern;
+  /** 'sales' = book on behalf (FR-M3-13) → consult.sales_hold_minutes */
+  by?: 'customer' | 'sales';
+}): Appointment {
   const s = db();
   const now = new Date();
   const slotMinutes = getSettingNumber('consult.slot_minutes');
@@ -290,7 +296,9 @@ export function holdSlot(input: { customerId: string; startsAt: Date; concern: H
     status: 'held',
     startsAt: iso(input.startsAt),
     endsAt: iso(endsAt),
-    holdExpiresAt: iso(addMinutes(now, getSettingNumber('consult.hold_minutes'))),
+    holdExpiresAt: iso(
+      addMinutes(now, getSettingNumber(input.by === 'sales' ? 'consult.sales_hold_minutes' : 'consult.hold_minutes')),
+    ),
     feePaise: getSettingNumber('consult.fee_paise'),
     concern: input.concern,
     intakeDone: false,
@@ -1298,10 +1306,31 @@ function seed(now: Date): DemoState {
       address: `${c.city}, India`,
     });
   });
+  // Karan: consult completed yesterday, plan link sent, not yet paid (₹500 credit still open)
+  const karanConsult = subHours(now, 31);
+  s.appointments.push({
+    id: id('apt', 901),
+    code: `YHC-A-${++apptNo}`,
+    customerId: customerAt(6).id,
+    doctorId: DOCTOR.id,
+    kind: 'first',
+    status: 'completed',
+    startsAt: iso(karanConsult),
+    endsAt: iso(addMinutes(karanConsult, 30)),
+    holdExpiresAt: null,
+    feePaise: 50000,
+    concern: 'receding_hairline',
+    intakeDone: true,
+    photosDone: true,
+    paymentId: 'pay_demo_KARAN1',
+    joinUrl: '',
+  });
+  s.intake.push(sampleIntake(id('apt', 901), 2));
+  s.credits.push({ customerId: customerAt(6).id, amountPaise: 50000, expiresAt: iso(addDays(karanConsult, 7)), usedOrderId: null });
   s.recommendations.push({
     id: id('rec', 1),
     token: 'demo-karan-plan-token-00000000000000',
-    appointmentId: id('apt', 0),
+    appointmentId: id('apt', 901),
     customerId: customerAt(6).id,
     status: 'sent',
     planId: 'plan-3',
@@ -1319,7 +1348,7 @@ function seed(now: Date): DemoState {
     [11, 'first_contact', 'Call new lead — WhatsApp enquiry', false, 5],
     [6, 'unpaid_plan', 'Plan unpaid for 30 h — call to help with payment', false, 60],
     [9, 'refill_call', 'Refill call — plan ends in 4 days', false, 120],
-    [0, 'side_effect', 'Check-in reply mentions itching — review with doctor', true, -60],
+    [0, 'side_effect', 'Customer reported an issue in a check-in — call and loop in the doctor', true, -60],
     [16, 'abandoned_hold', 'Slot held, payment pending', false, 8],
     [4, 'intake_missing', 'Intake form missing — consult at 14:00', false, 30],
   ];

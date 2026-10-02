@@ -33,6 +33,10 @@ export function proxy(request: NextRequest) {
   if (!gate.roles.includes(role)) {
     return NextResponse.rewrite(new URL('/forbidden', request.url), { status: 403 });
   }
+  // Ops is limited to orders/shipments inside /admin (TRD §5.3).
+  if (role === 'ops' && gate.prefix === '/admin' && !pathname.startsWith('/admin/orders')) {
+    return NextResponse.redirect(new URL('/admin/orders', request.url));
+  }
   return NextResponse.next();
 }
 

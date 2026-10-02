@@ -256,7 +256,7 @@ export const GUARANTEE_POLICY: GuaranteePolicy = {
   requireMonthlyPhotos: true,
   requireFollowupConsult: true,
   termsMd:
-    'If you follow your prescribed plan continuously for at least 3 months, reply to at least 75% of check-ins, share progress photos every month and attend your follow-up consultation, and see no visible improvement, you can claim a refund of 100% of your plan payments within 30 days of finishing the plan. A doctor reviews every claim.',
+    'If you follow your prescribed plan continuously for at least 3 months, reply to at least 75% of check-ins, share progress photos every month and attend your follow-up consultation, and see no visible improvement, you can claim a full refund of your plan payments within 30 days of finishing the plan. A doctor reviews every claim.',
   isActive: true,
   isDraft: true,
 };
@@ -374,6 +374,11 @@ export const SETTINGS: Setting[] = [
     key: 'consult.hold_minutes',
     value: '10',
     description: 'Minutes a slot stays held while the customer pays',
+  },
+  {
+    key: 'consult.sales_hold_minutes',
+    value: '240',
+    description: 'Hold length when sales books on behalf and sends a pay link',
   },
   { key: 'consult.slot_minutes', value: '30', description: 'Consultation length' },
   { key: 'consult.buffer_minutes', value: '10', description: 'Gap between consultations' },

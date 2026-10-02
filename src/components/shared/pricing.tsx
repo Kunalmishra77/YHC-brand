@@ -72,7 +72,10 @@ export function GuaranteeTerms({ policy }: { policy: GuaranteePolicy }) {
         {policy.requireMonthlyPhotos ? <li>• Progress photos every month</li> : null}
         {policy.requireFollowupConsult ? <li>• One follow-up consultation</li> : null}
         <li>• Claim within {policy.claimWindowDays} days of finishing</li>
-        <li>• Refund: {policy.refundPercent}% of plan payments</li>
+        <li>
+          • Refund:{' '}
+          {policy.refundPercent === 100 ? 'your full plan payments' : `${policy.refundPercent}% of plan payments`}
+        </li>
       </ul>
     </div>
   );
