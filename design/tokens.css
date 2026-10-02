@@ -1,0 +1,79 @@
+/* =============================================================================
+   Your Hair Company — design tokens (approved direction: silver, white, metallic black)
+   Import once in src/app/globals.css, then map to Tailwind with @theme (see docs/07).
+   ============================================================================= */
+
+:root {
+  /* Neutrals (from the approved deck) */
+  --yhc-obsidian: #121315;     /* darkest surface, primary dark */
+  --yhc-ink-2: #1c1e21;        /* dark card */
+  --yhc-graphite: #2a2d31;     /* dark border/raised */
+  --yhc-line-dark: #34373c;
+  --yhc-steel: #8e939a;        /* muted icon, rules, disabled */
+  --yhc-platinum: #c9ccd1;     /* metallic mid */
+  --yhc-mist: #e6e7e9;         /* light fill */
+  --yhc-line-light: #dadcdf;
+  --yhc-pearl: #f4f4f2;        /* page background (light) */
+  --yhc-card: #fbfbfa;         /* light card */
+
+  /* Text */
+  --yhc-text-strong: #16181b;
+  --yhc-text: #4a4e55;
+  --yhc-text-muted: #6b7078;
+  --yhc-text-on-dark: #f2f2f0;
+  --yhc-text-on-dark-muted: #b9bdc3;
+
+  /* Accent (eyebrows, links, focus) */
+  --yhc-accent: #4e6378;       /* steel blue — 5.6:1 on pearl */
+  --yhc-accent-on-dark: #aebbc8;
+
+  /* Status — always paired with a word, never colour alone */
+  --yhc-success: #2f6b4f;  --yhc-success-bg: #e3efe8;
+  --yhc-warning: #8a5a12;  --yhc-warning-bg: #f6ecd9;
+  --yhc-danger:  #9b2c2c;  --yhc-danger-bg:  #f6e1e1;
+  --yhc-info:    #2f5a8a;  --yhc-info-bg:    #e1eaf4;
+
+  /* Metallic gradients (use sparingly: CTAs on dark, hero light, premium cards) */
+  --yhc-silver: linear-gradient(135deg, #edeef0 0%, #c9ccd1 55%, #aeb2b8 100%);
+  --yhc-hero-dark: radial-gradient(ellipse at 78% 30%, #3a3d42 0%, #1c1e21 45%, #121315 100%);
+  --yhc-sheen: linear-gradient(90deg, #121315 0%, #2a2d31 30%, #8e939a 60%, #e6e7e9 85%, #f4f4f2 100%);
+
+  /* Type */
+  --yhc-font-display: "Cormorant Garamond", Georgia, serif;   /* headlines only, ≥ 28px */
+  --yhc-font-sans: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  /* Type scale (mobile → desktop via clamp) */
+  --yhc-text-xs: 0.8125rem;   /* 13 — legal only */
+  --yhc-text-sm: 0.875rem;    /* 14 */
+  --yhc-text-base: 1rem;      /* 16 — body minimum */
+  --yhc-text-lg: 1.125rem;    /* 18 */
+  --yhc-text-xl: 1.375rem;    /* 22 */
+  --yhc-text-2xl: clamp(1.75rem, 1.4rem + 1.4vw, 2.25rem);
+  --yhc-text-3xl: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+  --yhc-text-hero: clamp(2.75rem, 1.8rem + 4vw, 5rem);
+
+  /* Spacing (4px base) */
+  --yhc-space-1: 4px;  --yhc-space-2: 8px;  --yhc-space-3: 12px; --yhc-space-4: 16px;
+  --yhc-space-6: 24px; --yhc-space-8: 32px; --yhc-space-12: 48px; --yhc-space-16: 64px; --yhc-space-24: 96px;
+
+  /* Radius & elevation */
+  --yhc-radius-sm: 8px; --yhc-radius-md: 12px; --yhc-radius-lg: 16px; --yhc-radius-xl: 24px; --yhc-radius-pill: 999px;
+  --yhc-shadow-card: 0 1px 2px rgba(18, 19, 21, 0.04), 0 4px 16px rgba(18, 19, 21, 0.06);
+  --yhc-shadow-raised: 0 8px 32px rgba(18, 19, 21, 0.12);
+
+  /* Motion */
+  --yhc-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --yhc-dur-fast: 150ms; --yhc-dur: 250ms; --yhc-dur-slow: 500ms;
+
+  /* Layout */
+  --yhc-container: 1200px;
+  --yhc-gutter: 16px;          /* mobile side gutter */
+}
+
+@media (min-width: 768px) {
+  :root { --yhc-gutter: 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --yhc-dur-fast: 0ms; --yhc-dur: 0ms; --yhc-dur-slow: 0ms; }
+}
