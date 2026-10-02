@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { clientEnv } from '@/lib/env';
 import './globals.css';
 
@@ -35,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en-IN" className={`${cormorant.variable} ${dmSans.variable}`}>
       <body className="flex min-h-dvh flex-col">
-        {children}
+        <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
         <Toaster position="top-center" />
       </body>
     </html>
