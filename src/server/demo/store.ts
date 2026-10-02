@@ -29,6 +29,12 @@ import { AppError } from '@/lib/errors';
 import { formatINR } from '@/lib/money';
 import { IST, formatIst, istDate } from '@/lib/time';
 import { advanceStage, canSetManually, stageForEvent, type StageEvent } from '@/server/crm/stage-map';
+import {
+  computeAvailability,
+  type AvailabilityInput,
+  type DayAvailability,
+  type TimeRange,
+} from '@/server/booking/availability';
 import { pricePlan } from '@/server/recommendations/pricing';
 import { DOCTOR, PLANS, PRODUCTS, SETTINGS, STAFF } from './fixtures';
 
@@ -57,7 +63,14 @@ export interface DemoState {
   audit: AuditEntry[];
   events: DomainEvent[];
   settings: Setting[];
+  availability: AvailabilityConfig;
   seq: number;
+}
+
+export interface AvailabilityConfig {
+  weeklyRules: Record<number, TimeRange[]>;
+  exceptions: AvailabilityInput['exceptions'];
+  busyBlocks: { startsAt: string; endsAt: string; title: string }[];
 }
 
 const globalForDemo = globalThis as unknown as { __yhcDemo?: DemoState };
@@ -146,6 +159,42 @@ const token = () =>
   Array.from({ length: 36 }, () => 'abcdefghijkmnpqrstuvwxyz23456789'[Math.floor(Math.random() * 32)]).join(
     '',
   );
+
+// ---------------------------------------------------------------------------------------------
+// availability (FR-M3-2, FR-M5-4)
+
+export function getAvailabilityConfig(): AvailabilityConfig {
+  return db().availability;
+}
+
+export function updateAvailability(config: AvailabilityConfig, actor: string): void {
+  db().availability = config;
+  audit(actor, 'availability.update', 'weekly rules / exceptions');
+}
+
+/** Bookable slots for the next `consult.booking_window_days`, via the real availability engine. */
+export function getSlots(now = new Date()): DayAvailability[] {
+  const cfg = db().availability;
+  return computeAvailability({
+    weeklyRules: cfg.weeklyRules,
+    exceptions: cfg.exceptions,
+    busyBlocks: cfg.busyBlocks.map((b) => ({ startsAt: new Date(b.startsAt), endsAt: new Date(b.endsAt) })),
+    taken: busyAppointments(now)
+      .filter((a) => a.status !== 'completed' || new Date(a.endsAt) > now)
+      .map((a) => ({ startsAt: new Date(a.startsAt), endsAt: new Date(a.endsAt) })),
+    slotMinutes: getSettingNumber('consult.slot_minutes'),
+    bufferMinutes: getSettingNumber('consult.buffer_minutes'),
+    minNoticeMinutes: getSettingNumber('consult.min_notice_minutes'),
+    maxPerDay: getSettingNumber('consult.max_per_day'),
+    windowDays: getSettingNumber('consult.booking_window_days'),
+    now,
+  });
+}
+
+/** Domain events after `afterId` — the demo stand-in for Supabase Realtime (FR-M7-6). */
+export function getEventsSince(afterId: number): DomainEvent[] {
+  return db().events.filter((e) => e.id > afterId);
+}
 
 // ---------------------------------------------------------------------------------------------
 // booking (FR-M3)
@@ -951,6 +1000,39 @@ function seed(now: Date): DemoState {
     audit: [],
     events: [],
     settings: SETTINGS.map((x) => ({ ...x })),
+    availability: {
+      weeklyRules: {
+        1: [
+          { start: '10:00', end: '13:00' },
+          { start: '14:00', end: '18:00' },
+        ],
+        2: [
+          { start: '10:00', end: '13:00' },
+          { start: '14:00', end: '18:00' },
+        ],
+        3: [
+          { start: '10:00', end: '13:00' },
+          { start: '14:00', end: '18:00' },
+        ],
+        4: [
+          { start: '10:00', end: '13:00' },
+          { start: '14:00', end: '18:00' },
+        ],
+        5: [
+          { start: '10:00', end: '13:00' },
+          { start: '14:00', end: '18:00' },
+        ],
+        6: [{ start: '10:00', end: '14:00' }],
+      },
+      exceptions: [],
+      busyBlocks: [
+        {
+          startsAt: iso(istAt(istDate(addDays(now, 2)), '16:00')),
+          endsAt: iso(istAt(istDate(addDays(now, 2)), '18:00')),
+          title: 'Google Calendar: busy',
+        },
+      ],
+    },
     seq: 100,
   };
   const today = istDate(now);
