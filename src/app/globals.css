@@ -1,0 +1,204 @@
+@import 'tailwindcss';
+@import '../../design/tokens.css';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* next/font renames families; point the tokens at the loaded fonts. */
+:root {
+  --yhc-font-display: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  --yhc-font-sans:
+    var(--font-dm-sans), 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+/*
+ * docs/07 §4 mapping. Two names differ from docs/07 because shadcn/ui owns them (ADR-24):
+ *   muted  → shadcn fill (mist); muted text is `text-muted-foreground` (#6B7078)
+ *   accent → shadcn hover fill (mist); the brand steel-blue is `brand` (text-brand, ring)
+ */
+@theme inline {
+  --color-obsidian: var(--yhc-obsidian);
+  --color-ink-2: var(--yhc-ink-2);
+  --color-graphite: var(--yhc-graphite);
+  --color-line-dark: var(--yhc-line-dark);
+  --color-steel: var(--yhc-steel);
+  --color-platinum: var(--yhc-platinum);
+  --color-mist: var(--yhc-mist);
+  --color-line: var(--yhc-line-light);
+  --color-pearl: var(--yhc-pearl);
+  --color-ink: var(--yhc-text-strong);
+  --color-body: var(--yhc-text);
+  --color-on-dark: var(--yhc-text-on-dark);
+  --color-on-dark-muted: var(--yhc-text-on-dark-muted);
+  --color-brand: var(--yhc-accent);
+  --color-brand-on-dark: var(--yhc-accent-on-dark);
+  --color-success: var(--yhc-success);
+  --color-success-bg: var(--yhc-success-bg);
+  --color-warning: var(--yhc-warning);
+  --color-warning-bg: var(--yhc-warning-bg);
+  --color-danger: var(--yhc-danger);
+  --color-danger-bg: var(--yhc-danger-bg);
+  --color-info: var(--yhc-info);
+  --color-info-bg: var(--yhc-info-bg);
+
+  --font-display: var(--yhc-font-display);
+  --font-sans: var(--yhc-font-sans);
+
+  --text-hero: var(--yhc-text-hero);
+  --text-3xl: var(--yhc-text-3xl);
+  --text-2xl: var(--yhc-text-2xl);
+
+  --radius-card: var(--yhc-radius-lg);
+  --radius-sm: var(--yhc-radius-sm);
+  --radius-md: var(--yhc-radius-md);
+  --radius-lg: var(--yhc-radius-lg);
+  --radius-xl: var(--yhc-radius-xl);
+  --shadow-card: var(--yhc-shadow-card);
+  --shadow-raised: var(--yhc-shadow-raised);
+  --ease-yhc: var(--yhc-ease);
+
+  /* shadcn/ui semantic colours → tokens */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: var(--yhc-radius-md);
+  --background: var(--yhc-pearl);
+  --foreground: var(--yhc-text-strong);
+  --card: var(--yhc-card);
+  --card-foreground: var(--yhc-text-strong);
+  --popover: var(--yhc-card);
+  --popover-foreground: var(--yhc-text-strong);
+  --primary: var(--yhc-obsidian);
+  --primary-foreground: var(--yhc-text-on-dark);
+  --secondary: var(--yhc-mist);
+  --secondary-foreground: var(--yhc-text-strong);
+  --muted: var(--yhc-mist);
+  --muted-foreground: var(--yhc-text-muted);
+  --accent: var(--yhc-mist);
+  --accent-foreground: var(--yhc-text-strong);
+  --destructive: var(--yhc-danger);
+  --border: var(--yhc-line-light);
+  --input: var(--yhc-line-light);
+  --ring: var(--yhc-accent);
+  --chart-1: var(--yhc-obsidian);
+  --chart-2: var(--yhc-accent);
+  --chart-3: var(--yhc-steel);
+  --chart-4: var(--yhc-platinum);
+  --chart-5: var(--yhc-success);
+  --sidebar: var(--yhc-obsidian);
+  --sidebar-foreground: var(--yhc-text-on-dark);
+  --sidebar-primary: var(--yhc-platinum);
+  --sidebar-primary-foreground: var(--yhc-obsidian);
+  --sidebar-accent: var(--yhc-graphite);
+  --sidebar-accent-foreground: var(--yhc-text-on-dark);
+  --sidebar-border: var(--yhc-line-dark);
+  --sidebar-ring: var(--yhc-accent-on-dark);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background font-sans text-body antialiased;
+    font-size: var(--yhc-text-base);
+    line-height: 1.5;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-ink;
+  }
+  :focus-visible {
+    outline: 2px solid var(--yhc-accent);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .container-yhc {
+    width: 100%;
+    max-width: var(--yhc-container);
+    margin-inline: auto;
+    padding-inline: var(--yhc-gutter);
+  }
+  .eyebrow {
+    @apply text-[13px] font-semibold tracking-[0.12em] text-brand uppercase md:text-sm;
+  }
+  .display {
+    @apply font-display font-medium text-ink;
+    line-height: 1.1;
+  }
+  .price {
+    @apply font-sans font-semibold;
+    font-variant-numeric: tabular-nums;
+  }
+  .bg-hero-dark {
+    background: var(--yhc-hero-dark);
+  }
+  .bg-silver {
+    background: var(--yhc-silver);
+  }
+  .bg-sheen {
+    background: var(--yhc-sheen);
+  }
+  /* One slow metallic light sweep on the hero (docs/07 §7). */
+  .sheen-sweep {
+    position: relative;
+    overflow: hidden;
+  }
+  .sheen-sweep::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.08) 50%, transparent 65%);
+    transform: translateX(-100%);
+    animation: yhc-sweep 1.5s var(--yhc-ease) 0.3s 1 forwards;
+    pointer-events: none;
+  }
+  @keyframes yhc-sweep {
+    to {
+      transform: translateX(100%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sheen-sweep::after {
+      animation: none;
+    }
+  }
+}

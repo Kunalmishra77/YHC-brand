@@ -25,6 +25,9 @@
 | ADR-19 | Free assessment answers stored in `assessments` (clinical RLS), not on leads | Health data must not be sales-visible | |
 | ADR-20 | "Book on behalf" uses a signed pay page with consents + age check, not a bare payment link; hold length `consult.sales_hold_minutes` | Explicit telemedicine consent when staff initiate; avoid slot loss | Razorpay Payment Link (no consent capture) |
 | ADR-21 | Guarantee enrollment is created at delivery of the first guarantee-eligible plan order | Clock starts at delivery; avoids enrollments for undelivered/refunded orders | Enroll at payment |
+| ADR-22 | Local development uses a hosted Supabase project `yhc-dev` (Mumbai) instead of `supabase start`; scripts use `--linked`. CI keeps `supabase start` on GitHub runners | Docker is not usable on the developer machine (2026-10-02) | Local Docker; native Postgres install |
+| ADR-24 | Tailwind names `muted` and `accent` follow shadcn/ui semantics (mist fills); muted text = `text-muted-foreground`, brand steel-blue = `brand` (`text-brand`, focus ring). All other docs/07 §4 names unchanged | docs/07 §4 maps `--color-muted`/`--color-accent` to text colours, which breaks every shadcn component that uses `bg-muted`/`bg-accent` | Rename shadcn variables (fork every component) |
+| ADR-23 | Client demo first: after Phase 00 foundation, build a clickable UI prototype of all surfaces (site, booking, account, doctor, sales, admin) on an in-memory demo data layer (`src/server/demo/`), enabled only when `DEMO_MODE=true`, with a role switcher instead of real auth. Real Supabase/auth/integrations replace the demo layer phase by phase (01 → 12) | Client wants to see the full product before integrations (Meta, Razorpay, WhatsApp, etc.) are wired | Follow phases 01→12 strictly (no demo for weeks) |
 
 ## Pending — client decisions (with our recommendation)
 
@@ -47,3 +50,6 @@
 
 ## Proposed changes (change control)
 _Add new requests here: date · requester · description · impact · MVP or Phase 2 · decision._
+
+- 2026-10-02 · project owner · Build a demo prototype (UI for all surfaces, mock data) before external integrations · Phase order: 00 → demo (UI from phases 02–11 on mock data) → 01 and integration work; no scope added, Sentry deferred to integration work · MVP · **Accepted** (ADR-23)
+- 2026-10-02 · project owner · Docker not usable locally → hosted `yhc-dev` Supabase project · Local `db:*` scripts target the linked project · MVP · **Accepted** (ADR-22)

@@ -38,3 +38,11 @@ blob-report/
 .scaffold-tmp/
 *.tsbuildinfo
 .sentryclirc
+
+# merged from create-next-app
+.pnp
+.pnp.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
