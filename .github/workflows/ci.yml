@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, staging]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: Typecheck · lint · unit tests · build
+    runs-on: ubuntu-latest
+    env:
+      DEMO_MODE: 'true'
+      APP_ENV: local
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm lint:claims
+      - run: pnpm build
+
+  db:
+    name: Supabase migrations + integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # GitHub runners have Docker, so CI keeps a local stack (ADR-22: only local dev uses hosted yhc-dev).
+      - run: pnpm supabase start -x studio,imgproxy,inbucket,edge-runtime,logflare,vector
+      - run: pnpm supabase db reset --local
+      - run: pnpm test:integration
+      - if: always()
+        run: pnpm supabase stop --no-backup
