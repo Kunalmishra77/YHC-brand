@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Logo } from '@/components/shared/logo';
 import { Button } from '@/components/ui/button';
@@ -76,7 +77,7 @@ export default async function DemoPage(props: PageProps<'/demo'>) {
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild className="h-11">
-            <a href="/">Open the website</a>
+            <Link href="/">Open the website</Link>
           </Button>
           <form action={signOutDemo}>
             <Button type="submit" variant="ghost" className="h-11">
