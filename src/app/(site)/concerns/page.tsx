@@ -6,6 +6,7 @@ import { ConcernList } from '@/components/site/concern-list';
 import { CtaBand } from '@/components/site/cta-band';
 import { PageIntro } from '@/components/site/page-intro';
 import { pageMetadata } from '@/components/site/seo';
+import { IMAGES } from '@/lib/images';
 import { getConcerns } from '@/server/catalog';
 
 export const dynamic = 'force-dynamic';
@@ -24,6 +25,7 @@ export default function ConcernsPage() {
     <>
       <PageIntro
         title="Hair concerns"
+        image={IMAGES.serum}
         lede={
           <p>
             Choose what sounds most like you. Not sure? The{' '}

@@ -5,15 +5,20 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { t } from '@/i18n/en';
 import { SITE_NAV } from '@/lib/site';
+import { HeaderFrame } from './header-frame';
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-pearl/90 backdrop-blur supports-[backdrop-filter]:bg-pearl/75">
+    <HeaderFrame>
       <div className="container-yhc flex h-16 items-center justify-between gap-4">
-        <Logo />
+        <Logo className="[&_span]:transition-colors group-data-[dark=true]/hdr:[&_span]:text-on-dark" />
         <nav aria-label="Main" className="hidden items-center gap-6 lg:flex">
           {SITE_NAV.map((item) => (
-            <Link key={item.href} href={item.href} className="text-sm font-medium text-body hover:text-ink">
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-sm font-medium text-body transition-colors group-data-[dark=true]/hdr:text-on-dark-muted hover:text-ink group-data-[dark=true]/hdr:hover:text-on-dark"
+            >
               {t(item.key)}
             </Link>
           ))}
@@ -21,16 +26,24 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           <Link
             href="/account"
-            className="hidden text-sm font-medium text-body hover:text-ink sm:inline-block"
+            className="hidden text-sm font-medium text-body transition-colors group-data-[dark=true]/hdr:text-on-dark-muted hover:text-ink group-data-[dark=true]/hdr:hover:text-on-dark sm:inline-block"
           >
             {t('nav.account')}
           </Link>
-          <Button asChild className="hidden h-11 px-5 sm:inline-flex">
+          <Button
+            asChild
+            className="hidden h-11 px-5 group-data-[dark=true]/hdr:bg-[image:var(--yhc-silver)] group-data-[dark=true]/hdr:text-obsidian sm:inline-flex"
+          >
             <Link href="/book">{t('common.bookConsultation')}</Link>
           </Button>
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="size-11 lg:hidden" aria-label="Open menu">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-11 group-data-[dark=true]/hdr:text-on-dark group-data-[dark=true]/hdr:hover:bg-graphite lg:hidden"
+                aria-label="Open menu"
+              >
                 <Menu className="size-5" />
               </Button>
             </SheetTrigger>
@@ -57,6 +70,6 @@ export function SiteHeader() {
           </Sheet>
         </div>
       </div>
-    </header>
+    </HeaderFrame>
   );
 }

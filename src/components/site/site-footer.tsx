@@ -37,6 +37,12 @@ export function SiteFooter({ doctor }: { doctor: Doctor }) {
           <Link href="/assessment" className="hover:text-on-dark">
             {t('common.freeAssessment')}
           </Link>
+          <Link href="/blog" className="hover:text-on-dark">
+            Journal
+          </Link>
+          <Link href="/about" className="hover:text-on-dark">
+            About YHC
+          </Link>
           <Link href="/contact" className="hover:text-on-dark">
             Contact
           </Link>

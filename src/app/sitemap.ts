@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { clientEnv } from '@/lib/env';
 import { LEGAL_PAGES } from '@/lib/site';
 import { getConcerns, getProducts } from '@/server/catalog';
+import { getArticles } from '@/server/content/articles';
 
 /** XML sitemap of public marketing pages (FR-M1-7). Portals, auth and demo routes are excluded. */
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -28,6 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry('/faqs', 0.6),
     entry('/stories', 0.4),
     entry('/blog', 0.4, 'weekly'),
+    ...getArticles().map((a) => entry(`/blog/${a.slug}`, 0.4)),
     entry('/contact', 0.4),
     ...LEGAL_PAGES.map((p) => entry(`/legal/${p.slug}`, 0.2, 'yearly')),
   ];

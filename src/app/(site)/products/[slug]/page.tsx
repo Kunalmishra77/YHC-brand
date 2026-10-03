@@ -4,12 +4,14 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getConsultTerms } from '@/components/site/consult-fee';
 import { JsonLd } from '@/components/site/json-ld';
-import { PhotoPlaceholder } from '@/components/site/photo-placeholder';
+import { ProductGallery } from '@/components/site/product-gallery';
+import { ProductTile } from '@/components/site/product-tile';
 import { REGULATORY_LABEL } from '@/components/site/product-meta';
 import { pageMetadata } from '@/components/site/seo';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
 import { clientEnv } from '@/lib/env';
+import { PRODUCT_GALLERY } from '@/lib/images';
 import { formatINR } from '@/lib/money';
 import { getProduct, getProducts } from '@/server/catalog';
 
@@ -77,25 +79,10 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
         }}
       />
 
-      <section className="container-yhc grid gap-10 py-10 md:grid-cols-2 md:gap-14 md:py-16">
+      <section className="container-yhc grid gap-10 py-10 md:grid-cols-2 md:gap-16 md:py-16">
         {/* Gallery — TODO(client): product photography — see docs/12 D-P2 */}
-        <div>
-          <PhotoPlaceholder
-            caption={`Photo: ${product.name} — to be supplied`}
-            shape="product"
-            tone="light"
-            className="aspect-square w-full"
-          />
-          <div className="mt-3 grid grid-cols-3 gap-3" aria-hidden>
-            {['Texture', 'In use', 'Pack'].map((label) => (
-              <div
-                key={label}
-                className="flex aspect-square items-end rounded-lg bg-[linear-gradient(160deg,#fbfbfa,#e6e7e9)] p-2 text-[13px] text-muted-foreground ring-1 ring-line"
-              >
-                {label}
-              </div>
-            ))}
-          </div>
+        <div className="md:sticky md:top-24 md:self-start">
+          <ProductGallery images={PRODUCT_GALLERY[product.slug] ?? []} name={product.name} />
         </div>
 
         <div>
@@ -108,11 +95,11 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
           <p className="mt-5 text-sm text-muted-foreground">
             {REGULATORY_LABEL[product.regulatoryCategory]} · {product.daysOfSupply}-day supply
           </p>
-          <h1 className="display mt-2 text-3xl">{product.name}</h1>
-          <p className="mt-2 text-lg text-ink">{product.tagline}</p>
-          <p className="mt-5 text-body">{product.description}</p>
+          <h1 className="display mt-3 text-[clamp(2.5rem,1.8rem+2.6vw,4rem)]">{product.name}</h1>
+          <p className="mt-3 text-xl text-ink">{product.tagline}</p>
+          <p className="mt-6 max-w-prose text-lg leading-relaxed text-body">{product.description}</p>
 
-          <div className="mt-8 rounded-xl border border-line bg-card p-5">
+          <div className="mt-10 rounded-2xl border border-line bg-card p-6 shadow-card">
             {buyable && product.pricePaise !== null ? (
               <>
                 <p className="price text-2xl text-ink">{formatINR(product.pricePaise)}</p>
@@ -167,6 +154,20 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
               Category: {REGULATORY_LABEL[product.regulatoryCategory]}. {t('legal.disclaimer')}
             </p>
           </div>
+        </div>
+      </section>
+
+      <section className="container-yhc py-20 md:py-24">
+        <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)]">
+          {product.requiresConsultation ? 'Often prescribed together' : 'Also in everyday care'}
+        </h2>
+        <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 md:grid-cols-3">
+          {getProducts()
+            .filter((p) => p.slug !== product.slug && p.requiresConsultation === product.requiresConsultation)
+            .slice(0, 3)
+            .map((p) => (
+              <ProductTile key={p.id} product={p} />
+            ))}
         </div>
       </section>
     </>

@@ -1,25 +1,27 @@
 import type { Metadata } from 'next';
-import { BadgeCheck, CreditCard, Truck } from 'lucide-react';
+import { Check, MessageCircle } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { GuaranteeTerms } from '@/components/shared/pricing';
-import { getConsultTerms } from '@/components/site/consult-fee';
 import { ConcernList } from '@/components/site/concern-list';
-import { CtaBand } from '@/components/site/cta-band';
+import { getConsultTerms } from '@/components/site/consult-fee';
 import { DoctorCard } from '@/components/site/doctor-card';
 import { FaqList, visibleFaqs } from '@/components/site/faq-list';
+import { HomeHero } from '@/components/site/home-hero';
 import { JsonLd } from '@/components/site/json-ld';
-import { buildJourney, JourneySteps } from '@/components/site/journey-steps';
-import { PhotoPlaceholder } from '@/components/site/photo-placeholder';
+import { buildJourney } from '@/components/site/journey-steps';
+import { getNextSlotLabel } from '@/components/site/next-slot';
 import { PlanLadder } from '@/components/site/plan-ladder';
+import { ProductTile } from '@/components/site/product-tile';
 import { pageMetadata } from '@/components/site/seo';
 import { StoriesEmpty } from '@/components/site/stories-empty';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
 import { clientEnv } from '@/lib/env';
+import { IMAGES } from '@/lib/images';
 import { SITE } from '@/lib/site';
 import { getConcerns, getDoctor, getFaqs, getGuarantee, getPlans, getProducts } from '@/server/catalog';
 
-// Guarantee visibility and fees are live settings (admin can change them in the demo).
+// Guarantee visibility, fees and the next free slot are live (admin can change them in the demo).
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
@@ -32,17 +34,23 @@ export const metadata: Metadata = {
   title: { absolute: 'Your Hair Company — Doctor-led hair care with Dr. Tyagi' },
 };
 
+const SHOWCASE = ['topical-hair-solution', 'scalp-serum', 'hair-nutrition-tablets'];
+
 export default function HomePage() {
   const doctor = getDoctor();
   const plans = getPlans();
   const guarantee = getGuarantee();
   const terms = getConsultTerms();
+  const products = getProducts();
+  const showcase = SHOWCASE.map((slug) => products.find((p) => p.slug === slug)).filter(
+    (p): p is NonNullable<typeof p> => Boolean(p),
+  );
   const faqs = visibleFaqs(getFaqs(), guarantee !== null).slice(0, 5);
-
-  const ingredients = getProducts()
+  const journey = buildJourney(terms);
+  const ingredients = products
     .flatMap((p) => p.ingredients.map((ing) => ({ ...ing, product: p.name, slug: p.slug })))
     .filter((ing, i, all) => all.findIndex((x) => x.name === ing.name) === i)
-    .slice(0, 8);
+    .slice(0, 6);
 
   return (
     <>
@@ -58,139 +66,119 @@ export default function HomePage() {
         }}
       />
 
-      {/* 1 · Hero */}
-      <section className="bg-hero-dark sheen-sweep text-on-dark">
-        <div className="container-yhc grid items-center gap-10 py-14 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:py-24">
-          <div>
-            <p className="text-sm font-medium text-brand-on-dark">{t('brand.tagline')} · India</p>
-            <h1 className="display mt-4 text-hero text-on-dark">
-              Hair care that begins with a doctor, not a product.
-            </h1>
-            <p className="mt-6 max-w-xl text-lg text-on-dark-muted">
-              A {terms.slotMinutes}-minute video consultation with {doctor.name}, a plan chosen for your
-              pattern and history, and steady follow-up while you use it.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button
-                asChild
-                className="h-12 bg-[image:var(--yhc-silver)] px-6 text-base text-obsidian hover:opacity-90"
-              >
-                <Link href="/book">{terms.bookLabel}</Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="h-12 border-line-dark bg-transparent px-6 text-base text-on-dark hover:bg-graphite hover:text-on-dark"
-              >
-                <Link href="/assessment">{t('common.freeAssessment')}</Link>
-              </Button>
-            </div>
-            <p className="mt-4 text-sm text-on-dark-muted">
-              The assessment takes about 2 minutes and is not a diagnosis.
-            </p>
-          </div>
-          <PhotoPlaceholder
-            caption="Photo: Dr. Tyagi — to be supplied"
-            className="mx-auto aspect-[4/5] w-full max-w-[320px] md:max-w-none"
-          />
-        </div>
-      </section>
+      {/* 1 · Hero (+ trust facts rail, FR-M1-2) */}
+      <HomeHero
+        bookLabel={terms.bookLabel}
+        slotMinutes={terms.slotMinutes}
+        fee={terms.fee}
+        creditNote={terms.creditEnabled ? 'credited to your first plan*' : null}
+        nextSlot={getNextSlotLabel()}
+        doctorName={doctor.name}
+        registrationNo={doctor.registrationNo}
+      />
 
-      {/* 2 · Trust strip */}
-      <section aria-label="Why you can trust YHC" className="border-b border-line bg-card">
-        <ul className="container-yhc grid divide-y divide-line md:grid-cols-3 md:divide-x md:divide-y-0">
-          <li className="flex items-start gap-3 py-5 md:px-6 md:first:pl-0">
-            <BadgeCheck className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
-            <p className="text-sm text-body">
-              <span className="font-semibold text-ink">{doctor.name}</span>, Reg. No.{' '}
-              <span className="price">{doctor.registrationNo}</span>
-              <br />
-              {doctor.council}
-            </p>
-          </li>
-          <li className="flex items-start gap-3 py-5 md:px-6">
-            <CreditCard className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
-            <p className="text-sm text-body">
-              <span className="font-semibold text-ink">Encrypted payments via Razorpay</span>
-              <br />
-              UPI, cards and netbanking
-            </p>
-          </li>
-          <li className="flex items-start gap-3 py-5 md:px-6">
-            <Truck className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
-            <p className="text-sm text-body">
-              <span className="font-semibold text-ink">Delivery across India</span>
-              <br />
-              Tracking shared on WhatsApp
-            </p>
-          </li>
-        </ul>
-      </section>
-
-      {/* 3 · Hair concerns */}
-      <section className="container-yhc py-16 md:py-24">
-        <div className="grid gap-10 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
-          <div>
-            <h2 className="display text-3xl">What are you noticing?</h2>
-            <p className="mt-4 text-body">
-              Start with what you see. Each concern has more than one possible cause — that is what the
-              consultation is for.
+      {/* 2 · Hair concerns */}
+      <section id="concerns" className="container-yhc scroll-mt-20 py-20 md:py-28">
+        <div className="grid gap-12 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
+          <div className="md:sticky md:top-28 md:self-start">
+            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">What are you noticing?</h2>
+            <p className="mt-5 max-w-sm text-lg leading-relaxed text-body">
+              Start with what you see. Most concerns have more than one possible cause — finding yours is what
+              the consultation is for.
             </p>
             <Link
-              href="/concerns"
-              className="mt-6 inline-flex min-h-11 items-center text-sm font-medium text-brand underline underline-offset-4"
+              href="/assessment"
+              className="mt-7 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-ink underline decoration-steel underline-offset-[6px] hover:decoration-ink"
             >
-              All hair concerns
+              Not sure? Take the 3-minute assessment
             </Link>
           </div>
           <ConcernList concerns={getConcerns()} />
         </div>
       </section>
 
-      {/* 4 · How it works */}
-      <section className="border-y border-line bg-mist/40">
-        <div className="container-yhc py-16 md:py-24">
-          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-            <h2 className="display max-w-xl text-3xl">How it works</h2>
+      {/* 3 · What a plan can include */}
+      <section className="border-t border-line bg-[#efeeeb]/60">
+        <div className="container-yhc py-20 md:py-28">
+          <div className="grid gap-6 md:grid-cols-2 md:items-end">
+            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">What a plan can include</h2>
+            <p className="max-w-md text-body md:justify-self-end">
+              Every plan is put together by {doctor.name} for one person. These are the products it draws on —
+              strength, dose and timing are set at your consultation.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-x-6 gap-y-12 md:grid-cols-3">
+            {showcase.map((p) => (
+              <ProductTile key={p.id} product={p} />
+            ))}
+          </div>
+          <p className="mt-10 text-sm text-body">
+            Also in the range: a gentle shampoo and conditioner you can buy without a consultation.{' '}
+            <Link href="/products" className="font-medium text-ink underline underline-offset-4">
+              See all products
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      {/* 4 · How it works — a real sequence, so it is numbered */}
+      <section className="relative overflow-hidden bg-obsidian text-on-dark">
+        <div className="container-yhc py-20 md:py-28">
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <h2 className="display max-w-xl text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-on-dark">
+              From first call to follow-up
+            </h2>
             <Link
               href="/how-it-works"
-              className="inline-flex min-h-11 items-center text-sm font-medium text-brand underline underline-offset-4"
+              className="inline-flex min-h-11 items-center text-sm font-medium text-on-dark underline decoration-steel underline-offset-[6px]"
             >
               The full journey, step by step
             </Link>
           </div>
-          <JourneySteps steps={buildJourney(terms)} className="mt-12" />
+          <ol className="mt-14 grid gap-px overflow-hidden rounded-2xl bg-line-dark md:grid-cols-5">
+            {journey.map((step, i) => (
+              <li key={step.title} className="flex flex-col bg-obsidian p-6 md:min-h-72 md:p-7">
+                <span className="font-display text-5xl leading-none text-platinum/70">{i + 1}</span>
+                <h3 className="mt-8 text-lg font-semibold text-on-dark md:mt-auto">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-on-dark-muted">{step.body}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
       {/* 5 · Meet Dr. Tyagi */}
-      <section className="container-yhc py-16 md:py-24">
-        <p className="eyebrow mb-6">Meet your doctor</p>
+      <section className="container-yhc py-20 md:py-28">
         <DoctorCard doctor={doctor}>
-          <Button asChild variant="outline" className="h-11 border-steel px-5">
-            <Link href="/doctor-tyagi">About {doctor.name}</Link>
-          </Button>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button asChild className="h-12 px-6">
+              <Link href="/book">Book with {doctor.name}</Link>
+            </Button>
+            <Button asChild variant="outline" className="h-12 border-steel px-6">
+              <Link href="/doctor-tyagi">About {doctor.name}</Link>
+            </Button>
+          </div>
         </DoctorCard>
       </section>
 
       {/* 6 · Treatment plans */}
-      <section className="bg-pearl">
-        <div className="container-yhc pb-16 md:pb-24">
-          <div className="mb-10 grid gap-4 border-t border-line pt-16 md:grid-cols-2 md:items-end md:pt-24">
-            <h2 className="display text-3xl">Treatment plans</h2>
-            <p className="text-body">
-              Plans are prescribed after your consultation — you can&apos;t buy one before Dr. Tyagi has seen
-              your history. Longer plans cost less per month. {t('common.inclGst')}.
+      <section className="border-t border-line bg-card">
+        <div className="container-yhc py-20 md:py-28">
+          <div className="mb-14 grid gap-6 md:grid-cols-2 md:items-end">
+            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">Treatment plans</h2>
+            <p className="max-w-md text-body md:justify-self-end">
+              Plans are prescribed after your consultation, never sold before it. Longer plans cost less per
+              month. {t('common.inclGst')}.
             </p>
           </div>
           <PlanLadder plans={plans} guarantee={guarantee} creditLine={terms.creditLine} />
-          <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+          <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
             <Button asChild className="h-12 px-6 text-base">
-              <Link href="/book">Book consultation first · {terms.fee}</Link>
+              <Link href="/book">Start with a consultation · {terms.fee}</Link>
             </Button>
             <Link
               href="/plans"
-              className="inline-flex min-h-11 items-center text-sm font-medium text-brand underline underline-offset-4"
+              className="inline-flex min-h-11 items-center text-sm font-medium text-ink underline decoration-steel underline-offset-[6px]"
             >
               Compare plans in detail
             </Link>
@@ -200,68 +188,98 @@ export default function HomePage() {
 
       {/* 7 · Money-back guarantee (hidden while guarantee.enabled = false) */}
       {guarantee ? (
-        <section className="bg-silver">
-          <div className="container-yhc grid gap-8 py-16 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:py-20">
-            <div>
-              <h2 className="display text-3xl">A guarantee with clear conditions</h2>
-              <p className="mt-4 text-ink/80">
-                Hair responds slowly and differently for everyone. If you do your part for the full period and
-                see no visible improvement, you can claim a refund. A doctor reviews every claim.
+        <section className="bg-obsidian text-on-dark">
+          <div className="grid md:grid-cols-2">
+            <div className="relative min-h-80 md:min-h-[560px]">
+              <Image src={IMAGES.heroStage.src} alt="" fill sizes="50vw" className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-obsidian/80 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-obsidian" />
+            </div>
+            <div className="container-yhc flex flex-col justify-center py-16 md:max-w-xl md:px-14 md:py-24">
+              <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.25rem)] text-on-dark">
+                A guarantee, with its conditions in plain sight
+              </h2>
+              <p className="mt-5 leading-relaxed text-on-dark-muted">
+                Hair responds slowly and differently for everyone. If you follow your plan for the full period
+                and see no visible improvement, you can claim a refund. A doctor reviews every claim.
+              </p>
+              <ul className="mt-8 space-y-3.5 text-[15px]">
+                {[
+                  `Follow your plan continuously for at least ${guarantee.minPlanMonths} months`,
+                  `Reply to at least ${guarantee.minCheckinResponsePct}% of weekly check-ins`,
+                  ...(guarantee.requireMonthlyPhotos ? ['Share progress photos every month'] : []),
+                  ...(guarantee.requireFollowupConsult ? ['Attend your follow-up consultation'] : []),
+                  `Claim within ${guarantee.claimWindowDays} days of finishing the plan`,
+                ].map((line) => (
+                  <li key={line} className="flex gap-3">
+                    <Check className="mt-0.5 size-4 shrink-0 text-brand-on-dark" aria-hidden />
+                    {line}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-8 text-sm text-on-dark-muted">
+                {guarantee.isDraft ? `${t('common.draftTerms')}. ` : ''}
+                <Link href="/legal/guarantee" className="text-on-dark underline underline-offset-4">
+                  Read the full terms
+                </Link>
               </p>
             </div>
-            <GuaranteeTerms policy={guarantee} />
           </div>
         </section>
       ) : null}
 
       {/* 8 · Ingredients & science */}
-      <section className="container-yhc py-16 md:py-24">
-        <div className="grid gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-          <div>
-            <h2 className="display text-3xl">Ingredients, and why they are there</h2>
-            <p className="mt-4 text-body">
-              Every product lists what is in it and what each ingredient does. Prescription items are dosed by
-              Dr. Tyagi for you; nothing is chosen because it sounds impressive.
+      <section className="container-yhc py-20 md:py-28">
+        <div className="relative overflow-hidden rounded-2xl">
+          <Image
+            src={IMAGES.textureDrop.src}
+            alt={IMAGES.textureDrop.alt}
+            width={IMAGES.textureDrop.width}
+            height={IMAGES.textureDrop.height}
+            sizes="(min-width: 1200px) 1168px, 100vw"
+            className="h-64 w-full object-cover md:h-96"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-pearl/90 via-pearl/40 to-transparent" />
+          <div className="absolute inset-y-0 left-0 flex max-w-lg flex-col justify-center p-6 md:p-12">
+            <h2 className="display text-[clamp(2rem,1.5rem+2vw,3.25rem)]">
+              Ingredients, and why they are there
+            </h2>
+            <p className="mt-4 hidden text-body sm:block">
+              Every product lists what is in it and what each part does. Nothing is chosen because it sounds
+              impressive.
             </p>
-            <p className="mt-4 text-sm text-muted-foreground">{t('common.resultsVary')}</p>
-            <Link
-              href="/products"
-              className="mt-6 inline-flex min-h-11 items-center text-sm font-medium text-brand underline underline-offset-4"
-            >
-              See all products
-            </Link>
           </div>
-          <dl className="grid divide-y divide-line border-y border-line sm:grid-cols-2 sm:divide-y-0">
-            {ingredients.map((ing) => (
-              <div key={ing.name} className="border-line py-4 sm:border-b sm:odd:pr-6 sm:even:pl-6">
-                <dt className="font-semibold text-ink">{ing.name}</dt>
-                <dd className="mt-1 text-sm text-body">{ing.role}</dd>
-                <dd className="mt-1 text-[13px] text-muted-foreground">
-                  In{' '}
-                  <Link href={`/products/${ing.slug}`} className="underline underline-offset-2">
-                    {ing.product}
-                  </Link>
-                </dd>
-              </div>
-            ))}
-          </dl>
         </div>
+        <dl className="mt-10 grid gap-x-10 border-t border-line sm:grid-cols-2 lg:grid-cols-3">
+          {ingredients.map((ing) => (
+            <div key={ing.name} className="border-b border-line py-6">
+              <dt className="font-semibold text-ink">{ing.name}</dt>
+              <dd className="mt-1.5 text-body">{ing.role}</dd>
+              <dd className="mt-2 text-[13px] text-muted-foreground">
+                In{' '}
+                <Link href={`/products/${ing.slug}`} className="underline underline-offset-2 hover:text-ink">
+                  {ing.product}
+                </Link>
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <p className="mt-6 text-sm text-muted-foreground">{t('common.resultsVary')}</p>
       </section>
 
       {/* 9 · Real stories (consent-gated, FR-M1-6) */}
-      <section className="container-yhc pb-16 md:pb-24">
-        <h2 className="display mb-6 text-3xl">Real stories</h2>
+      <section className="container-yhc pb-20 md:pb-28">
+        <h2 className="display mb-8 text-[clamp(2rem,1.5rem+2vw,3rem)]">Real stories</h2>
         <StoriesEmpty />
       </section>
 
       {/* 10 · FAQs */}
       <section className="border-t border-line bg-card">
-        <div className="container-yhc grid gap-10 py-16 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:py-24">
+        <div className="container-yhc grid gap-12 py-20 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:py-28">
           <div>
-            <h2 className="display text-3xl">Questions people ask first</h2>
+            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">Questions people ask first</h2>
             <Link
               href="/faqs"
-              className="mt-6 inline-flex min-h-11 items-center text-sm font-medium text-brand underline underline-offset-4"
+              className="mt-7 inline-flex min-h-11 items-center text-sm font-medium text-ink underline decoration-steel underline-offset-[6px]"
             >
               All FAQs
             </Link>
@@ -271,10 +289,50 @@ export default function HomePage() {
       </section>
 
       {/* 11 · Final CTA */}
-      <CtaBand
-        bookLabel={terms.bookLabel}
-        body={`Pick a time, pay ${terms.fee}, and talk to ${doctor.name}. If a plan is right for you, you'll receive it on WhatsApp after the call, with no obligation to buy it.`}
-      />
+      <section className="relative isolate overflow-hidden bg-obsidian text-on-dark">
+        <div className="absolute inset-y-0 right-0 -z-10 hidden w-1/2 md:block" aria-hidden>
+          <Image
+            src={IMAGES.heroPortrait.src}
+            alt=""
+            fill
+            sizes="50vw"
+            className="object-cover object-[50%_65%]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-obsidian to-transparent" />
+        </div>
+        <div className="container-yhc py-20 md:py-32">
+          <div className="max-w-xl">
+            <h2 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-on-dark">
+              Start with a conversation, not a product.
+            </h2>
+            <p className="mt-5 text-lg leading-relaxed text-on-dark-muted">
+              Pick a time, pay {terms.fee} and talk to {doctor.name}. If a plan is right for you, it arrives
+              on WhatsApp after the call — with no obligation to buy it.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Button
+                asChild
+                className="h-13 bg-[image:var(--yhc-silver)] px-7 text-base font-semibold text-obsidian hover:opacity-95"
+              >
+                <Link href="/book">{terms.bookLabel}</Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="h-13 border-line-dark bg-transparent px-7 text-base text-on-dark hover:bg-graphite hover:text-on-dark"
+              >
+                <a href={SITE.whatsappUrl}>
+                  <MessageCircle className="size-4" aria-hidden />
+                  Ask on WhatsApp
+                </a>
+              </Button>
+            </div>
+            {terms.creditLine ? (
+              <p className="mt-8 text-[13px] text-on-dark-muted">* {terms.creditLine}</p>
+            ) : null}
+          </div>
+        </div>
+      </section>
     </>
   );
 }

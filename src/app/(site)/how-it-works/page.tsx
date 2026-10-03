@@ -6,6 +6,7 @@ import { CtaBand } from '@/components/site/cta-band';
 import { buildJourney, JourneySteps } from '@/components/site/journey-steps';
 import { PageIntro } from '@/components/site/page-intro';
 import { pageMetadata } from '@/components/site/seo';
+import { IMAGES } from '@/lib/images';
 import { getDoctor, getGuarantee } from '@/server/catalog';
 import { getSetting } from '@/server/demo/store';
 
@@ -73,6 +74,7 @@ export default function HowItWorksPage() {
     <>
       <PageIntro
         title="How it works"
+        image={IMAGES.textureDrop}
         lede={
           <p>
             Five steps, from booking to follow-up. You only pay {terms.fee} to start; a plan is prescribed
@@ -84,7 +86,7 @@ export default function HowItWorksPage() {
       </PageIntro>
 
       <section className="container-yhc py-14 md:py-20">
-        <h2 className="display text-3xl">Each step in detail</h2>
+        <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)]">Each step in detail</h2>
         <ol className="mt-10 divide-y divide-line border-y border-line">
           {detail.map((step, i) => (
             <li key={step.title} className="grid gap-4 py-8 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">

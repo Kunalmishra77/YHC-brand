@@ -7,6 +7,7 @@ import { CtaBand } from '@/components/site/cta-band';
 import { PageIntro } from '@/components/site/page-intro';
 import { PlanLadder } from '@/components/site/plan-ladder';
 import { pageMetadata } from '@/components/site/seo';
+import { IMAGES } from '@/lib/images';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
 import { formatINR } from '@/lib/money';
@@ -31,6 +32,8 @@ export default function PlansPage() {
     <>
       <PageIntro
         title="Treatment plans"
+        tone="dark"
+        image={IMAGES.heroStage}
         lede={
           <p>
             Plans are prescribed after your consultation. What goes into your plan depends on what Dr. Tyagi
@@ -61,7 +64,7 @@ export default function PlansPage() {
       {plans.length ? (
         <section className="border-y border-line bg-card">
           <div className="container-yhc py-12 md:py-16">
-            <h2 className="display text-3xl">Side by side</h2>
+            <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)]">Side by side</h2>
             <div className="mt-8 overflow-x-auto">
               <table className="w-full min-w-[520px] text-left text-sm">
                 <caption className="sr-only">Plan comparison</caption>
@@ -128,7 +131,7 @@ export default function PlansPage() {
 
       {guarantee ? (
         <section className="container-yhc py-12 md:py-16">
-          <h2 className="display text-3xl">Money-back guarantee terms</h2>
+          <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)]">Money-back guarantee terms</h2>
           <p className="mt-3 max-w-2xl text-body">
             The guarantee applies only when every condition below is met. Read the{' '}
             <Link href="/legal/guarantee" className="text-brand underline underline-offset-4">

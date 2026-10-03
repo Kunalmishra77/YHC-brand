@@ -368,4 +368,12 @@ export interface Concern {
   title: string;
   summary: string;
   body: string;
+  /** Possible causes, in plain words (general education, not a diagnosis). */
+  causes: string[];
+  /** What Dr. Tyagi is likely to ask about at the consultation. */
+  questions: string[];
+  /** Signs that mean seeing a doctor soon, in person if needed. */
+  seeSoon: string[];
+  /** Product slugs a plan for this concern often draws on. */
+  relatedProducts: string[];
 }

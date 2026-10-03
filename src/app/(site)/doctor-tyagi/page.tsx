@@ -71,7 +71,7 @@ export default function DoctorPage() {
 
       <section className="border-y border-line bg-card">
         <div className="container-yhc grid gap-10 py-14 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:py-20">
-          <h2 className="display text-3xl">Credentials</h2>
+          <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)]">Credentials</h2>
           <dl className="divide-y divide-line border-y border-line">
             {[
               ['Qualifications', doctor.qualifications],
@@ -90,7 +90,7 @@ export default function DoctorPage() {
       {/* TODO(client): full name, qualifications, registration no., council and longer bio — see docs/12 C */}
 
       <section className="container-yhc py-14 md:py-20">
-        <h2 className="display max-w-2xl text-3xl">What a consultation covers</h2>
+        <h2 className="display max-w-2xl text-[clamp(2rem,1.5rem+2vw,3rem)]">What a consultation covers</h2>
         <div className="mt-10 grid gap-x-12 gap-y-8 md:grid-cols-2">
           {COVERS.map((c) => (
             <div key={c.title} className="border-t border-platinum pt-5">
