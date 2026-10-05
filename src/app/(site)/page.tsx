@@ -124,29 +124,31 @@ export default function HomePage() {
         aria-label="Credentials"
         className="scroll-mt-20 border-b border-line bg-card"
       >
-        <dl className="container-yhc grid grid-cols-1 divide-y divide-line sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
-          <Credential
-            icon={<Clock3 className="size-5" aria-hidden />}
-            term={`${terms.slotMinutes}-min consultation`}
-          >
-            One to one, on video, with {doctor.name}
-          </Credential>
-          <Credential
-            icon={<Stethoscope className="size-5" aria-hidden />}
-            term="Prescribed by a dermatologist"
-          >
-            Plans only after a one-to-one consultation
-          </Credential>
-          <Credential
-            icon={<BadgeCheck className="size-5" aria-hidden />}
-            term={`Reg. No. ${doctor.registrationNo}`}
-          >
-            {doctor.council}
-          </Credential>
-          <Credential icon={<ScanLine className="size-5" aria-hidden />} term="Scan before treatment">
-            We treat only when viable roots are present
-          </Credential>
-        </dl>
+        <div className="container-yhc py-8 md:py-10">
+          <dl className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl bg-line ring-1 ring-line sm:grid-cols-2 lg:grid-cols-4">
+            <Credential
+              icon={<Clock3 className="size-5" aria-hidden />}
+              term={`${terms.slotMinutes}-min consultation`}
+            >
+              One to one, on video, with {doctor.name}
+            </Credential>
+            <Credential
+              icon={<Stethoscope className="size-5" aria-hidden />}
+              term="Prescribed by a dermatologist"
+            >
+              Plans only after a one-to-one consultation
+            </Credential>
+            <Credential
+              icon={<BadgeCheck className="size-5" aria-hidden />}
+              term={`Reg. No. ${doctor.registrationNo}`}
+            >
+              {doctor.council}
+            </Credential>
+            <Credential icon={<ScanLine className="size-5" aria-hidden />} term="Scan before treatment">
+              We treat only when viable roots are present
+            </Credential>
+          </dl>
+        </div>
       </section>
 
       {/* 2b · The science */}
@@ -253,7 +255,7 @@ export default function HomePage() {
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Button
                 asChild
-                className="h-13 bg-[image:var(--yhc-silver)] px-7 text-base font-semibold text-obsidian hover:opacity-95"
+                className="h-12 bg-[image:var(--yhc-silver)] px-7 text-base font-semibold text-obsidian hover:opacity-95"
               >
                 <Link href="/start">Begin my 3D scan</Link>
               </Button>
@@ -425,7 +427,7 @@ function Credential({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex gap-4 py-6 lg:px-6 lg:first:pl-0">
+    <div className="flex h-full gap-4 bg-card p-5 md:p-6">
       <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full bg-mist text-ink">
         {icon}
       </span>

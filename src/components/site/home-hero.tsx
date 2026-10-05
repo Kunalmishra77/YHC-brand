@@ -40,7 +40,7 @@ export function HomeHero({
         aria-hidden
       />
 
-      <div className="container-yhc grid min-h-[100svh] items-center gap-10 pt-28 pb-16 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-16 lg:pt-32 lg:pb-24">
+      <div className="container-yhc grid items-center gap-10 pt-28 pb-14 sm:pt-32 lg:min-h-[100svh] lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-14 lg:pt-32 lg:pb-24 xl:grid-cols-[minmax(0,1fr)_400px] xl:gap-16">
         <div className="max-w-[38rem]">
           <p className={cn('flex items-center gap-3 text-sm text-on-dark-muted delay-100', ENTER)}>
             <span className="h-px w-8 bg-platinum/60" aria-hidden />
@@ -55,39 +55,49 @@ export function HomeHero({
           >
             Hair care begins with science, not with products.
           </h1>
-          <p className={cn('mt-6 max-w-lg text-lg leading-relaxed text-on-dark-muted delay-300', ENTER)}>
+          <p
+            className={cn(
+              'mt-6 max-w-lg text-base leading-relaxed text-pretty text-on-dark-muted delay-300 sm:text-lg',
+              ENTER,
+            )}
+          >
             We scan your roots first. Then a doctor decides whether treatment can help you — before anything
             is prescribed.
           </p>
 
           <ul
             className={cn(
-              'mt-9 flex flex-wrap gap-x-5 gap-y-3 border-t border-white/10 pt-6 text-[13px] text-on-dark-muted delay-500',
+              'mt-9 grid grid-cols-1 gap-x-6 gap-y-3 border-t border-white/10 pt-6 text-[13px] leading-snug text-on-dark-muted delay-500 sm:grid-cols-2',
               ENTER,
             )}
             aria-label="Why people trust us"
           >
-            <li className="inline-flex items-center gap-1.5">
-              <Stethoscope className="size-3.5 text-brand-on-dark" aria-hidden />
+            <li className="flex items-start gap-2">
+              <Stethoscope className="mt-0.5 size-3.5 shrink-0 text-brand-on-dark" aria-hidden />
               {doctorClaimLabel()}
             </li>
             {guaranteeOn ? (
-              <li className="inline-flex items-center gap-1.5">
-                <ShieldCheck className="size-3.5 text-brand-on-dark" aria-hidden />
+              <li className="flex items-start gap-2">
+                <ShieldCheck className="mt-0.5 size-3.5 shrink-0 text-brand-on-dark" aria-hidden />
                 Money-back guarantee · conditions apply
               </li>
             ) : null}
             <li>
               <PatentSlot tone="dark" compact />
             </li>
-            <li className="inline-flex items-center gap-1.5">
-              <BadgeCheck className="size-3.5 text-brand-on-dark" aria-hidden />
+            <li className="flex items-start gap-2">
+              <BadgeCheck className="mt-0.5 size-3.5 shrink-0 text-brand-on-dark" aria-hidden />
               {doctorName} · Reg. No. {registrationNo}
             </li>
           </ul>
         </div>
 
-        <div className={cn('w-full max-w-[400px] justify-self-center delay-700 lg:justify-self-end', ENTER)}>
+        <div
+          className={cn(
+            'w-full max-w-[440px] justify-self-start delay-700 lg:max-w-none lg:justify-self-end',
+            ENTER,
+          )}
+        >
           <HeroStartForm className="w-full" />
         </div>
       </div>

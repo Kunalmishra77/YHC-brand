@@ -86,14 +86,14 @@ export default function GuaranteePage() {
       </section>
 
       <section
-        className="container-yhc grid gap-12 py-20 md:grid-cols-2 md:gap-16 md:py-28"
+        className={`container-yhc grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 ${SECTION_Y}`}
         aria-labelledby="conditions-heading"
       >
         <div>
-          <h2 id="conditions-heading" className="display text-[clamp(2.1rem,1.5rem+2.2vw,3.25rem)]">
+          <h2 id="conditions-heading" className={H2}>
             The conditions
           </h2>
-          <p className="mt-4 max-w-md text-body">
+          <p className={`mt-5 text-body ${LEDE}`}>
             All of them apply. They exist so a claim can be judged fairly on how a plan was actually followed.
           </p>
           <Link
@@ -103,7 +103,7 @@ export default function GuaranteePage() {
             Read the full legal terms <ArrowRight className="size-4" aria-hidden />
           </Link>
         </div>
-        <div className="rounded-2xl bg-card p-6 ring-1 ring-line md:p-8">
+        <div className="rounded-2xl bg-card p-6 shadow-card ring-1 ring-line/80 md:p-8">
           <GuaranteeConditionList guarantee={guarantee} tone="light" className="text-ink" />
         </div>
       </section>
