@@ -35,18 +35,26 @@ export default async function AccountLayout({ children }: LayoutProps<'/account'
 
   return (
     <div className="flex min-h-dvh flex-col bg-pearl">
-      <header className="border-b border-line bg-pearl/90 backdrop-blur print:hidden">
+      <header className="border-b border-white/5 bg-obsidian text-on-dark print:hidden">
         <div className="container-yhc flex h-14 items-center justify-between gap-3 md:h-16">
-          <Logo className="[&>span]:text-[22px] md:[&>span]:text-[26px]" />
+          <Logo tone="light" className="[&>span]:text-[22px] md:[&>span]:text-[26px]" />
           <div className="flex items-center gap-1">
-            <Button asChild variant="ghost" className="h-11 px-3 text-body">
+            <Button
+              asChild
+              variant="ghost"
+              className="h-11 px-3 text-on-dark-muted hover:bg-graphite hover:text-on-dark"
+            >
               <a href={SITE.whatsappUrl} target="_blank" rel="noreferrer">
                 <MessageCircle className="size-4" aria-hidden />
                 <span className="hidden sm:inline">{t('common.whatsapp')}</span>
                 <span className="sr-only sm:hidden">Message us on WhatsApp</span>
               </a>
             </Button>
-            <Button asChild variant="ghost" className="h-11 px-3 text-body">
+            <Button
+              asChild
+              variant="ghost"
+              className="h-11 px-3 text-on-dark-muted hover:bg-graphite hover:text-on-dark"
+            >
               <Link href="/demo">
                 <Repeat className="size-4" aria-hidden />
                 <span className="hidden sm:inline">Switch demo role</span>
@@ -59,18 +67,22 @@ export default async function AccountLayout({ children }: LayoutProps<'/account'
 
       {customer ? (
         <>
-          <div className="border-b border-line bg-card print:hidden">
-            <div className="container-yhc pt-6 md:pt-8">
-              <p className="eyebrow">{t('nav.account')}</p>
-              <p className="display mt-2 text-[28px] md:text-[34px]">
+          <div className="relative overflow-hidden bg-obsidian text-on-dark print:hidden">
+            <div
+              className="pointer-events-none absolute -top-32 right-0 size-[28rem] rounded-full bg-[radial-gradient(circle,rgba(201,204,209,0.14),transparent_65%)]"
+              aria-hidden
+            />
+            <div className="container-yhc relative pt-8 md:pt-12">
+              <p className="eyebrow text-brand-on-dark">{t('nav.account')}</p>
+              <p className="display mt-3 text-[clamp(2.25rem,1.7rem+2.2vw,3.25rem)] leading-[1.05] text-on-dark">
                 {greeting(new Date())}, {customer.name.split(' ')[0]}
               </p>
-              <div className="mt-4">
+              <div className="mt-8">
                 <AccountNav tabs={tabs} />
               </div>
             </div>
           </div>
-          <main id="main" className="container-yhc flex-1 py-6 md:py-10 print:p-0">
+          <main id="main" className="container-yhc flex-1 py-8 md:py-12 print:p-0">
             {children}
           </main>
         </>

@@ -69,7 +69,7 @@ export default async function CarePage() {
           ) : (
             <ul className="space-y-2">
               {care.refills.map((r) => (
-                <li key={r.orderCode} className="rounded-lg border border-line bg-card p-3">
+                <li key={r.orderCode} className="rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80">
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
                       {r.leadId ? (
@@ -124,7 +124,7 @@ export default async function CarePage() {
             className="bg-card"
           />
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-line bg-card">
+          <div className="overflow-x-auto rounded-xl bg-card shadow-card ring-1 ring-line/80">
             <table className="w-full text-sm">
               <thead className="bg-mist text-left text-[13px] text-ink">
                 <tr>
@@ -172,7 +172,7 @@ export default async function CarePage() {
 
 function CheckinCard({ row }: { row: CareCheckinRow }) {
   return (
-    <li className="rounded-lg border border-line bg-card p-3">
+    <li className="rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80">
       <div className="flex flex-wrap items-center justify-between gap-2">
         {row.leadId ? (
           <Link href={`/sales/leads/${row.leadId}`} className="font-medium text-ink hover:underline">

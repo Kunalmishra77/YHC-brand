@@ -113,7 +113,10 @@ export default async function OrdersPage({ searchParams }: PageProps<'/admin/ord
       </div>
 
       {tab === 'to_pack' && picks.length > 0 ? (
-        <section aria-labelledby="pick-title" className="rounded-lg border border-line bg-card p-4">
+        <section
+          aria-labelledby="pick-title"
+          className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80"
+        >
           <div className="mb-3 flex items-center gap-2">
             <PackageCheck className="size-4 text-steel" aria-hidden />
             <h2 id="pick-title" className="text-base font-semibold text-ink">

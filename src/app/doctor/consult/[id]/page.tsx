@@ -57,7 +57,7 @@ export default async function ConsultWorkspacePage({ params }: PageProps<'/docto
             <ChevronLeft className="size-4" aria-hidden />
             Today
           </Link>
-          <h1 className="truncate text-xl font-semibold text-ink md:text-2xl">
+          <h1 className="display truncate text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-[1.1]">
             {customer.name}
             <span className="ml-2 text-base font-normal text-muted-foreground">
               · {concernLabel(appt.concern)}

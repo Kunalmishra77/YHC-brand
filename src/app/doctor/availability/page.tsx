@@ -45,7 +45,10 @@ export default async function AvailabilityPage() {
         <AvailabilityEditor initial={initial} minDate={istDate(now)} />
 
         <aside className="space-y-5">
-          <section aria-labelledby="preview" className="rounded-lg border border-line bg-card p-4 md:p-5">
+          <section
+            aria-labelledby="preview"
+            className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-5"
+          >
             <h2 id="preview" className="text-base font-semibold text-ink">
               Bookable slots · next 3 days
             </h2>
@@ -85,7 +88,10 @@ export default async function AvailabilityPage() {
             </div>
           </section>
 
-          <section aria-labelledby="rules" className="rounded-lg border border-line bg-card p-4 md:p-5">
+          <section
+            aria-labelledby="rules"
+            className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-5"
+          >
             <h2 id="rules" className="text-base font-semibold text-ink">
               Booking rules
             </h2>
@@ -102,7 +108,10 @@ export default async function AvailabilityPage() {
             </p>
           </section>
 
-          <section aria-labelledby="gcal" className="rounded-lg border border-line bg-card p-4 md:p-5">
+          <section
+            aria-labelledby="gcal"
+            className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-5"
+          >
             <div className="flex items-start gap-3">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-mist text-ink">
                 <CalendarCheck2 className="size-5" aria-hidden />

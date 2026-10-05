@@ -297,7 +297,10 @@ export function holdSlot(input: {
     startsAt: iso(input.startsAt),
     endsAt: iso(endsAt),
     holdExpiresAt: iso(
-      addMinutes(now, getSettingNumber(input.by === 'sales' ? 'consult.sales_hold_minutes' : 'consult.hold_minutes')),
+      addMinutes(
+        now,
+        getSettingNumber(input.by === 'sales' ? 'consult.sales_hold_minutes' : 'consult.hold_minutes'),
+      ),
     ),
     feePaise: getSettingNumber('consult.fee_paise'),
     concern: input.concern,
@@ -984,6 +987,57 @@ const PEOPLE: SeedPerson[] = [
     owner: 'u-rohit',
     concern: 'thinning',
   },
+  // Past patients (indices 20–27) — give the calendar, revenue and KPIs some history
+  ...(
+    [
+      [
+        'Arvind Pillai',
+        'Thiruvananthapuram',
+        'male',
+        38,
+        'meta_ads',
+        'followup_active',
+        'u-priya',
+        'crown_thinning',
+      ],
+      ['Shreya Kulkarni', 'Nashik', 'female', 29, 'website', 'product_purchased', 'u-rohit', 'thinning'],
+      [
+        'Deepak Yadav',
+        'Varanasi',
+        'male',
+        33,
+        'meta_ads',
+        'consult_completed',
+        'u-neha',
+        'receding_hairline',
+      ],
+      ['Ananya Ghosh', 'Kolkata', 'female', 27, 'whatsapp', 'followup_active', 'u-priya', 'hair_fall'],
+      [
+        'Rohan Bhatia',
+        'Amritsar',
+        'male',
+        31,
+        'google',
+        'product_recommended',
+        'u-rohit',
+        'receding_hairline',
+      ],
+      ['Kavita Reddy', 'Vijayawada', 'female', 42, 'referral', 'followup_active', 'u-neha', 'thinning'],
+      ['Mohit Saxena', 'Agra', 'male', 35, 'meta_ads', 'consult_completed', 'u-priya', 'crown_thinning'],
+      ['Priyanka Das', 'Guwahati', 'female', 30, 'website', 'product_purchased', 'u-rohit', 'dandruff_scalp'],
+    ] as const
+  ).map(([name, city, gender, age, source, stage, owner, concern], i): SeedPerson => ({
+    name,
+    phone: `+9190000001${String(i).padStart(2, '0')}`,
+    age,
+    gender,
+    city,
+    source,
+    campaign: source === 'meta_ads' ? 'hairfall-oct' : null,
+    stage,
+    owner,
+    concern,
+  })),
 ];
 
 export const DEMO_CUSTOMER_PHONE = '+919000000001';
@@ -1150,8 +1204,9 @@ function seed(now: Date): DemoState {
   for (let d = 1; d <= 5; d++) {
     const date = istDate(addDays(now, d));
     ['11:20', '15:20'].forEach((time, k) => {
-      const pi = (d * 2 + k) % PEOPLE.length;
-      if ([0, 8, 9, 17].includes(pi)) return;
+      // Only people whose lead is at "₹500 paid" or later can have a paid upcoming booking.
+      const pool = [1, 2, 3, 4, 5, 22, 26, 20, 23, 25];
+      const pi = pool[(d * 2 + k) % pool.length] ?? 1;
       const starts = istAt(date, time);
       s.appointments.push({
         id: id('apt', 100 + d * 10 + k),
@@ -1171,6 +1226,41 @@ function seed(now: Date): DemoState {
         joinUrl: `/consult/${id('apt', 100 + d * 10 + k)}`,
       });
     });
+  }
+
+  // Past ten days of consultations (completed, a few no-shows) for the past patients 20–27
+  {
+    let n = 0;
+    for (let d = 1; d <= 10; d++) {
+      const day = subDays(now, d);
+      const date = istDate(day);
+      if (new Date(`${date}T12:00:00Z`).getUTCDay() === 0) continue; // no Sunday clinics
+      const times = d % 3 === 0 ? ['10:00', '11:20', '14:40', '16:00'] : ['10:40', '12:00', '15:20'];
+      times.forEach((time, k) => {
+        const pi = 20 + ((d + k) % 8);
+        const starts = istAt(date, time);
+        const noShow = (d + k) % 9 === 4;
+        const apptId = id('apt', 500 + n++);
+        s.appointments.push({
+          id: apptId,
+          code: `YHC-A-${++apptNo}`,
+          customerId: customerAt(pi).id,
+          doctorId: DOCTOR.id,
+          kind: (d + k) % 5 === 0 ? 'follow_up' : 'first',
+          status: noShow ? 'no_show' : 'completed',
+          startsAt: iso(starts),
+          endsAt: iso(addMinutes(starts, 30)),
+          holdExpiresAt: null,
+          feePaise: (d + k) % 5 === 0 ? 0 : 50000,
+          concern: PEOPLE[pi]?.concern ?? 'hair_fall',
+          intakeDone: true,
+          photosDone: true,
+          paymentId: `pay_demo_P${d}${k}`,
+          joinUrl: '',
+        });
+        if (!noShow) s.intake.push(sampleIntake(apptId, d + k));
+      });
+    }
   }
 
   // Past history for the demo customer (Rahul) — consult 34 days ago, 3-month plan delivered
@@ -1268,6 +1358,12 @@ function seed(now: Date): DemoState {
     [6, 'pending_payment', 'plan-3', 0], // Karan — unpaid recommendation
     [2, 'shipped', null, 2],
     [13, 'processing', null, 1],
+    // past patients
+    [20, 'delivered', 'plan-3', 9],
+    [21, 'shipped', 'plan-2', 3],
+    [23, 'delivered', 'plan-3', 8],
+    [25, 'delivered', 'plan-1', 6],
+    [27, 'processing', 'plan-2', 1],
   ];
   orderSpecs.forEach(([pi, status, planId, daysAgo], k) => {
     const c = customerAt(pi);
@@ -1326,7 +1422,12 @@ function seed(now: Date): DemoState {
     joinUrl: '',
   });
   s.intake.push(sampleIntake(id('apt', 901), 2));
-  s.credits.push({ customerId: customerAt(6).id, amountPaise: 50000, expiresAt: iso(addDays(karanConsult, 7)), usedOrderId: null });
+  s.credits.push({
+    customerId: customerAt(6).id,
+    amountPaise: 50000,
+    expiresAt: iso(addDays(karanConsult, 7)),
+    usedOrderId: null,
+  });
   s.recommendations.push({
     id: id('rec', 1),
     token: 'demo-karan-plan-token-00000000000000',

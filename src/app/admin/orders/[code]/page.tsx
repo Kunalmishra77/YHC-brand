@@ -38,7 +38,7 @@ function Card({
   className?: string;
 }) {
   return (
-    <section className={cn('rounded-lg border border-line bg-card p-4 md:p-5', className)}>
+    <section className={cn('rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-5', className)}>
       <h2 className="mb-3 text-base font-semibold text-ink">{title}</h2>
       {children}
     </section>

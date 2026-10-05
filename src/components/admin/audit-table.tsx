@@ -49,7 +49,7 @@ export function AuditTable({ rows }: { rows: AuditRow[] }) {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 rounded-lg border border-line bg-card p-3 sm:grid-cols-[1fr_1fr_1.4fr_auto] sm:items-end">
+      <div className="grid gap-3 rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80 sm:grid-cols-[1fr_1fr_1.4fr_auto] sm:items-end">
         <div className="space-y-1">
           <Label htmlFor="au-action" className="text-[13px] font-normal text-muted-foreground">
             Action

@@ -75,7 +75,7 @@ export function AvailabilityEditor({ initial, minDate }: { initial: Availability
 
   return (
     <div className="space-y-6">
-      <section aria-labelledby="weekly" className="rounded-lg border border-line bg-card">
+      <section aria-labelledby="weekly" className="rounded-xl bg-card shadow-card ring-1 ring-line/80">
         <div className="border-b border-line px-4 py-3 md:px-5">
           <h2 id="weekly" className="text-base font-semibold text-ink">
             Weekly hours
@@ -176,7 +176,7 @@ export function AvailabilityEditor({ initial, minDate }: { initial: Availability
         </ul>
       </section>
 
-      <section aria-labelledby="leave" className="rounded-lg border border-line bg-card">
+      <section aria-labelledby="leave" className="rounded-xl bg-card shadow-card ring-1 ring-line/80">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-3 md:px-5">
           <div>
             <h2 id="leave" className="text-base font-semibold text-ink">

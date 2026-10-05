@@ -48,7 +48,9 @@ export default async function GuaranteePage() {
     <div className="space-y-8">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-ink md:text-2xl">Money-back guarantee</h1>
+          <h1 className="display text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-[1.05]">
+            Money-back guarantee
+          </h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
             If you follow your plan for {policy.minPlanMonths}+ months, reply to check-ins, share monthly
             photos and attend your follow-up, and see no visible improvement, you can claim a refund. A doctor

@@ -43,7 +43,7 @@ function Card({
   aside?: React.ReactNode;
 }) {
   return (
-    <section className={cn('rounded-lg border border-line bg-card p-4 md:p-5', className)}>
+    <section className={cn('rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-5', className)}>
       <div className="mb-3 flex items-center justify-between gap-2">
         <h2 className="text-base font-semibold text-ink">{title}</h2>
         {aside}

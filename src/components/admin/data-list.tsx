@@ -32,7 +32,7 @@ export function DataList<T>({
   if (rows.length === 0 && empty) return <>{empty}</>;
   const [first, ...rest] = columns;
   return (
-    <div className="overflow-hidden rounded-lg border border-line bg-card">
+    <div className="overflow-hidden rounded-xl bg-card shadow-card ring-1 ring-line/80">
       <div className="hidden md:block">
         <Table>
           {caption ? <caption className="sr-only">{caption}</caption> : null}

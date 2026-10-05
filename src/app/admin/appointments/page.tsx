@@ -70,7 +70,7 @@ export default async function AppointmentsPage({ searchParams }: PageProps<'/adm
 
       <form
         action="/admin/appointments"
-        className="flex flex-wrap items-end gap-3 rounded-lg border border-line bg-card p-3"
+        className="flex flex-wrap items-end gap-3 rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80"
       >
         <div className="space-y-1">
           <label htmlFor="f-when" className="text-[13px] text-muted-foreground">

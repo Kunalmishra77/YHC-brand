@@ -18,16 +18,23 @@ export function KpiTile({
   tone?: 'light' | 'dark';
   className?: string;
 }) {
+  const dark = tone === 'dark';
   return (
     <div
       className={cn(
-        'rounded-lg border p-4',
-        tone === 'dark' ? 'border-line-dark bg-ink-2 text-on-dark' : 'border-line bg-card',
+        'relative overflow-hidden rounded-xl p-5',
+        dark ? 'bg-obsidian text-on-dark ring-1 ring-line-dark' : 'bg-card shadow-card ring-1 ring-line/80',
         className,
       )}
     >
-      <div className="flex items-center gap-1.5">
-        <p className={cn('text-sm', tone === 'dark' ? 'text-on-dark-muted' : 'text-muted-foreground')}>
+      {dark ? (
+        <div
+          className="pointer-events-none absolute -top-16 -right-10 size-40 rounded-full bg-[radial-gradient(circle,rgba(201,204,209,0.18),transparent_70%)]"
+          aria-hidden
+        />
+      ) : null}
+      <div className="relative flex items-center gap-1.5">
+        <p className={cn('text-[13px] font-medium', dark ? 'text-on-dark-muted' : 'text-muted-foreground')}>
           {label}
         </p>
         {definition ? (
@@ -39,10 +46,20 @@ export function KpiTile({
           </Tooltip>
         ) : null}
       </div>
-      <p className={cn('price mt-1 text-2xl', tone === 'dark' ? 'text-on-dark' : 'text-ink')}>{value}</p>
+      <p
+        className={cn(
+          'price relative mt-3 text-[2rem] leading-none tracking-tight',
+          dark ? 'text-on-dark' : 'text-ink',
+        )}
+      >
+        {value}
+      </p>
       {delta ? (
         <p
-          className={cn('mt-1 text-[13px]', tone === 'dark' ? 'text-on-dark-muted' : 'text-muted-foreground')}
+          className={cn(
+            'relative mt-3 text-[13px] leading-snug',
+            dark ? 'text-on-dark-muted' : 'text-muted-foreground',
+          )}
         >
           {delta}
         </p>

@@ -40,7 +40,7 @@ function Panel({
   aside?: React.ReactNode;
 }) {
   return (
-    <section className={cn('rounded-lg border border-line bg-card p-4 md:p-5', className)}>
+    <section className={cn('rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-5', className)}>
       <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
         <div>
           <h2 className="flex items-center gap-1.5 text-base font-semibold text-ink">
@@ -132,7 +132,7 @@ export default async function AdminDashboard({ searchParams }: PageProps<'/admin
       />
 
       {/* Hero: revenue */}
-      <section className="grid gap-4 rounded-lg border border-line bg-card p-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] md:p-6">
+      <section className="grid gap-4 rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] md:p-6">
         <div>
           <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
             Revenue

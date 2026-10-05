@@ -68,7 +68,7 @@ export default async function PerformancePage() {
           <>
             <ul className="space-y-2 md:hidden">
               {reps.map((r) => (
-                <li key={r.id} className="rounded-lg border border-line bg-card p-3">
+                <li key={r.id} className="rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80">
                   <p className="font-medium text-ink">
                     {r.name}
                     {r.id === user.id ? (
@@ -92,7 +92,7 @@ export default async function PerformancePage() {
                 </li>
               ))}
             </ul>
-            <div className="hidden overflow-x-auto rounded-lg border border-line bg-card md:block">
+            <div className="hidden overflow-x-auto rounded-xl bg-card shadow-card ring-1 ring-line/80 md:block">
               <table className="w-full text-sm">
                 <thead className="bg-mist text-left text-[13px] text-ink">
                   <tr>

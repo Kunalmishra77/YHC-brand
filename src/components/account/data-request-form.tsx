@@ -77,7 +77,7 @@ export function DataRequestForm({ slaNote }: { slaNote: string }) {
             <Label
               key={k.id}
               htmlFor={`dr-${k.id}`}
-              className="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-line bg-card p-3 font-normal has-[[data-state=checked]]:border-obsidian"
+              className="flex min-h-11 cursor-pointer items-start gap-3 rounded-xl bg-card p-3 font-normal shadow-card ring-1 ring-line/80 has-[[data-state=checked]]:border-obsidian"
             >
               <RadioGroupItem id={`dr-${k.id}`} value={k.id} className="mt-0.5" />
               <span>

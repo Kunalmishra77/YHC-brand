@@ -47,7 +47,7 @@ export default async function PatientFilePage({ params }: PageProps<'/doctor/pat
         <ChevronLeft className="size-4" aria-hidden />
         Patients
       </Link>
-      <div className="mb-6 flex flex-col gap-4 rounded-lg border border-line bg-card p-5 md:flex-row md:items-center md:justify-between">
+      <div className="mb-6 flex flex-col gap-4 rounded-xl bg-card p-5 shadow-card ring-1 ring-line/80 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-4">
           <span
             aria-hidden
@@ -56,7 +56,9 @@ export default async function PatientFilePage({ params }: PageProps<'/doctor/pat
             {initials(customer.name)}
           </span>
           <div>
-            <h1 className="text-xl font-semibold text-ink md:text-2xl">{customer.name}</h1>
+            <h1 className="display text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-[1.05]">
+              {customer.name}
+            </h1>
             <p className="text-sm text-body">
               {customer.age} · {genderLabel(customer.gender)} · {customer.city} ·{' '}
               <span className="price">{maskPhone(customer.phone)}</span>
@@ -116,7 +118,10 @@ export default async function PatientFilePage({ params }: PageProps<'/doctor/pat
         </section>
 
         <aside className="space-y-6">
-          <section aria-labelledby="photos" className="rounded-lg border border-line bg-card p-4">
+          <section
+            aria-labelledby="photos"
+            className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80"
+          >
             <h2 id="photos" className="mb-3 text-base font-semibold text-ink">
               Progress photos
             </h2>
@@ -131,7 +136,10 @@ export default async function PatientFilePage({ params }: PageProps<'/doctor/pat
               </ul>
             ) : null}
           </section>
-          <section aria-labelledby="consults" className="rounded-lg border border-line bg-card p-4">
+          <section
+            aria-labelledby="consults"
+            className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80"
+          >
             <h2 id="consults" className="mb-3 text-base font-semibold text-ink">
               Consultations
             </h2>

@@ -55,7 +55,7 @@ export default async function OrderPage({ params }: PageProps<'/account/orders/[
       <header className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="eyebrow">Order {order.code}</p>
-          <h1 className="mt-2 text-xl font-semibold text-ink md:text-2xl">
+          <h1 className="display mt-2 text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-[1.05]">
             {order.lines.map((l) => l.label).join(', ')}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">Ordered {formatWhen(order.createdAt)}</p>

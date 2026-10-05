@@ -59,7 +59,7 @@ export default async function GuaranteeReviewsPage() {
         title="Guarantee reviews"
         description={`${open} open claim${open === 1 ? '' : 's'} · ${policy.name}`}
       />
-      <div className="mb-6 flex gap-2 rounded-lg border border-line bg-card p-4 text-sm text-body">
+      <div className="mb-6 flex gap-2 rounded-xl bg-card p-4 text-sm text-body shadow-card ring-1 ring-line/80">
         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
         <p>
           {policy.termsMd}
@@ -84,7 +84,7 @@ export default async function GuaranteeReviewsPage() {
               takenOn: formatIst(new Date(`${p.takenOn}T06:30:00Z`), 'd MMM yyyy'),
             }));
             return (
-              <li key={r.claim.id} className="rounded-lg border border-line bg-card">
+              <li key={r.claim.id} className="rounded-xl bg-card shadow-card ring-1 ring-line/80">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-3 md:px-5">
                   <div>
                     <p className="font-semibold text-ink">

@@ -236,7 +236,7 @@ export default async function CalendarPage({ searchParams }: PageProps<'/doctor/
           })}
         </div>
         {selectedDay ? (
-          <div className="overflow-hidden rounded-lg border border-line bg-card">
+          <div className="overflow-hidden rounded-xl bg-card shadow-card ring-1 ring-line/80">
             <p className="border-b border-line px-3 py-2 text-sm font-medium text-ink">
               {dayLabel(selectedDay.date).long} {dayLabel(selectedDay.date).num}
               {selectedDay.isToday ? ' · Today' : ''} · {selectedDay.appointments.length} appointment
@@ -251,7 +251,7 @@ export default async function CalendarPage({ searchParams }: PageProps<'/doctor/
       </div>
 
       {/* Desktop: week view */}
-      <div className="hidden overflow-x-auto rounded-lg border border-line bg-card md:block">
+      <div className="hidden overflow-x-auto rounded-xl bg-card shadow-card ring-1 ring-line/80 md:block">
         <div className="min-w-[760px]">
           <div className="sticky top-0 z-10 grid grid-cols-[60px_repeat(7,minmax(0,1fr))] border-b border-line bg-card">
             <span />

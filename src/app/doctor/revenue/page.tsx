@@ -66,7 +66,10 @@ export default async function RevenuePage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-        <section aria-labelledby="by-month" className="rounded-lg border border-line bg-card p-4 md:p-5">
+        <section
+          aria-labelledby="by-month"
+          className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-5"
+        >
           <h2 id="by-month" className="text-base font-semibold text-ink">
             Last 6 months
           </h2>
@@ -122,7 +125,10 @@ export default async function RevenuePage() {
           )}
         </section>
 
-        <section aria-labelledby="by-plan" className="rounded-lg border border-line bg-card p-4 md:p-5">
+        <section
+          aria-labelledby="by-plan"
+          className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-5"
+        >
           <h2 id="by-plan" className="text-base font-semibold text-ink">
             Plans by duration · all time
           </h2>

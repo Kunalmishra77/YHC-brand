@@ -27,10 +27,10 @@ export function AccountNav({ tabs }: { tabs: AccountTab[] }) {
                 aria-current={active ? 'page' : undefined}
                 className={cn(
                   'relative inline-flex min-h-11 items-center px-3 text-sm font-medium whitespace-nowrap transition-colors',
-                  'after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:transition-colors',
+                  'after:absolute after:inset-x-3 after:bottom-0 after:h-[3px] after:rounded-full after:transition-colors',
                   active
-                    ? 'text-ink after:bg-obsidian'
-                    : 'text-muted-foreground after:bg-transparent hover:text-ink',
+                    ? 'text-on-dark after:bg-[image:var(--yhc-silver)]'
+                    : 'text-on-dark-muted after:bg-transparent hover:text-on-dark',
                 )}
               >
                 {tab.label}

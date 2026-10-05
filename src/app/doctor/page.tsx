@@ -72,7 +72,7 @@ export default async function DoctorTodayPage() {
           </Button>
         </section>
       ) : (
-        <section className="mb-6 rounded-lg border border-line bg-card p-5 text-sm text-body">
+        <section className="mb-6 rounded-xl bg-card p-5 text-sm text-body shadow-card ring-1 ring-line/80">
           No more consultations today. Follow-ups and flagged replies are in{' '}
           <Link href="/doctor/follow-ups" className="text-brand underline underline-offset-2">
             Follow-ups
@@ -128,7 +128,7 @@ export default async function DoctorTodayPage() {
             body="New bookings appear here as soon as the ₹500 payment is confirmed."
           />
         ) : (
-          <ol className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-card">
+          <ol className="divide-y divide-line overflow-hidden rounded-xl bg-card shadow-card ring-1 ring-line/80">
             {rows.map(({ appt, customer }) => {
               const isNext = next?.appt.id === appt.id;
               const past = appt.status === 'completed' || appt.status === 'no_show';

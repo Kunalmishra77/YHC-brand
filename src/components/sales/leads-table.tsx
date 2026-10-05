@@ -163,7 +163,7 @@ export function LeadsTable({
 
   return (
     <div>
-      <div className="grid gap-3 rounded-lg border border-line bg-card p-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8">
+      <div className="grid gap-3 rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8">
         <div className="sm:col-span-2 lg:col-span-2">
           <label htmlFor="lf-q" className="sr-only">
             Search
@@ -315,7 +315,7 @@ export function LeadsTable({
               <li key={l.id}>
                 <Link
                   href={`/sales/leads/${l.id}`}
-                  className="block rounded-lg border border-line bg-card p-3 active:bg-mist"
+                  className="block rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80 active:bg-mist"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
@@ -345,7 +345,7 @@ export function LeadsTable({
           </ul>
 
           {/* desktop table */}
-          <div className="hidden overflow-x-auto rounded-lg border border-line bg-card md:block">
+          <div className="hidden overflow-x-auto rounded-xl bg-card shadow-card ring-1 ring-line/80 md:block">
             <table className="w-full text-sm">
               <thead className="bg-mist text-left text-[13px] text-ink">
                 <tr>

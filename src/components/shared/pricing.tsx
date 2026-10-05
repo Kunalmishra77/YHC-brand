@@ -74,7 +74,9 @@ export function GuaranteeTerms({ policy }: { policy: GuaranteePolicy }) {
         <li>• Claim within {policy.claimWindowDays} days of finishing</li>
         <li>
           • Refund:{' '}
-          {policy.refundPercent === 100 ? 'your full plan payments' : `${policy.refundPercent}% of plan payments`}
+          {policy.refundPercent === 100
+            ? 'your full plan payments'
+            : `${policy.refundPercent}% of plan payments`}
         </li>
       </ul>
     </div>

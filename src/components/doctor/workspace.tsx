@@ -175,7 +175,7 @@ export function Workspace({
   const pane = (id: Tab) =>
     cn(
       tab === id ? 'block' : 'hidden',
-      'min-w-0 rounded-lg border border-line bg-card/60 xl:block xl:h-[calc(100dvh-13.5rem)] xl:min-h-[560px] xl:overflow-y-auto xl:overscroll-contain',
+      'min-w-0 rounded-xl bg-card shadow-card ring-1 ring-line/80/60 xl:block xl:h-[calc(100dvh-15rem)] xl:min-h-[560px] xl:overflow-y-auto xl:overscroll-contain',
     );
 
   return (
@@ -183,7 +183,7 @@ export function Workspace({
       <div
         role="tablist"
         aria-label="Workspace sections"
-        className="sticky top-14 z-20 -mx-4 mb-3 grid grid-cols-3 gap-1 border-b border-line bg-pearl/95 px-4 py-2 backdrop-blur md:-mx-6 md:px-6 xl:hidden"
+        className="sticky top-16 z-20 -mx-4 mb-3 grid grid-cols-3 gap-1 border-b border-line bg-pearl/95 px-4 py-2 backdrop-blur md:-mx-8 md:px-8 xl:hidden"
       >
         {tabs.map((t) => (
           <button

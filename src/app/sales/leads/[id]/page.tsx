@@ -38,13 +38,15 @@ export default async function LeadDetailPage({ params }: PageProps<'/sales/leads
         All leads
       </Link>
 
-      <header className="rounded-lg border border-line bg-card p-4 md:p-5">
+      <header className="rounded-xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-7">
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-xl font-semibold text-ink md:text-2xl">{lead.name}</h1>
+              <h1 className="display text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-[1.05]">{lead.name}</h1>
               <StatusChip tone={stageTone(lead.stage)}>{lead.stageLabel}</StatusChip>
-              {lead.consultPaid ? <StatusChip tone="success">₹500 PAID</StatusChip> : null}
+              {lead.consultPaid && lead.stage !== 'payment_successful' ? (
+                <StatusChip tone="success">₹500 PAID</StatusChip>
+              ) : null}
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
               {SOURCE_LABELS[lead.source]}
@@ -97,7 +99,7 @@ export default async function LeadDetailPage({ params }: PageProps<'/sales/leads
         <div className="space-y-4">
           <PaymentCard consults={detail.consults} orders={detail.orders} />
 
-          <section aria-labelledby="qa-h" className="rounded-lg border border-line bg-card p-4">
+          <section aria-labelledby="qa-h" className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80">
             <h2 id="qa-h" className="mb-3 font-semibold text-ink">
               Quick actions
             </h2>
@@ -130,7 +132,7 @@ export default async function LeadDetailPage({ params }: PageProps<'/sales/leads
           </section>
         </div>
 
-        <section aria-labelledby="tl-h" className="rounded-lg border border-line bg-card p-4">
+        <section aria-labelledby="tl-h" className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80">
           <div className="mb-4 flex items-baseline justify-between gap-2">
             <h2 id="tl-h" className="font-semibold text-ink">
               Timeline

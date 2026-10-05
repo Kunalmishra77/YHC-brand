@@ -43,7 +43,7 @@ export default async function SettingsPage() {
         <section
           key={group}
           aria-labelledby={`g-${group}`}
-          className="rounded-lg border border-line bg-card px-4 md:px-5"
+          className="rounded-xl bg-card px-4 shadow-card ring-1 ring-line/80 md:px-5"
         >
           <h2 id={`g-${group}`} className="border-b border-line py-3 text-base font-semibold text-ink">
             {GROUPS[group] ?? group}

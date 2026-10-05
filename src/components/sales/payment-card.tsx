@@ -11,7 +11,7 @@ export function PaymentCard({
   orders: OrderPaymentBlock[];
 }) {
   return (
-    <section aria-labelledby="pay-h" className="rounded-lg border border-line bg-card">
+    <section aria-labelledby="pay-h" className="rounded-xl bg-card shadow-card ring-1 ring-line/80">
       <header className="flex items-center gap-2 border-b border-line px-4 py-3">
         <IndianRupee className="size-4 text-steel" aria-hidden />
         <h2 id="pay-h" className="font-semibold text-ink">

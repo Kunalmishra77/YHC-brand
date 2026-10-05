@@ -70,7 +70,7 @@ export default async function PatientsPage({ searchParams }: PageProps<'/doctor/
       ) : (
         <>
           {/* Desktop table */}
-          <div className="hidden overflow-hidden rounded-lg border border-line bg-card md:block">
+          <div className="hidden overflow-hidden rounded-xl bg-card shadow-card ring-1 ring-line/80 md:block">
             <table className="w-full text-left text-sm">
               <thead className="bg-mist text-[13px] text-ink">
                 <tr>
@@ -133,7 +133,7 @@ export default async function PatientsPage({ searchParams }: PageProps<'/doctor/
               <li key={r.customer.id}>
                 <Link
                   href={`/doctor/patients/${r.customer.id}`}
-                  className="block rounded-lg border border-line bg-card px-4 py-3"
+                  className="block rounded-xl bg-card px-4 py-3 shadow-card ring-1 ring-line/80"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">

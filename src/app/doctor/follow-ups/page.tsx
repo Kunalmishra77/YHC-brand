@@ -37,7 +37,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section aria-labelledby={id} className="rounded-lg border border-line bg-card">
+    <section aria-labelledby={id} className="rounded-xl bg-card shadow-card ring-1 ring-line/80">
       <div className="flex items-center gap-2 border-b border-line px-4 py-3 md:px-5">
         <span className="text-steel [&_svg]:size-4" aria-hidden>
           {icon}

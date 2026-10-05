@@ -89,7 +89,10 @@ export default async function MessagingPage() {
         />
       </section>
 
-      <section aria-labelledby="quiet-title" className="rounded-lg border border-line bg-card p-4 md:p-5">
+      <section
+        aria-labelledby="quiet-title"
+        className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-5"
+      >
         <div className="mb-3 flex items-center gap-2">
           <Moon className="size-4 text-steel" aria-hidden />
           <h2 id="quiet-title" className="text-base font-semibold text-ink">

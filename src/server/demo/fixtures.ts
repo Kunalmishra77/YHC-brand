@@ -256,10 +256,7 @@ export const CONCERNS: Concern[] = [
       'Do you have photos from a year or two ago to compare?',
       'Any medicines, supplements or treatments you use now?',
     ],
-    seeSoon: [
-      'A smooth, completely bald round patch',
-      'Scalp sores, crusting or pain at the crown',
-    ],
+    seeSoon: ['A smooth, completely bald round patch', 'Scalp sores, crusting or pain at the crown'],
     relatedProducts: ['topical-hair-solution', 'hair-nutrition-tablets', 'scalp-serum'],
   },
   {

@@ -64,7 +64,7 @@ export default async function GuaranteePage() {
         }
       />
 
-      <section className="rounded-lg border border-line bg-card p-4 md:p-6">
+      <section className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-6">
         <div className="mb-4 flex flex-wrap items-center gap-2">
           <ShieldCheck className="size-5 text-steel" aria-hidden />
           <h2 className="text-base font-semibold text-ink">{policy.name}</h2>
@@ -85,7 +85,7 @@ export default async function GuaranteePage() {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-5">
-        <div className="rounded-lg border border-line bg-card p-4 md:p-6 lg:col-span-3">
+        <div className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-6 lg:col-span-3">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <div>
               <h2 className="text-base font-semibold text-ink">
@@ -112,7 +112,7 @@ export default async function GuaranteePage() {
           />
         </div>
         <div className="space-y-4 lg:col-span-2">
-          <div className="rounded-lg border border-line bg-card p-4 md:p-5">
+          <div className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-5">
             <h2 className="mb-2 text-base font-semibold text-ink">Activate</h2>
             {draft ? (
               <>
@@ -155,7 +155,7 @@ export default async function GuaranteePage() {
               <p className="text-sm text-muted-foreground">Save a draft to review and activate it.</p>
             )}
           </div>
-          <div className="rounded-lg border border-line bg-card p-4 md:p-5">
+          <div className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-5">
             <h2 className="mb-2 text-base font-semibold text-ink">Version history</h2>
             {policyHistory.length ? (
               <ul className="space-y-1.5 text-sm">
