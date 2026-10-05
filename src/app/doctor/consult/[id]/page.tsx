@@ -12,6 +12,7 @@ import { recordAudit } from '@/server/demo/store';
 import { requireDoctorPage } from '@/server/doctor/auth';
 import { PROTOCOLS } from '@/server/doctor/protocols';
 import { getWorkspace } from '@/server/doctor/queries';
+import { getScanForCustomer } from '@/server/journey/store';
 
 export const metadata: Metadata = { title: 'Consultation · Doctor Portal' };
 
@@ -32,6 +33,8 @@ export default async function ConsultWorkspacePage({ params }: PageProps<'/docto
 
   // FR-M14-4: every clinical view is audited (target names the record, never its content).
   recordAudit(user.name, 'clinical.view', `Consult workspace · ${appt.code}`);
+  const scan = getScanForCustomer(customer.id);
+  if (scan) recordAudit(user.name, 'clinical.view', `3D scan assessment · ${appt.code}`);
 
   const initialNotes = {
     appointmentId: appt.id,
@@ -90,6 +93,7 @@ export default async function ConsultWorkspacePage({ params }: PageProps<'/docto
             pastConsults={ws.pastConsults}
             orders={ws.orders}
             checkins={ws.checkins}
+            scan={scan}
           />
         }
         outcome={{

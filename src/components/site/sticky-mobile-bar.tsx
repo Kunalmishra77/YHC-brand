@@ -10,8 +10,8 @@ import { SITE } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
 /**
- * Sticky mobile action bar: WhatsApp + Book (FR-M1-3). On the homepage it waits until the hero (which has
- * the same two actions) has scrolled away.
+ * Sticky mobile action bar: WhatsApp + Begin 3D scan (FR-M1-3, ADR-26). On the homepage it waits until
+ * the hero (which has the start form) has scrolled away.
  */
 export function StickyMobileBar() {
   const pathname = usePathname();
@@ -41,7 +41,7 @@ export function StickyMobileBar() {
           </a>
         </Button>
         <Button asChild className="h-12 flex-[1.6]" tabIndex={visible ? 0 : -1}>
-          <Link href="/book">{t('common.bookConsultationPrice')}</Link>
+          <Link href="/start">{t('nav.beginScan')}</Link>
         </Button>
       </div>
     </div>

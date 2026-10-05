@@ -1,0 +1,64 @@
+/* Scan studio motion (ADR-26 demo). Every animation stops under prefers-reduced-motion. */
+
+.scanLine {
+  position: absolute;
+  inset-inline: 6%;
+  height: 2px;
+  top: 8%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, transparent, rgba(230, 232, 236, 0.95), transparent);
+  box-shadow: 0 0 18px 4px rgba(201, 204, 209, 0.45);
+  animation: scan-sweep 2.6s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+
+.grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.pulse {
+  animation: soft-pulse 2.4s ease-in-out infinite;
+}
+
+.orbit {
+  transform-origin: 50% 50%;
+  animation: orbit-spin 9s linear infinite;
+}
+
+@keyframes scan-sweep {
+  from {
+    top: 8%;
+  }
+  to {
+    top: 92%;
+  }
+}
+
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scanLine,
+  .pulse,
+  .orbit {
+    animation: none;
+  }
+  .scanLine {
+    top: 50%;
+  }
+}

@@ -32,6 +32,8 @@ Claude Code updates this file after every task. Humans update "Waiting on client
 - 2026-10-02 · demo · pure domain logic reused later: availability engine, CRM stage map, plan pricing, guarantee eligibility, reorder guard, KPIs · FR-M3-2, FR-M7-3, FR-M6-4, FR-M11-4, FR-M10-5, FR-M13-1 · 82 unit/action tests ✅
 - 2026-10-02 · demo · website, booking + checkout + /r + consult room, account, Doctor Portal, Sales CRM, Admin on in-memory store; role switcher /demo · M1–M14 (see commits) · build ✅, route sweep ✅
 
+- 2026-10-05 · demo v2 (client brief) · trust/science-led site: video hero + glass start form, science/results/guarantee pages, sourced media (Mixkit/Unsplash, CREDITS.md); patient journey Details → 3D scan (demo) → assessment → health form → slot + ₹500 → portal → consult; scan in doctor + patient portals; footer + real Privacy/Terms/Refund text · ADR-26..28 · 88 tests ✅, build ✅, journey walked in browser ✅
+
 ## Installed versions
 Node 22.18.0 · pnpm 11.11.0 · Next 16.3.8 · React 19.2.8 · TypeScript 5 · Tailwind 4 · shadcn/ui (new-york, radix-ui) · zod 4.6.5 · @supabase/supabase-js 2.117.2 · @supabase/ssr 0.12.7 · supabase CLI 2.119.0 · react-hook-form 7.89 · date-fns 4.4 · date-fns-tz 3.2 · lucide-react 1.49 · motion 13.4 · pino 10.3 · vitest 5.0.3 · @playwright/test 1.63 · msw 3.0.1 · sonner, cmdk, react-day-picker, tw-animate-css (shadcn deps)
 

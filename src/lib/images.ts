@@ -40,6 +40,63 @@ export const IMAGES = {
   textureTablets: img('texture-tablets', 1400, 1011, 'Small white tablets on a stone surface'),
 } as const;
 
+/**
+ * Licensed editorial media (Unsplash / Mixkit free licences — sources in public/media/CREDITS.md).
+ * Laboratory and macro b-roll only: no faces, never presented as patients, results, our clinic or
+ * Dr. Tyagi.
+ */
+const media = (name: string, width: number, height: number, alt: string): SiteImage => ({
+  src: `/media/img/${name}.jpg`,
+  width,
+  height,
+  alt,
+});
+
+export const MEDIA = {
+  labMicroscope: media('lab-microscope', 1600, 1067, 'Microscope objective lenses above a slide'),
+  labMicroscopeHand: media(
+    'lab-microscope-hand',
+    1600,
+    2400,
+    'A gloved hand adjusting a laboratory microscope',
+  ),
+  labPetri: media('lab-petri', 1600, 2399, 'A gloved hand placing a petri dish under a microscope'),
+  dnaHelix: media('dna-helix', 1600, 900, 'Illustration of DNA double helices on a dark background'),
+  dnaParticles: media('dna-particles', 1600, 2053, 'Illustration of a glowing DNA helix made of particles'),
+  hairMacro: media('hair-macro', 1600, 2400, 'Macro photograph of hair strands catching warm light'),
+  hairMacroWide: media('hair-macro-2', 1600, 900, 'Macro photograph of fine hair strands'),
+} as const;
+
+export interface SiteVideo {
+  src: string;
+  poster: string;
+  /** Short description for screen readers (b-roll has no audio). */
+  label: string;
+}
+
+export const VIDEOS = {
+  hero: {
+    src: '/media/video/hero-microscope.mp4',
+    poster: '/media/img/poster-hero-microscope.jpg',
+    label: 'Slow close-up of a laboratory microscope (illustrative footage)',
+  },
+  science: {
+    src: '/media/video/science-cellular.mp4',
+    poster: '/media/img/poster-science-cellular.jpg',
+    label: 'Abstract microscopic texture in blue light (illustrative footage)',
+  },
+  journey: {
+    src: '/media/video/journey-formulation.mp4',
+    poster: '/media/img/poster-journey-formulation.jpg',
+    label: 'Glass laboratory tubes in soft blue light (illustrative footage)',
+  },
+  guarantee: {
+    src: '/media/video/guarantee-bubbles.mp4',
+    poster: '/media/img/poster-guarantee-bubbles.jpg',
+    label: 'Slow bubbles rising through clear liquid (illustrative footage)',
+  },
+} as const satisfies Record<string, SiteVideo>;
+
 /** Product slug → concept image. */
 export const PRODUCT_IMAGES: Record<string, SiteImage> = {
   'topical-hair-solution': IMAGES.topical,

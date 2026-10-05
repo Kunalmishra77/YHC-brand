@@ -4,7 +4,10 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
-/** Sticky header that sits dark over the homepage hero and turns light once you scroll past it. */
+/**
+ * Sticky header that sits as dark glass over the homepage video hero (the hero pulls up under it) and
+ * turns light once you scroll past it.
+ */
 export function HeaderFrame({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const overHero = pathname === '/';
@@ -16,14 +19,16 @@ export function HeaderFrame({ children }: { children: React.ReactNode }) {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, [overHero]);
-  const dark = overHero && !scrolled;
+  // The /start journey is an all-dark experience, so the header stays dark there.
+  const journey = pathname.startsWith('/start');
+  const dark = journey || (overHero && !scrolled);
   return (
     <header
       data-dark={dark}
       className={cn(
         'group/hdr sticky top-0 z-40 border-b backdrop-blur transition-colors duration-300',
         dark
-          ? 'border-line-dark/70 bg-obsidian/85 text-on-dark'
+          ? cn('border-white/10 text-on-dark backdrop-blur-md', journey ? 'bg-obsidian' : 'bg-obsidian/35')
           : 'border-line bg-pearl/90 supports-[backdrop-filter]:bg-pearl/75',
       )}
     >

@@ -1,56 +1,92 @@
 import type { Metadata } from 'next';
-import { Check, MessageCircle } from 'lucide-react';
+import { ArrowRight, BadgeCheck, Clock3, MessageCircle, ScanLine, Stethoscope } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ConcernList } from '@/components/site/concern-list';
 import { getConsultTerms } from '@/components/site/consult-fee';
 import { DoctorCard } from '@/components/site/doctor-card';
 import { FaqList, visibleFaqs } from '@/components/site/faq-list';
+import { GuaranteeVideoPanel, guaranteeStory } from '@/components/site/guarantee-panel';
+import { HairCycleDiagram } from '@/components/site/hair-cycle-diagram';
 import { HomeHero } from '@/components/site/home-hero';
+import { JourneyTimeline, buildTrustJourney } from '@/components/site/journey-timeline';
 import { JsonLd } from '@/components/site/json-ld';
-import { buildJourney } from '@/components/site/journey-steps';
-import { getNextSlotLabel } from '@/components/site/next-slot';
-import { PlanLadder } from '@/components/site/plan-ladder';
+import { PatentSlot } from '@/components/site/patent-slot';
 import { ProductTile } from '@/components/site/product-tile';
+import { ResultsGallery } from '@/components/site/results-gallery';
+import { Reveal } from '@/components/site/reveal';
+import { ScanVisual } from '@/components/site/scan-visual';
 import { pageMetadata } from '@/components/site/seo';
-import { StoriesEmpty } from '@/components/site/stories-empty';
+import { VideoLibrary, type StoryVideo } from '@/components/site/video-library';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
+import { doctorClaimLabel } from '@/lib/claims';
 import { clientEnv } from '@/lib/env';
-import { IMAGES } from '@/lib/images';
+import { MEDIA, VIDEOS } from '@/lib/images';
 import { SITE } from '@/lib/site';
-import { getConcerns, getDoctor, getFaqs, getGuarantee, getPlans, getProducts } from '@/server/catalog';
+import { getDoctor, getFaqs, getGuarantee, getProducts } from '@/server/catalog';
+import { getPublishedResults } from '@/server/content/results';
 
-// Guarantee visibility, fees and the next free slot are live (admin can change them in the demo).
+// Guarantee visibility and fees are live settings (admin can change them in the demo).
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   ...pageMetadata({
-    title: 'Doctor-led hair care, online',
+    title: 'Science-first, doctor-led hair care',
     description:
-      'Book a video consultation with Dr. Tyagi, get a hair plan chosen for your pattern and history, delivered across India with follow-up care.',
+      'Hair care begins with science, not with products. Start with a guided 3D scalp scan; a dermatologist decides whether treatment can help before anything is prescribed.',
     path: '/',
   }),
-  title: { absolute: 'Your Hair Company — Doctor-led hair care with Dr. Tyagi' },
+  title: { absolute: 'Your Hair Company — Hair care begins with science, not with products' },
 };
 
 const SHOWCASE = ['topical-hair-solution', 'scalp-serum', 'hair-nutrition-tablets'];
 
+const H2 = 'display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]';
+
 export default function HomePage() {
   const doctor = getDoctor();
-  const plans = getPlans();
   const guarantee = getGuarantee();
   const terms = getConsultTerms();
   const products = getProducts();
   const showcase = SHOWCASE.map((slug) => products.find((p) => p.slug === slug)).filter(
     (p): p is NonNullable<typeof p> => Boolean(p),
   );
-  const faqs = visibleFaqs(getFaqs(), guarantee !== null).slice(0, 5);
-  const journey = buildJourney(terms);
-  const ingredients = products
-    .flatMap((p) => p.ingredients.map((ing) => ({ ...ing, product: p.name, slug: p.slug })))
-    .filter((ing, i, all) => all.findIndex((x) => x.name === ing.name) === i)
-    .slice(0, 6);
+  const targets = products
+    .filter((p) => p.requiresConsultation)
+    .flatMap((p) => p.ingredients.slice(0, 2).map((ing) => ({ ...ing, product: p.name, slug: p.slug })));
+  const faqs = visibleFaqs(getFaqs(), guarantee !== null).slice(0, 6);
+  const journey = buildTrustJourney({ fee: terms.fee, slotMinutes: terms.slotMinutes });
+  const results = getPublishedResults();
+
+  const stories: StoryVideo[] = [
+    {
+      id: 'science',
+      kicker: 'The science',
+      title: 'How a hair root works',
+      summary: 'Follicles, the dermal papilla and the three-phase growth cycle, in under a minute.',
+      video: VIDEOS.science,
+      captions: [
+        { at: 0, text: 'Every hair grows from a follicle beneath the skin.' },
+        { at: 4, text: 'At its base, the dermal papilla feeds the growing root.' },
+        { at: 8, text: 'Hair moves through growth, transition and rest.' },
+        { at: 12, text: 'While the root is alive, a new growth phase can begin.' },
+      ],
+    },
+    {
+      id: 'journey',
+      kicker: 'The journey',
+      title: 'From scan to plan',
+      summary: 'What happens between your first details and your doctor’s plan.',
+      video: VIDEOS.journey,
+      captions: [
+        { at: 0, text: 'Start with your basic details and a guided 3D scalp scan.' },
+        { at: 4, text: 'A personalised assessment shows whether treatment looks suitable.' },
+        { at: 8, text: 'A doctor reviews your health form and meets you on video.' },
+        { at: 12, text: 'A plan is prescribed only if it is right for you — then followed up.' },
+      ],
+    },
+    ...(guarantee ? [guaranteeStory(guarantee)] : []),
+  ];
 
   return (
     <>
@@ -61,98 +97,191 @@ export default function HomePage() {
           name: 'Your Hair Company',
           url: clientEnv.NEXT_PUBLIC_SITE_URL,
           email: SITE.supportEmail,
-          description: 'Doctor-led hair care: video consultations, personalised plans and follow-up care.',
+          description: 'Science-first, doctor-led hair care: scalp scan, video consultation and follow-up.',
           areaServed: 'IN',
         }}
       />
 
-      {/* 1 · Hero (+ trust facts rail, FR-M1-2) */}
+      {/* 1 · Hero — video, headline, glass start form */}
       <HomeHero
-        bookLabel={terms.bookLabel}
-        slotMinutes={terms.slotMinutes}
-        fee={terms.fee}
-        creditNote={terms.creditEnabled ? 'credited to your first plan*' : null}
-        nextSlot={getNextSlotLabel()}
         doctorName={doctor.name}
         registrationNo={doctor.registrationNo}
+        guaranteeOn={guarantee !== null}
       />
 
-      {/* 2 · Hair concerns */}
-      <section id="concerns" className="container-yhc scroll-mt-20 py-20 md:py-28">
-        <div className="grid gap-12 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
-          <div className="md:sticky md:top-28 md:self-start">
-            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">What are you noticing?</h2>
-            <p className="mt-5 max-w-sm text-lg leading-relaxed text-body">
-              Start with what you see. Most concerns have more than one possible cause — finding yours is what
-              the consultation is for.
+      {/* 2a · Credibility strip — facts only, no invented numbers */}
+      <section
+        id="credibility"
+        aria-label="Credentials"
+        className="scroll-mt-20 border-b border-line bg-card"
+      >
+        <dl className="container-yhc grid grid-cols-1 divide-y divide-line sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
+          <Credential
+            icon={<Clock3 className="size-5" aria-hidden />}
+            term={`${terms.slotMinutes}-min consultation`}
+          >
+            One to one, on video, with {doctor.name}
+          </Credential>
+          <Credential
+            icon={<Stethoscope className="size-5" aria-hidden />}
+            term="Prescribed by a dermatologist"
+          >
+            Plans only after a one-to-one consultation
+          </Credential>
+          <Credential
+            icon={<BadgeCheck className="size-5" aria-hidden />}
+            term={`Reg. No. ${doctor.registrationNo}`}
+          >
+            {doctor.council}
+          </Credential>
+          <Credential icon={<ScanLine className="size-5" aria-hidden />} term="Scan before treatment">
+            We treat only when viable roots are present
+          </Credential>
+        </dl>
+      </section>
+
+      {/* 2b · The science */}
+      <section
+        id="science"
+        className="container-yhc scroll-mt-20 py-20 md:py-28"
+        aria-labelledby="science-heading"
+      >
+        <div className="grid gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
+          <Reveal>
+            <p className="eyebrow">The science</p>
+            <h2 id="science-heading" className={`${H2} mt-4`}>
+              Hair grows from roots. So that is where we start.
+            </h2>
+            <p className="mt-6 text-lg leading-relaxed text-body">
+              Each hair grows from a follicle, fed by a tiny structure at its base called the dermal papilla.
+              Follicles cycle between growth, transition and rest. Thinning often means more follicles resting
+              — or growing smaller, finer hairs — for reasons that differ from person to person.
             </p>
+            <p className="mt-4 leading-relaxed text-body">
+              A plan can only support follicles that are still alive. That is why we look at your roots first,
+              and why a doctor — not a shopping cart — decides what, if anything, you use.
+            </p>
+            <PatentSlot className="mt-8" />
             <Link
-              href="/assessment"
-              className="mt-7 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-ink underline decoration-steel underline-offset-[6px] hover:decoration-ink"
+              href="/science"
+              className="mt-8 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-ink underline decoration-steel underline-offset-[6px] hover:decoration-ink"
             >
-              Not sure? Take the 3-minute assessment
+              Read the science in full <ArrowRight className="size-4" aria-hidden />
             </Link>
-          </div>
-          <ConcernList concerns={getConcerns()} />
+          </Reveal>
+          <Reveal delayMs={120}>
+            <div className="rounded-3xl bg-card p-5 shadow-card ring-1 ring-line sm:p-8">
+              <HairCycleDiagram />
+            </div>
+            <div className="mt-8">
+              <h3 className="text-lg font-semibold text-ink">What a prescribed plan aims to support</h3>
+              <dl className="mt-4 grid gap-x-8 border-t border-line sm:grid-cols-2">
+                {targets.map((ing) => (
+                  <div key={`${ing.slug}-${ing.name}`} className="border-b border-line py-4">
+                    <dt className="font-medium text-ink">{ing.role}</dt>
+                    <dd className="mt-1 text-sm text-body">
+                      {ing.name} ·{' '}
+                      <Link
+                        href={`/products/${ing.slug}`}
+                        className="underline underline-offset-2 hover:text-ink"
+                      >
+                        {ing.product}
+                      </Link>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="mt-4 text-sm text-muted-foreground">
+                Ingredients and strengths are chosen by the doctor for each person. {t('common.resultsVary')}
+              </p>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* 3 · What a plan can include */}
-      <section className="border-t border-line bg-[#efeeeb]/60">
+      {/* 2c · Why we scan first */}
+      <section id="scan" className="scroll-mt-20 bg-obsidian text-on-dark" aria-labelledby="scan-heading">
+        <div className="container-yhc grid items-center gap-12 py-20 md:grid-cols-2 md:gap-16 md:py-28">
+          <Reveal className="order-2 md:order-1">
+            <ScanVisual className="mx-auto max-w-md md:max-w-none" />
+          </Reveal>
+          <Reveal className="order-1 md:order-2" delayMs={120}>
+            <p className="eyebrow text-brand-on-dark">Why we scan first</p>
+            <h2 id="scan-heading" className={`${H2} mt-4 text-on-dark`}>
+              We only treat when there are roots to treat.
+            </h2>
+            <p className="mt-6 text-lg leading-relaxed text-on-dark-muted">
+              A guided 3D scalp scan on your phone looks at where your roots are and how they are spread. If
+              viable roots are present, a doctor builds on that. If they are not, we tell you honestly instead
+              of selling you a plan.
+            </p>
+            <ol className="mt-8 space-y-5">
+              {[
+                [
+                  'Scan',
+                  'Follow on-screen guidance to capture your scalp from a few angles — at home, in minutes.',
+                ],
+                [
+                  'Assess',
+                  'You get a personalised assessment: suitable, needs a doctor’s review, or not suitable — with reasons.',
+                ],
+                [
+                  'Decide',
+                  'The doctor confirms everything at your consultation. Nothing is prescribed before that.',
+                ],
+              ].map(([title, body], i) => (
+                <li key={title} className="flex gap-4">
+                  <span className="price flex size-8 shrink-0 items-center justify-center rounded-full border border-line-dark text-sm text-on-dark">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="font-semibold text-on-dark">{title}</p>
+                    <p className="mt-1 text-[15px] leading-relaxed text-on-dark-muted">{body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Button
+                asChild
+                className="h-13 bg-[image:var(--yhc-silver)] px-7 text-base font-semibold text-obsidian hover:opacity-95"
+              >
+                <Link href="/start">Begin my 3D scan</Link>
+              </Button>
+              <p className="text-[13px] text-on-dark-muted">Free · final assessment always by the doctor</p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* 2d · The journey */}
+      <section className="border-b border-line bg-card" aria-labelledby="journey-heading">
         <div className="container-yhc py-20 md:py-28">
           <div className="grid gap-6 md:grid-cols-2 md:items-end">
-            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">What a plan can include</h2>
+            <div>
+              <p className="eyebrow">Your journey</p>
+              <h2 id="journey-heading" className={`${H2} mt-4`}>
+                Seven considered steps, one doctor
+              </h2>
+            </div>
             <p className="max-w-md text-body md:justify-self-end">
-              Every plan is put together by {doctor.name} for one person. These are the products it draws on —
-              strength, dose and timing are set at your consultation.
+              Every step has a reason. You see where you stand after the scan, and you only book a doctor’s
+              slot when it makes sense to.
             </p>
           </div>
-          <div className="mt-12 grid gap-x-6 gap-y-12 md:grid-cols-3">
-            {showcase.map((p) => (
-              <ProductTile key={p.id} product={p} />
-            ))}
-          </div>
-          <p className="mt-10 text-sm text-body">
-            Also in the range: a gentle shampoo and conditioner you can buy without a consultation.{' '}
-            <Link href="/products" className="font-medium text-ink underline underline-offset-4">
-              See all products
-            </Link>
-          </p>
+          <Reveal className="mt-14">
+            <JourneyTimeline steps={journey} tone="light" />
+          </Reveal>
         </div>
       </section>
 
-      {/* 4 · How it works — a real sequence, so it is numbered */}
-      <section className="relative overflow-hidden bg-obsidian text-on-dark">
-        <div className="container-yhc py-20 md:py-28">
-          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <h2 className="display max-w-xl text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-on-dark">
-              From first call to follow-up
-            </h2>
-            <Link
-              href="/how-it-works"
-              className="inline-flex min-h-11 items-center text-sm font-medium text-on-dark underline decoration-steel underline-offset-[6px]"
-            >
-              The full journey, step by step
-            </Link>
-          </div>
-          <ol className="mt-14 grid gap-px overflow-hidden rounded-2xl bg-line-dark md:grid-cols-5">
-            {journey.map((step, i) => (
-              <li key={step.title} className="flex flex-col bg-obsidian p-6 md:min-h-72 md:p-7">
-                <span className="font-display text-5xl leading-none text-platinum/70">{i + 1}</span>
-                <h3 className="mt-8 text-lg font-semibold text-on-dark md:mt-auto">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-on-dark-muted">{step.body}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* 5 · Meet Dr. Tyagi */}
-      <section className="container-yhc py-20 md:py-28">
+      {/* 2e · Doctor-recommended — meet Dr. Tyagi */}
+      <section className="container-yhc py-20 md:py-28" aria-label={`Meet ${doctor.name}`}>
+        <p className="eyebrow mb-8">{doctorClaimLabel()} · Dermatologist-led</p>
         <DoctorCard doctor={doctor}>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button asChild className="h-12 px-6">
-              <Link href="/book">Book with {doctor.name}</Link>
+              <Link href="/start">Begin my 3D scan</Link>
             </Button>
             <Button asChild variant="outline" className="h-12 border-steel px-6">
               <Link href="/doctor-tyagi">About {doctor.name}</Link>
@@ -161,122 +290,86 @@ export default function HomePage() {
         </DoctorCard>
       </section>
 
-      {/* 6 · Treatment plans */}
-      <section className="border-t border-line bg-card">
+      {/* 2f · Before / after — consented results only */}
+      <section className="border-y border-line bg-card" aria-labelledby="results-heading">
         <div className="container-yhc py-20 md:py-28">
-          <div className="mb-14 grid gap-6 md:grid-cols-2 md:items-end">
-            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">Treatment plans</h2>
-            <p className="max-w-md text-body md:justify-self-end">
-              Plans are prescribed after your consultation, never sold before it. Longer plans cost less per
-              month. {t('common.inclGst')}.
-            </p>
-          </div>
-          <PlanLadder plans={plans} guarantee={guarantee} creditLine={terms.creditLine} />
-          <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-            <Button asChild className="h-12 px-6 text-base">
-              <Link href="/book">Start with a consultation · {terms.fee}</Link>
-            </Button>
-            <Link
-              href="/plans"
-              className="inline-flex min-h-11 items-center text-sm font-medium text-ink underline decoration-steel underline-offset-[6px]"
-            >
-              Compare plans in detail
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 7 · Money-back guarantee (hidden while guarantee.enabled = false) */}
-      {guarantee ? (
-        <section className="bg-obsidian text-on-dark">
-          <div className="grid md:grid-cols-2">
-            <div className="relative min-h-80 md:min-h-[560px]">
-              <Image src={IMAGES.heroStage.src} alt="" fill sizes="50vw" className="object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-obsidian/80 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-obsidian" />
-            </div>
-            <div className="container-yhc flex flex-col justify-center py-16 md:max-w-xl md:px-14 md:py-24">
-              <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.25rem)] text-on-dark">
-                A guarantee, with its conditions in plain sight
+          <div className="mb-12 grid gap-6 md:grid-cols-2 md:items-end">
+            <div>
+              <p className="eyebrow">Results</p>
+              <h2 id="results-heading" className={`${H2} mt-4`}>
+                Real results, shared with consent
               </h2>
-              <p className="mt-5 leading-relaxed text-on-dark-muted">
-                Hair responds slowly and differently for everyone. If you follow your plan for the full period
-                and see no visible improvement, you can claim a refund. A doctor reviews every claim.
+            </div>
+            <div className="md:justify-self-end">
+              <p className="max-w-md text-body">
+                Before-and-after photos from patients who agreed in writing, with the time on plan stated.
+                Individual results vary.
               </p>
-              <ul className="mt-8 space-y-3.5 text-[15px]">
-                {[
-                  `Follow your plan continuously for at least ${guarantee.minPlanMonths} months`,
-                  `Reply to at least ${guarantee.minCheckinResponsePct}% of weekly check-ins`,
-                  ...(guarantee.requireMonthlyPhotos ? ['Share progress photos every month'] : []),
-                  ...(guarantee.requireFollowupConsult ? ['Attend your follow-up consultation'] : []),
-                  `Claim within ${guarantee.claimWindowDays} days of finishing the plan`,
-                ].map((line) => (
-                  <li key={line} className="flex gap-3">
-                    <Check className="mt-0.5 size-4 shrink-0 text-brand-on-dark" aria-hidden />
-                    {line}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-8 text-sm text-on-dark-muted">
-                {guarantee.isDraft ? `${t('common.draftTerms')}. ` : ''}
-                <Link href="/legal/guarantee" className="text-on-dark underline underline-offset-4">
-                  Read the full terms
-                </Link>
-              </p>
+              <Link
+                href="/results"
+                className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-ink underline decoration-steel underline-offset-[6px]"
+              >
+                How we collect results <ArrowRight className="size-4" aria-hidden />
+              </Link>
             </div>
           </div>
-        </section>
-      ) : null}
+          <ResultsGallery results={results} />
+        </div>
+      </section>
 
-      {/* 8 · Ingredients & science */}
-      <section className="container-yhc py-20 md:py-28">
-        <div className="relative overflow-hidden rounded-2xl">
-          <Image
-            src={IMAGES.textureDrop.src}
-            alt={IMAGES.textureDrop.alt}
-            width={IMAGES.textureDrop.width}
-            height={IMAGES.textureDrop.height}
-            sizes="(min-width: 1200px) 1168px, 100vw"
-            className="h-64 w-full object-cover md:h-96"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-pearl/90 via-pearl/40 to-transparent" />
-          <div className="absolute inset-y-0 left-0 flex max-w-lg flex-col justify-center p-6 md:p-12">
-            <h2 className="display text-[clamp(2rem,1.5rem+2vw,3.25rem)]">
-              Ingredients, and why they are there
-            </h2>
-            <p className="mt-4 hidden text-body sm:block">
-              Every product lists what is in it and what each part does. Nothing is chosen because it sounds
-              impressive.
+      {/* 2g · Money-back guarantee (hidden while guarantee.enabled = false) */}
+      {guarantee ? <GuaranteeVideoPanel guarantee={guarantee} /> : null}
+
+      {/* 2h · Watch */}
+      <section
+        className="border-t border-line-dark bg-[#0d0e10] text-on-dark"
+        aria-labelledby="watch-heading"
+      >
+        <div className="container-yhc py-20 md:py-28">
+          <div className="mb-12 grid gap-6 md:grid-cols-2 md:items-end">
+            <div>
+              <p className="eyebrow text-brand-on-dark">Watch</p>
+              <h2 id="watch-heading" className={`${H2} mt-4 text-on-dark`}>
+                The science, the journey{guarantee ? ', the guarantee' : ''} — explained
+              </h2>
+            </div>
+            <p className="max-w-md text-on-dark-muted md:justify-self-end">
+              Short, silent explainers with captions over illustrative laboratory footage. No actors playing
+              patients, no testimonials.
             </p>
           </div>
+          <VideoLibrary videos={stories} />
         </div>
-        <dl className="mt-10 grid gap-x-10 border-t border-line sm:grid-cols-2 lg:grid-cols-3">
-          {ingredients.map((ing) => (
-            <div key={ing.name} className="border-b border-line py-6">
-              <dt className="font-semibold text-ink">{ing.name}</dt>
-              <dd className="mt-1.5 text-body">{ing.role}</dd>
-              <dd className="mt-2 text-[13px] text-muted-foreground">
-                In{' '}
-                <Link href={`/products/${ing.slug}`} className="underline underline-offset-2 hover:text-ink">
-                  {ing.product}
-                </Link>
-              </dd>
-            </div>
+      </section>
+
+      {/* 2i · What a plan may include — secondary, quiet */}
+      <section className="container-yhc py-20 md:py-24" aria-labelledby="plan-heading">
+        <div className="grid gap-6 md:grid-cols-2 md:items-end">
+          <div>
+            <p className="eyebrow">Prescribed, not sold</p>
+            <h2 id="plan-heading" className="display mt-4 text-[clamp(1.9rem,1.5rem+1.6vw,2.75rem)]">
+              What a plan may include
+            </h2>
+          </div>
+          <p className="max-w-md text-body md:justify-self-end">
+            Only if the doctor decides treatment is right for you. Strength, dose and timing are set at your
+            consultation.
+          </p>
+        </div>
+        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3">
+          {showcase.map((p) => (
+            <ProductTile key={p.id} product={p} sizes="(min-width: 640px) 30vw, 100vw" />
           ))}
-        </dl>
-        <p className="mt-6 text-sm text-muted-foreground">{t('common.resultsVary')}</p>
+        </div>
       </section>
 
-      {/* 9 · Real stories (consent-gated, FR-M1-6) */}
-      <section className="container-yhc pb-20 md:pb-28">
-        <h2 className="display mb-8 text-[clamp(2rem,1.5rem+2vw,3rem)]">Real stories</h2>
-        <StoriesEmpty />
-      </section>
-
-      {/* 10 · FAQs */}
-      <section className="border-t border-line bg-card">
+      {/* 2j · FAQs */}
+      <section className="border-t border-line bg-card" aria-labelledby="faq-heading">
         <div className="container-yhc grid gap-12 py-20 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:py-28">
           <div>
-            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">Questions people ask first</h2>
+            <h2 id="faq-heading" className={H2}>
+              Questions people ask first
+            </h2>
             <Link
               href="/faqs"
               className="mt-7 inline-flex min-h-11 items-center text-sm font-medium text-ink underline decoration-steel underline-offset-[6px]"
@@ -288,33 +381,36 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 11 · Final CTA */}
-      <section className="relative isolate overflow-hidden bg-obsidian text-on-dark">
-        <div className="absolute inset-y-0 right-0 -z-10 hidden w-1/2 md:block" aria-hidden>
+      {/* 2k · Final CTA */}
+      <section
+        className="relative isolate overflow-hidden bg-obsidian text-on-dark"
+        aria-labelledby="final-heading"
+      >
+        <div className="absolute inset-y-0 right-0 -z-10 w-full md:w-1/2" aria-hidden>
           <Image
-            src={IMAGES.heroPortrait.src}
+            src={MEDIA.dnaParticles.src}
             alt=""
             fill
-            sizes="50vw"
-            className="object-cover object-[50%_65%]"
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover opacity-40 md:opacity-70"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-obsidian to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-obsidian via-obsidian/70 to-transparent" />
         </div>
         <div className="container-yhc py-20 md:py-32">
           <div className="max-w-xl">
-            <h2 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-on-dark">
-              Start with a conversation, not a product.
+            <h2 id="final-heading" className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-on-dark">
+              Start with your roots, not a product.
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-on-dark-muted">
-              Pick a time, pay {terms.fee} and talk to {doctor.name}. If a plan is right for you, it arrives
-              on WhatsApp after the call — with no obligation to buy it.
+              Begin with a free guided 3D scan. If treatment looks suitable, book a {terms.slotMinutes}-minute
+              consultation with {doctor.name} — and decide only after you have spoken to a doctor.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Button
                 asChild
                 className="h-13 bg-[image:var(--yhc-silver)] px-7 text-base font-semibold text-obsidian hover:opacity-95"
               >
-                <Link href="/book">{terms.bookLabel}</Link>
+                <Link href="/start">Begin my 3D scan</Link>
               </Button>
               <Button
                 asChild
@@ -327,12 +423,31 @@ export default function HomePage() {
                 </a>
               </Button>
             </div>
-            {terms.creditLine ? (
-              <p className="mt-8 text-[13px] text-on-dark-muted">* {terms.creditLine}</p>
-            ) : null}
           </div>
         </div>
       </section>
     </>
+  );
+}
+
+function Credential({
+  icon,
+  term,
+  children,
+}: {
+  icon: React.ReactNode;
+  term: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex gap-4 py-6 lg:px-6 lg:first:pl-0">
+      <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full bg-mist text-ink">
+        {icon}
+      </span>
+      <div>
+        <dt className="font-semibold text-ink">{term}</dt>
+        <dd className="mt-1 text-sm leading-snug text-body">{children}</dd>
+      </div>
+    </div>
   );
 }

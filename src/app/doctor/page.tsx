@@ -2,6 +2,7 @@ import { ArrowUpRight, CalendarDays, Clock, Video } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AppointmentChips, readiness } from '@/components/doctor/appointment-chips';
+import { ScanChip } from '@/components/doctor/scan-summary';
 import { concernLabel, genderLabel } from '@/components/doctor/format';
 import { KpiTile } from '@/components/shared/kpi-tile';
 import { PageHeader } from '@/components/shared/page-header';
@@ -11,6 +12,8 @@ import { formatIst } from '@/lib/time';
 import { cn } from '@/lib/utils';
 import { requireDoctorPage } from '@/server/doctor/auth';
 import { getToday } from '@/server/doctor/queries';
+import { recordAudit } from '@/server/demo/store';
+import { getScanForCustomer } from '@/server/journey/store';
 
 export const metadata: Metadata = { title: 'Today · Doctor Portal' };
 
@@ -23,6 +26,10 @@ export default async function DoctorTodayPage() {
   const user = await requireDoctorPage('/doctor');
   const now = new Date();
   const { rows, next, kpis } = getToday(now);
+  // 3D scan suitability is clinical (ADR-26): doctor portal only, and its view is audited.
+  const scans = new Map(rows.map((r) => [r.appt.id, getScanForCustomer(r.customer.id)]));
+  if ([...scans.values()].some(Boolean))
+    recordAudit(user.name, 'clinical.view', 'Scan suitability · Today list');
 
   return (
     <>
@@ -131,6 +138,7 @@ export default async function DoctorTodayPage() {
           <ol className="divide-y divide-line overflow-hidden rounded-xl bg-card shadow-card ring-1 ring-line/80">
             {rows.map(({ appt, customer }) => {
               const isNext = next?.appt.id === appt.id;
+              const scan = scans.get(appt.id);
               const past = appt.status === 'completed' || appt.status === 'no_show';
               return (
                 <li
@@ -168,6 +176,7 @@ export default async function DoctorTodayPage() {
                   <div className="col-start-2 flex flex-wrap items-center gap-2 md:col-start-auto">
                     <span className="text-[13px] text-body md:hidden">{concernLabel(appt.concern)} ·</span>
                     <AppointmentChips appt={appt} />
+                    {scan ? <ScanChip suitability={scan.suitability} /> : null}
                   </div>
                   <div className="col-start-2 md:col-start-auto md:justify-self-end">
                     {appt.status === 'held' ? (

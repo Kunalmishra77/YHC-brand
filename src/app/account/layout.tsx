@@ -25,6 +25,7 @@ export default async function AccountLayout({ children }: LayoutProps<'/account'
 
   const tabs: AccountTab[] = [
     { href: '/account', label: 'Overview' },
+    { href: '/account/scan', label: '3D scan' },
     { href: '/account/consultations', label: 'Consultations' },
     { href: '/account/orders', label: 'Orders' },
     { href: '/account/progress', label: 'Progress' },

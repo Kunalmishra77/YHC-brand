@@ -4,6 +4,8 @@ import { AppointmentChip } from '@/components/account/chips';
 import { formatDay, formatWhen } from '@/components/account/format';
 import { ACCOUNT_LINKS } from '@/components/account/links';
 import { PlanProgress } from '@/components/account/plan-progress';
+import { JoinConsultButton } from '@/components/journey/join-consult-button';
+import { JourneyTracker } from '@/components/journey/journey-tracker';
 import { StatusChip, type ChipTone } from '@/components/shared/status-chip';
 import { EmptyState } from '@/components/shared/states';
 import { Button } from '@/components/ui/button';
@@ -20,6 +22,7 @@ import {
   reorderWindowDays,
 } from '@/server/account/queries';
 import { getDoctor } from '@/server/catalog';
+import { getJourneyForCustomer, journeyTracker } from '@/server/journey/store';
 import { getCurrentCustomer } from '@/server/session';
 
 export const dynamic = 'force-dynamic';
@@ -77,6 +80,8 @@ export default async function AccountOverviewPage() {
   });
 
   const next = upcoming[0];
+  const journey = getJourneyForCustomer(customer.id);
+  const journeySteps = journey ? journeyTracker(journey, now) : null;
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-8">
@@ -102,6 +107,9 @@ export default async function AccountOverviewPage() {
             </Button>
           ) : null}
         </section>
+
+        {/* My journey (ADR-26) */}
+        {journeySteps ? <JourneyTracker steps={journeySteps} /> : null}
 
         {/* Current plan */}
         <section aria-labelledby="plan-heading" className="rounded-xl border border-line bg-card p-5 md:p-6">
@@ -175,9 +183,20 @@ export default async function AccountOverviewPage() {
                   {next.intakeDone ? 'Hair profile done' : 'Hair profile pending'}
                 </StatusChip>
               </div>
+              <JoinConsultButton
+                className="mt-5"
+                href={ACCOUNT_LINKS.join(next.id)}
+                startsAt={next.startsAt}
+                endsAt={next.endsAt}
+                windowMinutes={JOIN_WINDOW_MINUTES}
+                initialOpen={
+                  now.getTime() >= Date.parse(next.startsAt) - JOIN_WINDOW_MINUTES * 60_000 &&
+                  now.getTime() < Date.parse(next.endsAt)
+                }
+              />
               <Link
                 href="/account/consultations"
-                className="mt-4 inline-flex min-h-11 items-center text-sm font-medium text-brand underline-offset-4 hover:underline"
+                className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-brand underline-offset-4 hover:underline"
               >
                 Manage consultation
               </Link>

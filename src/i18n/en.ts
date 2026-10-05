@@ -38,6 +38,12 @@ export const en = {
     doctor: 'Meet Dr. Tyagi',
     howItWorks: 'How it works',
     faqs: 'FAQs',
+    science: 'Science',
+    scan: '3D Scan',
+    results: 'Results',
+    guarantee: 'Guarantee',
+    doctorShort: 'Doctor',
+    beginScan: 'Begin 3D scan',
     account: 'My account',
   },
   legal: {

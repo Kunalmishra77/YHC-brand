@@ -2,6 +2,7 @@ import { FileText, MessageCircleQuestion, Package, Stethoscope } from 'lucide-re
 import Link from 'next/link';
 import { concernLabel, genderLabel, initials, maskPhone } from '@/components/doctor/format';
 import { PhotoPanel } from '@/components/doctor/photo-panel';
+import { ScanSummary } from '@/components/doctor/scan-summary';
 import { StatusChip, type ChipTone } from '@/components/shared/status-chip';
 import type {
   Appointment,
@@ -12,6 +13,7 @@ import type {
   Order,
   ProgressPhotoSet,
 } from '@/lib/domain/types';
+import type { ScanResult } from '@/lib/journey/types';
 import { formatINR } from '@/lib/money';
 import { formatIst } from '@/lib/time';
 import { t } from '@/i18n/en';
@@ -67,6 +69,7 @@ export function PatientPane({
   pastConsults,
   orders,
   checkins,
+  scan = null,
 }: {
   appt: Appointment;
   customer: Customer;
@@ -75,6 +78,8 @@ export function PatientPane({
   pastConsults: { appt: Appointment; notes: ConsultationNotes | null }[];
   orders: Order[];
   checkins: CareCheckin[];
+  /** 3D scan assessment (ADR-26) — the page must audit clinical.view before passing it */
+  scan?: ScanResult | null;
 }) {
   const dateLabel = (d: string) => formatIst(new Date(`${d}T06:30:00Z`), 'd MMM yyyy');
   const current = appt.photosDone
@@ -167,6 +172,12 @@ export function PatientPane({
           </p>
         )}
       </PaneSection>
+
+      {scan ? (
+        <PaneSection title="3D scan assessment">
+          <ScanSummary scan={scan} />
+        </PaneSection>
+      ) : null}
 
       <PaneSection title="Scalp photos">
         <PhotoPanel current={current} previous={previous} patientName={customer.name} />

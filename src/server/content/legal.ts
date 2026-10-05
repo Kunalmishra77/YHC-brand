@@ -4,11 +4,64 @@ import type { GuaranteePolicy } from '@/lib/domain/types';
 import type { ContentBlock } from './types';
 
 /*
- * DRAFT policy text for an Indian D2C telemedicine + e-commerce business (docs/09). Product-design
- * drafts only — not legal advice. Values that live in settings (fees, windows) are passed in, never
- * hard-coded. Every page renders under the "Draft — to be replaced with counsel-approved text" banner.
- * TODO(client): counsel-approved text for every policy, legal entity name, registered address — see docs/12 (legal), docs/09 §10
+ * Policy text for an Indian D2C dermatology telemedicine + hair-care business (docs/09). Written for
+ * the Your Hair Company brand and the DPDP Act 2023, Telemedicine Practice Guidelines 2020, Consumer
+ * Protection Act 2019 and E-Commerce Rules 2020. Values that live in settings (fees, windows) are
+ * passed in via LegalContext, never hard-coded.
+ *
+ * INTERNAL: counsel review is still pending for every policy. Do not show "draft" to visitors; the
+ * pages end with a "Last reviewed" line instead. Update `LEGAL_ENTITY.lastReviewed` once counsel signs off.
+ * TODO(client): counsel-approved text for every policy — see docs/12 (legal), docs/09 §10
  */
+
+/**
+ * The one place for legal-entity details that are still pending client confirmation. While a value is
+ * null, the policies use neutral wording ("the business that operates the Your Hair Company brand")
+ * instead of a placeholder.
+ * TODO(client): company name, CIN, registered address, governing-law city, grievance officer name — see docs/12 C, docs/09 §2, D-P7
+ */
+export const LEGAL_ENTITY: {
+  brand: string;
+  companyName: string | null;
+  cin: string | null;
+  registeredAddress: string | null;
+  jurisdictionCity: string | null;
+  grievanceOfficerName: string | null;
+  /** ISO date (YYYY-MM-DD) the policies were last reviewed. */
+  lastReviewed: string;
+} = {
+  brand: 'Your Hair Company',
+  companyName: null,
+  cin: null,
+  registeredAddress: null,
+  jurisdictionCity: null,
+  grievanceOfficerName: null,
+  lastReviewed: '2026-10-05',
+};
+
+/** How the operator is named in running text. */
+function operatorName(): string {
+  return LEGAL_ENTITY.companyName ?? 'the business that operates the Your Hair Company brand';
+}
+
+/** Display name for the grievance officer: their name once confirmed, otherwise the role. */
+export function grievanceOfficerLabel(): string {
+  return LEGAL_ENTITY.grievanceOfficerName ?? 'Grievance Officer';
+}
+
+function entityDetails(supportEmail: string): string {
+  const { companyName, cin, registeredAddress } = LEGAL_ENTITY;
+  if (companyName && registeredAddress) {
+    return `Your Hair Company is a brand of ${companyName}${cin ? ` (CIN ${cin})` : ''}, with its registered office at ${registeredAddress}.`;
+  }
+  return `Your Hair Company is a brand operated from India. Our full company name, corporate identity number and registered office address are printed on every invoice and are available on request from ${supportEmail}.`;
+}
+
+function courts(): string {
+  return LEGAL_ENTITY.jurisdictionCity
+    ? `the courts at ${LEGAL_ENTITY.jurisdictionCity}`
+    : 'the competent courts at the place of our registered office in India';
+}
 
 export type LegalSlug =
   'privacy' | 'terms' | 'refund-cancellation' | 'shipping' | 'guarantee' | 'medical-disclaimer' | 'grievance';
@@ -30,12 +83,14 @@ export interface LegalDocument {
   /** One-sentence plain-language summary shown under the title and on the index. */
   summary: string;
   lastUpdated: string;
+  lastReviewed: string;
   blocks: ContentBlock[];
 }
 
-const LAST_UPDATED = '2026-09-30';
+const LAST_UPDATED = '2026-10-05';
 
 const h = (id: string, text: string): ContentBlock => ({ type: 'heading', id, text });
+const sub = (text: string): ContentBlock => ({ type: 'subheading', text });
 const p = (text: string): ContentBlock => ({ type: 'paragraph', text });
 const ul = (...items: string[]): ContentBlock => ({ type: 'list', items });
 const ol = (...items: string[]): ContentBlock => ({ type: 'list', items, ordered: true });
@@ -44,215 +99,370 @@ const note = (text: string, title?: string): ContentBlock => ({ type: 'callout',
 function privacy(c: LegalContext): ContentBlock[] {
   return [
     p(
-      'This policy explains what personal data Your Hair Company (“YHC”, “we”) collects, why, who it is shared with, how long it is kept and the rights you have. It is written with the Digital Personal Data Protection Act, 2023 and the rules made under it in mind. In that Act’s terms, you are the Data Principal and YHC is the Data Fiduciary.',
+      'This Privacy Policy explains what personal data Your Hair Company (“YHC”, “we”, “us”) collects when you use our website, scalp scan, assessment, consultations and shop; why we collect it; who we share it with; how long we keep it; and the rights you have. It is written to meet the Digital Personal Data Protection Act, 2023 and the Digital Personal Data Protection Rules, 2025. In the language of that Act, you are the Data Principal and we are the Data Fiduciary.',
     ),
+    note(
+      'We use your data to look after your hair and scalp, and to run your bookings and orders. We never sell it. Your health information is seen only by your doctor and the people who support your care — not by our sales team, and never in marketing.',
+      'In short',
+    ),
+
     h('who-we-are', 'Who we are'),
+    p(entityDetails(c.supportEmail)),
     p(
-      'YHC provides online hair and scalp consultations with a registered medical practitioner, and sells the products they prescribe or recommend. Our legal entity name and registered address will be shown here.',
+      `We provide online hair and scalp consultations with a registered medical practitioner, a guided 3D scalp scan and assessment, and the products a doctor prescribes or recommends. For the purposes of this policy, ${operatorName()} is the Data Fiduciary responsible for your personal data.`,
     ),
+
     h('what-we-collect', 'What we collect'),
+    sub('Information you give us'),
     ul(
-      'Contact and account details: your name, mobile number, email address (if you give one) and age.',
-      'Delivery details: your address and PIN code.',
-      'Booking, order and payment records: what you booked or bought, amounts and payment status. Card, UPI and bank details are entered with our payment provider; we do not see or store them.',
-      'Health information you give for your care: your health questionnaire, scalp photos, consultation notes, assessments and prescriptions.',
-      'Messages you send us on WhatsApp, email or the contact form, and replies to check-ins.',
-      'Technical data: device and browser type, pages visited and approximate location from your IP address, through cookies and similar tools.',
+      'Identity and contact details: your name, mobile number, email address (if you share one), age and gender.',
+      'Delivery details: your address, PIN code and any delivery instructions.',
+      'Health information: your answers to the hair and health questionnaire, medical history, current medicines, allergies, scalp and hair photos, and anything you tell the doctor.',
+      'Scalp scan data: the images captured during the guided 3D scalp scan and the assessment produced from them (whether you appear suitable for treatment, need a doctor’s review, or are unlikely to benefit, with the reasons).',
+      'Messages: what you send us on WhatsApp, email, the contact form or in replies to check-ins.',
     ),
+    sub('Information created while you use YHC'),
+    ul(
+      'Consultation records: the doctor’s notes, assessments, prescriptions and follow-up plans.',
+      'Booking, order and payment records: what you booked or bought, amounts, invoices and payment status. Card, UPI and bank details are entered directly with our payment partner, Razorpay; we never see or store them.',
+      'Care records: check-in replies, progress photos, reminders sent and whether your plan is active or paused.',
+      'Consent records: which notices you agreed to, the version and when.',
+    ),
+    sub('Information collected automatically'),
+    ul(
+      'Device and usage data: browser and device type, pages visited, referring links and approximate location derived from your IP address, collected through cookies and similar tools (see “Cookies”).',
+    ),
+
     h('why-we-use-it', 'Why we use it'),
-    p('We use each kind of data only for the purposes we tell you about at the time we collect it:'),
-    ul(
-      'To book and hold your consultation, and to confirm it on WhatsApp, SMS or email.',
-      'To let your doctor understand your history, examine your photos and prescribe safely.',
-      'To process payments, deliver orders, issue GST invoices and handle refunds.',
-      'To send care messages you have agreed to: reminders, check-ins, refill and follow-up messages.',
-      'To send marketing messages, only if you have separately agreed to them.',
-      'To run the money-back guarantee, where offered, including checking whether its conditions are met.',
-      'To keep the service working, prevent fraud and meet our legal obligations.',
+    p(
+      'We use personal data only for the purposes we tell you about when we collect it, and only as much as each purpose needs:',
     ),
+    ul(
+      'To run the scalp scan and give you a personalised assessment.',
+      'To book your consultation, confirm it, and remind you on WhatsApp, SMS or email.',
+      'To let your doctor understand your history, review your photos and scan, and prescribe appropriately.',
+      'To process payments, pack and deliver orders, issue GST invoices and handle refunds.',
+      'To send care messages you have agreed to: check-ins, refill reminders and follow-up invitations.',
+      'To send offers and marketing messages, only if you have separately agreed to them.',
+      'To run the money-back guarantee, where offered, including checking whether its conditions are met.',
+      'To answer your questions and resolve complaints.',
+      'To keep the service working and safe, prevent fraud and misuse, and meet our legal obligations.',
+    ),
+
+    h('scan-and-assessment', 'The 3D scalp scan and assessment'),
+    ul(
+      'The scan guides your phone camera to capture images of your scalp. These images, and the assessment created from them, are health information and are protected in the same way as your consultation records.',
+      'The assessment is a screening aid that helps decide the next step. It is not a diagnosis. No treatment decision is made by software alone: a doctor reviews your scan, photos and history and makes the final decision.',
+      'Scan images are used for your own care. They are not used in marketing, and are not used to train or improve any software unless you give separate, specific consent, which you can refuse or withdraw without affecting your care.',
+    ),
+
     h('consent', 'Consent, and changing your mind'),
     p(
-      'We ask for your consent separately for each purpose — for example the privacy notice, the telemedicine consultation, WhatsApp updates, marketing, and any use of your photos beyond your own care. We record which version of each notice you agreed to and when.',
+      'We ask for your consent in clear, separate steps for each purpose — for example this Privacy Policy, the telemedicine consultation, care messages on WhatsApp, marketing, and any use of your photos beyond your own care. Each request explains what the data will be used for. We keep a record of what you agreed to and when.',
     ),
     p(
-      'You can withdraw any consent at any time, as easily as you gave it: from your account, by replying STOP to marketing messages, or by writing to the grievance officer. Withdrawing consent does not affect processing that already happened, and some records must still be kept by law (see “How long we keep data”).',
+      `You can withdraw any consent at any time, as easily as you gave it: from your account, by replying STOP to a marketing message, or by writing to ${c.grievanceEmail}. Once you withdraw, we stop that processing within a reasonable time. Withdrawal does not affect processing that already took place, and some records must still be kept by law (see “How long we keep data”). If you withdraw consent needed to provide a service — for example consent to hold your health information — we may no longer be able to provide that service.`,
     ),
-    h('clinical-data', 'How health information is handled'),
+    p(
+      'In a few limited cases the law allows us to process data without asking for consent, for example to respond to a medical emergency or to comply with a legal obligation or court order.',
+    ),
+
+    h('clinical-data', 'How health information is protected'),
     ul(
-      'Your health questionnaire, photos, consultation notes and prescriptions are available to your treating doctor and to staff who need them for your care.',
-      'Our sales and support team helps with bookings, orders and delivery. They cannot see your clinical information.',
-      'Health details are never put into WhatsApp marketing text, email subject lines, calendar invitations or error logs.',
-      'Every time a clinical record is opened, the access is logged.',
-      'Your photos are never used in marketing or published stories unless you separately agree in writing, and you can withdraw that agreement.',
+      'Your questionnaire, scan, photos, consultation notes and prescriptions are available only to your treating doctor and the clinical staff who support your care.',
+      'Our sales and customer support team helps with bookings, orders and delivery. They cannot see your clinical information.',
+      'Health details are never written into WhatsApp marketing messages, email subject lines, calendar invitations or system logs.',
+      'Every time a clinical record is opened, the access is recorded.',
+      'Your photos are never used in advertising or published stories unless you give separate written consent, which you can withdraw at any time.',
     ),
+
     h('sharing', 'Who we share data with'),
     p(
-      'We do not sell personal data. We share it only with service providers (Data Processors) who help us run the service, under contracts that limit their use of it to our instructions:',
+      'We do not sell or rent personal data. We share it only with service providers (Data Processors) that help us run YHC, under written contracts that allow them to use it only on our instructions and require them to protect it:',
     ),
     ul(
-      'Payment processing (Razorpay)',
-      'WhatsApp messaging through our WhatsApp Business provider, SMS (MSG91) and email (Resend)',
-      'Video consultations (LiveKit, or Google Meet as a fallback) and doctor scheduling (Google Calendar — appointment times only, no health details)',
-      'Courier and shipping partners (through Shiprocket) — name, phone and address only',
-      'Hosting and database (Supabase, Vercel) and error monitoring (Sentry — configured to exclude clinical data)',
-      'Website analytics and advertising measurement (Google Analytics, Meta) — never health information',
+      'Payments: Razorpay.',
+      'Messaging: our WhatsApp Business service provider, MSG91 for SMS and one-time codes, and Resend for email.',
+      'Video consultations and scheduling: LiveKit (or Google Meet as a fallback) for the call, and Google Calendar for the doctor’s schedule — appointment times only, never health details.',
+      'Delivery: Shiprocket and its courier partners — your name, phone number and address only.',
+      'Hosting and operations: Supabase (database and file storage), our website host, and Sentry for error monitoring, configured to exclude health information.',
+      'Analytics and advertising measurement: Google Analytics and Meta, only with your cookie consent and never with health information.',
     ),
     p(
-      'We may also disclose data where the law requires it, for example to a court or a government authority acting lawfully.',
+      'We may also disclose personal data when the law requires it — for example to a court, regulator or government authority acting lawfully — or to protect someone’s life or safety. If our business is reorganised or transferred, your data may pass to the new operator, who must honour this policy.',
     ),
+
     h('where-stored', 'Where your data is stored'),
     p(
-      'Our database and file storage are hosted in India (Mumbai region). Some service providers listed above may process limited data outside India; where they do, we rely on the transfer rules under Indian law.',
+      'Our database and file storage, including your health information, scan images and photos, are hosted in India (Mumbai region). Some service providers listed above may process limited data, such as message delivery or error reports, outside India. Where that happens, we do so only as permitted under the DPDP Act and any restrictions notified by the Government of India.',
     ),
+
     h('retention', 'How long we keep data'),
     ul(
-      'Medical records — consultation notes, prescriptions and related photos — are kept for the period required for medical records (Indian medical regulations reference at least three years; the exact period is being confirmed with counsel). If you ask us to erase your data, these records are restricted and anonymised where deletion is not allowed.',
-      'Invoices, payment and order records are kept for the period required by tax and accounting law.',
-      'Marketing preferences are kept until you withdraw consent, and then only as a record that you opted out.',
-      'Other account data is deleted or anonymised when it is no longer needed for the purpose it was collected for.',
+      'Medical records — questionnaire answers, scan images and assessments that formed part of your care, consultation notes, prescriptions and related photos — are kept for at least three years from your last consultation, as required by the Indian Medical Council (Professional Conduct, Etiquette and Ethics) Regulations, 2002, or longer if another law or an ongoing claim requires it.',
+      'If you complete a scan or assessment but never book a consultation, we delete those images and results once they are no longer needed, and in any case within 12 months of your last activity, unless you ask us to keep them.',
+      'Invoices, payment and order records are kept for the period required under GST, income tax and company law (currently up to eight years).',
+      'Marketing preferences are kept until you withdraw consent; after that we keep only a record that you opted out, so we do not contact you again.',
+      'Other account data is deleted or anonymised once it is no longer needed for the purpose it was collected for, or when you ask us to erase it.',
     ),
+    p(
+      'If you ask us to erase your data and some of it must be kept by law, we restrict access to those records, keep them only for the legally required period, and then delete them.',
+    ),
+
     h('your-rights', 'Your rights'),
+    p('Under the DPDP Act you have the right to:'),
     ul(
-      'Access: ask for a summary of the personal data we hold about you and how it is used.',
-      'Correction and completion: ask us to fix data that is wrong or incomplete.',
+      'Access: get a summary of the personal data we hold about you, how it is used, and who it has been shared with.',
+      'Correction, completion and updating: ask us to fix data that is inaccurate, incomplete or out of date.',
       'Erasure: ask us to delete data we no longer need, subject to the retention rules above.',
       'Withdraw consent for any purpose, at any time.',
-      'Grievance redressal: complain to our grievance officer, and then to the Data Protection Board of India if you are not satisfied.',
-      'Nominate someone to exercise these rights on your behalf if you die or become unable to.',
+      'Grievance redressal: complain to our Grievance Officer and receive a response within the time the law sets.',
+      'Nominate another person to exercise these rights on your behalf in the event of your death or incapacity.',
     ),
     p(
-      `To use any of these rights, write to ${c.grievanceEmail}. We will confirm your identity before acting on the request.`,
+      `To use any of these rights, write to ${c.grievanceEmail} from the email address or mobile number linked to your account. We will confirm your identity before acting, and respond within 30 days. If you are not satisfied with our response, you may complain to the Data Protection Board of India.`,
     ),
-    h('protection', 'How we protect data'),
     p(
-      'Data is encrypted in transit, files are kept in private storage and shared only through short-lived links, access is limited to people who need it, clinical access requires multi-factor sign-in, and access to clinical records is logged. No system is free of risk; if a personal data breach affects you, we will tell you and the Data Protection Board as the law requires.',
+      'As a Data Principal, you also have duties under the Act: to give accurate information, not to impersonate anyone, and not to file false or frivolous complaints.',
     ),
+
+    h('protection', 'How we protect your data'),
+    p(
+      'We use reasonable technical and organisational safeguards: encryption in transit and at rest, private file storage shared only through short-lived links, role-based access limited to people who need it, multi-factor sign-in for doctors and administrators, access logging for clinical records, and regular reviews of who has access. No system is entirely free of risk.',
+    ),
+    p(
+      'If a personal data breach affects you, we will tell you without delay — what happened, the likely impact, what we are doing about it and what you can do — and we will report it to the Data Protection Board of India as the law requires.',
+    ),
+
     h('children', 'Children'),
-    p('YHC is for adults aged 18 and over. We do not knowingly collect data from children.'),
-    h('cookies', 'Cookies and analytics'),
     p(
-      'We use essential cookies to keep you signed in and remember your cart, and analytics cookies to understand how the site is used. You can block non-essential cookies in your browser.',
+      'YHC is only for adults aged 18 and over. We do not knowingly collect personal data from anyone under 18. If you believe a child has given us their data, write to us and we will delete it.',
     ),
+
+    h('cookies', 'Cookies and analytics'),
+    ul(
+      'Essential cookies keep you signed in, remember your cart and keep the site working. They cannot be switched off.',
+      'Analytics cookies help us understand which pages are useful, and advertising measurement cookies tell us whether our ads work. We use these only with your consent.',
+      'You can change your choice at any time, and you can also block or delete cookies in your browser settings. Blocking essential cookies may stop parts of the site from working.',
+    ),
+
     h('changes', 'Changes to this policy'),
     p(
-      'If we change this policy in a way that affects how your data is used, we will tell you and, where needed, ask for your consent again. The date at the top shows the latest version.',
+      'We may update this policy as our service or the law changes. If a change affects how your data is used, we will tell you on WhatsApp or email before it takes effect and, where needed, ask for your consent again. The “Last updated” date at the top shows the current version.',
     ),
+
     h('contact', 'Contact and grievances'),
-    p(`${c.grievanceName} — ${c.grievanceEmail}. For general questions, write to ${c.supportEmail}.`),
+    p(
+      `${c.grievanceName}, Your Hair Company — ${c.grievanceEmail}. We acknowledge every grievance within 48 hours. For general questions about your account, bookings or orders, write to ${c.supportEmail}.`,
+    ),
   ];
 }
 
 function terms(c: LegalContext): ContentBlock[] {
   return [
     p(
-      'These terms apply when you use the Your Hair Company website, book a consultation or buy a product. By using the service you agree to them. Please read them with the Privacy Policy, the Refund & Cancellation Policy and the Medical Disclaimer.',
+      `These Terms & Conditions (“Terms”) govern your use of the Your Hair Company website and services — the scalp scan and assessment, online consultations, treatment plans and product orders. YHC is operated by ${operatorName()} (“YHC”, “we”, “us”). By creating an account, booking a consultation or placing an order, you agree to these Terms. Please read them together with our Privacy Policy, Refund Policy, Shipping Policy and Medical Disclaimer, which form part of these Terms.`,
     ),
-    h('the-service', 'The service'),
-    p(
-      'YHC arranges online video consultations with a registered medical practitioner for hair and scalp concerns, and sells the products they prescribe or recommend. YHC also sells some care products that do not need a consultation.',
-    ),
-    h('eligibility', 'Who can use it'),
+
+    h('eligibility', 'Who can use YHC'),
     ul(
-      'You must be 18 or older.',
+      'You must be at least 18 years old and able to enter into a binding contract under Indian law.',
       'You must have an Indian mobile number and a delivery address in India.',
-      'You must give true and complete information about yourself and your health.',
+      'You must give true, accurate and complete information about yourself and your health, and keep it up to date. You may book or order only for yourself unless we have agreed otherwise.',
     ),
+
+    h('the-service', 'What YHC provides'),
+    p(
+      'YHC provides a guided online scalp scan and assessment, video consultations with a registered medical practitioner for hair and scalp concerns, doctor-recommended treatment plans, and hair-care products, some of which can be bought without a consultation.',
+    ),
+    sub('Telemedicine'),
+    ul(
+      `Consultations are delivered as telemedicine under the Telemedicine Practice Guidelines, 2020. Your doctor, ${c.doctorName}, identifies themselves with their name, qualifications and registration number, and confirms your identity and consent at the start of the consultation.`,
+      'The doctor uses independent clinical judgement. They may decide that a remote consultation is not suitable for your concern, ask for tests or an in-person examination, or decline to prescribe.',
+      'Video is the default mode. If a call cannot continue on video, the doctor decides whether it can safely continue another way or should be rescheduled.',
+    ),
+    sub('The 3D scalp scan and assessment'),
+    p(
+      'The scan and assessment are screening aids that help decide whether a consultation is likely to be useful. They are not a diagnosis or a prescription. Image quality depends on your device, lighting and how the scan is taken. The doctor reviews your scan, photos and history and makes the final decision about your care.',
+    ),
+    note(
+      'YHC is not an emergency service. If you have a medical emergency, sudden severe symptoms or a serious reaction to a product, go to your nearest hospital or call emergency services.',
+      'Not for emergencies',
+    ),
+
     h('account', 'Your account'),
     p(
-      'You sign in with a one-time code sent to your mobile number. Keep access to your phone to yourself; activity after a valid sign-in is treated as yours. Tell us promptly if you think someone else has used your account.',
+      'You sign in with a one-time code sent to your mobile number. You are responsible for keeping access to your phone and account to yourself; activity after a valid sign-in is treated as yours. Tell us promptly if you think someone else has used your account. We may suspend an account to protect you or others while we look into a problem.',
     ),
-    h('consultations', 'Consultations and prescriptions'),
+
+    h('consultations', 'Consultations'),
     ul(
-      `A consultation is a one-to-one video call with ${c.doctorName}. Booking it requires the consultation fee (currently ${c.consultFee}).`,
-      'The doctor uses independent clinical judgement. They may decide that treatment is not appropriate, that you need tests or an in-person examination, or that a video consultation is not suitable for your concern.',
-      'Prescription products are supplied only after a consultation and only as prescribed.',
-      'Your prescription is yours. You are free to buy prescribed products anywhere; you are not required to buy from YHC.',
-      'The service is not for emergencies. If you need urgent care, contact your nearest hospital.',
+      `A consultation is a one-to-one video call with ${c.doctorName}. You pay the consultation fee (currently ${c.consultFee}) when you book; your slot is confirmed only once payment is confirmed.`,
+      'Please join on time, from a quiet, well-lit place, with a working camera and microphone. Rescheduling, cancellation and no-shows are covered by the Refund Policy.',
+      'A consultation record and, where appropriate, a prescription will be available in your account after the call.',
     ),
-    h('orders', 'Products, prices and payment'),
+
+    h('prescriptions', 'Prescriptions'),
     ul(
-      'Prices are shown in Indian rupees and include GST. Any delivery charge is shown before you pay.',
-      'Payment is taken in advance online. Cash on delivery is not offered.',
-      'An order is confirmed only when we receive confirmation of payment from our payment provider — not when you are redirected back to the site.',
-      'We may cancel and fully refund an order if a product is unavailable, a price was shown in error, or we cannot deliver to your address.',
+      'Prescription medicines are supplied only after a consultation, only against a valid prescription issued by the doctor, and only in the quantity prescribed.',
+      'Your prescription belongs to you. You are free to buy prescribed medicines from any pharmacy; you are never obliged to buy from YHC.',
+      'Follow the dosage and instructions given by your doctor and on the product leaflet. Tell your doctor about any other medicines, health conditions, pregnancy, plans for pregnancy or breastfeeding.',
     ),
+
+    h('orders', 'Orders, prices and payment'),
+    ul(
+      'Prices are shown in Indian rupees and include GST. Any delivery charge is shown before you pay. A GST invoice is issued for every order.',
+      'All orders and consultations are prepaid online through our payment partner, Razorpay, using the methods it supports (such as UPI, cards, net banking and wallets). Cash on delivery is not offered.',
+      'An order or booking is confirmed only when we receive confirmation of payment from Razorpay — not when you are redirected back to the site. If money leaves your account but the payment is not confirmed, it is returned by Razorpay or your bank, or we refund it once it reaches us.',
+      'We may decline or cancel an order, with a full refund, if a product is unavailable, a price or description was shown in error, we cannot deliver to your address, or a prescription product is ordered without a valid prescription.',
+      'Delivery is covered by the Shipping Policy, and cancellations and refunds by the Refund Policy.',
+    ),
+
     h('plans', 'Treatment plans'),
     p(
-      'A plan is a supply of products for a set number of months, recommended by your doctor. Using it as directed, replying to check-ins and attending follow-ups help your doctor judge how you are responding. Individual results vary and no particular outcome is promised.',
+      'A plan is a supply of products for a set number of months, recommended by your doctor. Using it as directed, replying to check-ins and attending follow-ups help your doctor judge how you are responding and adjust your plan. Hair responds slowly and differently for everyone; individual results vary and no particular outcome or timeline is promised.',
     ),
+
     h('guarantee', 'Money-back guarantee'),
     p(
       c.guarantee
-        ? 'Where a money-back guarantee is offered, it applies only when every condition in the Guarantee Terms is met, and a doctor reviews every claim. The Guarantee Terms page sets out the conditions in full.'
-        : 'No money-back guarantee is currently offered. If one is introduced, its full conditions will be published on the Guarantee Terms page first.',
+        ? 'Where a money-back guarantee is offered on a plan, it applies only when every condition in the Guarantee Terms is met, and a doctor reviews every claim. The Guarantee Terms set out the conditions in full and form part of these Terms.'
+        : 'No money-back guarantee is currently offered. If one is introduced, its full conditions will be published on the Guarantee Terms page before it is offered anywhere on the site.',
     ),
-    h('use-of-site', 'Using the site fairly'),
+
+    h('communications', 'Messages from us'),
+    p(
+      'We send booking, order, delivery and care messages on WhatsApp, SMS and email so we can provide the service. Marketing messages are sent only if you have agreed to them, and you can opt out at any time by replying STOP or changing your preferences in your account.',
+    ),
+
+    h('acceptable-use', 'Acceptable use'),
+    p('When using YHC, you agree not to:'),
     ul(
-      'Do not misuse the site, try to access other people’s data, or interfere with how it works.',
-      'Do not upload content that is unlawful, abusive or belongs to someone else.',
-      'Be respectful to doctors and staff. We may end a consultation or close an account in case of abuse.',
+      'Give false information, impersonate anyone, or book or order on someone else’s behalf without their permission.',
+      'Resell, share or supply prescribed products to anyone else.',
+      'Try to access other people’s data, probe or disrupt the site, or use bots or scrapers on it.',
+      'Upload content that is unlawful, abusive, obscene or that belongs to someone else.',
+      'Record consultations without the doctor’s consent, or behave abusively towards doctors or staff.',
     ),
-    h('content', 'Information on this site'),
     p(
-      'Articles and pages on this site are general education, not medical advice for you personally. Site content, design and branding belong to YHC or its licensors and may not be copied for commercial use without permission.',
+      'We may end a consultation, cancel an order or suspend or close an account if these Terms are broken, refunding any amount owed for services not provided.',
     ),
-    h('liability', 'Our responsibility'),
+
+    h('intellectual-property', 'Intellectual property'),
     p(
-      'We take care to run the service well, but cannot promise it will always be available or error-free. To the extent the law allows, our liability for any claim relating to an order or consultation is limited to the amount you paid for it. Nothing in these terms limits rights you have under the Consumer Protection Act, 2019 or other law that cannot be excluded.',
+      'The YHC name and logo, site design, text, images, articles, scan and assessment experience, and software belong to YHC or its licensors and are protected by law. You may view and print pages for your personal use. You may not copy, reproduce, modify or use them commercially without our written permission. Your own photos and information remain yours; you give us permission to use them only as described in our Privacy Policy.',
     ),
-    h('law', 'Governing law'),
+
+    h('site-information', 'Information on this site'),
     p(
-      'These terms are governed by the laws of India. Courts at the city of YHC’s registered office will have jurisdiction, without affecting your right to approach a consumer commission.',
+      'Articles and pages on this site are general education, not medical advice for you personally. We take care to keep them accurate and up to date, but they do not replace a consultation with a doctor who has assessed you. Links to other websites are provided for convenience; we are not responsible for their content.',
     ),
-    h('changes', 'Changes'),
+
+    h('liability', 'Limitation of liability'),
+    ul(
+      'We take care to run YHC well, but we cannot promise that the site, scan or video calls will always be available, uninterrupted or error-free.',
+      'To the extent the law allows, we are not liable for indirect or consequential loss, or for loss caused by events beyond our reasonable control (such as network outages, courier disruption, natural events or government action).',
+      'To the extent the law allows, our total liability for any claim relating to a consultation, plan or order is limited to the amount you paid for that consultation, plan or order.',
+      'Clinical advice is given by the treating doctor in the exercise of their independent professional judgement.',
+      'Nothing in these Terms limits any right you have under the Consumer Protection Act, 2019 or any other law that cannot be excluded by contract, or our liability for death or personal injury caused by negligence, or for fraud.',
+    ),
+
+    h('indemnity', 'Indemnity'),
     p(
-      'We may update these terms. The version that applies to an order or consultation is the one in force when you placed or booked it.',
+      'You agree to compensate YHC for reasonable losses, costs and claims that arise because you knowingly gave false information, misused the service or prescribed products, or broke these Terms or the law.',
     ),
+
+    h('law', 'Governing law and disputes'),
+    p(
+      `These Terms are governed by the laws of India. If you have a concern, please contact us first — most problems are resolved quickly through support or our Grievance Officer. Any dispute that cannot be resolved this way is subject to the jurisdiction of ${courts()}. This does not affect your right to approach a consumer commission under the Consumer Protection Act, 2019.`,
+    ),
+
+    h('general', 'General'),
+    ul(
+      'If any part of these Terms is found to be unenforceable, the rest continues to apply.',
+      'If we do not enforce a right immediately, we have not given it up.',
+      'You may not transfer your rights under these Terms. We may transfer ours to a business that takes over the YHC service, provided your rights are not reduced.',
+    ),
+
+    h('changes', 'Changes to these Terms'),
+    p(
+      'We may update these Terms from time to time. We will tell you about important changes before they take effect. The version that applies to a consultation or order is the one in force when you booked or placed it.',
+    ),
+
     h('contact', 'Contact'),
-    p(`Questions: ${c.supportEmail}. Complaints: ${c.grievanceName}, ${c.grievanceEmail}.`),
+    p(
+      `Questions about these Terms: ${c.supportEmail}. Complaints: ${c.grievanceName}, ${c.grievanceEmail}. ${entityDetails(c.supportEmail)}`,
+    ),
   ];
 }
 
 function refund(c: LegalContext): ContentBlock[] {
   return [
     p(
-      'This policy explains when you can reschedule or cancel a consultation, cancel an order, and get a refund. The consultation rules below are the recommended rules awaiting the client’s confirmation.',
+      'This Refund Policy explains when you can reschedule or cancel a consultation, cancel an order or return a product, and how refunds are paid. It applies to everything booked or bought from Your Hair Company and forms part of our Terms & Conditions. It does not affect your rights under the Consumer Protection Act, 2019.',
     ),
+
     h('consultation', 'Consultation fee'),
-    p(`The first consultation fee is ${c.consultFee}, paid when you book.`),
+    p(`The consultation fee (currently ${c.consultFee}) is paid when you book.`),
     ul(
-      `Reschedule free of charge until ${c.freeRescheduleHours} hours before your consultation.`,
-      'Cancel more than 24 hours before your consultation for a full refund.',
-      'Cancel within 24 hours of your consultation: the fee is not refunded, but you can reschedule once at no charge.',
-      'If you do not join the call (a no-show), the fee is not refunded.',
-      'If the doctor cannot attend, or the call cannot happen because of a problem on our side, you choose between a free reschedule and a full refund.',
+      `Rescheduling: you can move your consultation free of charge up to ${c.freeRescheduleHours} hours before it starts, from your account or by messaging us.`,
+      'Cancelling more than 24 hours before your consultation: you receive a full refund of the consultation fee.',
+      'Cancelling within 24 hours of your consultation: the fee is not refunded, but you can reschedule once at no extra charge.',
+      'Missing your consultation without notice (a no-show): the fee is not refunded. If something unexpected stopped you from joining, write to us and we will look at it fairly.',
+      'If the doctor cannot attend, or the call cannot take place because of a problem on our side, you choose between a free reschedule and a full refund.',
     ),
     ...(c.creditLine ? [note(c.creditLine, 'Consultation credit')] : []),
-    h('orders', 'Cancelling an order'),
-    ul(
-      'Before dispatch: you can cancel any order for a full refund. Message us on WhatsApp or write to us.',
-      'After dispatch: orders cannot be cancelled. You may refuse the parcel at delivery; once it has come back to us unopened, we refund the product amount.',
-      'Treatment plans are prescribed for you. Opened or used products cannot be returned, for safety and hygiene reasons.',
-    ),
-    h('damaged', 'Damaged, wrong or missing items'),
+
+    h('orders', 'Plan and product orders'),
+    sub('Before dispatch'),
     p(
-      'If a product arrives damaged, leaking, or is not what you ordered, tell us on WhatsApp or email within 48 hours of delivery (window to be confirmed), with a photo of the item and the packaging. We will send a replacement or refund the item — your choice where both are possible.',
+      'You can cancel any order — a treatment plan or individual products — for a full refund at any time before it is dispatched. Message us on WhatsApp or email us with your order number, or cancel from your account where the option is shown.',
     ),
-    h('how-refunds-work', 'How refunds are paid'),
+    sub('After dispatch'),
     ul(
-      'Refunds go back to the original payment method through our payment provider.',
-      'We start the refund once it is approved and share a reference. How long it takes to appear depends on your bank or card issuer.',
-      'Orders are prepaid only; we do not offer cash on delivery, so there are no cash refunds.',
+      'Once an order has been dispatched it cannot be cancelled.',
+      'After dispatch we accept returns only for items that arrive damaged, leaking or tampered with, items that are not what you ordered, or items that are past their expiry date on delivery — reported within 48 hours of delivery (see below).',
+      'If a parcel is lost in transit, or cannot be delivered for a reason on our side, we send a replacement or give you a full refund.',
     ),
-    h('guarantee', 'Guarantee refunds'),
+    note(
+      'For your safety and the safety of other customers, opened or used treatment products — including prescription medicines, serums, solutions, tablets and supplements — cannot be returned or exchanged unless they arrived damaged, wrong or expired.',
+      'Why opened products cannot be returned',
+    ),
+
+    h('damaged', 'Damaged, wrong or expired items'),
+    ol(
+      'Tell us on WhatsApp or by email within 48 hours of delivery, with your order number.',
+      'Send clear photos of the item, its batch and expiry details, the packaging and the shipping label. An unboxing video helps, but is not required.',
+      'We review your request and reply within 2 working days. If needed, we arrange a free pickup of the item.',
+      'We then send a replacement or refund the item — your choice where both are possible.',
+    ),
+    p(
+      'Requests made after 48 hours, or without photos, may not be accepted, because we cannot then confirm with our courier and supplier what happened.',
+    ),
+
+    h('guarantee', 'Money-back guarantee refunds'),
     p(
       c.guarantee
-        ? 'Refunds under the money-back guarantee follow the Guarantee Terms, including its conditions and claim process.'
-        : 'No money-back guarantee is currently offered.',
+        ? 'Refunds under the money-back guarantee are made only as set out in the Guarantee Terms, including all of its conditions and the doctor-reviewed claim process. Consultation fees and products bought without a consultation are not covered by the guarantee.'
+        : 'No money-back guarantee is currently offered. If one is introduced, refunds under it will follow the Guarantee Terms published at that time.',
     ),
-    h('contact', 'How to ask'),
+
+    h('how-refunds-work', 'How and when refunds are paid'),
+    ul(
+      'Refunds are paid to the original payment method (UPI, card, net banking or wallet) through our payment partner, Razorpay.',
+      'Approved refunds are credited within 5–7 working days. We share the refund reference so you can check with your bank; the exact time it appears depends on your bank or card issuer.',
+      'If the original payment method can no longer accept a refund, we will pay it by bank transfer to an account in your name.',
+      'All orders and consultations are prepaid, so there are no cash refunds.',
+    ),
+
+    h('contact', 'How to request a refund or cancellation'),
+    ol(
+      `Message us on WhatsApp or write to ${c.supportEmail}.`,
+      'Include your name, the mobile number on your account, your booking or order number, what you would like us to do, and photos if the request is about a product.',
+      'We acknowledge your request within one working day and keep you updated until it is resolved.',
+    ),
     p(
-      `Message us on WhatsApp or write to ${c.supportEmail} with your order or booking reference. If you are not happy with the outcome, you can write to the grievance officer at ${c.grievanceEmail}.`,
+      `If you are not satisfied with the outcome, you can write to our Grievance Officer at ${c.grievanceEmail}. We acknowledge grievances within 48 hours and aim to resolve them within one month.`,
     ),
   ];
 }
@@ -266,7 +476,7 @@ function shipping(c: LegalContext): ContentBlock[] {
     ),
     h('when', 'Dispatch and delivery times'),
     p(
-      'Orders are packed and handed to the courier after payment is confirmed. Delivery time depends on your PIN code. Confirmed dispatch and delivery times will be listed here.',
+      'Orders are packed and handed to the courier after payment is confirmed. Delivery time depends on your PIN code and the courier; we share the expected delivery date with your tracking link.',
     ),
     h('charges', 'Delivery charges'),
     p('Any delivery charge is shown at checkout, before you pay. Prices already include GST.'),
@@ -288,7 +498,7 @@ function shipping(c: LegalContext): ContentBlock[] {
     ),
     h('problems', 'Damaged or missing parcels'),
     p(
-      'If a parcel arrives damaged or is marked delivered but has not reached you, tell us as soon as you can. See the Refund & Cancellation Policy for what happens next.',
+      'If a parcel arrives damaged or is marked delivered but has not reached you, tell us within 48 hours. See the Refund Policy for what happens next.',
     ),
     h('contact', 'Questions'),
     p(`Message us on WhatsApp, or write to ${c.supportEmail}.`),
@@ -354,7 +564,7 @@ function guarantee(c: LegalContext): ContentBlock[] {
 function disclaimer(c: LegalContext): ContentBlock[] {
   return [
     p(
-      'Information on this website — including articles, concern pages, product pages and the online assessment — is for general education. It is not a diagnosis and is not a substitute for advice from a doctor who has assessed you.',
+      'Information on this website — including articles, concern pages, product pages, the scalp scan and the online assessment — is for general education and screening. It is not a diagnosis and is not a substitute for advice from a doctor who has assessed you.',
     ),
     h('telemedicine', 'Consultations are telemedicine'),
     p('YHC consultations follow the Telemedicine Practice Guidelines, 2020. In practice, this means:'),
@@ -427,37 +637,40 @@ const DOCS: Record<
   { title: string; summary: string; build: (c: LegalContext) => ContentBlock[] }
 > = {
   privacy: {
-    title: 'Privacy policy',
-    summary: 'What we collect, why, who sees it, where it is stored, how long it is kept, and your rights.',
+    title: 'Privacy Policy',
+    summary:
+      'What we collect — including your scalp scan and health information — why, who can see it, where it is stored, how long it is kept, and your rights.',
     build: privacy,
   },
   terms: {
-    title: 'Terms of use',
-    summary: 'The rules for using the site, booking consultations and buying products.',
+    title: 'Terms & Conditions',
+    summary:
+      'The terms for using YHC: the scalp scan, telemedicine consultations, prescriptions, orders and payments.',
     build: terms,
   },
   'refund-cancellation': {
-    title: 'Refund & cancellation',
-    summary: 'Rescheduling and cancelling consultations, cancelling orders, and how refunds are paid.',
+    title: 'Refund Policy',
+    summary:
+      'Rescheduling and cancelling consultations, cancelling orders, returning damaged or wrong items, and how refunds are paid.',
     build: refund,
   },
   shipping: {
-    title: 'Shipping policy',
+    title: 'Shipping Policy',
     summary: 'Where we deliver, charges, tracking on WhatsApp and what to do if a parcel goes wrong.',
     build: shipping,
   },
   guarantee: {
-    title: 'Guarantee terms',
+    title: 'Guarantee Terms',
     summary: 'The money-back guarantee conditions and how a claim is reviewed, when a guarantee is offered.',
     build: guarantee,
   },
   'medical-disclaimer': {
-    title: 'Medical disclaimer',
+    title: 'Medical Disclaimer',
     summary: 'What the information on this site is, and is not, and how telemedicine consultations work.',
     build: disclaimer,
   },
   grievance: {
-    title: 'Grievance officer',
+    title: 'Grievance Officer',
     summary: 'Who to write to if something has not been resolved, and how quickly we respond.',
     build: grievance,
   },
@@ -476,5 +689,12 @@ export function getLegalSummary(slug: LegalSlug) {
 
 export function getLegalDocument(slug: LegalSlug, ctx: LegalContext): LegalDocument {
   const d = DOCS[slug];
-  return { slug, title: d.title, summary: d.summary, lastUpdated: LAST_UPDATED, blocks: d.build(ctx) };
+  return {
+    slug,
+    title: d.title,
+    summary: d.summary,
+    lastUpdated: LAST_UPDATED,
+    lastReviewed: LEGAL_ENTITY.lastReviewed,
+    blocks: d.build(ctx),
+  };
 }

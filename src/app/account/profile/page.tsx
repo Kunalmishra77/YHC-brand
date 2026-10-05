@@ -33,7 +33,7 @@ export default async function ProfilePage() {
   const rows: ConsentRow[] = [
     {
       key: 'privacy',
-      title: 'Privacy policy',
+      title: 'Privacy Policy',
       purpose: 'How we collect, store and protect your data.',
       version: 'Version 1 · draft',
       givenOn: joined,
@@ -41,7 +41,7 @@ export default async function ProfilePage() {
     },
     {
       key: 'terms',
-      title: 'Terms of use',
+      title: 'Terms & Conditions',
       purpose: 'The rules for using Your Hair Company.',
       version: 'Version 1 · draft',
       givenOn: joined,

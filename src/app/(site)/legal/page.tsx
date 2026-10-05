@@ -1,15 +1,14 @@
-import { FileWarning } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { formatContentDate } from '@/components/site/article/content-blocks';
 import { pageMetadata } from '@/components/site/seo';
 import { LEGAL_PAGES, SITE } from '@/lib/site';
-import { getLegalSummary, isLegalSlug } from '@/server/content/legal';
+import { getLegalSummary, isLegalSlug, LEGAL_ENTITY } from '@/server/content/legal';
 
 export const metadata: Metadata = pageMetadata({
   title: 'Legal',
   description:
-    'Privacy, terms, refunds, shipping, guarantee terms, medical disclaimer and grievance officer.',
+    'Privacy Policy, Terms & Conditions, Refund Policy, shipping, guarantee terms, medical disclaimer and grievance officer.',
   path: '/legal',
 });
 
@@ -27,12 +26,10 @@ export default function LegalIndexPage() {
             <p className="text-lg leading-relaxed text-body">
               How we handle your data, your orders and your care — written to be read, not skimmed past.
             </p>
-            <p
-              role="note"
-              className="inline-flex items-start gap-2 rounded-md bg-warning-bg px-3.5 py-2 text-[13px] text-warning"
-            >
-              <FileWarning className="mt-px size-4 shrink-0" aria-hidden />
-              Draft — to be replaced with counsel-approved text.
+            {/* Counsel review pending (src/server/content/legal.ts) — no draft banner shown to visitors. */}
+            <p className="text-[13px] text-muted-foreground">
+              Last reviewed{' '}
+              <time dateTime={LEGAL_ENTITY.lastReviewed}>{formatContentDate(LEGAL_ENTITY.lastReviewed)}</time>
             </p>
           </div>
         </div>

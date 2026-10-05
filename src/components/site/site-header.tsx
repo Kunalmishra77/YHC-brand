@@ -34,7 +34,7 @@ export function SiteHeader() {
             asChild
             className="hidden h-11 px-5 group-data-[dark=true]/hdr:bg-[image:var(--yhc-silver)] group-data-[dark=true]/hdr:text-obsidian sm:inline-flex"
           >
-            <Link href="/book">{t('common.bookConsultation')}</Link>
+            <Link href="/start">{t('nav.beginScan')}</Link>
           </Button>
           <Sheet>
             <SheetTrigger asChild>
@@ -63,8 +63,14 @@ export function SiteHeader() {
                   {t('nav.account')}
                 </Link>
                 <Button asChild className="mt-6 h-12">
-                  <Link href="/book">{t('common.bookConsultationPrice')}</Link>
+                  <Link href="/start">{t('nav.beginScan')}</Link>
                 </Button>
+                <Link
+                  href="/book"
+                  className="mt-3 py-2 text-center text-sm font-medium text-body underline underline-offset-4"
+                >
+                  {t('common.bookConsultationPrice')}
+                </Link>
               </nav>
             </SheetContent>
           </Sheet>
