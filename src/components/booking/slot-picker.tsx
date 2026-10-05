@@ -127,7 +127,7 @@ export function SlotPicker({
             {groups.map((g) => (
               <fieldset key={g.period}>
                 <legend className="mb-2 text-sm text-muted-foreground">{g.period}</legend>
-                <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+                <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
                   {g.slots.map((s) => {
                     const isSel = selected === s.startsAt;
                     return (

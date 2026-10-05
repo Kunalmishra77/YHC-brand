@@ -52,10 +52,10 @@ export default async function OrderPage({ params }: PageProps<'/account/orders/[
         All orders
       </Link>
 
-      <header className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+      <header className="mt-2 flex flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0">
           <p className="eyebrow">Order {order.code}</p>
-          <h1 className="display mt-2 text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-[1.05]">
+          <h1 className="display mt-2 text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-[1.05] text-balance">
             {order.lines.map((l) => l.label).join(', ')}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">Ordered {formatWhen(order.createdAt)}</p>
@@ -66,7 +66,7 @@ export default async function OrderPage({ params }: PageProps<'/account/orders/[
       {/* Timeline */}
       <section
         aria-labelledby="status-heading"
-        className="mt-6 rounded-xl border border-line bg-card p-5 md:p-6"
+        className="mt-6 rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
       >
         <h2 id="status-heading" className="sr-only">
           Delivery status
@@ -139,7 +139,7 @@ export default async function OrderPage({ params }: PageProps<'/account/orders/[
 
       {/* Plan + reorder */}
       {plan && REORDERABLE.includes(order.status) ? (
-        <section className="mt-6 flex flex-col gap-4 rounded-xl border border-line bg-card p-5 sm:flex-row sm:items-center sm:justify-between md:p-6">
+        <section className="mt-6 flex flex-col gap-4 rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 sm:flex-row sm:items-center sm:justify-between md:p-6">
           <div>
             <p className="font-medium text-ink">Continue the same plan</p>
             <p className="mt-1 text-sm text-body">
@@ -157,7 +157,7 @@ export default async function OrderPage({ params }: PageProps<'/account/orders/[
       ) : null}
 
       {/* Payment + address */}
-      <section className="mt-6 grid gap-6 rounded-xl border border-line bg-card p-5 md:grid-cols-2 md:p-6">
+      <section className="mt-6 grid gap-6 rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:grid-cols-2 md:p-6">
         <div>
           <h2 className="text-sm font-semibold text-ink">Payment</h2>
           <dl className="mt-3 space-y-2 text-sm">

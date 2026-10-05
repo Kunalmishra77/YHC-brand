@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { JourneyBooking } from '@/components/journey/journey-booking';
-import { JourneyStepper } from '@/components/journey/journey-stepper';
+import { JourneyCard, JourneyShell } from '@/components/journey/journey-shell';
 import { db, getSettingNumber } from '@/server/demo/store';
 import { getDoctor } from '@/server/catalog';
 import { requireJourneyStep } from '@/server/journey/guard';
@@ -19,29 +19,26 @@ export default async function JourneyBookPage() {
   const paidAt = appt && appt.status !== 'held' ? bookedAt(appt.id, db().events) : null;
   const confirmed = appt && paidAt ? confirmedView(appt, paidAt) : null;
 
+  const slotMinutes = getSettingNumber('consult.slot_minutes');
+
   return (
-    <div className="bg-pearl">
-      <div className="bg-obsidian">
-        <div className="container-yhc py-6 md:py-8">
-          <JourneyStepper current={confirmed ? 'consultation' : 'book'} tone="dark" />
-        </div>
-      </div>
-      <div className="container-yhc py-8 pb-32 md:py-12">
-        <div className="mx-auto max-w-5xl">
-          <p className="eyebrow">{confirmed ? 'Booked' : 'Book your consultation'}</p>
-          <div className="mt-2">
-            <JourneyBooking
-              initialDays={slotDays()}
-              doctor={{ name: doctor.name, qualifications: doctor.qualifications }}
-              feePaise={getSettingNumber('consult.fee_paise')}
-              slotMinutes={getSettingNumber('consult.slot_minutes')}
-              holdMinutes={getSettingNumber('consult.hold_minutes')}
-              creditDays={getSettingNumber('consult.credit_window_days')}
-              initialConfirmed={confirmed}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+    <JourneyShell
+      current={confirmed ? 'consultation' : 'book'}
+      eyebrow={confirmed ? 'Booked' : 'Book your consultation'}
+      title={`A ${slotMinutes}-minute video consultation with ${doctor.name}`}
+      lede={`${doctor.qualifications} · Your scan and health form are shared with the doctor before the call.`}
+    >
+      <JourneyCard>
+        <JourneyBooking
+          initialDays={slotDays()}
+          doctor={{ name: doctor.name, qualifications: doctor.qualifications }}
+          feePaise={getSettingNumber('consult.fee_paise')}
+          slotMinutes={slotMinutes}
+          holdMinutes={getSettingNumber('consult.hold_minutes')}
+          creditDays={getSettingNumber('consult.credit_window_days')}
+          initialConfirmed={confirmed}
+        />
+      </JourneyCard>
+    </JourneyShell>
   );
 }

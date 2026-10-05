@@ -44,7 +44,7 @@ export function MergeDialog({
           Merge duplicate
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent mobileSheet>
         <DialogHeader>
           <DialogTitle>Merge a duplicate into {keepName}</DialogTitle>
           <DialogDescription>

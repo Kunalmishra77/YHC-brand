@@ -48,21 +48,25 @@ export function AssessmentReport({
             Demo analysis
           </span>
         </div>
-        <h2 className="display mt-4 text-[30px] md:text-[40px]">{scan.headline}</h2>
-        <p className="mt-3 max-w-2xl text-[17px] leading-relaxed text-body">{scan.explanation}</p>
+        <h2 className="display mt-4 text-[clamp(1.875rem,1.5rem+1.4vw,2.5rem)] text-balance">
+          {scan.headline}
+        </h2>
+        <p className="mt-3 max-w-[62ch] text-[17px] leading-relaxed text-pretty text-body">
+          {scan.explanation}
+        </p>
         {actions ? <div className="mt-6">{actions}</div> : null}
       </section>
 
       {/* metrics */}
       <section
         aria-labelledby="metrics-heading"
-        className="grid gap-4 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]"
+        className="grid gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]"
       >
-        <div className="rounded-3xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6">
+        <div className="rounded-3xl bg-card p-5 shadow-card ring-1 ring-line/80 md:col-span-2 md:p-7 lg:col-span-1">
           <h3 id="metrics-heading" className="text-base font-semibold text-ink">
             What the scan measured
           </h3>
-          <div className="mt-5 grid grid-cols-2 gap-4">
+          <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-6">
             <Metric
               title="Root density"
               value={m.rootDensity}
@@ -106,26 +110,27 @@ export function AssessmentReport({
             </div>
           </div>
         </div>
-        <div className="rounded-3xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6">
+        <div className="flex flex-col rounded-3xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-7">
           <h3 className="text-base font-semibold text-ink">Scalp map</h3>
-          <ScalpMap areas={m.thinningAreas} className="mt-4" />
+          <ScalpMap areas={m.thinningAreas} className="mt-4 flex-1" />
         </div>
-      </section>
 
-      {/* reasons */}
-      <section className="rounded-3xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6">
-        <h3 className="text-base font-semibold text-ink">Why we say this</h3>
-        <ul className="mt-3 space-y-2.5">
-          {scan.reasons.map((r) => (
-            <li key={r} className="flex gap-3 text-[15px] text-body">
-              <span className="mt-2 size-1.5 shrink-0 rounded-full bg-steel" aria-hidden />
-              {r}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-5 text-[13px] text-muted-foreground">
-          Scanned {formatIst(new Date(scan.capturedAt))} · {scan.angles.map((a) => ANGLE_LABEL[a]).join(', ')}
-        </p>
+        {/* reasons */}
+        <div className="rounded-3xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-7 lg:col-span-2">
+          <h3 className="text-base font-semibold text-ink">Why we say this</h3>
+          <ul className="mt-3 space-y-2.5">
+            {scan.reasons.map((r) => (
+              <li key={r} className="flex gap-3 text-[15px] text-body">
+                <span className="mt-2 size-1.5 shrink-0 rounded-full bg-steel" aria-hidden />
+                {r}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 text-[13px] text-muted-foreground">
+            Scanned {formatIst(new Date(scan.capturedAt))} ·{' '}
+            {scan.angles.map((a) => ANGLE_LABEL[a]).join(', ')}
+          </p>
+        </div>
       </section>
 
       <p className="flex gap-2.5 rounded-2xl bg-info-bg px-4 py-3.5 text-sm text-info">

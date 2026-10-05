@@ -25,17 +25,26 @@ export function Reveal({
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     if (el.getBoundingClientRect().top < window.innerHeight * 0.92) return;
     setState('hidden');
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setState('shown');
-          io.disconnect();
-        }
-      },
-      { rootMargin: '0px 0px -8% 0px' },
-    );
+    const show = () => {
+      setState('shown');
+      io.disconnect();
+      window.removeEventListener('scroll', onScroll);
+    };
+    const io = new IntersectionObserver((entries) => entries.some((e) => e.isIntersecting) && show(), {
+      rootMargin: '0px 0px 10% 0px',
+    });
+    // Fail-safe: never leave content invisible if the observer misses (fast scroll, odd browsers).
+    const onScroll = () => {
+      if (el.getBoundingClientRect().top < window.innerHeight * 1.1) show();
+    };
     io.observe(el);
-    return () => io.disconnect();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    const timer = window.setTimeout(show, 3000);
+    return () => {
+      io.disconnect();
+      window.removeEventListener('scroll', onScroll);
+      window.clearTimeout(timer);
+    };
   }, []);
 
   return (

@@ -75,7 +75,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
               </Link>{' '}
               / <span className="text-on-dark">{concern.title}</span>
             </nav>
-            <h1 className="display mt-6 max-w-2xl text-[clamp(2.75rem,1.8rem+3.6vw,5rem)] leading-[1.02] text-on-dark">
+            <h1 className="display mt-6 max-w-2xl text-[clamp(2.75rem,1.8rem+3.6vw,5rem)] leading-[1.02] text-balance text-on-dark">
               {concern.title}
             </h1>
             <p className="mt-6 max-w-xl text-xl leading-relaxed text-on-dark-muted">{concern.summary}</p>
@@ -101,7 +101,9 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
         <section className="container-yhc grid gap-14 py-20 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:py-28">
           <div>
             <p className="text-xl leading-relaxed text-ink">{concern.body}</p>
-            <h2 className="display mt-14 text-[clamp(2rem,1.5rem+2vw,3rem)]">What can be behind it</h2>
+            <h2 className="display mt-14 text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
+              What can be behind it
+            </h2>
             <ul className="mt-6 divide-y divide-line border-y border-line">
               {concern.causes.map((cause) => (
                 <li key={cause} className="flex gap-4 py-4 text-lg text-body">
@@ -157,13 +159,15 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
           <section className="border-t border-line bg-[#efeeeb]/60">
             <div className="container-yhc py-20 md:py-28">
               <div className="grid gap-6 md:grid-cols-2 md:items-end">
-                <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)]">What a plan may draw on</h2>
+                <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
+                  What a plan may draw on
+                </h2>
                 <p className="max-w-md text-body md:justify-self-end">
                   If treatment is right for you, Dr. Tyagi chooses the products, strength and routine. These
                   are the ones often considered for {concern.title.toLowerCase()}. {t('common.resultsVary')}
                 </p>
               </div>
-              <div className="mt-12 grid gap-x-6 gap-y-12 sm:grid-cols-2 md:grid-cols-3">
+              <div className="mt-12 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
                 {products.map((p) => (
                   <ProductTile key={p.id} product={p} />
                 ))}
@@ -176,7 +180,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
       {/* Other concerns */}
       {others.length ? (
         <section className="container-yhc py-20 md:py-24">
-          <h2 className="display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)]">Other concerns</h2>
+          <h2 className="display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)] text-balance">Other concerns</h2>
           <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl bg-line sm:grid-cols-2 lg:grid-cols-4">
             {others.map((c) => (
               <li key={c.slug} className="bg-pearl">

@@ -88,8 +88,11 @@ export function AvailabilityEditor({ initial, minDate }: { initial: Availability
             const ranges = rules[key] ?? [];
             const on = ranges.length > 0;
             return (
-              <li key={key} className="grid gap-3 px-4 py-3 md:grid-cols-[150px_1fr] md:px-5">
-                <div className="flex items-center gap-3">
+              <li
+                key={key}
+                className="grid gap-3 px-4 py-3.5 md:grid-cols-[150px_1fr] md:items-start md:px-5"
+              >
+                <div className="flex min-h-10 items-center gap-3">
                   <Switch
                     id={`day-${key}`}
                     checked={on}
@@ -106,23 +109,26 @@ export function AvailabilityEditor({ initial, minDate }: { initial: Availability
                 <div className="space-y-2">
                   {on ? (
                     ranges.map((r, i) => (
-                      <div key={i} className="flex flex-wrap items-center gap-2">
+                      <div
+                        key={i}
+                        className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-2 sm:max-w-sm"
+                      >
                         <Input
                           type="time"
                           value={r.start}
                           step={300}
                           aria-label={`${d.long} range ${i + 1} start`}
                           onChange={(e) => setRange(key, i, { start: e.target.value })}
-                          className="h-10 w-32 bg-pearl/60"
+                          className="h-10 w-full min-w-0 bg-pearl/60"
                         />
-                        <span className="text-sm text-muted-foreground">to</span>
+                        <span className="text-center text-sm text-muted-foreground">to</span>
                         <Input
                           type="time"
                           value={r.end}
                           step={300}
                           aria-label={`${d.long} range ${i + 1} end`}
                           onChange={(e) => setRange(key, i, { end: e.target.value })}
-                          className="h-10 w-32 bg-pearl/60"
+                          className="h-10 w-full min-w-0 bg-pearl/60"
                         />
                         <Button
                           type="button"
@@ -206,14 +212,14 @@ export function AvailabilityEditor({ initial, minDate }: { initial: Availability
         ) : (
           <ul className="divide-y divide-line">
             {exceptions.map((e, i) => (
-              <li key={i} className="flex flex-wrap items-center gap-2 px-4 py-3 md:px-5">
+              <li key={i} className="flex flex-wrap items-center gap-2 px-4 py-3.5 md:px-5">
                 <Input
                   type="date"
                   value={e.date}
                   min={minDate}
                   aria-label={`Exception ${i + 1} date`}
                   onChange={(ev) => setException(i, { date: ev.target.value })}
-                  className="h-10 w-40 bg-pearl/60"
+                  className="h-10 min-w-0 flex-1 bg-pearl/60 sm:w-40 sm:flex-none"
                 />
                 <select
                   value={e.kind}
@@ -225,7 +231,7 @@ export function AvailabilityEditor({ initial, minDate }: { initial: Availability
                       range: kind === 'extra' ? (e.range ?? { start: '18:00', end: '20:00' }) : e.range,
                     });
                   }}
-                  className="h-10 rounded-md border border-line bg-card px-2 text-sm text-ink"
+                  className="h-10 min-w-0 flex-1 rounded-md border border-line bg-card px-3 text-sm text-ink sm:flex-none"
                 >
                   <option value="unavailable">Unavailable</option>
                   <option value="extra">Extra hours</option>
@@ -242,7 +248,7 @@ export function AvailabilityEditor({ initial, minDate }: { initial: Availability
                   </label>
                 ) : null}
                 {e.range ? (
-                  <span className="flex items-center gap-2">
+                  <span className="grid w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:w-auto sm:min-w-64">
                     <Input
                       type="time"
                       value={e.range.start}
@@ -250,7 +256,7 @@ export function AvailabilityEditor({ initial, minDate }: { initial: Availability
                       onChange={(ev) =>
                         setException(i, { range: { start: ev.target.value, end: e.range?.end ?? '' } })
                       }
-                      className="h-10 w-32 bg-pearl/60"
+                      className="h-10 w-full min-w-0 bg-pearl/60"
                     />
                     <span className="text-sm text-muted-foreground">to</span>
                     <Input
@@ -260,7 +266,7 @@ export function AvailabilityEditor({ initial, minDate }: { initial: Availability
                       onChange={(ev) =>
                         setException(i, { range: { start: e.range?.start ?? '', end: ev.target.value } })
                       }
-                      className="h-10 w-32 bg-pearl/60"
+                      className="h-10 w-full min-w-0 bg-pearl/60"
                     />
                   </span>
                 ) : null}
@@ -283,7 +289,7 @@ export function AvailabilityEditor({ initial, minDate }: { initial: Availability
         )}
       </section>
 
-      <div className="sticky bottom-0 z-10 -mx-4 flex flex-col gap-2 border-t border-line bg-pearl/95 px-4 py-3 backdrop-blur sm:flex-row sm:items-center sm:justify-between md:-mx-6 md:px-6">
+      <div className="sticky bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-10 flex flex-col gap-3 rounded-xl bg-card/95 p-3 shadow-raised ring-1 ring-line/80 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between sm:pl-5">
         <div aria-live="polite" className="min-w-0">
           {errors.length ? (
             <ul role="alert" className="space-y-0.5 text-[13px] text-danger">
@@ -301,7 +307,12 @@ export function AvailabilityEditor({ initial, minDate }: { initial: Availability
             </p>
           )}
         </div>
-        <Button type="button" className="h-11 sm:min-w-40" disabled={pending} onClick={save}>
+        <Button
+          type="button"
+          className="h-11 w-full shrink-0 sm:w-auto sm:min-w-40"
+          disabled={pending}
+          onClick={save}
+        >
           {pending ? <Loader2 className="animate-spin" aria-hidden /> : null}
           {pending ? 'Saving…' : 'Save availability'}
         </Button>

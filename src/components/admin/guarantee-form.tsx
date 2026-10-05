@@ -53,7 +53,12 @@ export function GuaranteeDraftForm({ initial }: { initial: PolicyRulesInput }) {
     <form onSubmit={submit} className="space-y-4">
       <div className="space-y-1.5">
         <Label htmlFor="gp-name">Policy name</Label>
-        <Input id="gp-name" value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} />
+        <Input
+          id="gp-name"
+          className="h-11 bg-card"
+          value={v.name}
+          onChange={(e) => setV({ ...v, name: e.target.value })}
+        />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         {NUMBER_FIELDS.map((f) => (
@@ -63,7 +68,7 @@ export function GuaranteeDraftForm({ initial }: { initial: PolicyRulesInput }) {
               <Input
                 id={`gp-${f.key}`}
                 inputMode="numeric"
-                className="w-24"
+                className="h-11 w-24 bg-card"
                 value={nums[f.key] ?? ''}
                 onChange={(e) => setNums({ ...nums, [f.key]: e.target.value })}
               />

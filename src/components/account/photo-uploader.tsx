@@ -69,7 +69,7 @@ export function PhotoUploader({
     return (
       <div
         role="status"
-        className="flex flex-col items-start gap-3 rounded-xl border border-line bg-card p-5 md:p-6"
+        className="flex flex-col items-start gap-3 rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
       >
         <CheckCircle2 className="size-6 text-success" aria-hidden />
         <p className="font-semibold text-ink">{done} photos saved</p>
@@ -84,7 +84,7 @@ export function PhotoUploader({
   }
 
   return (
-    <div className="rounded-xl border border-line bg-card p-5 md:p-6">
+    <div className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6">
       <h2 className="text-base font-semibold text-ink">{title}</h2>
       <p className="mt-1 text-sm text-body">
         Natural daylight, dry hair, no hats or filters. Use the same spot each month so changes are easier to

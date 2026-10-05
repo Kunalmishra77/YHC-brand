@@ -168,29 +168,37 @@ export const PRODUCTS: Product[] = [
   },
 ];
 
+/*
+ * Concern pages and FAQs: general education, worded to match published sources (AAD, NHS, DermNet,
+ * StatPearls) — see src/server/content/evidence.ts for the citations. Never a diagnosis or a promise.
+ * TODO(client): Dr. Tyagi to review all concern and FAQ copy before launch — see docs/12 (content).
+ */
 export const CONCERNS: Concern[] = [
   {
     slug: 'hair_fall',
     title: 'Hair fall',
     summary: 'More hair on the pillow, comb or shower drain than usual.',
-    body: 'Everyone sheds some hair every day as old hairs make way for new ones. Shedding can rise for a while after stress, illness, a change in diet or medicines, or hormonal shifts — and sometimes it is the first sign of a longer-term pattern. A consultation helps tell temporary shedding apart from patterns that need treatment.',
+    body: 'Losing around 50 to 100 hairs a day is considered normal — old hairs fall so new ones can grow. Heavier shedding often follows a trigger such as illness, high fever, childbirth, surgery, a crash diet or a very stressful period, usually around three months later (sometimes anywhere from one to six months). This kind of shedding often settles once the trigger has passed, but it can also unmask an early pattern of thinning. Looking at your roots and your recent history tells the two apart.',
     causes: [
-      'A stressful period, fever or illness in the past few months',
-      'Sudden weight loss or a restrictive diet',
-      'Low iron, vitamin D or thyroid changes',
-      'Hormonal shifts, including after pregnancy',
+      'An illness, high fever, surgery or very stressful period in the last few months',
+      'Childbirth — shedding often starts a few months after the baby is born',
+      'Rapid weight loss or a diet low in protein',
+      'Low iron stores, or an under- or over-active thyroid',
+      'Starting some medicines, or stopping the contraceptive pill',
       'An early sign of pattern hair loss',
     ],
     questions: [
       'When did you first notice more shedding, and has it changed since?',
-      'Any illness, surgery, new medicine or big life change in the last six months?',
-      'How is your diet, sleep and stress at the moment?',
-      'Is there hair loss in your family?',
+      'Any illness, fever, surgery, childbirth, new medicine or big life change in the six months before?',
+      'How are your diet, sleep and stress at the moment?',
+      'Have you had blood tests recently — for example iron or thyroid?',
+      'Is there thinning hair in your close family?',
     ],
     seeSoon: [
       'Hair coming out in patches or clumps',
+      'Heavy shedding that has not eased after about six months, or keeps returning',
       'Pain, burning, redness or sores on the scalp',
-      'Shedding along with tiredness, weight change or irregular periods',
+      'Shedding along with tiredness, feeling cold, weight change or irregular periods',
     ],
     relatedProducts: ['hair-nutrition-tablets', 'scalp-serum', 'gentle-strengthening-shampoo'],
   },
@@ -198,24 +206,26 @@ export const CONCERNS: Concern[] = [
     slug: 'thinning',
     title: 'Overall thinning',
     summary: 'Hair feels less dense, or your scalp shows more than before.',
-    body: 'Diffuse thinning — a widening parting, a thinner ponytail, more scalp showing under bright light — often has more than one cause working together. Dr. Tyagi reviews your history, photos and routine to understand which ones apply to you, and suggests a plan that fits your pattern.',
+    body: 'Diffuse thinning — a widening parting, a thinner ponytail, more scalp showing under bright light — often has more than one cause working together. In pattern hair loss, follicles gradually shrink and produce finer, shorter hairs; in women it usually shows as a wider parting rather than a receding hairline. Nutrition and thyroid problems can add to it. Because the same look can have different causes, a close look at the roots and your history comes before any plan.',
     causes: [
-      'Pattern hair loss, which can run in families',
-      'Nutritional gaps such as low iron or vitamin D',
-      'Thyroid or other hormonal changes',
-      'Long-term stress or a recent illness',
-      'Styling habits that pull or heat-damage the hair',
+      'Pattern hair loss, which often runs in families',
+      'Low iron stores or other nutritional gaps — worth testing rather than guessing',
+      'Thyroid changes, pregnancy, menopause or other hormonal shifts',
+      'A long-running phase of heavier shedding after illness or stress',
+      'Styling habits that pull on or heat-damage the hair',
     ],
     questions: [
       'Where do you notice the thinning most — parting, crown or all over?',
       'Have you had blood tests in the last year?',
-      'Which hair products and styling tools do you use?',
+      'For women: any changes in periods, a recent pregnancy, or menopause?',
+      'Which hair products, treatments and styling tools do you use?',
       'Any family history of thinning hair?',
     ],
     seeSoon: [
       'Thinning that is getting noticeably worse month by month',
       'Patchy bald spots or broken hairs',
       'Scalp pain, scaling or redness',
+      'Thinning together with acne, new facial hair or irregular periods',
     ],
     relatedProducts: ['topical-hair-solution', 'scalp-serum', 'hair-nutrition-tablets'],
   },
@@ -223,19 +233,20 @@ export const CONCERNS: Concern[] = [
     slug: 'receding_hairline',
     title: 'Receding hairline',
     summary: 'The hairline at the temples or front is moving back.',
-    body: 'Hairline changes are common and often genetic. Some recession with age is normal; a faster or uneven change is worth a look. Starting early usually gives more options, and a doctor can explain plainly what treatment can and cannot do for your hairline.',
+    body: 'Hairline changes are common and often genetic: in an Indian population study, more than half of men aged 30 to 50 had some degree of pattern hair loss. Some change with age is normal; a fast or uneven change is worth a look. Dermatologists note that treatment tends to work best when started soon after hair loss is noticed. Less often, a hairline moves back because of tight hairstyles or a scarring condition — and a follicle that has scarred can no longer grow hair, which is why an early check matters.',
     causes: [
       'Pattern hair loss, influenced by genes and hormones',
-      'Tight hairstyles that pull at the front over time',
-      'Less often, scalp conditions that affect the hairline',
+      'Tight hairstyles that pull at the front over months or years (traction)',
+      'Less often, scarring conditions that affect the hairline and eyebrows',
     ],
     questions: [
       'How quickly has the hairline changed, and over how long?',
       'Did a parent or grandparent have a similar pattern?',
-      'Have you tried any treatment before, and how did it go?',
+      'Do you often wear your hair pulled back tightly, or use a helmet or cap for long hours?',
+      'Have you tried any treatment before — what, for how long, and how did it go?',
     ],
     seeSoon: [
-      'Redness, itching or scarring along the hairline',
+      'Redness, itching, burning or shiny skin along the hairline',
       'Eyebrow loss along with hairline change',
       'Very fast change over a few months',
     ],
@@ -245,86 +256,183 @@ export const CONCERNS: Concern[] = [
     slug: 'crown_thinning',
     title: 'Crown thinning',
     summary: 'A thinner patch at the top or back of the head.',
-    body: 'Crown thinning is often pattern-related and easy to miss until someone points it out or a photo shows it. It responds slowly to any treatment, so plans focus on a steady routine, monthly progress photos taken the same way each time, and regular review with Dr. Tyagi.',
+    body: 'Crown thinning is often pattern-related and easy to miss until someone points it out or a photo shows it. Under magnification, pattern hair loss shows hairs of uneven thickness and fewer hairs per follicle group — changes that are hard to see in a mirror. Hair grows about a centimetre a month and any treatment is judged over several months, so plans focus on a steady routine, progress photos taken the same way each month, and regular review with Dr. Tyagi.',
     causes: [
-      'Pattern hair loss, which often starts at the crown',
+      'Pattern hair loss, which often starts at the crown in men',
       'Hormonal factors',
-      'Nutritional gaps that make thinning more visible',
+      'Nutritional gaps or recent shedding that make thinning more visible',
     ],
     questions: [
       'When did you or someone else first notice the crown?',
       'Do you have photos from a year or two ago to compare?',
       'Any medicines, supplements or treatments you use now?',
+      'Is there a similar pattern in your family?',
     ],
-    seeSoon: ['A smooth, completely bald round patch', 'Scalp sores, crusting or pain at the crown'],
+    seeSoon: [
+      'A smooth, completely bald round patch',
+      'Scalp sores, crusting or pain at the crown',
+      'Thinning that is spreading quickly',
+    ],
     relatedProducts: ['topical-hair-solution', 'hair-nutrition-tablets', 'scalp-serum'],
   },
   {
     slug: 'dandruff_scalp',
     title: 'Dandruff & scalp issues',
     summary: 'Flaking, itching or an irritated scalp.',
-    body: 'A comfortable, healthy scalp matters for hair. Flaking and itching can come from a common yeast-related condition, dryness, product build-up or sensitivity. Some scalp conditions need medical treatment; others simply need a gentler routine — the consultation works out which.',
+    body: 'Dandruff is common, it is not harmful and you cannot catch it from someone else. Flaking and itching can come from seborrhoeic dermatitis (linked to a yeast that normally lives on the skin), dryness, product build-up or sensitivity. A medicated anti-dandruff shampoo is the usual first step, and it is worth giving one around four weeks. If that does not help, the scalp is red or swollen, or itching is severe, a doctor should look — some scalp conditions need medical treatment.',
     causes: [
-      'Seborrhoeic dermatitis (a common cause of dandruff)',
-      'Dry scalp, often worse in winter or with hot showers',
-      'Build-up or sensitivity from hair products',
-      'Less often, psoriasis or fungal infections',
+      'Seborrhoeic dermatitis, a common cause of dandruff',
+      'Dry scalp, often worse in winter or with very hot showers',
+      'Build-up or sensitivity from hair products or dyes',
+      'Less often, psoriasis or a fungal infection',
     ],
     questions: [
       'Is the flaking oily and yellowish, or dry and white?',
       'Does anything make it better or worse — seasons, products, stress?',
-      'Have you tried anti-dandruff shampoos, and for how long?',
+      'Which anti-dandruff shampoos have you tried, and for how long?',
+      'Do you have flaking or redness elsewhere — eyebrows, beside the nose, ears or chest?',
     ],
     seeSoon: [
+      'No improvement after about four weeks of an anti-dandruff shampoo',
+      'A red, swollen or very itchy scalp, or itching that disturbs your sleep',
       'Thick plaques, bleeding or weeping on the scalp',
-      'Hair loss in the itchy area',
-      'Itching that disturbs your sleep',
+      'Hair loss in the itchy or flaky area',
     ],
     relatedProducts: ['gentle-strengthening-shampoo', 'lightweight-conditioner', 'scalp-serum'],
   },
 ];
 
+/*
+ * Categories, in display order (the FAQ page groups by first appearance): scan · consultation · results ·
+ * plans · guarantee · delivery · privacy. Journey order per ADR-26: details → 3D scan → assessment →
+ * health form → slot + ₹500 → consultation.
+ */
 export const FAQS: Faq[] = [
   {
-    id: 'faq-1',
+    id: 'faq-scan-why',
+    category: 'scan',
+    question: 'Why do you start with a scalp scan instead of a product?',
+    answer:
+      'Because hair grows from roots, and treatment can only support follicles that are still alive. When a follicle has scarred, it can no longer grow hair, and shedding, pattern thinning and scarring hair loss can look alike in a mirror. Looking at your roots first lets us be honest early about whether treatment is likely to help — before you book or pay for anything.',
+  },
+  {
+    id: 'faq-scan-how',
+    category: 'scan',
+    question: 'What is the 3D scalp scan, and how do I do it?',
+    answer:
+      'After a few basic details (name, mobile and address), you are guided step by step to capture your hairline, crown and parting with your phone camera. Use soft daylight, keep your hair clean, dry and unstyled, and turn off filters or beauty mode. The scan gives an initial view of your roots and scalp; the final assessment is always made by the doctor.',
+  },
+  {
+    id: 'faq-scan-result',
+    category: 'scan',
+    question: 'What does the personalised assessment tell me?',
+    answer:
+      'You see one of three results, each with its reasons in plain words: treatment looks suitable, a doctor should look first, or treatment is unlikely to help the scanned areas. It covers things like how dense and active your roots look, whether hairs are becoming finer, and the condition of your scalp. It is a guide to help you decide on next steps — not a diagnosis.',
+  },
+  {
+    id: 'faq-scan-not-suitable',
+    category: 'scan',
+    question: 'What happens if the assessment says treatment is unlikely to help?',
+    answer:
+      'We tell you plainly and explain why — for example, an area that has been bald for many years with very few visible active roots. We will not push you towards a plan. You can download your summary, ask us questions on WhatsApp, or still book a consultation to understand the cause and talk through other options with the doctor (the ₹500 fee applies).',
+  },
+  {
+    id: 'faq-consult-how',
     category: 'consultation',
     question: 'How does the consultation work?',
     answer:
-      'Pick a time, pay the ₹500 consultation fee, share a few details and scalp photos, then meet Dr. Tyagi on a 30-minute video call. You receive your personalised plan on WhatsApp after the call.',
+      'After your assessment you fill in a short health form — your history, medicines, previous treatments and what you have noticed. You then pick a time and pay the ₹500 consultation fee. Dr. Tyagi reviews your scan, assessment and form before meeting you one to one on a 30-minute video call. If treatment is right for you, you receive a link to your prescription and plan on WhatsApp after the call.',
   },
   {
-    id: 'faq-2',
+    id: 'faq-consult-no-obligation',
+    category: 'consultation',
+    question: 'Do I have to buy a plan after the consultation?',
+    answer:
+      'No. Your prescription is yours, whether or not you buy from YHC, and you can fill it wherever you prefer. Dr. Tyagi is associated with Your Hair Company, and we say so on every plan page.',
+  },
+  {
+    id: 'faq-consult-credit',
     category: 'consultation',
     question: 'Is the ₹500 adjusted if I buy a plan?',
     answer:
       'Yes. If you buy your recommended plan within 7 days of your consultation, ₹500 is deducted from the plan price. (Pending client confirmation.)',
   },
   {
-    id: 'faq-3',
-    category: 'plans',
-    question: 'What do the plans cost?',
-    answer: '1 month ₹5,999 · 2 months ₹10,999 · 3 months ₹14,999. Prices include GST.',
+    id: 'faq-consult-reschedule',
+    category: 'consultation',
+    question: 'Can I reschedule or cancel my consultation?',
+    answer:
+      'You can reschedule free of charge up to 6 hours before your slot. Cancel more than 24 hours ahead for a full refund of the fee; later cancellations are not refunded but include one free reschedule. Missed consultations are not refunded. (Draft policy — pending confirmation.)',
   },
   {
-    id: 'faq-4',
+    id: 'faq-results-when',
+    category: 'results',
+    question: 'How soon will I see a difference?',
+    answer:
+      'Hair changes slowly. A scalp hair grows about a centimetre a month, and the growth phase of each hair lasts years, so doctors judge progress over several months, not weeks. Published dermatology reviews describe at least four to six months of consistent use before improvement in pattern hair loss is usually noticeable — and some people do not respond. Individual results vary, and we never promise a timeline.',
+  },
+  {
+    id: 'faq-results-shedding',
+    category: 'results',
+    question: 'Is it normal to shed more when starting treatment?',
+    answer:
+      'With some treatments, a temporary increase in shedding in the first few weeks is a known effect, as resting hairs make way for new growth. It can be unsettling. If it happens, message us or raise it at your check-in — please do not stop or change your routine without speaking to the doctor first.',
+  },
+  {
+    id: 'faq-results-ongoing',
+    category: 'results',
+    question: 'Will I need to keep using treatment?',
+    answer:
+      'For pattern hair loss, the benefit of most treatments usually lasts only while you keep using them; dermatologists note that stopping tends to mean losing it over time. That is why Dr. Tyagi chooses a routine you can realistically keep up, and reviews it with you at follow-up.',
+  },
+  {
+    id: 'faq-results-supplements',
+    category: 'results',
+    question: 'Will supplements or vitamins help my hair?',
+    answer:
+      'They can help when something is actually low — such as iron — and that deficiency should be corrected. There is little evidence that supplements help people who are not deficient, and some can make hair loss worse in excess. Biotin can also interfere with certain lab tests, so mention it before a blood test. A nutrition supplement is only included in your plan if the doctor thinks it is appropriate for you.',
+  },
+  {
+    id: 'faq-plans-cost',
+    category: 'plans',
+    question: 'What do the plans cost?',
+    answer:
+      '1 month ₹5,999 · 2 months ₹10,999 · 3 months ₹14,999. Prices include GST. Your plan contains only what the doctor recommends for you.',
+  },
+  {
+    id: 'faq-plans-without-consult',
+    category: 'plans',
+    question: 'Can I buy products without a consultation?',
+    answer:
+      'Everyday care products such as the shampoo and conditioner can be bought directly. Prescription and treatment products are only available after a consultation, because the right choice and strength depend on your scan, history and the doctor’s assessment. (Pending client confirmation.)',
+  },
+  {
+    id: 'faq-guarantee',
     category: 'guarantee',
     question: 'How does the money-back guarantee work?',
     answer:
-      'Follow your plan as prescribed for the minimum period, reply to check-ins, share monthly progress photos and attend your follow-up consultation. If there is no visible improvement, you can claim a refund under the published terms. (Draft terms — pending approval.)',
+      'If you follow your prescribed plan continuously for at least 3 months, reply to at least 75% of check-ins, share progress photos every month and attend your follow-up consultation, and see no visible improvement, you can claim a full refund of your plan payments within 30 days of finishing the plan. A doctor reviews every claim. (Draft terms — pending approval.)',
   },
   {
-    id: 'faq-5',
+    id: 'faq-delivery',
     category: 'delivery',
     question: 'How long does delivery take?',
     answer:
-      'Usually a few working days after payment. You get tracking on WhatsApp as soon as it ships. (SLA pending.)',
+      'Usually a few working days after payment. You get tracking on WhatsApp as soon as your order ships. (Delivery times pending confirmation.)',
   },
   {
-    id: 'faq-6',
-    category: 'consultation',
-    question: 'Do I have to buy a plan after the consultation?',
+    id: 'faq-privacy-who',
+    category: 'privacy',
+    question: 'Who can see my scan, photos and health details?',
     answer:
-      'No. Your prescription is yours whether or not you buy from YHC. Dr. Tyagi is associated with Your Hair Company, and we say so on every plan page.',
+      'Your scan, photos, health form and consultation notes are for your care and are seen by your doctor. Our support team helps with bookings, orders and delivery, and cannot see your clinical information. Clinical details are never written into WhatsApp messages, email subject lines or marketing — messages simply link you to your private account.',
+  },
+  {
+    id: 'faq-privacy-photos',
+    category: 'privacy',
+    question: 'Will my photos be used in before-and-after images?',
+    answer:
+      'Only if you separately agree in writing. Your scan and progress photos are never used for marketing without that explicit consent, and you can withdraw it at any time. We never present stock or AI-generated images as patient results.',
   },
 ];
 

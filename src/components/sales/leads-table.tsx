@@ -163,8 +163,8 @@ export function LeadsTable({
 
   return (
     <div>
-      <div className="grid gap-3 rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8">
-        <div className="sm:col-span-2 lg:col-span-2">
+      <div className="grid grid-cols-2 items-end gap-2 rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80 sm:gap-3 lg:grid-cols-4 xl:grid-cols-8">
+        <div className="col-span-2 lg:col-span-2">
           <label htmlFor="lf-q" className="sr-only">
             Search
           </label>
@@ -238,7 +238,7 @@ export function LeadsTable({
             <option value="none">No next action</option>
           </NativeSelect>
         </Filter>
-        <div className="grid grid-cols-2 gap-2 sm:col-span-2 lg:col-span-2 xl:col-span-2">
+        <div className="col-span-2 grid grid-cols-2 gap-2 sm:gap-3 lg:col-span-2">
           <div>
             <label htmlFor="lf-from" className="mb-1 block text-[12px] text-muted-foreground">
               Created from
@@ -266,7 +266,7 @@ export function LeadsTable({
         </div>
       </div>
 
-      <div className="mt-3 mb-3 flex flex-wrap items-center gap-2">
+      <div className="mt-4 mb-3 flex flex-wrap items-center gap-2">
         <p className="mr-auto text-sm text-muted-foreground" aria-live="polite">
           {rows.length} of {leads.length} leads
         </p>
@@ -346,10 +346,16 @@ export function LeadsTable({
 
           {/* desktop table */}
           <div className="hidden overflow-x-auto rounded-xl bg-card shadow-card ring-1 ring-line/80 md:block">
-            <table className="w-full text-sm">
+            <table className="w-full min-w-[860px] text-sm">
               <thead className="bg-mist text-left text-[13px] text-ink">
                 <tr>
-                  <SortTh label="Lead" k="name" sort={sort} onSort={toggleSort} />
+                  <SortTh
+                    label="Lead"
+                    k="name"
+                    sort={sort}
+                    onSort={toggleSort}
+                    className="sticky left-0 z-[1] bg-mist pl-2 shadow-[inset_-1px_0_0_var(--color-line)]"
+                  />
                   <th className="px-3 py-2 font-medium">Source</th>
                   <SortTh label="Stage" k="stage" sort={sort} onSort={toggleSort} />
                   <SortTh label="Owner" k="owner" sort={sort} onSort={toggleSort} />
@@ -360,23 +366,23 @@ export function LeadsTable({
               </thead>
               <tbody>
                 {rows.map((l) => (
-                  <tr key={l.id} className="border-t border-line hover:bg-pearl">
-                    <td className="px-3 py-2.5">
+                  <tr key={l.id} className="group/row border-t border-line hover:bg-pearl">
+                    <td className="sticky left-0 z-[1] bg-card px-4 py-3 shadow-[inset_-1px_0_0_var(--color-line)] group-hover/row:bg-pearl">
                       <Link href={`/sales/leads/${l.id}`} className="font-medium text-ink hover:underline">
                         {l.name}
                       </Link>
                       <p className="price text-[12px] text-muted-foreground">{l.phone}</p>
                     </td>
-                    <td className="px-3 py-2.5 text-body">
+                    <td className="px-3 py-3 text-body">
                       {l.sourceLabel}
                       {l.campaign ? <p className="text-[12px] text-muted-foreground">{l.campaign}</p> : null}
                     </td>
-                    <td className="px-3 py-2.5">
+                    <td className="px-3 py-3">
                       <div className="flex flex-wrap gap-1">
                         <StatusChip tone={stageTone(l.stage)}>{l.stageLabel}</StatusChip>
                       </div>
                     </td>
-                    <td className="px-3 py-2.5 text-body">
+                    <td className="px-3 py-3 text-body">
                       <span className="inline-flex items-center gap-2">
                         <span
                           aria-hidden
@@ -390,7 +396,7 @@ export function LeadsTable({
                         {l.ownerName}
                       </span>
                     </td>
-                    <td className="px-3 py-2.5">
+                    <td className="px-3 py-3">
                       {l.nextAction ? (
                         <>
                           <p className="text-body">{l.nextAction}</p>
@@ -407,8 +413,8 @@ export function LeadsTable({
                         <span className="text-muted-foreground">—</span>
                       )}
                     </td>
-                    <td className="px-3 py-2.5 whitespace-nowrap text-body">{l.createdLabel}</td>
-                    <td className="px-3 py-2.5 whitespace-nowrap text-muted-foreground">{l.updatedAgo}</td>
+                    <td className="px-3 py-3 whitespace-nowrap text-body">{l.createdLabel}</td>
+                    <td className="px-3 py-3 whitespace-nowrap text-muted-foreground">{l.updatedAgo}</td>
                   </tr>
                 ))}
               </tbody>
@@ -436,17 +442,19 @@ function SortTh({
   k,
   sort,
   onSort,
+  className,
 }: {
   label: string;
   k: SortKey;
   sort: { key: SortKey; dir: 'asc' | 'desc' };
   onSort: (k: SortKey) => void;
+  className?: string;
 }) {
   const active = sort.key === k;
   const Icon = !active ? ArrowUpDown : sort.dir === 'asc' ? ChevronUp : ChevronDown;
   return (
     <th
-      className="px-1 py-1 font-medium"
+      className={cn('px-1 py-1 font-medium', className)}
       aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}
     >
       <button

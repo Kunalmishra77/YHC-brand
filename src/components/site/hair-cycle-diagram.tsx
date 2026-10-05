@@ -177,16 +177,18 @@ export function HairCycleDiagram({
         </defs>
       </svg>
 
-      <ol className="mt-4 grid grid-cols-3 gap-3 sm:gap-6">
+      {/* Three equal, centred columns line up with the three follicles drawn at 1/6, 3/6 and 5/6. */}
+      <ol className="mt-4 grid grid-cols-3 gap-2 text-center sm:gap-6">
         {PHASES.map((p, i) => (
           <li key={p.name} className="min-w-0">
             <p
               className={cn(
-                'text-[11px] font-semibold tracking-[0.12em] uppercase sm:text-xs',
+                'text-[11px] font-semibold tracking-[0.1em] uppercase sm:text-xs sm:tracking-[0.12em]',
                 dark ? 'text-brand-on-dark' : 'text-brand',
               )}
             >
-              {i + 1} · {p.role}
+              <span className="hidden sm:inline">{i + 1} · </span>
+              {p.role}
             </p>
             <p
               className={cn(
@@ -198,7 +200,7 @@ export function HairCycleDiagram({
             </p>
             <p
               className={cn(
-                'mt-1.5 hidden text-sm leading-relaxed sm:block',
+                'mx-auto mt-1.5 hidden max-w-[24ch] text-sm leading-relaxed text-pretty sm:block',
                 dark ? 'text-on-dark-muted' : 'text-body',
               )}
             >
@@ -207,6 +209,21 @@ export function HairCycleDiagram({
           </li>
         ))}
       </ol>
+
+      {/* Phones: the columns are too narrow for the details, so they follow as a short list. */}
+      <dl
+        className={cn(
+          'mt-5 divide-y border-y text-sm sm:hidden',
+          dark ? 'divide-line-dark border-line-dark' : 'divide-line border-line',
+        )}
+      >
+        {PHASES.map((p) => (
+          <div key={p.name} className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3 py-3">
+            <dt className={cn('font-medium', dark ? 'text-on-dark' : 'text-ink')}>{p.name}</dt>
+            <dd className={cn('leading-relaxed', dark ? 'text-on-dark-muted' : 'text-body')}>{p.detail}</dd>
+          </div>
+        ))}
+      </dl>
 
       <figcaption
         className={cn(

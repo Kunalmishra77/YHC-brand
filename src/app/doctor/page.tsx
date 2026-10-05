@@ -88,7 +88,7 @@ export default async function DoctorTodayPage() {
         </section>
       )}
 
-      <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="mb-8 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 lg:grid-cols-4">
         <KpiTile
           label="Consultations today"
           value={String(kpis.consultsToday)}
@@ -144,11 +144,11 @@ export default async function DoctorTodayPage() {
                 <li
                   key={appt.id}
                   className={cn(
-                    'grid grid-cols-[64px_1fr] items-center gap-x-4 gap-y-2 px-4 py-3.5 md:grid-cols-[80px_minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.4fr)_auto] md:px-5',
+                    'grid grid-cols-[56px_minmax(0,1fr)_auto] items-start gap-x-3 gap-y-2.5 px-4 py-4 md:grid-cols-[80px_minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.4fr)_auto] md:items-center md:gap-x-4 md:px-5 md:py-3.5',
                     isNext && 'bg-mist/50',
                   )}
                 >
-                  <div className="row-span-2 md:row-span-1">
+                  <div className="pt-0.5 md:pt-0">
                     <p
                       className={cn(
                         'price text-[15px] font-semibold',
@@ -173,12 +173,14 @@ export default async function DoctorTodayPage() {
                     </p>
                   </div>
                   <p className="hidden text-sm text-body md:block">{concernLabel(appt.concern)}</p>
-                  <div className="col-start-2 flex flex-wrap items-center gap-2 md:col-start-auto">
-                    <span className="text-[13px] text-body md:hidden">{concernLabel(appt.concern)} ·</span>
+                  <div className="col-span-2 col-start-2 row-start-2 flex flex-wrap items-center gap-1.5 md:col-span-1 md:col-start-auto md:row-start-auto md:gap-2">
+                    <span className="w-full text-[13px] text-body md:hidden">
+                      {concernLabel(appt.concern)}
+                    </span>
                     <AppointmentChips appt={appt} />
                     {scan ? <ScanChip suitability={scan.suitability} /> : null}
                   </div>
-                  <div className="col-start-2 md:col-start-auto md:justify-self-end">
+                  <div className="col-start-3 row-start-1 justify-self-end md:col-start-auto md:row-start-auto">
                     {appt.status === 'held' ? (
                       <span className="text-[13px] text-muted-foreground">Awaiting payment</span>
                     ) : (

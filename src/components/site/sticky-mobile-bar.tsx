@@ -24,12 +24,15 @@ export function StickyMobileBar() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, [deferred]);
-  const visible = !deferred || scrolled;
+  // Hidden inside focused flows (scan, booking, checkout, consult) where its CTA would compete.
+  const inFlow = /^\/(start|book|cart|checkout|order|consult|r\/)/.test(pathname);
+  const visible = !inFlow && (!deferred || scrolled);
+  if (inFlow) return null;
   return (
     <div
       aria-hidden={!visible}
       className={cn(
-        'fixed inset-x-0 bottom-0 z-40 border-t border-line bg-pearl/95 p-3 backdrop-blur transition-transform duration-300 motion-reduce:transition-none md:hidden',
+        'fixed inset-x-0 bottom-0 z-40 border-t border-line bg-pearl/95 px-[var(--yhc-gutter)] pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_-12px_rgba(18,19,21,0.18)] backdrop-blur transition-transform duration-300 motion-reduce:transition-none md:hidden',
         visible ? 'translate-y-0' : 'pointer-events-none translate-y-full',
       )}
     >

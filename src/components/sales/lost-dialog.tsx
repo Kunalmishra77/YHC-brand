@@ -33,7 +33,7 @@ export function LostDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent mobileSheet className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Mark {leadName} as lost</DialogTitle>
           <DialogDescription>

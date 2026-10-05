@@ -48,7 +48,7 @@ export default async function ProgressPage() {
           <h2 id="compare-heading" className="eyebrow">
             Side by side
           </h2>
-          <div className="mt-3 grid grid-cols-2 gap-3 rounded-xl border border-line bg-card p-4 sm:gap-6 md:p-6">
+          <div className="mt-3 grid grid-cols-2 gap-3 rounded-2xl bg-card p-4 shadow-card ring-1 ring-line/80 sm:gap-6 md:p-6">
             {[first, latest].map((set) => (
               <div key={set.id}>
                 <p className="text-sm font-semibold text-ink">{set.label}</p>
@@ -87,7 +87,7 @@ export default async function ProgressPage() {
         ) : (
           <ol className="mt-3 space-y-4">
             {[...photos].reverse().map((set) => (
-              <li key={set.id} className="rounded-xl border border-line bg-card p-4 md:p-5">
+              <li key={set.id} className="rounded-2xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-5">
                 <div className="flex items-baseline justify-between gap-3">
                   <p className="font-semibold text-ink">{set.label}</p>
                   <p className="text-sm text-muted-foreground">{formatDay(set.takenOn)}</p>

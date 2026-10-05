@@ -39,7 +39,11 @@ export function OtpInput({
   };
 
   return (
-    <div className="flex gap-2 sm:gap-3" role="group" aria-label="6-digit verification code">
+    <div
+      className="flex w-full max-w-[21rem] gap-2 sm:gap-3"
+      role="group"
+      aria-label="6-digit verification code"
+    >
       {digits.map((d, i) => (
         <input
           key={i}
@@ -76,7 +80,7 @@ export function OtpInput({
             else if (e.key === 'ArrowRight') focusAt(i + 1);
           }}
           className={cn(
-            'price h-14 w-11 rounded-md border bg-card text-center text-xl text-ink shadow-xs outline-none sm:w-12',
+            'price h-14 w-0 min-w-0 flex-1 rounded-md border bg-card text-center text-xl text-ink shadow-xs outline-none sm:max-w-12',
             'focus-visible:border-brand focus-visible:ring-[3px] focus-visible:ring-brand/25',
             invalid ? 'border-danger' : 'border-line',
             disabled && 'opacity-60',

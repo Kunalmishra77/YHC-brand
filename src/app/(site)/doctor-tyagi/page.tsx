@@ -56,13 +56,13 @@ export default function DoctorPage() {
         }}
       />
 
-      <section className="container-yhc py-12 md:py-20">
+      <section className="container-yhc py-16 md:py-24">
         <DoctorCard doctor={doctor} headingLevel="h1">
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Button asChild className="h-12 px-6 text-base">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Button asChild className="h-12 px-6 text-base whitespace-normal">
               <Link href="/book">{terms.bookLabel}</Link>
             </Button>
-            <Button asChild variant="outline" className="h-12 border-steel px-6 text-base">
+            <Button asChild variant="outline" className="h-12 border-steel px-6 text-base whitespace-normal">
               <Link href="/how-it-works">How a consultation works</Link>
             </Button>
           </div>
@@ -70,8 +70,8 @@ export default function DoctorPage() {
       </section>
 
       <section className="border-y border-line bg-card">
-        <div className="container-yhc grid gap-10 py-14 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:py-20">
-          <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)]">Credentials</h2>
+        <div className="container-yhc grid gap-10 py-14 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:py-24">
+          <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">Credentials</h2>
           <dl className="divide-y divide-line border-y border-line">
             {[
               ['Qualifications', doctor.qualifications],
@@ -79,7 +79,7 @@ export default function DoctorPage() {
               ['Registered with', doctor.council],
               ['Consultations', `${terms.slotMinutes}-minute video call · ${terms.fee}`],
             ].map(([label, value]) => (
-              <div key={label} className="grid gap-1 py-4 sm:grid-cols-[220px_1fr]">
+              <div key={label} className="grid gap-1 py-4 sm:grid-cols-[220px_minmax(0,1fr)] sm:gap-6">
                 <dt className="text-sm text-muted-foreground">{label}</dt>
                 <dd className="font-medium text-ink">{value}</dd>
               </div>
@@ -89,8 +89,10 @@ export default function DoctorPage() {
       </section>
       {/* TODO(client): full name, qualifications, registration no., council and longer bio — see docs/12 C */}
 
-      <section className="container-yhc py-14 md:py-20">
-        <h2 className="display max-w-2xl text-[clamp(2rem,1.5rem+2vw,3rem)]">What a consultation covers</h2>
+      <section className="container-yhc py-16 md:py-24">
+        <h2 className="display max-w-2xl text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
+          What a consultation covers
+        </h2>
         <div className="mt-10 grid gap-x-12 gap-y-8 md:grid-cols-2">
           {COVERS.map((c) => (
             <div key={c.title} className="border-t border-platinum pt-5">
@@ -101,8 +103,8 @@ export default function DoctorPage() {
         </div>
       </section>
 
-      <section className="container-yhc pb-14 md:pb-20">
-        <div className="rounded-xl border border-line bg-mist/50 p-6 md:p-8">
+      <section className="container-yhc pb-16 md:pb-24">
+        <div className="rounded-2xl border border-line bg-mist/50 p-6 md:p-8">
           <h2 className="text-lg font-semibold text-ink">Association disclosure</h2>
           <p className="mt-2 max-w-3xl text-body">
             {doctor.name} is associated with Your Hair Company and prescribes products sold by YHC. Your

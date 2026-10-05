@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } 
 import type { SiteVideo } from '@/lib/images';
 import { cn } from '@/lib/utils';
 import { usePrefersReducedMotion } from './background-video';
+import { RAIL, RAIL_ITEM } from './section';
 
 export interface StoryVideo {
   id: string;
@@ -23,10 +24,12 @@ export interface StoryVideo {
  * not testimonials, not our clinic and not Dr. Tyagi — and every card says so.
  */
 export function VideoLibrary({ videos, className }: { videos: StoryVideo[]; className?: string }) {
+  // Several stories: a swipeable rail on phones/tablets, three columns on desktop. One story: a single card.
+  const rail = videos.length > 1;
   return (
-    <ul className={cn('grid gap-5 md:grid-cols-3', className)}>
+    <ul className={cn(rail ? RAIL : 'grid', className)} aria-label="Explainer videos">
       {videos.map((v) => (
-        <li key={v.id}>
+        <li key={v.id} className={rail ? RAIL_ITEM : undefined}>
           <VideoCard story={v} />
         </li>
       ))}
@@ -40,7 +43,7 @@ function VideoCard({ story }: { story: StoryVideo }) {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="group block w-full overflow-hidden rounded-2xl bg-ink-2 text-left ring-1 ring-line-dark transition-shadow hover:shadow-raised focus-visible:outline-2 focus-visible:outline-brand-on-dark"
+          className="group flex h-full w-full flex-col overflow-hidden rounded-2xl bg-ink-2 text-left ring-1 ring-line-dark transition-[box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:shadow-raised hover:ring-graphite focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-on-dark motion-reduce:transition-none motion-reduce:hover:translate-y-0"
         >
           <div className="relative aspect-video">
             <Image

@@ -62,14 +62,20 @@ export function QuietHoursForm({ start, end }: { start: string; end: string }) {
           type="time"
           value={from}
           onChange={(e) => setFrom(e.target.value)}
-          className="w-32"
+          className="h-10 w-32 bg-card"
         />
       </div>
       <div className="space-y-1">
         <Label htmlFor="qh-end">Until (IST)</Label>
-        <Input id="qh-end" type="time" value={to} onChange={(e) => setTo(e.target.value)} className="w-32" />
+        <Input
+          id="qh-end"
+          type="time"
+          value={to}
+          onChange={(e) => setTo(e.target.value)}
+          className="h-10 w-32 bg-card"
+        />
       </div>
-      <Button type="submit" variant="outline" disabled={pending || !dirty} className="min-h-9">
+      <Button type="submit" variant="outline" disabled={pending || !dirty} className="h-10">
         {pending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
         Save quiet hours
       </Button>

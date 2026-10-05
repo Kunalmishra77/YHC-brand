@@ -32,7 +32,7 @@ export default async function PerformancePage() {
         description={`All-time demo data. First contact = first logged call after the lead was created; target ${slaMinutes} min.`}
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 xl:grid-cols-4">
         <KpiTile
           label="Leads handled"
           value={String(total.leads)}
@@ -68,26 +68,26 @@ export default async function PerformancePage() {
           <>
             <ul className="space-y-2 md:hidden">
               {reps.map((r) => (
-                <li key={r.id} className="rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80">
+                <li key={r.id} className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80">
                   <p className="font-medium text-ink">
                     {r.name}
                     {r.id === user.id ? (
                       <span className="ml-1.5 text-[13px] text-muted-foreground">(you)</span>
                     ) : null}
                   </p>
-                  <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[13px]">
+                  <dl className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-2 border-t border-line pt-3 text-[13px]">
                     <dt className="text-muted-foreground">Leads</dt>
-                    <dd className="price text-ink">{r.leads}</dd>
+                    <dd className="price text-right text-ink">{r.leads}</dd>
                     <dt className="text-muted-foreground">Median first contact</dt>
-                    <dd className="price text-ink">{mins(r.medianFirstContactMin)}</dd>
+                    <dd className="price text-right text-ink">{mins(r.medianFirstContactMin)}</dd>
                     <dt className="text-muted-foreground">To ₹500 paid</dt>
-                    <dd className="price text-ink">
+                    <dd className="price text-right text-ink">
                       {pct(r.consultPaid, r.leads)} ({r.consultPaid})
                     </dd>
                     <dt className="text-muted-foreground">Plans purchased</dt>
-                    <dd className="price text-ink">{r.plans}</dd>
+                    <dd className="price text-right text-ink">{r.plans}</dd>
                     <dt className="text-muted-foreground">Lost</dt>
-                    <dd className="price text-ink">{r.lost}</dd>
+                    <dd className="price text-right text-ink">{r.lost}</dd>
                   </dl>
                 </li>
               ))}

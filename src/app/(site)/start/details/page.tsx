@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import type { DefaultValues } from 'react-hook-form';
 import { HealthForm } from '@/components/journey/health-form';
-import { JourneyStepper } from '@/components/journey/journey-stepper';
+import { JourneyCard, JourneyShell } from '@/components/journey/journey-shell';
 import type { HairConcern } from '@/lib/domain/types';
 import type { ScanAnswers } from '@/lib/journey/types';
 import type { JourneyDetailsInput } from '@/lib/validation/journey';
@@ -64,25 +64,15 @@ export default async function DetailsPage() {
       };
 
   return (
-    <div className="bg-pearl">
-      <div className="bg-obsidian">
-        <div className="container-yhc py-6 md:py-8">
-          <JourneyStepper current="health_form" tone="dark" />
-        </div>
-      </div>
-      <div className="container-yhc py-8 pb-32 md:py-12">
-        <div className="mx-auto max-w-5xl">
-          <p className="eyebrow">Health form · about 3 minutes</p>
-          <h1 className="display mt-2 text-[34px] md:text-[48px]">A few details for {doctor.name}</h1>
-          <p className="mt-3 max-w-2xl text-body">
-            We have filled in what we learned from your scan — please check it. Your answers and scan go to
-            the doctor before your consultation.
-          </p>
-          <div className="mt-10">
-            <HealthForm defaults={defaults} doctorName={doctor.name} />
-          </div>
-        </div>
-      </div>
-    </div>
+    <JourneyShell
+      current="health_form"
+      eyebrow="Health form · about 3 minutes"
+      title={`A few details for ${doctor.name}`}
+      lede="We have filled in what we learned from your scan — please check it. Your answers and scan go to the doctor before your consultation."
+    >
+      <JourneyCard>
+        <HealthForm defaults={defaults} doctorName={doctor.name} />
+      </JourneyCard>
+    </JourneyShell>
   );
 }

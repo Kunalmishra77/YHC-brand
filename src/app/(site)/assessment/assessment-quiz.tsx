@@ -166,7 +166,7 @@ export function AssessmentQuiz({ concerns, bookLabel }: { concerns: Concern[]; b
   if (done && under18) {
     return (
       <div className="rounded-xl border border-line bg-card p-6 md:p-8">
-        <h2 ref={headingRef} tabIndex={-1} className="display text-3xl outline-none">
+        <h2 ref={headingRef} tabIndex={-1} className="display text-3xl text-balance outline-none">
           Thank you for checking.
         </h2>
         <p className="mt-4 max-w-xl text-body">
@@ -174,7 +174,7 @@ export function AssessmentQuiz({ concerns, bookLabel }: { concerns: Concern[]; b
           changes at your age are worth talking about — please speak to a parent or guardian and see a doctor
           in person, who can examine you properly.
         </p>
-        <Button variant="outline" className="mt-6 h-11 px-5" onClick={restart}>
+        <Button variant="outline" className="mt-6 h-12 border-steel px-6" onClick={restart}>
           Start again
         </Button>
       </div>
@@ -192,7 +192,7 @@ export function AssessmentQuiz({ concerns, bookLabel }: { concerns: Concern[]; b
             This is not a diagnosis. Only a doctor who has reviewed your history and scalp can tell you what
             is causing a change.
           </p>
-          <h2 ref={headingRef} tabIndex={-1} className="display mt-6 text-3xl outline-none">
+          <h2 ref={headingRef} tabIndex={-1} className="display mt-6 text-3xl text-balance outline-none">
             Your next step: a consultation with Dr. Tyagi
           </h2>
           {concern ? (

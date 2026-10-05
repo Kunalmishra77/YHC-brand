@@ -121,14 +121,20 @@ export default async function ProfilePage() {
         description="Your details, saved addresses, permissions and data requests."
       />
 
-      <section aria-labelledby="p-details" className="rounded-xl border border-line bg-card p-5 md:p-6">
+      <section
+        aria-labelledby="p-details"
+        className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
+      >
         <h2 id="p-details" className="mb-5 text-base font-semibold text-ink">
           Your details
         </h2>
         <ProfileForm name={customer.name} email={customer.email} phone={customer.phone} />
       </section>
 
-      <section aria-labelledby="p-addresses" className="rounded-xl border border-line bg-card p-5 md:p-6">
+      <section
+        aria-labelledby="p-addresses"
+        className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
+      >
         <h2 id="p-addresses" className="text-base font-semibold text-ink">
           Delivery addresses
         </h2>
@@ -158,7 +164,10 @@ export default async function ProfilePage() {
         </p>
       </section>
 
-      <section aria-labelledby="p-consents" className="rounded-xl border border-line bg-card p-5 md:p-6">
+      <section
+        aria-labelledby="p-consents"
+        className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
+      >
         <h2 id="p-consents" className="text-base font-semibold text-ink">
           Permissions
         </h2>
@@ -166,7 +175,10 @@ export default async function ProfilePage() {
         <ConsentsList rows={rows} termsHref={ACCOUNT_LINKS.privacy} />
       </section>
 
-      <section aria-labelledby="p-data" className="rounded-xl border border-line bg-card p-5 md:p-6">
+      <section
+        aria-labelledby="p-data"
+        className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
+      >
         <h2 id="p-data" className="text-base font-semibold text-ink">
           Your data rights
         </h2>

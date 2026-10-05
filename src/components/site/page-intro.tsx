@@ -34,15 +34,15 @@ export function PageIntro({
     >
       <div
         className={cn(
-          'container-yhc grid gap-10 py-14 md:py-24',
-          image && 'md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-center md:gap-16',
+          'container-yhc grid gap-10 pt-14 pb-12 md:py-20 lg:py-24',
+          image && 'md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-center md:gap-12 lg:gap-16',
         )}
       >
         <div>
           {eyebrow ? <p className={cn('eyebrow', dark && 'text-brand-on-dark')}>{eyebrow}</p> : null}
           <h1
             className={cn(
-              'display max-w-3xl text-[clamp(2.5rem,1.7rem+3vw,4.25rem)] leading-[1.04]',
+              'display max-w-3xl text-[clamp(2.5rem,1.75rem+3vw,4.25rem)] leading-[1.04] text-balance',
               dark && 'text-on-dark',
               eyebrow ? 'mt-4' : null,
             )}
@@ -52,7 +52,7 @@ export function PageIntro({
           {lede ? (
             <div
               className={cn(
-                'mt-6 max-w-2xl text-lg leading-relaxed',
+                'mt-6 max-w-[62ch] text-lg leading-relaxed text-pretty',
                 dark ? 'text-on-dark-muted' : 'text-body',
               )}
             >

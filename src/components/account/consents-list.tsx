@@ -108,7 +108,7 @@ export function ConsentsList({ rows, termsHref }: { rows: ConsentRow[]; termsHre
       </p>
 
       <Dialog open={confirming !== null} onOpenChange={(o) => (o ? null : setConfirming(null))}>
-        <DialogContent className="max-w-md">
+        <DialogContent mobileSheet className="max-w-md">
           <DialogHeader>
             <DialogTitle>Withdraw “{confirming?.title}”?</DialogTitle>
             <DialogDescription>

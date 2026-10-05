@@ -42,7 +42,7 @@ export default function PlansPage() {
         }
       />
 
-      <section className="container-yhc py-12 md:py-16">
+      <section className="container-yhc py-16 md:py-24">
         {plans.length ? (
           <PlanLadder plans={plans} guarantee={guarantee} creditLine={terms.creditLine} headingLevel="h2" />
         ) : (
@@ -51,11 +51,11 @@ export default function PlansPage() {
             body="Book a consultation and Dr. Tyagi will explain your options."
           />
         )}
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Button asChild className="h-12 px-6 text-base">
+        <div className="mt-12 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+          <Button asChild className="h-12 w-full px-6 text-base sm:w-auto">
             <Link href="/book">Book consultation first · {terms.fee}</Link>
           </Button>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-center text-sm text-pretty text-muted-foreground sm:text-left">
             Plans are prescribed after your consultation — there is no obligation to buy.
           </p>
         </div>
@@ -63,9 +63,9 @@ export default function PlansPage() {
 
       {plans.length ? (
         <section className="border-y border-line bg-card">
-          <div className="container-yhc py-12 md:py-16">
-            <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)]">Side by side</h2>
-            <div className="mt-8 overflow-x-auto">
+          <div className="container-yhc py-16 md:py-24">
+            <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">Side by side</h2>
+            <div className="mt-8 hidden overflow-x-auto sm:block">
               <table className="w-full min-w-[520px] text-left text-sm">
                 <caption className="sr-only">Plan comparison</caption>
                 <thead>
@@ -121,6 +121,48 @@ export default function PlansPage() {
                 </tbody>
               </table>
             </div>
+            {/* Phones: one card per plan instead of a sideways-scrolling table. */}
+            <ul className="mt-8 space-y-3 sm:hidden">
+              {plans.map((p) => {
+                const perMonth = Math.round(p.pricePaise / p.months / 100) * 100;
+                const savings = monthly ? monthly.pricePaise * p.months - p.pricePaise : 0;
+                return (
+                  <li
+                    key={p.id}
+                    className={
+                      p.isRecommended
+                        ? 'rounded-2xl border border-obsidian bg-pearl p-4'
+                        : 'rounded-2xl border border-line bg-pearl p-4'
+                    }
+                  >
+                    <p className="font-semibold text-ink">{p.name}</p>
+                    {p.isRecommended ? (
+                      <p className="text-[13px] text-brand">Doctor-recommended duration</p>
+                    ) : null}
+                    <dl className="mt-3 grid grid-cols-3 gap-2 text-sm">
+                      <div>
+                        <dt className="text-[13px] text-muted-foreground">Total</dt>
+                        <dd className="price text-ink">{formatINR(p.pricePaise)}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-[13px] text-muted-foreground">Per month</dt>
+                        <dd className="price text-body">{formatINR(perMonth)}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-[13px] text-muted-foreground">You save</dt>
+                        <dd className="price text-body">{savings > 0 ? formatINR(savings) : '—'}</dd>
+                      </div>
+                    </dl>
+                    {guarantee ? (
+                      <p className="mt-3 border-t border-line pt-3 text-[13px] text-body">
+                        Guarantee:{' '}
+                        {p.months >= guarantee.minPlanMonths ? 'eligible, conditions apply' : 'not covered'}
+                      </p>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
             <p className="mt-4 text-sm text-muted-foreground">
               Savings are compared with buying the 1-month plan each month.
               {terms.creditLine ? ` ${terms.creditLine}.` : null}
@@ -130,8 +172,10 @@ export default function PlansPage() {
       ) : null}
 
       {guarantee ? (
-        <section className="container-yhc py-12 md:py-16">
-          <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)]">Money-back guarantee terms</h2>
+        <section className="container-yhc py-16 md:py-24">
+          <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
+            Money-back guarantee terms
+          </h2>
           <p className="mt-3 max-w-2xl text-body">
             The guarantee applies only when every condition below is met. Read the{' '}
             <Link href="/legal/guarantee" className="text-brand underline underline-offset-4">

@@ -63,7 +63,7 @@ export function ReorderButton({
       </Button>
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent mobileSheet className="max-w-md">
           <DialogHeader>
             <DialogTitle>Reorder the same plan</DialogTitle>
             <DialogDescription>Same plan and products, delivered to the same address.</DialogDescription>
@@ -98,7 +98,7 @@ export function ReorderButton({
       </Dialog>
 
       <Dialog open={blocked !== null} onOpenChange={(open) => (open ? null : setBlocked(null))}>
-        <DialogContent className="max-w-md">
+        <DialogContent mobileSheet className="max-w-md">
           <DialogHeader>
             <DialogTitle>A quick follow-up first</DialogTitle>
             <DialogDescription>{blocked}</DialogDescription>

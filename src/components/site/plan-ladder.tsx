@@ -21,7 +21,7 @@ export function PlanLadder({
 }) {
   const Heading = headingLevel;
   return (
-    <ol className="grid gap-4 md:grid-cols-3 md:items-end md:gap-0">
+    <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:items-end lg:gap-0">
       {plans.map((plan, i) => {
         const eligible = guarantee ? plan.months >= guarantee.minPlanMonths : false;
         return (
@@ -30,11 +30,11 @@ export function PlanLadder({
             className={cn(
               'relative flex flex-col',
               plan.isRecommended
-                ? 'z-10 rounded-xl bg-card shadow-raised ring-1 ring-platinum md:-my-2'
+                ? 'z-10 rounded-xl bg-card shadow-raised ring-1 ring-platinum lg:-my-2'
                 : cn(
-                    'rounded-xl border border-line md:rounded-none md:border-x-0',
-                    i === 0 && 'md:rounded-l-xl md:border-l',
-                    i === plans.length - 1 && 'md:rounded-r-xl md:border-r',
+                    'rounded-xl border border-line lg:rounded-none lg:border-x-0',
+                    i === 0 && 'lg:rounded-l-xl lg:border-l',
+                    i === plans.length - 1 && 'lg:rounded-r-xl lg:border-r',
                   ),
             )}
           >

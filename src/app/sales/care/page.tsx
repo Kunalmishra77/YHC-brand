@@ -69,7 +69,7 @@ export default async function CarePage() {
           ) : (
             <ul className="space-y-2">
               {care.refills.map((r) => (
-                <li key={r.orderCode} className="rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80">
+                <li key={r.orderCode} className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80">
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
                       {r.leadId ? (
@@ -124,46 +124,77 @@ export default async function CarePage() {
             className="bg-card"
           />
         ) : (
-          <div className="overflow-x-auto rounded-xl bg-card shadow-card ring-1 ring-line/80">
-            <table className="w-full text-sm">
-              <thead className="bg-mist text-left text-[13px] text-ink">
-                <tr>
-                  <th className="px-3 py-2.5 font-medium">Customer</th>
-                  <th className="px-3 py-2.5 font-medium">Week</th>
-                  <th className="px-3 py-2.5 font-medium">Sent</th>
-                  <th className="px-3 py-2.5 font-medium">Reply</th>
-                </tr>
-              </thead>
-              <tbody>
-                {care.checkins.map((c) => (
-                  <tr key={c.id} className="border-t border-line">
-                    <td className="px-3 py-2.5">
+          <>
+            <ul className="divide-y divide-line overflow-hidden rounded-xl bg-card shadow-card ring-1 ring-line/80 md:hidden">
+              {care.checkins.map((c) => (
+                <li key={c.id} className="px-4 py-3.5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
                       {c.leadId ? (
                         <Link
                           href={`/sales/leads/${c.leadId}`}
-                          className="font-medium text-ink hover:underline"
+                          className="block truncate font-medium text-ink hover:underline"
                         >
                           {c.customerName}
                         </Link>
                       ) : (
-                        c.customerName
+                        <p className="truncate font-medium text-ink">{c.customerName}</p>
                       )}
-                    </td>
-                    <td className="price px-3 py-2.5 text-body">Week {c.week}</td>
-                    <td className="px-3 py-2.5 whitespace-nowrap text-body">{c.sentLabel}</td>
-                    <td className="px-3 py-2.5">
-                      <StatusChip tone={replyTone(c.reply)}>{c.replyLabel}</StatusChip>
-                      {c.hasReplyText ? (
-                        <p className="mt-1 text-[12px] text-muted-foreground">
-                          Reply text visible to the doctor only
-                        </p>
-                      ) : null}
-                    </td>
+                      <p className="text-[13px] text-muted-foreground">
+                        <span className="price">Week {c.week}</span> · sent {c.sentLabel}
+                      </p>
+                    </div>
+                    <StatusChip tone={replyTone(c.reply)}>{c.replyLabel}</StatusChip>
+                  </div>
+                  {c.hasReplyText ? (
+                    <p className="mt-1.5 text-[12px] text-muted-foreground">
+                      Reply text visible to the doctor only
+                    </p>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+            <div className="hidden overflow-x-auto rounded-xl bg-card shadow-card ring-1 ring-line/80 md:block">
+              <table className="w-full text-sm">
+                <thead className="bg-mist text-left text-[13px] text-ink">
+                  <tr>
+                    <th className="px-3 py-2.5 font-medium">Customer</th>
+                    <th className="px-3 py-2.5 font-medium">Week</th>
+                    <th className="px-3 py-2.5 font-medium">Sent</th>
+                    <th className="px-3 py-2.5 font-medium">Reply</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {care.checkins.map((c) => (
+                    <tr key={c.id} className="border-t border-line">
+                      <td className="px-3 py-2.5">
+                        {c.leadId ? (
+                          <Link
+                            href={`/sales/leads/${c.leadId}`}
+                            className="font-medium text-ink hover:underline"
+                          >
+                            {c.customerName}
+                          </Link>
+                        ) : (
+                          c.customerName
+                        )}
+                      </td>
+                      <td className="price px-3 py-2.5 text-body">Week {c.week}</td>
+                      <td className="px-3 py-2.5 whitespace-nowrap text-body">{c.sentLabel}</td>
+                      <td className="px-3 py-2.5">
+                        <StatusChip tone={replyTone(c.reply)}>{c.replyLabel}</StatusChip>
+                        {c.hasReplyText ? (
+                          <p className="mt-1 text-[12px] text-muted-foreground">
+                            Reply text visible to the doctor only
+                          </p>
+                        ) : null}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </section>
     </div>
@@ -172,7 +203,7 @@ export default async function CarePage() {
 
 function CheckinCard({ row }: { row: CareCheckinRow }) {
   return (
-    <li className="rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80">
+    <li className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80">
       <div className="flex flex-wrap items-center justify-between gap-2">
         {row.leadId ? (
           <Link href={`/sales/leads/${row.leadId}`} className="font-medium text-ink hover:underline">

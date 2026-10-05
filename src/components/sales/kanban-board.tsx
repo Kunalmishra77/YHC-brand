@@ -89,11 +89,11 @@ export function KanbanBoard({
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-end gap-3">
+      <div className="mb-4 flex flex-wrap items-center gap-3">
         <div
           role="group"
           aria-label="Owner"
-          className="inline-flex rounded-md border border-line bg-card p-1"
+          className="inline-flex h-11 items-center rounded-md border border-line bg-card p-1"
         >
           {(['all', 'mine'] as const).map((o) => (
             <button
@@ -102,7 +102,7 @@ export function KanbanBoard({
               onClick={() => setOwner(o)}
               aria-pressed={owner === o}
               className={cn(
-                'h-9 min-w-16 rounded px-3 text-sm font-medium transition-colors',
+                'h-full min-w-16 rounded px-3 text-sm font-medium transition-colors',
                 owner === o ? 'bg-obsidian text-on-dark' : 'text-body hover:bg-mist',
               )}
             >
@@ -110,7 +110,7 @@ export function KanbanBoard({
             </button>
           ))}
         </div>
-        <div className="w-44">
+        <div className="min-w-0 flex-1 sm:w-44 sm:flex-none">
           <label htmlFor="kb-source" className="sr-only">
             Source
           </label>
@@ -127,7 +127,7 @@ export function KanbanBoard({
             ))}
           </NativeSelect>
         </div>
-        <p className="text-sm text-muted-foreground" aria-live="polite">
+        <p className="w-full text-sm text-muted-foreground sm:w-auto" aria-live="polite">
           {filtered.length} {filtered.length === 1 ? 'lead' : 'leads'}
         </p>
       </div>
@@ -139,7 +139,7 @@ export function KanbanBoard({
           className="bg-card"
         />
       ) : (
-        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-4 md:-mx-6 md:px-6 lg:snap-none">
+        <div className="-mx-4 flex snap-x snap-mandatory scroll-px-4 [scrollbar-width:thin] gap-3 overflow-x-auto overscroll-x-contain px-4 pb-4 md:-mx-8 md:scroll-px-8 md:px-8 lg:snap-none">
           {columns.map((col) => {
             const items = byStage.get(col.stage) ?? [];
             const manual = MANUAL_STAGE_SET.has(col.stage);
@@ -163,7 +163,7 @@ export function KanbanBoard({
                   if (lead && canDropLead(lead, col.stage)) move(lead, col.stage);
                 }}
                 className={cn(
-                  'flex w-[84vw] max-w-[296px] shrink-0 snap-start flex-col rounded-lg border bg-mist/60 transition-colors sm:w-[280px]',
+                  'flex w-[calc(100vw-4.5rem)] max-w-[296px] shrink-0 snap-start flex-col rounded-xl border bg-mist/60 transition-colors sm:w-[280px]',
                   col.stage === 'lost' ? 'border-dashed border-line' : 'border-transparent',
                   droppable && 'border-brand/40 bg-mist',
                   overStage === col.stage && droppable && 'border-brand bg-info-bg',

@@ -115,7 +115,7 @@ export function CheckoutFlow({ signedIn: initialSignedIn }: { signedIn: Checkout
   return (
     <Shell>
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-12">
-        <div className="space-y-10">
+        <div className="min-w-0 space-y-10">
           <Step n={1} title="Mobile number" id="checkout-mobile" done={Boolean(signedIn)}>
             {signedIn ? (
               <p className="flex flex-wrap items-center gap-x-2 text-sm text-body">
@@ -155,8 +155,8 @@ export function CheckoutFlow({ signedIn: initialSignedIn }: { signedIn: Checkout
           </Step>
         </div>
 
-        <aside className="h-fit space-y-4 lg:sticky lg:top-24">
-          <div className="rounded-lg border border-line bg-card p-5">
+        <aside className="h-fit min-w-0 space-y-4 lg:sticky lg:top-24">
+          <div className="rounded-2xl border border-line bg-card p-5 shadow-card sm:p-6">
             <p className="text-sm font-medium text-ink">Order summary</p>
             {current?.error ? (
               <div className="mt-4">
@@ -254,7 +254,7 @@ export function CheckoutFlow({ signedIn: initialSignedIn }: { signedIn: Checkout
               className="h-12 px-6 text-base md:w-full"
             >
               <Lock className="size-4" aria-hidden />
-              Pay securely
+              {q ? `Pay ${formatINR(q.totalPaise)}` : 'Pay'}
             </Button>
           </ContinueBar>
         </aside>
@@ -275,10 +275,12 @@ export function CheckoutFlow({ signedIn: initialSignedIn }: { signedIn: Checkout
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="container-yhc py-8 md:py-14">
+    <div className="container-yhc py-10 md:py-16">
       <div className="mx-auto max-w-5xl">
         <p className="eyebrow">Checkout</p>
-        <h1 className="display mt-2 mb-8 text-[32px] md:mb-10 md:text-[44px]">Almost there</h1>
+        <h1 className="display mt-3 mb-8 text-[clamp(2rem,1.5rem+1.8vw,2.75rem)] text-balance md:mb-12">
+          Almost there
+        </h1>
         {children}
       </div>
     </div>

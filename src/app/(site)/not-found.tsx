@@ -11,10 +11,12 @@ const SUGGESTIONS = [
 
 export default function SiteNotFound() {
   return (
-    <section className="container-yhc py-16 md:py-24">
+    <section className="container-yhc py-20 md:py-28">
       <p className="price text-sm text-muted-foreground">404</p>
-      <h1 className="display mt-3 max-w-2xl text-3xl">We couldn&apos;t find that page.</h1>
-      <p className="mt-4 max-w-xl text-body">
+      <h1 className="display mt-3 max-w-2xl text-[clamp(2.25rem,1.7rem+2.2vw,3.25rem)] text-balance">
+        We couldn&apos;t find that page.
+      </h1>
+      <p className="mt-4 max-w-xl text-lg leading-relaxed text-pretty text-body">
         The link may be old or mistyped. If you were trying to book, you can do that directly — or try one of
         these.
       </p>

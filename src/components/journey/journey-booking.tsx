@@ -100,7 +100,7 @@ export function JourneyBooking({
       <section aria-labelledby="pay-title" className="max-w-2xl">
         {holdOver && !payOpen ? (
           <div>
-            <h2 id="pay-title" className="display text-[30px] md:text-[38px]">
+            <h2 id="pay-title" className="display text-[clamp(1.75rem,1.4rem+1.4vw,2.375rem)] text-balance">
               Your {holdMinutes}-minute hold has ended
             </h2>
             <p className="mt-3 text-body">
@@ -124,7 +124,10 @@ export function JourneyBooking({
               </button>
               {deadline ? <Countdown deadline={deadline} onExpire={() => setHoldOver(true)} /> : null}
             </div>
-            <h2 id="pay-title" className="display mt-3 text-[30px] md:text-[38px]">
+            <h2
+              id="pay-title"
+              className="display mt-3 text-[clamp(1.75rem,1.4rem+1.4vw,2.375rem)] text-balance"
+            >
               Pay {fee} to confirm
             </h2>
             <dl className="mt-6 divide-y divide-line rounded-2xl border border-line bg-card">
@@ -167,35 +170,79 @@ export function JourneyBooking({
   }
 
   return (
-    <section aria-labelledby="slot-title">
-      <h2 id="slot-title" className="display text-[30px] md:text-[38px]">
-        When would you like to speak with {doctor.name}?
-      </h2>
-      <p className="mt-3 max-w-xl text-body">
-        Choose a time — we hold it for {holdMinutes} minutes while you pay the {fee} consultation fee.
-      </p>
-      {notice ? (
-        <p
-          role="alert"
-          className="mt-5 rounded-md border border-warning/30 bg-warning-bg px-4 py-3 text-sm text-warning"
-        >
-          {notice}
+    <section
+      aria-labelledby="slot-title"
+      className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12"
+    >
+      <div className="min-w-0">
+        <h2 id="slot-title" className="display text-[clamp(1.75rem,1.4rem+1.4vw,2.375rem)] text-balance">
+          When would you like to speak with {doctor.name}?
+        </h2>
+        <p className="mt-3 max-w-xl text-pretty text-body">
+          Choose a time — we hold it for {holdMinutes} minutes while you pay the {fee} consultation fee.
         </p>
-      ) : null}
-      <div className="mt-6">
-        <SlotPicker
-          days={days}
-          day={day}
-          onDayChange={setDay}
-          selected={slot?.startsAt ?? null}
-          onSelect={(s, date) => {
-            const d = days.find((x) => x.date === date);
-            setSlot({ startsAt: s.startsAt, label: `${d?.tab ?? ''}, ${s.time} IST` });
-            setNotice(null);
-          }}
-        />
+        {notice ? (
+          <p
+            role="alert"
+            className="mt-5 rounded-md border border-warning/30 bg-warning-bg px-4 py-3 text-sm text-warning"
+          >
+            {notice}
+          </p>
+        ) : null}
+        <div className="mt-6">
+          <SlotPicker
+            days={days}
+            day={day}
+            onDayChange={setDay}
+            selected={slot?.startsAt ?? null}
+            onSelect={(s, date) => {
+              const d = days.find((x) => x.date === date);
+              setSlot({ startsAt: s.startsAt, label: `${d?.tab ?? ''}, ${s.time} IST` });
+              setNotice(null);
+            }}
+          />
+        </div>
       </div>
+
+      {/* Desktop summary — the mobile/tablet equivalent is the ContinueBar below. */}
+      <aside
+        aria-label="Your consultation"
+        className="hidden self-start rounded-2xl border border-line bg-pearl p-6 lg:sticky lg:top-24 lg:block"
+      >
+        <p className="text-[13px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
+          Your consultation
+        </p>
+        <dl className="mt-4 space-y-3 text-sm">
+          <div>
+            <dt className="text-muted-foreground">Doctor</dt>
+            <dd className="mt-0.5 font-medium text-ink">{doctor.name}</dd>
+          </div>
+          <div>
+            <dt className="text-muted-foreground">Format</dt>
+            <dd className="mt-0.5 text-ink">{slotMinutes}-minute video call</dd>
+          </div>
+          <div>
+            <dt className="text-muted-foreground">Time</dt>
+            <dd className="mt-0.5 font-medium text-ink">{slot ? slot.label : 'Not chosen yet'}</dd>
+          </div>
+        </dl>
+        <div className="mt-5 flex items-baseline justify-between border-t border-line pt-4">
+          <span className="text-sm text-body">Consultation fee</span>
+          <span className="price text-lg text-ink">{fee}</span>
+        </div>
+        <Button className="mt-5 h-12 w-full text-base" disabled={!slot || pending} onClick={holdTime}>
+          {pending ? (
+            <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
+          ) : null}
+          Hold time &amp; pay {fee}
+        </Button>
+        <p className="mt-3 text-[13px] leading-snug text-muted-foreground">
+          {fee} is credited against your first plan if bought within {creditDays} days (pending confirmation).
+        </p>
+      </aside>
+
       <ContinueBar
+        className="lg:hidden"
         summary={
           slot ? (
             <>
@@ -242,7 +289,7 @@ function Confirmed({
         <CheckCircle2 className="size-5" aria-hidden />
         <span className="text-sm font-medium">Booked · {formatINR(confirmed.feePaise)} paid</span>
       </div>
-      <h2 id="done-title" className="display mt-3 text-[32px] md:text-[44px]">
+      <h2 id="done-title" className="display mt-3 text-[clamp(2rem,1.5rem+1.8vw,2.75rem)] text-balance">
         Your consultation is confirmed.
       </h2>
       <p className="mt-3 text-lg text-ink">

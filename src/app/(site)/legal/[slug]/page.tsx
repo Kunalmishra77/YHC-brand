@@ -60,7 +60,7 @@ export default async function LegalPage({ params }: PageProps<'/legal/[slug]'>) 
   return (
     <>
       <header className="border-b border-line">
-        <div className="container-yhc py-12 md:py-20">
+        <div className="container-yhc py-14 md:py-20">
           <nav aria-label="Breadcrumb" className="text-[13px] text-muted-foreground">
             <Link href="/legal" className="underline decoration-steel underline-offset-4 hover:text-ink">
               Legal and policies
@@ -80,8 +80,8 @@ export default async function LegalPage({ params }: PageProps<'/legal/[slug]'>) 
         </div>
       </header>
 
-      <div className="container-yhc grid gap-10 py-12 md:py-16 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-16">
-        <aside className="lg:sticky lg:top-28 lg:max-h-[calc(100dvh-8rem)] lg:[scrollbar-width:thin] lg:self-start lg:overflow-y-auto lg:overscroll-contain lg:pr-2">
+      <div className="container-yhc grid gap-10 py-12 md:py-20 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-16">
+        <aside className="min-w-0 lg:sticky lg:top-28 lg:max-h-[calc(100dvh-8rem)] lg:[scrollbar-width:thin] lg:self-start lg:overflow-y-auto lg:overscroll-contain lg:pr-2">
           <TableOfContents entries={toc} />
           <nav aria-label="Other policies" className="mt-10 hidden lg:block">
             <p className="mb-3 text-[13px] font-medium text-muted-foreground">Other policies</p>

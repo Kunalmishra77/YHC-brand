@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useId, useState } from 'react';
 import { cn } from '@/lib/utils';
 import type { ResultEntry } from '@/server/content/results';
+import { RAIL, RAIL_ITEM } from './section';
 
 /**
  * Consented before/after results (ADR-27). With data: a drag-to-compare frame per result and a
@@ -14,18 +15,25 @@ import type { ResultEntry } from '@/server/content/results';
 export function ResultsGallery({
   results,
   placeholders = 3,
+  layout = 'grid',
   className,
 }: {
   results: ResultEntry[];
   placeholders?: number;
+  /** 'rail' scrolls sideways below lg (homepage teaser); 'grid' wraps into 2 → 3 columns (gallery page). */
+  layout?: 'grid' | 'rail';
   className?: string;
 }) {
   if (results.length === 0) {
+    const rail = layout === 'rail';
     return (
       <div className={className}>
-        <ul className="grid gap-6 md:grid-cols-3">
+        <ul
+          className={rail ? RAIL : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3'}
+          aria-label="Result placeholders"
+        >
           {Array.from({ length: placeholders }, (_, i) => (
-            <li key={i}>
+            <li key={i} className={rail ? RAIL_ITEM : undefined}>
               <PlaceholderFrame index={i} />
             </li>
           ))}
@@ -44,7 +52,7 @@ export function ResultsGallery({
 
 function PlaceholderFrame({ index }: { index: number }) {
   return (
-    <figure className="overflow-hidden rounded-2xl bg-card ring-1 ring-line">
+    <figure className="flex h-full flex-col overflow-hidden rounded-2xl bg-card shadow-card ring-1 ring-line">
       <div className="grid grid-cols-2 gap-px bg-line">
         {(['Before', 'After'] as const).map((label) => (
           <div
@@ -172,7 +180,9 @@ function CompareFrame({ result }: { result: ResultEntry }) {
 
 function ConsentNote() {
   return (
-    <p className={cn('mt-6 flex items-start gap-2.5 text-sm text-body')}>
+    <p
+      className={cn('mt-6 flex max-w-3xl items-start gap-2.5 text-sm leading-relaxed text-pretty text-body')}
+    >
       <ShieldCheck className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
       <span>
         Only real patients who gave written consent appear here, photographed under the same conditions, with

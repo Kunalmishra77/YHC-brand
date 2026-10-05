@@ -75,14 +75,17 @@ export default async function OrdersPage({ searchParams }: PageProps<'/admin/ord
       />
 
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <nav aria-label="Order status" className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1">
+        <nav
+          aria-label="Order status"
+          className="-mx-4 flex snap-x scroll-px-4 [scrollbar-width:none] gap-1.5 overflow-x-auto px-4 pb-1 md:-mx-8 md:scroll-px-8 md:px-8 lg:mx-0 lg:px-0"
+        >
           {ORDER_TABS.map((tb) => (
             <Link
               key={tb.key}
               href={`/admin/orders?tab=${tb.key}${q ? `&q=${encodeURIComponent(q)}` : ''}`}
               aria-current={tb.key === tab ? 'page' : undefined}
               className={cn(
-                'inline-flex min-h-9 shrink-0 items-center gap-2 rounded-md border px-3 text-sm font-medium transition-colors',
+                'inline-flex h-10 shrink-0 snap-start items-center gap-2 rounded-md border px-3 text-sm font-medium whitespace-nowrap transition-colors',
                 tb.key === tab
                   ? 'border-obsidian bg-obsidian text-on-dark'
                   : 'border-line bg-card text-body hover:bg-mist',
@@ -105,8 +108,20 @@ export default async function OrdersPage({ searchParams }: PageProps<'/admin/ord
           <label htmlFor="order-q" className="sr-only">
             Search orders
           </label>
-          <Input id="order-q" name="q" defaultValue={q} placeholder="Order, customer, phone, AWB" />
-          <Button type="submit" variant="outline" size="icon" aria-label="Search">
+          <Input
+            id="order-q"
+            name="q"
+            defaultValue={q}
+            placeholder="Order, customer, phone, AWB"
+            className="h-10 bg-card"
+          />
+          <Button
+            type="submit"
+            variant="outline"
+            size="icon"
+            className="size-10 shrink-0"
+            aria-label="Search"
+          >
             <Search className="size-4" />
           </Button>
         </form>
@@ -122,7 +137,9 @@ export default async function OrdersPage({ searchParams }: PageProps<'/admin/ord
             <h2 id="pick-title" className="text-base font-semibold text-ink">
               Pick list by product
             </h2>
-            <span className="text-[13px] text-muted-foreground">· {counts.to_pack} orders to pack</span>
+            <span className="ml-auto text-[13px] text-muted-foreground">
+              {counts.to_pack} {counts.to_pack === 1 ? 'order' : 'orders'} to pack
+            </span>
           </div>
           <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {picks.map((p) => (

@@ -88,20 +88,20 @@ export default async function PlanLinkPage({ params }: PageProps<'/r/[token]'>) 
   const products = rec.productIds.map((id, i) => ({ product: getProduct(id), item: rec.items[i] ?? null }));
 
   return (
-    <div className="container-yhc py-8 md:py-14">
-      <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-14">
-        <div>
+    <div className="container-yhc py-10 md:py-16">
+      <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-14">
+        <div className="min-w-0">
           <p className="eyebrow">Your personalised hair plan</p>
-          <h1 className="display mt-2 text-[34px] md:text-[48px]">
+          <h1 className="display mt-3 text-[clamp(2.125rem,1.6rem+2.2vw,3.25rem)] text-balance">
             {firstName ? `${firstName}, your plan is ready.` : 'Your plan is ready.'}
           </h1>
-          <p className="mt-3 text-body">
+          <p className="mt-4 max-w-[60ch] text-pretty text-body">
             Prepared by {doctor.name} after your consultation. This link is valid until{' '}
             <span className="font-medium text-ink">{formatIst(new Date(rec.expiresAt))}</span>.
           </p>
 
-          <figure className="bg-hero-dark mt-8 rounded-xl p-6 text-on-dark md:p-8">
-            <blockquote className="font-display text-[24px] leading-snug text-on-dark md:text-[28px]">
+          <figure className="bg-hero-dark mt-8 rounded-2xl p-6 text-on-dark md:p-8">
+            <blockquote className="font-display text-[clamp(1.375rem,1.2rem+0.8vw,1.75rem)] leading-snug text-pretty text-on-dark">
               “{rec.note}”
             </blockquote>
             <figcaption className="mt-4 text-sm text-on-dark-muted">
@@ -156,7 +156,7 @@ export default async function PlanLinkPage({ params }: PageProps<'/r/[token]'>) 
             </p>
           </section>
 
-          <aside className="mt-10 rounded-lg border border-line bg-card px-5 py-4 text-sm text-body">
+          <aside className="mt-10 rounded-2xl border border-line bg-card px-5 py-4 text-sm text-body">
             <p>
               {doctor.name} is associated with Your Hair Company. Your prescription is yours whether or not
               you buy.
@@ -164,7 +164,7 @@ export default async function PlanLinkPage({ params }: PageProps<'/r/[token]'>) 
           </aside>
         </div>
 
-        <div className="lg:sticky lg:top-8 lg:h-fit">
+        <div className="min-w-0 lg:self-start lg:rounded-3xl lg:border lg:border-line lg:bg-card lg:p-7 lg:shadow-card">
           <PlanCheckout
             token={rec.token}
             plans={plans}
@@ -194,8 +194,8 @@ function LinkProblem({
     <div className="container-yhc py-16 md:py-24">
       <div className="mx-auto max-w-lg text-center">
         <div className="flex justify-center">{icon}</div>
-        <h1 className="display mt-4 text-[32px] md:text-[40px]">{title}</h1>
-        <p className="mt-3 text-body">{body}</p>
+        <h1 className="display mt-4 text-[clamp(2rem,1.6rem+1.6vw,2.5rem)] text-balance">{title}</h1>
+        <p className="mt-3 text-pretty text-body">{body}</p>
         {action ? <div className="mt-6 flex justify-center">{action}</div> : null}
       </div>
     </div>

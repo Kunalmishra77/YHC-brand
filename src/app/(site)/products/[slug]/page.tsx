@@ -79,13 +79,13 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
         }}
       />
 
-      <section className="container-yhc grid gap-10 py-10 md:grid-cols-2 md:gap-16 md:py-16">
+      <section className="container-yhc grid grid-cols-1 gap-10 py-10 md:grid-cols-2 md:gap-12 md:py-16 lg:gap-16">
         {/* Gallery — TODO(client): product photography — see docs/12 D-P2 */}
-        <div className="md:sticky md:top-24 md:self-start">
+        <div className="min-w-0 md:sticky md:top-24 md:self-start">
           <ProductGallery images={PRODUCT_GALLERY[product.slug] ?? []} name={product.name} />
         </div>
 
-        <div>
+        <div className="min-w-0">
           <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
             <Link href="/products" className="underline underline-offset-2 hover:text-ink">
               Products
@@ -95,11 +95,13 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
           <p className="mt-5 text-sm text-muted-foreground">
             {REGULATORY_LABEL[product.regulatoryCategory]} · {product.daysOfSupply}-day supply
           </p>
-          <h1 className="display mt-3 text-[clamp(2.5rem,1.8rem+2.6vw,4rem)]">{product.name}</h1>
-          <p className="mt-3 text-xl text-ink">{product.tagline}</p>
-          <p className="mt-6 max-w-prose text-lg leading-relaxed text-body">{product.description}</p>
+          <h1 className="display mt-3 text-[clamp(2.5rem,1.8rem+2.6vw,4rem)] text-balance">{product.name}</h1>
+          <p className="mt-3 text-xl text-pretty text-ink">{product.tagline}</p>
+          <p className="mt-6 max-w-prose text-lg leading-relaxed text-pretty text-body">
+            {product.description}
+          </p>
 
-          <div className="mt-10 rounded-2xl border border-line bg-card p-6 shadow-card">
+          <div className="mt-10 rounded-2xl border border-line bg-card p-5 shadow-card sm:p-6">
             {buyable && product.pricePaise !== null ? (
               <>
                 <p className="price text-2xl text-ink">{formatINR(product.pricePaise)}</p>
@@ -117,7 +119,10 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
                     is included in your plan if Dr. Tyagi recommends it.
                   </span>
                 </p>
-                <Button asChild className="mt-4 h-12 w-full text-base sm:w-auto sm:px-8">
+                <Button
+                  asChild
+                  className="mt-4 h-auto min-h-12 w-full py-3 text-base whitespace-normal lg:w-auto lg:px-8"
+                >
                   <Link href="/book">Book consultation to get this prescribed</Link>
                 </Button>
                 <p className="mt-2 text-sm text-muted-foreground">Consultation fee {terms.fee}</p>
@@ -128,12 +133,15 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
       </section>
 
       <section className="border-t border-line bg-card">
-        <div className="container-yhc grid gap-12 py-12 md:grid-cols-2 md:py-16">
+        <div className="container-yhc grid gap-12 py-16 md:grid-cols-2 md:gap-16 md:py-24">
           <div>
             <h2 className="text-xl font-semibold text-ink">Ingredients and their roles</h2>
             <dl className="mt-5 divide-y divide-line border-y border-line">
               {product.ingredients.map((ing) => (
-                <div key={ing.name} className="grid gap-1 py-4 sm:grid-cols-2 sm:gap-6">
+                <div
+                  key={ing.name}
+                  className="grid gap-1 py-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] sm:gap-6"
+                >
                   <dt className="font-medium text-ink">{ing.name}</dt>
                   <dd className="text-sm text-body">{ing.role}</dd>
                 </div>
@@ -158,10 +166,10 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
       </section>
 
       <section className="container-yhc py-20 md:py-24">
-        <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)]">
+        <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
           {product.requiresConsultation ? 'Often prescribed together' : 'Also in everyday care'}
         </h2>
-        <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 md:grid-cols-3">
+        <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
           {getProducts()
             .filter((p) => p.slug !== product.slug && p.requiresConsultation === product.requiresConsultation)
             .slice(0, 3)

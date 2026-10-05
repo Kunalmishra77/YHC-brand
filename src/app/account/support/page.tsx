@@ -34,7 +34,10 @@ export default function SupportPage() {
       </section>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-        <section aria-labelledby="s-form" className="rounded-xl border border-line bg-card p-5 md:p-6">
+        <section
+          aria-labelledby="s-form"
+          className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
+        >
           <h2 id="s-form" className="text-base font-semibold text-ink">
             Write to us
           </h2>
@@ -45,7 +48,7 @@ export default function SupportPage() {
         </section>
 
         <aside className="space-y-4">
-          <div className="rounded-xl border border-line bg-card p-5">
+          <div className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80">
             <div className="flex items-center gap-2">
               <Mail className="size-4 text-steel" aria-hidden />
               <h2 className="text-sm font-semibold text-ink">Email</h2>
@@ -57,7 +60,7 @@ export default function SupportPage() {
               {SITE.supportEmail}
             </a>
           </div>
-          <div className="rounded-xl border border-line bg-card p-5">
+          <div className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80">
             <div className="flex items-center gap-2">
               <Scale className="size-4 text-steel" aria-hidden />
               <h2 className="text-sm font-semibold text-ink">Grievance officer</h2>

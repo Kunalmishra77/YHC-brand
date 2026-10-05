@@ -22,15 +22,17 @@ export function DoctorCard({
   return (
     <div
       className={cn(
-        'grid items-center gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16',
+        'grid items-center gap-10 md:gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 xl:gap-20',
         className,
       )}
     >
       <CredentialCard doctor={doctor} />
       <div>
-        <Heading className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">{doctor.name}</Heading>
+        <Heading className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
+          {doctor.name}
+        </Heading>
         <p className="mt-2 text-lg text-ink">{doctor.qualifications}</p>
-        <p className="mt-6 max-w-prose text-lg leading-relaxed text-body">{doctor.bio}</p>
+        <p className="mt-6 max-w-prose text-lg leading-relaxed text-pretty text-body">{doctor.bio}</p>
         <ul className="mt-8 grid max-w-prose gap-3 text-body sm:grid-cols-2">
           {[
             'Reads your history and scalp photos before the call',
@@ -52,7 +54,7 @@ export function DoctorCard({
 
 function CredentialCard({ doctor }: { doctor: Doctor }) {
   return (
-    <figure className="relative mx-auto w-full max-w-md">
+    <figure className="relative w-full max-w-md lg:mx-auto">
       <div
         className="absolute -inset-3 -z-10 rounded-[28px] bg-[image:var(--yhc-silver)] opacity-40 blur-2xl"
         aria-hidden

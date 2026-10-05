@@ -38,14 +38,17 @@ export default async function JobsPage({ searchParams }: PageProps<'/admin/jobs'
         <h2 id="queue-title" className="sr-only">
           Job queue
         </h2>
-        <nav aria-label="Job status" className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1">
+        <nav
+          aria-label="Job status"
+          className="-mx-4 flex snap-x scroll-px-4 [scrollbar-width:none] gap-1.5 overflow-x-auto px-4 pb-1 md:-mx-8 md:scroll-px-8 md:px-8 lg:mx-0 lg:px-0"
+        >
           {FILTERS.map((f) => (
             <Link
               key={f}
               href={f === 'all' ? '/admin/jobs' : `/admin/jobs?status=${f}`}
               aria-current={f === filter ? 'page' : undefined}
               className={cn(
-                'inline-flex min-h-9 shrink-0 items-center gap-2 rounded-md border px-3 text-sm font-medium',
+                'inline-flex h-10 shrink-0 snap-start items-center gap-2 rounded-md border px-3 text-sm font-medium whitespace-nowrap transition-colors',
                 f === filter
                   ? 'border-obsidian bg-obsidian text-on-dark'
                   : 'border-line bg-card text-body hover:bg-mist',

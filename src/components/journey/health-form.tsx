@@ -79,24 +79,27 @@ export function HealthForm({
   };
 
   return (
-    <form noValidate onSubmit={handleSubmit(submit)} className="space-y-10">
-      <fieldset disabled={pending} className="space-y-10">
+    <form noValidate onSubmit={handleSubmit(submit)}>
+      <fieldset
+        disabled={pending}
+        className="divide-y divide-line [&>section]:py-8 md:[&>section]:py-10 [&>section:first-child]:pt-0"
+      >
         <Section n={1} title="About you">
-          <div className="grid gap-5 sm:grid-cols-[140px_minmax(0,1fr)]">
-            <div className="space-y-1.5">
-              <label htmlFor="hf-age" className="text-sm font-medium text-ink">
+          <div className="grid gap-x-6 gap-y-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+            <div>
+              <label htmlFor="hf-age" className="block text-sm font-medium text-ink">
                 Age
               </label>
               <Input
                 id="hf-age"
                 inputMode="numeric"
                 maxLength={3}
-                className="price h-12 bg-card text-base"
+                className="price mt-2.5 h-11 bg-card text-base"
                 aria-invalid={errors.age ? true : undefined}
                 aria-describedby="hf-age-err"
                 {...register('age')}
               />
-              <p id="hf-age-err" aria-live="polite" className="text-sm text-danger">
+              <p id="hf-age-err" aria-live="polite" className="mt-1.5 min-h-5 text-sm text-danger">
                 {errors.age?.message}
               </p>
             </div>
@@ -163,13 +166,13 @@ export function HealthForm({
           title="Health and history"
           note={`Private — only ${doctorName} and the clinical team see this.`}
         >
-          <div className="grid gap-5 md:grid-cols-2">
+          <div className="grid gap-x-6 gap-y-4 md:grid-cols-2">
             {TEXT_FIELDS.map((f) => (
-              <div key={f.name} className="space-y-1.5">
+              <div key={f.name} className="flex flex-col">
                 <label htmlFor={`hf-${f.name}`} className="text-sm font-medium text-ink">
                   {f.label}
                 </label>
-                <p id={`hf-${f.name}-hint`} className="text-[13px] text-muted-foreground">
+                <p id={`hf-${f.name}-hint`} className="mt-1 mb-2 flex-1 text-[13px] text-muted-foreground">
                   {f.hint}
                 </p>
                 <Textarea
@@ -177,10 +180,10 @@ export function HealthForm({
                   rows={3}
                   aria-describedby={`hf-${f.name}-hint hf-${f.name}-err`}
                   aria-invalid={errors[f.name] ? true : undefined}
-                  className="bg-card text-base"
+                  className="min-h-24 resize-y bg-card text-base"
                   {...register(f.name)}
                 />
-                <p id={`hf-${f.name}-err`} aria-live="polite" className="text-sm text-danger">
+                <p id={`hf-${f.name}-err`} aria-live="polite" className="mt-1.5 min-h-5 text-sm text-danger">
                   {errors[f.name]?.message}
                 </p>
               </div>
@@ -213,11 +216,12 @@ export function HealthForm({
         </Section>
       </fieldset>
 
-      <p aria-live="assertive" className={cn('text-sm text-danger', !serverError && 'sr-only')}>
+      <p aria-live="assertive" className={cn('mt-6 text-sm text-danger', !serverError && 'sr-only')}>
         {serverError}
       </p>
 
       <ContinueBar
+        className="lg:pl-[240px]"
         summary={
           <>
             <span className="block text-muted-foreground">Next</span>
@@ -249,13 +253,13 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="grid gap-4 md:grid-cols-[200px_minmax(0,1fr)] md:gap-10">
+    <section className="grid gap-5 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-10">
       <div>
         <p className="price text-sm text-brand">0{n}</p>
-        <h2 className="mt-1 text-lg font-medium text-ink">{title}</h2>
-        {note ? <p className="mt-1 text-sm text-muted-foreground">{note}</p> : null}
+        <h2 className="mt-1 font-display text-2xl leading-tight font-medium text-ink">{title}</h2>
+        {note ? <p className="mt-2 max-w-xs text-sm text-pretty text-muted-foreground">{note}</p> : null}
       </div>
-      <div className="min-w-0 space-y-6">{children}</div>
+      <div className="min-w-0 space-y-5">{children}</div>
     </section>
   );
 }

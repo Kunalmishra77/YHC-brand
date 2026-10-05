@@ -37,7 +37,7 @@ const WHEN = [
 ] as const;
 
 const selectClass =
-  'h-9 rounded-md border border-input bg-card px-3 text-sm text-ink focus-visible:outline-2 focus-visible:outline-brand';
+  'h-10 w-full rounded-md border border-input bg-card px-3 text-sm text-ink shadow-xs focus-visible:outline-2 focus-visible:outline-brand sm:w-auto';
 
 export default async function AppointmentsPage({ searchParams }: PageProps<'/admin/appointments'>) {
   await requireAdminPage();
@@ -70,10 +70,10 @@ export default async function AppointmentsPage({ searchParams }: PageProps<'/adm
 
       <form
         action="/admin/appointments"
-        className="flex flex-wrap items-end gap-3 rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80"
+        className="grid grid-cols-2 items-end gap-3 rounded-xl bg-card p-3 shadow-card ring-1 ring-line/80 sm:flex sm:flex-wrap md:p-4"
       >
-        <div className="space-y-1">
-          <label htmlFor="f-when" className="text-[13px] text-muted-foreground">
+        <div className="min-w-0 space-y-1.5">
+          <label htmlFor="f-when" className="block text-[13px] text-muted-foreground">
             Period
           </label>
           <select id="f-when" name="when" defaultValue={when} className={selectClass}>
@@ -84,14 +84,20 @@ export default async function AppointmentsPage({ searchParams }: PageProps<'/adm
             ))}
           </select>
         </div>
-        <div className="space-y-1">
-          <label htmlFor="f-date" className="text-[13px] text-muted-foreground">
+        <div className="min-w-0 space-y-1.5">
+          <label htmlFor="f-date" className="block text-[13px] text-muted-foreground">
             Or a date (IST)
           </label>
-          <Input id="f-date" type="date" name="date" defaultValue={date} className="h-9 w-40" />
+          <Input
+            id="f-date"
+            type="date"
+            name="date"
+            defaultValue={date}
+            className="h-10 w-full bg-card sm:w-40"
+          />
         </div>
-        <div className="space-y-1">
-          <label htmlFor="f-status" className="text-[13px] text-muted-foreground">
+        <div className="min-w-0 space-y-1.5">
+          <label htmlFor="f-status" className="block text-[13px] text-muted-foreground">
             Status
           </label>
           <select id="f-status" name="status" defaultValue={status ?? ''} className={selectClass}>
@@ -103,7 +109,7 @@ export default async function AppointmentsPage({ searchParams }: PageProps<'/adm
             ))}
           </select>
         </div>
-        <Button type="submit" variant="outline" className="min-h-9">
+        <Button type="submit" variant="outline" className="h-10">
           <Filter className="size-4" aria-hidden />
           Apply
         </Button>

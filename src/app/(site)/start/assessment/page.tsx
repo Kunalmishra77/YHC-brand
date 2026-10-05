@@ -1,9 +1,9 @@
 import { ArrowRight, MessageCircle, RotateCcw } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { PrintButton } from '@/components/account/print-button';
 import { AssessmentReport } from '@/components/journey/assessment-report';
-import { JourneyStepper } from '@/components/journey/journey-stepper';
+import { JourneyShell } from '@/components/journey/journey-shell';
+import { PrintSummaryButton } from '@/components/journey/print-summary-button';
 import { Button } from '@/components/ui/button';
 import { formatINR } from '@/lib/money';
 import { SITE } from '@/lib/site';
@@ -28,12 +28,12 @@ export default async function AssessmentPage() {
           We would rather be honest than sell you a plan that is unlikely to work. Here is what you can do
           next:
         </p>
-        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-          <Button asChild className="h-12 px-6 text-base">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <Button asChild className="h-auto min-h-12 px-6 py-3 text-base whitespace-normal">
             <Link href="/start/details">Talk to a doctor about other options</Link>
           </Button>
-          <PrintButton label="Download summary" />
-          <Button asChild variant="outline" className="h-11 px-5">
+          <PrintSummaryButton />
+          <Button asChild variant="outline" className="h-12 border-steel px-6 text-base">
             <a href={SITE.whatsappUrl} target="_blank" rel="noreferrer">
               <MessageCircle className="size-4" aria-hidden />
               Ask us on WhatsApp
@@ -54,41 +54,35 @@ export default async function AssessmentPage() {
             suggesting anything.
           </p>
         ) : null}
-        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <Button asChild className="h-12 px-6 text-base">
             <Link href="/start/details">
               Continue to your health form
               <ArrowRight className="size-4" aria-hidden />
             </Link>
           </Button>
-          <PrintButton label="Download summary" />
+          <PrintSummaryButton />
         </div>
       </div>
     );
 
   return (
-    <div className="bg-pearl">
-      <div className="bg-obsidian">
-        <div className="container-yhc py-6 md:py-8 print:hidden">
-          <JourneyStepper current="assessment" tone="dark" />
-        </div>
-      </div>
-      <div className="container-yhc py-8 pb-28 md:py-12">
-        <div className="mx-auto max-w-5xl">
-          <p className="eyebrow">Your personalised assessment</p>
-          <h1 className="display mt-2 text-[34px] md:text-[48px]">What your scan shows</h1>
-          <AssessmentReport scan={scan} actions={actions} className="mt-6" />
-          <p className="mt-6 print:hidden">
-            <Link
-              href="/start/scan"
-              className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-brand underline-offset-4 hover:underline"
-            >
-              <RotateCcw className="size-4" aria-hidden />
-              Redo the scan
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+    <JourneyShell
+      current="assessment"
+      eyebrow="Your personalised assessment"
+      title="What your scan shows"
+      lede="A first look at your roots, in plain language. The doctor confirms everything at your consultation."
+    >
+      <AssessmentReport scan={scan} actions={actions} />
+      <p className="mt-6 print:hidden">
+        <Link
+          href="/start/scan"
+          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-brand underline-offset-4 hover:underline"
+        >
+          <RotateCcw className="size-4" aria-hidden />
+          Redo the scan
+        </Link>
+      </p>
+    </JourneyShell>
   );
 }

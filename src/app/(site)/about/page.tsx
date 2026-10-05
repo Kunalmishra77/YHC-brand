@@ -73,9 +73,9 @@ export default function AboutPage() {
     <>
       {/* 1 · Opening */}
       <section className="border-b border-line">
-        <div className="container-yhc grid gap-10 py-14 md:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] md:items-center md:gap-16 md:py-24">
-          <div>
-            <h1 className="display text-[clamp(2.5rem,1.7rem+3.2vw,4.25rem)]">
+        <div className="container-yhc grid gap-10 py-14 md:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] md:items-center md:gap-12 md:py-24 lg:gap-16">
+          <div className="min-w-0">
+            <h1 className="display text-[clamp(2.5rem,1.7rem+3.2vw,4.25rem)] text-balance">
               Hair care that starts with a conversation.
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-body">
@@ -119,7 +119,7 @@ export default function AboutPage() {
       {/* 2 · Why doctor-led */}
       <section className="container-yhc py-20 md:py-28">
         <div className="grid gap-10 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-16">
-          <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] md:sticky md:top-28 md:self-start">
+          <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance md:sticky md:top-28 md:self-start">
             Why doctor-led
           </h2>
           <div className="max-w-[62ch] space-y-5 text-lg leading-relaxed text-body">
@@ -147,7 +147,7 @@ export default function AboutPage() {
       <section className="bg-obsidian text-on-dark">
         <div className="container-yhc py-20 md:py-28">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <h2 className="display max-w-xl text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-on-dark">
+            <h2 className="display max-w-xl text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance text-on-dark">
               How YHC works
             </h2>
             <Link
@@ -157,11 +157,14 @@ export default function AboutPage() {
               Each step in detail
             </Link>
           </div>
-          <ol className="mt-14 grid gap-px overflow-hidden rounded-2xl bg-line-dark md:grid-cols-5">
+          <ol className="mt-14 grid gap-px overflow-hidden rounded-2xl bg-line-dark sm:grid-cols-2 lg:grid-cols-5">
             {journey.map((step, i) => (
-              <li key={step.title} className="flex flex-col bg-obsidian p-6 md:min-h-72 md:p-7">
+              <li
+                key={step.title}
+                className="flex flex-col bg-obsidian p-6 sm:last:odd:col-span-2 md:p-7 lg:min-h-72 lg:last:odd:col-span-1"
+              >
                 <span className="font-display text-5xl leading-none text-platinum/70">{i + 1}</span>
-                <h3 className="mt-8 text-lg font-semibold text-on-dark md:mt-auto">{step.title}</h3>
+                <h3 className="mt-8 text-lg font-semibold text-on-dark lg:mt-auto">{step.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-on-dark-muted">{step.body}</p>
               </li>
             ))}
@@ -172,7 +175,9 @@ export default function AboutPage() {
       {/* 4 · What we will never do */}
       <section className="container-yhc py-20 md:py-28">
         <div className="grid gap-6 md:grid-cols-2 md:items-end">
-          <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">What we will never do</h2>
+          <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
+            What we will never do
+          </h2>
           <p className="max-w-md text-body md:justify-self-end">
             Trust in hair care is hard to earn and easy to lose. These are the lines we hold, in the product
             itself — not only in our copy.
@@ -197,7 +202,9 @@ export default function AboutPage() {
       <section className="border-t border-line bg-[#efeeeb]/60">
         <div className="container-yhc grid gap-12 py-20 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16 md:py-28">
           <div>
-            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">What we hold ourselves to</h2>
+            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
+              What we hold ourselves to
+            </h2>
             <div className="relative mt-10 aspect-[16/10] overflow-hidden rounded-2xl">
               <Image
                 src={IMAGES.textureDrop.src}
@@ -225,13 +232,15 @@ export default function AboutPage() {
       <section className="container-yhc py-20 md:py-28">
         <div className="grid gap-10 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-16">
           <div>
-            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">The people behind it</h2>
+            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
+              The people behind it
+            </h2>
             <p className="mt-5 max-w-sm leading-relaxed text-body">
               A small team built around one doctor’s consultations: care coordination, packing and delivery,
               and support.
             </p>
           </div>
-          <div className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
+          <div className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
             <div className="bg-card p-7">
               <p className="text-[13px] text-muted-foreground">Lead doctor</p>
               <p className="mt-3 font-display text-3xl leading-tight text-ink">{doctor.name}</p>

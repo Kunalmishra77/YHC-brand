@@ -5,6 +5,7 @@ import type { GuaranteePolicy } from '@/lib/domain/types';
 import { VIDEOS } from '@/lib/images';
 import { cn } from '@/lib/utils';
 import { BackgroundVideo } from './background-video';
+import { H2 } from './section';
 import type { StoryVideo } from './video-library';
 
 /** The guarantee's conditions in plain words, straight from the active policy row. */
@@ -73,28 +74,33 @@ export function GuaranteeConditionList({
 export function GuaranteeVideoPanel({ guarantee }: { guarantee: GuaranteePolicy }) {
   return (
     <section className="bg-obsidian text-on-dark" aria-labelledby="guarantee-heading">
-      <div className="grid md:grid-cols-2">
-        <div className="relative min-h-80 md:min-h-[600px]">
+      {/* Split only from lg; below that the film sits on top and the text uses the normal container. */}
+      <div className="grid lg:grid-cols-2">
+        <div className="relative min-h-[22rem] overflow-hidden sm:min-h-[26rem] lg:min-h-[640px]">
           <BackgroundVideo video={VIDEOS.guarantee} />
-          <div className="absolute inset-0 bg-obsidian/55" />
-          <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/20 to-transparent md:bg-gradient-to-r md:from-transparent md:via-obsidian/10 md:to-obsidian" />
-          <div className="absolute bottom-6 left-6 max-w-xs md:bottom-10 md:left-10">
-            <p className="font-display text-[44px] leading-none text-on-dark md:text-[60px]">Money back</p>
-            <p className="mt-3 text-sm text-on-dark-muted">
-              {refundLine(guarantee)} if you meet every condition and a doctor confirms no visible
-              improvement.
-            </p>
+          <div className="absolute inset-0 bg-obsidian/55" aria-hidden />
+          <div
+            className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/20 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-obsidian/10 lg:to-obsidian"
+            aria-hidden
+          />
+          <div className="absolute inset-x-0 bottom-0 lg:inset-x-auto lg:bottom-12 lg:left-12">
+            <div className="container-yhc pb-8 lg:max-w-sm lg:px-0 lg:pb-0">
+              <p className="font-display text-[clamp(2.75rem,2.2rem+2.4vw,3.75rem)] leading-none text-on-dark">
+                Money back
+              </p>
+              <p className="mt-3 max-w-xs text-sm leading-relaxed text-pretty text-on-dark-muted">
+                {refundLine(guarantee)} if you meet every condition and a doctor confirms no visible
+                improvement.
+              </p>
+            </div>
           </div>
         </div>
-        <div className="container-yhc flex flex-col justify-center py-16 md:max-w-xl md:px-14 md:py-24">
+        <div className="container-yhc flex flex-col justify-center py-14 md:py-20 lg:mx-0 lg:max-w-[38rem] lg:px-14 lg:py-24 xl:px-20">
           <p className="eyebrow text-brand-on-dark">Money-back guarantee</p>
-          <h2
-            id="guarantee-heading"
-            className="display mt-4 text-[clamp(2.25rem,1.6rem+2.4vw,3.25rem)] text-on-dark"
-          >
+          <h2 id="guarantee-heading" className={`${H2} mt-4 max-w-xl text-on-dark`}>
             A guarantee, with its conditions in plain sight
           </h2>
-          <p className="mt-5 leading-relaxed text-on-dark-muted">
+          <p className="mt-5 max-w-[62ch] leading-relaxed text-pretty text-on-dark-muted">
             Hair responds slowly and differently for everyone. If you follow your plan for the full period and
             see no visible improvement, you can claim a refund. A doctor reviews every claim.
           </p>

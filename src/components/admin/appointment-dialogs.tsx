@@ -38,7 +38,7 @@ export function RescheduleDialog({
           Reschedule
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent mobileSheet>
         <DialogHeader>
           <DialogTitle>Reschedule {code}</DialogTitle>
           <DialogDescription>
@@ -112,7 +112,7 @@ export function ReasonDialog({
           {label}
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent mobileSheet>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

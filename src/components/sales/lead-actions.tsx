@@ -137,7 +137,7 @@ export function LeadQuickActions({
       />
 
       <Dialog open={panel === 'call'} onOpenChange={close}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent mobileSheet className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Log call with {leadName}</DialogTitle>
             <DialogDescription>
@@ -186,7 +186,7 @@ export function LeadQuickActions({
       </Dialog>
 
       <Dialog open={panel === 'note'} onOpenChange={close}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent mobileSheet className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Add note</DialogTitle>
             <DialogDescription>Visible to the sales team on this lead’s timeline.</DialogDescription>
@@ -211,7 +211,7 @@ export function LeadQuickActions({
       </Dialog>
 
       <Dialog open={panel === 'task'} onOpenChange={close}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent mobileSheet className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Create task</DialogTitle>
             <DialogDescription>Assigned to you. It also becomes this lead’s next action.</DialogDescription>
@@ -337,7 +337,7 @@ function BookDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent mobileSheet className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Book on behalf of {leadName}</DialogTitle>
           <DialogDescription>

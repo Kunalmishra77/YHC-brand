@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 /**
  * Journey stepper across /start/*: Details → 3D scan → Assessment → Health form → Book slot →
- * Consultation. Mobile: "Step 3 of 6 · Assessment" + segmented rail. Desktop: the full list.
+ * Consultation. Phone/tablet: "Step 3 of 6 · Assessment" + segmented rail. Desktop (lg+): the full list.
  */
 export function JourneyStepper({
   current,
@@ -20,7 +20,7 @@ export function JourneyStepper({
   const active = JOURNEY_STEPS[index];
   return (
     <nav aria-label="Your journey" className={cn('w-full', className)}>
-      <div className="md:hidden">
+      <div className="lg:hidden">
         <p className={cn('text-sm', dark ? 'text-on-dark-muted' : 'text-muted-foreground')}>
           Step {index + 1} of {JOURNEY_STEPS.length} ·{' '}
           <span className={cn('font-medium', dark ? 'text-on-dark' : 'text-ink')}>{active?.label}</span>
@@ -30,7 +30,7 @@ export function JourneyStepper({
             <span
               key={s.id}
               className={cn(
-                'h-1 flex-1 rounded-full',
+                'h-1 flex-1 rounded-full transition-colors',
                 i < index
                   ? dark
                     ? 'bg-platinum'
@@ -47,7 +47,7 @@ export function JourneyStepper({
           ))}
         </div>
       </div>
-      <ol className="hidden items-center gap-2 md:flex">
+      <ol className="hidden items-center gap-2 lg:flex">
         {JOURNEY_STEPS.map((s, i) => {
           const done = i < index;
           const isActive = i === index;

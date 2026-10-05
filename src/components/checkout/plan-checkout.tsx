@@ -15,7 +15,7 @@ import type { PlanOptionView } from './types';
 
 const ADDRESS_FORM = 'plan-address';
 
-/** Duration selector, server-computed price breakdown, address and Pay securely (FR-M6-3). */
+/** Duration selector, server-computed price breakdown, address and Pay (FR-M6-3). */
 export function PlanCheckout({
   token,
   plans,
@@ -65,7 +65,7 @@ export function PlanCheckout({
   const perMonth = (p: PlanOptionView) => Math.round(p.pricePaise / p.months / 100) * 100;
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-10">
       <section aria-labelledby="duration-title">
         <h2 id="duration-title" className="text-lg font-medium text-ink">
           Choose your duration
@@ -73,7 +73,11 @@ export function PlanCheckout({
         <p className="mt-1 text-sm text-muted-foreground">
           Dr. Tyagi&apos;s choice is selected. You can change it — the routine stays the same.
         </p>
-        <div role="radiogroup" aria-labelledby="duration-title" className="mt-4 grid gap-3 sm:grid-cols-3">
+        <div
+          role="radiogroup"
+          aria-labelledby="duration-title"
+          className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-1"
+        >
           {plans.map((p) => {
             const active = p.id === planId;
             return (
@@ -84,7 +88,7 @@ export function PlanCheckout({
                 aria-checked={active}
                 onClick={() => setPlanId(p.id)}
                 className={cn(
-                  'relative flex flex-col rounded-lg border p-4 text-left transition-colors',
+                  'relative flex min-h-11 flex-col rounded-xl border p-4 text-left transition-colors',
                   active
                     ? 'border-obsidian bg-card shadow-card ring-1 ring-obsidian'
                     : 'border-line bg-card hover:border-steel',
@@ -137,7 +141,7 @@ export function PlanCheckout({
         ) : null}
       </section>
 
-      <section aria-labelledby="price-title" className="rounded-xl border border-line bg-card">
+      <section aria-labelledby="price-title" className="rounded-2xl border border-line bg-pearl/60">
         <h2 id="price-title" className="border-b border-line px-5 py-4 text-lg font-medium text-ink">
           Price
         </h2>
@@ -212,12 +216,12 @@ export function PlanCheckout({
         {useSaved ? (
           <Button className="h-12 px-6 text-base md:px-10" onClick={() => startPay(null)}>
             <Lock className="size-4" aria-hidden />
-            Pay securely
+            Pay {formatINR(plan.quote.totalPaise)}
           </Button>
         ) : (
           <Button type="submit" form={ADDRESS_FORM} className="h-12 px-6 text-base md:px-10">
             <Lock className="size-4" aria-hidden />
-            Pay securely
+            Pay {formatINR(plan.quote.totalPaise)}
           </Button>
         )}
       </ContinueBar>

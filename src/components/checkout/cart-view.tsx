@@ -42,13 +42,15 @@ export function CartView({ catalog, add }: { catalog: CatalogItemView[]; add: Ad
   const count = rows.reduce((s, r) => s + r.qty, 0);
 
   return (
-    <div className="container-yhc py-8 md:py-14">
-      <div className="mx-auto max-w-4xl">
+    <div className="container-yhc py-10 md:py-16">
+      <div className="mx-auto max-w-5xl">
         <p className="eyebrow">Your cart</p>
-        <h1 className="display mt-2 text-[32px] md:text-[44px]">Everyday care, delivered</h1>
+        <h1 className="display mt-3 text-[clamp(2rem,1.5rem+1.8vw,2.75rem)] text-balance">
+          Everyday care, delivered
+        </h1>
 
         {add?.kind === 'needs_consult' ? (
-          <div className="mt-6 flex flex-col gap-4 rounded-lg border border-line bg-card p-5 sm:flex-row sm:items-center">
+          <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-line bg-card p-5 sm:flex-row sm:items-center">
             <Stethoscope className="size-6 shrink-0 text-brand" aria-hidden />
             <div className="flex-1">
               <p className="font-medium text-ink">{add.name} needs a consultation first</p>
@@ -57,7 +59,7 @@ export function CartView({ catalog, add }: { catalog: CatalogItemView[]; add: Ad
                 cart. If it suits you, it will be part of your personalised plan.
               </p>
             </div>
-            <Button asChild className="h-11 shrink-0">
+            <Button asChild className="h-12 shrink-0 px-6">
               <Link href="/book">Book consultation · ₹500</Link>
             </Button>
           </div>
@@ -78,22 +80,22 @@ export function CartView({ catalog, add }: { catalog: CatalogItemView[]; add: Ad
               body="Shampoo and conditioner can be bought directly. Treatments are prescribed after a consultation with Dr. Tyagi."
               action={
                 <div className="flex flex-wrap justify-center gap-2">
-                  <Button asChild variant="outline" className="h-11 border-steel">
+                  <Button asChild variant="outline" className="h-12 border-steel px-6">
                     <Link href="/products">Browse products</Link>
                   </Button>
-                  <Button asChild className="h-11">
+                  <Button asChild className="h-12 px-6">
                     <Link href="/book">Book consultation · ₹500</Link>
                   </Button>
                 </div>
               }
             />
           ) : (
-            <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_300px]">
-              <ul className="divide-y divide-line border-y border-line">
+            <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_300px] lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12">
+              <ul className="min-w-0 divide-y divide-line border-y border-line">
                 {rows.map((r) => (
                   <li key={r.productId} className="flex gap-4 py-5">
                     <div
-                      className="bg-silver flex size-20 shrink-0 items-end justify-center rounded-md pb-2"
+                      className="bg-silver flex size-20 shrink-0 items-end justify-center rounded-xl pb-2"
                       aria-hidden
                     >
                       <span className="h-12 w-6 rounded-sm bg-obsidian/85 shadow-card" />
@@ -159,7 +161,7 @@ export function CartView({ catalog, add }: { catalog: CatalogItemView[]; add: Ad
                 ))}
               </ul>
 
-              <aside className="h-fit rounded-lg border border-line bg-card p-5">
+              <aside className="h-fit rounded-2xl border border-line bg-card p-5 shadow-card sm:p-6 md:sticky md:top-24">
                 <div className="flex items-baseline justify-between">
                   <span className="text-sm text-body">
                     Subtotal · {count} {count === 1 ? 'item' : 'items'}

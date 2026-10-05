@@ -175,7 +175,7 @@ export function Workspace({
   const pane = (id: Tab) =>
     cn(
       tab === id ? 'block' : 'hidden',
-      'min-w-0 rounded-xl bg-card shadow-card ring-1 ring-line/80/60 xl:block xl:h-[calc(100dvh-15rem)] xl:min-h-[560px] xl:overflow-y-auto xl:overscroll-contain',
+      'min-w-0 scroll-mt-32 rounded-xl bg-card shadow-card ring-1 ring-line/80 xl:block xl:h-[calc(100dvh-14rem)] xl:min-h-[560px] xl:overflow-y-auto xl:overscroll-contain',
     );
 
   return (
@@ -183,26 +183,38 @@ export function Workspace({
       <div
         role="tablist"
         aria-label="Workspace sections"
-        className="sticky top-16 z-20 -mx-4 mb-3 grid grid-cols-3 gap-1 border-b border-line bg-pearl/95 px-4 py-2 backdrop-blur md:-mx-8 md:px-8 xl:hidden"
+        className="sticky top-16 z-20 -mx-4 mb-4 border-b border-line bg-pearl/90 px-4 py-2.5 backdrop-blur-md md:-mx-8 md:px-8 xl:hidden"
       >
-        {tabs.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            role="tab"
-            id={`ws-tab-${t.id}`}
-            aria-selected={tab === t.id}
-            aria-controls={`ws-pane-${t.id}`}
-            onClick={() => setTab(t.id)}
-            className={cn(
-              'h-10 rounded-md text-sm font-medium transition-colors',
-              tab === t.id ? 'bg-obsidian text-on-dark' : 'text-body hover:bg-mist',
-            )}
-          >
-            {t.label}
-            {t.id === 'consult' && save.kind === 'dirty' ? <span className="sr-only"> (unsaved)</span> : null}
-          </button>
-        ))}
+        <div className="grid grid-cols-3 gap-1 rounded-lg bg-mist p-1 ring-1 ring-line/70">
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              role="tab"
+              id={`ws-tab-${t.id}`}
+              aria-selected={tab === t.id}
+              aria-controls={`ws-pane-${t.id}`}
+              onClick={() => {
+                setTab(t.id);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={cn(
+                'relative inline-flex h-10 items-center justify-center gap-1.5 rounded-md text-sm font-medium transition-colors',
+                tab === t.id
+                  ? 'bg-obsidian text-on-dark shadow-sm'
+                  : 'text-body hover:bg-card hover:text-ink',
+              )}
+            >
+              {t.label}
+              {t.id === 'consult' && save.kind === 'dirty' ? (
+                <>
+                  <span className="size-1.5 rounded-full bg-warning" aria-hidden />
+                  <span className="sr-only"> (unsaved)</span>
+                </>
+              ) : null}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="xl:grid xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.2fr)_minmax(0,1fr)] xl:gap-4">
@@ -312,7 +324,7 @@ export function Workspace({
                     Mark no-show
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent mobileSheet>
                   <DialogHeader>
                     <DialogTitle>Mark {patientName.split(' ')[0]} as no-show?</DialogTitle>
                     <DialogDescription>

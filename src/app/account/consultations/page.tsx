@@ -64,7 +64,7 @@ export default async function ConsultationsPage() {
             const freeUntil = subHours(start, freeHours);
             const canJoin = now.getTime() >= start.getTime() - JOIN_WINDOW_MINUTES * 60_000;
             return (
-              <article key={a.id} className="rounded-xl border border-line bg-card p-5 md:p-6">
+              <article key={a.id} className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6">
                 <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                   <div>
                     <p className="price text-xl text-ink">{formatWhen(a.startsAt)}</p>
@@ -123,7 +123,7 @@ export default async function ConsultationsPage() {
             body="After your first consultation, the doctor's summary and prescription appear here."
           />
         ) : (
-          <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-card">
+          <ul className="divide-y divide-line overflow-hidden rounded-2xl bg-card shadow-card ring-1 ring-line/80">
             {past.map((a) => {
               const summary = a.status === 'completed' && hasPatientSummary(a.id);
               const rx = a.status === 'completed' && hasPrescription(customer.id, a.id);

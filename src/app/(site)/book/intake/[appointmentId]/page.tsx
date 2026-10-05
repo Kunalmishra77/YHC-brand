@@ -77,7 +77,9 @@ export default async function IntakePage({ params }: PageProps<'/book/intake/[ap
             <span className="price text-sm text-muted-foreground">{appt.code}</span>
           </div>
           <p className="eyebrow mt-5">Your hair profile · about 3 minutes</p>
-          <h1 className="display mt-2 text-[32px] md:text-[44px]">Help {doctor.name} prepare for you</h1>
+          <h1 className="display mt-2 text-[32px] text-balance md:text-[44px]">
+            Help {doctor.name} prepare for you
+          </h1>
           <p className="mt-3 max-w-2xl text-body">
             Your consultation is on <span className="font-medium text-ink">{when}</span>. Answer what you can
             — there are no wrong answers, and you can save and come back.

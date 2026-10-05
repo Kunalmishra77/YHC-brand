@@ -38,7 +38,7 @@ export default async function OrdersPage() {
             <li key={o.id}>
               <Link
                 href={ACCOUNT_LINKS.order(o.code)}
-                className="flex flex-col gap-3 rounded-xl border border-line bg-card p-5 transition-colors hover:border-steel sm:flex-row sm:items-center sm:justify-between"
+                className="flex flex-col gap-3 rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 transition-colors hover:border-steel sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="min-w-0">
                   <p className="font-medium text-ink">{o.lines.map((l) => l.label).join(', ')}</p>

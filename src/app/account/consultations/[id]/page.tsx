@@ -57,7 +57,7 @@ export default async function ConsultationSummaryPage({ params }: PageProps<'/ac
         </p>
       </header>
 
-      <div className="mt-8 divide-y divide-line rounded-xl border border-line bg-card">
+      <div className="mt-8 divide-y divide-line rounded-2xl bg-card shadow-card ring-1 ring-line/80">
         {sections.map((s) => (
           <section key={s.title} className="p-5 md:p-6">
             <h2 className="text-sm font-semibold text-ink">{s.title}</h2>

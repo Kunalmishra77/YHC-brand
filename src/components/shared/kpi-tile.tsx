@@ -2,7 +2,10 @@ import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
-/** KPI with value, label, delta in words and a metric definition tooltip (FR-M13-5). */
+/**
+ * KPI with value, label, delta in words and a metric definition tooltip (FR-M13-5).
+ * Fills its grid cell (equal heights in a row); the delta sits on the bottom edge.
+ */
 export function KpiTile({
   label,
   value,
@@ -22,7 +25,7 @@ export function KpiTile({
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-xl p-5',
+        'relative flex h-full min-w-0 flex-col overflow-hidden rounded-xl p-4 sm:p-5',
         dark ? 'bg-obsidian text-on-dark ring-1 ring-line-dark' : 'bg-card shadow-card ring-1 ring-line/80',
         className,
       )}
@@ -33,13 +36,21 @@ export function KpiTile({
           aria-hidden
         />
       ) : null}
-      <div className="relative flex items-center gap-1.5">
-        <p className={cn('text-[13px] font-medium', dark ? 'text-on-dark-muted' : 'text-muted-foreground')}>
+      <div className="relative flex items-start justify-between gap-2">
+        <p
+          className={cn(
+            'min-w-0 text-[13px] leading-snug font-medium',
+            dark ? 'text-on-dark-muted' : 'text-muted-foreground',
+          )}
+        >
           {label}
         </p>
         {definition ? (
           <Tooltip>
-            <TooltipTrigger aria-label={`How ${label} is measured`} className="rounded-full">
+            <TooltipTrigger
+              aria-label={`How ${label} is measured`}
+              className="-mt-1 -mr-1.5 flex size-6 shrink-0 items-center justify-center rounded-full"
+            >
               <Info className="size-3.5 text-steel" aria-hidden />
             </TooltipTrigger>
             <TooltipContent className="max-w-xs">{definition}</TooltipContent>
@@ -48,7 +59,7 @@ export function KpiTile({
       </div>
       <p
         className={cn(
-          'price relative mt-3 text-[2rem] leading-none tracking-tight',
+          'price relative mt-3 text-[1.625rem] leading-none tracking-tight break-words sm:text-[2rem]',
           dark ? 'text-on-dark' : 'text-ink',
         )}
       >
@@ -57,7 +68,7 @@ export function KpiTile({
       {delta ? (
         <p
           className={cn(
-            'relative mt-3 text-[13px] leading-snug',
+            'relative mt-auto pt-3 text-[13px] leading-snug text-pretty',
             dark ? 'text-on-dark-muted' : 'text-muted-foreground',
           )}
         >

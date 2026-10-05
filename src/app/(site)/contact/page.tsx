@@ -49,19 +49,19 @@ export default function ContactPage() {
     <>
       <section className="border-b border-line">
         <div className="container-yhc grid gap-8 py-16 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end md:py-24">
-          <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)]">Talk to a person</h1>
-          <p className="text-lg leading-relaxed text-body">
+          <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-balance">Talk to a person</h1>
+          <p className="max-w-xl text-lg leading-relaxed text-pretty text-body">
             Questions about a booking, an order or delivery? Message us — a member of the YHC team will reply.
           </p>
         </div>
       </section>
 
-      <section className="container-yhc grid gap-14 py-14 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16 md:py-20">
-        <div>
+      <section className="container-yhc grid gap-14 py-16 md:py-24 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+        <div className="min-w-0 md:grid md:grid-cols-2 md:items-start md:gap-8 lg:block">
           {/* Fastest channel */}
           <div className="rounded-2xl bg-obsidian p-7 text-on-dark md:p-8">
             <MessageCircle className="size-6 text-brand-on-dark" aria-hidden />
-            <h2 className="display mt-6 text-[clamp(1.75rem,1.45rem+1vw,2.25rem)] text-on-dark">
+            <h2 className="display mt-6 text-[clamp(1.75rem,1.45rem+1vw,2.25rem)] text-balance text-on-dark">
               WhatsApp is fastest
             </h2>
             <p className="mt-3 leading-relaxed text-on-dark-muted">
@@ -79,7 +79,7 @@ export default function ContactPage() {
             </Button>
           </div>
 
-          <dl className="mt-8 divide-y divide-line border-y border-line">
+          <dl className="mt-8 divide-y divide-line border-y border-line md:mt-0 lg:mt-8">
             <div className="flex gap-4 py-5">
               <Mail className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
               <div>
@@ -127,12 +127,12 @@ export default function ContactPage() {
           </dl>
         </div>
 
-        <div>
-          <h2 className="display text-[clamp(2rem,1.5rem+2vw,2.75rem)]">Or send us a message</h2>
+        <div className="min-w-0">
+          <h2 className="display text-[clamp(2rem,1.5rem+2vw,2.75rem)] text-balance">Or send us a message</h2>
           <p className="mt-3 max-w-lg leading-relaxed text-body">
             Leave your number and we&apos;ll get back to you on WhatsApp or by phone.
           </p>
-          <div className="mt-8 rounded-2xl border border-line bg-card p-6 md:p-8">
+          <div className="mt-8 rounded-2xl border border-line bg-card p-5 shadow-card sm:p-6 md:p-8">
             <ContactForm />
           </div>
         </div>
@@ -141,7 +141,9 @@ export default function ContactPage() {
       {/* Who to contact for what */}
       <section className="border-t border-line bg-[#efeeeb]/60">
         <div className="container-yhc py-20 md:py-28">
-          <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">Who to contact for what</h2>
+          <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
+            Who to contact for what
+          </h2>
           <ul className="mt-12 border-t border-line">
             {ROUTES.map((r) => (
               <li

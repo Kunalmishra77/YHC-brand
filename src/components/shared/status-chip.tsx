@@ -26,13 +26,13 @@ export function StatusChip({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[13px] leading-none font-medium whitespace-nowrap',
+        'inline-flex max-w-full shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 align-middle text-[13px] leading-none font-medium whitespace-nowrap',
         toneClass,
         className,
       )}
     >
       <Icon className="size-3.5 shrink-0" aria-hidden />
-      {children}
+      <span className="min-w-0 truncate py-px">{children}</span>
     </span>
   );
 }

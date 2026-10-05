@@ -19,7 +19,7 @@ export interface AuditRow {
 }
 
 const selectClass =
-  'h-9 w-full rounded-md border border-input bg-card px-3 text-sm text-ink focus-visible:outline-2 focus-visible:outline-brand';
+  'h-10 w-full rounded-md border border-input bg-card px-3 text-sm text-ink focus-visible:outline-2 focus-visible:outline-brand';
 
 function tone(action: string) {
   if (action.startsWith('clinical.')) return 'warning' as const;
@@ -90,7 +90,13 @@ export function AuditTable({ rows }: { rows: AuditRow[] }) {
           <Label htmlFor="au-q" className="text-[13px] font-normal text-muted-foreground">
             Target contains
           </Label>
-          <Input id="au-q" value={q} onChange={(e) => setQ(e.target.value)} placeholder="e.g. YHC-10002" />
+          <Input
+            id="au-q"
+            className="h-10 bg-card"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="e.g. YHC-10002"
+          />
         </div>
         <CsvButton rows={csv} filename="yhc-audit-log.csv" dataset="audit" />
       </div>

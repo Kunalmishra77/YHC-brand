@@ -42,9 +42,9 @@ export function ArticleRow({
   const Heading = headingLevel;
   return (
     <article className="group relative grid gap-5 border-b border-line py-8 sm:grid-cols-[minmax(0,1fr)_180px] sm:gap-10 md:py-10">
-      <div>
+      <div className="min-w-0">
         <ArticleMeta article={article} />
-        <Heading className="mt-3 font-display text-[clamp(1.75rem,1.4rem+1.2vw,2.375rem)] leading-[1.15] font-medium text-ink">
+        <Heading className="mt-3 font-display text-[clamp(1.75rem,1.4rem+1.2vw,2.375rem)] leading-[1.15] font-medium text-balance text-ink">
           <Link
             href={`/blog/${article.slug}`}
             className="underline decoration-transparent underline-offset-[6px] group-hover:decoration-steel after:absolute after:inset-0"

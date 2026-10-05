@@ -235,7 +235,7 @@ function Intro({
         <h1
           ref={headingRef}
           tabIndex={-1}
-          className="mt-3 font-display text-[36px] leading-[1.05] font-medium text-on-dark outline-none md:text-[52px]"
+          className="mt-3 font-display text-[36px] leading-[1.05] font-medium text-balance text-on-dark outline-none md:text-[52px]"
         >
           {firstName
             ? `${firstName}, let's map your scalp and hair roots`
@@ -339,7 +339,7 @@ function Questions({
       <h1
         ref={headingRef}
         tabIndex={-1}
-        className="mt-8 font-display text-[30px] leading-[1.1] font-medium text-on-dark outline-none md:text-[40px]"
+        className="mt-8 font-display text-[30px] leading-[1.1] font-medium text-balance text-on-dark outline-none md:text-[40px]"
       >
         {q.title}
       </h1>
@@ -506,7 +506,7 @@ function Capture({
           <h1
             ref={headingRef}
             tabIndex={-1}
-            className="mt-2 font-display text-[30px] leading-[1.1] font-medium text-on-dark outline-none md:text-[40px]"
+            className="mt-2 font-display text-[30px] leading-[1.1] font-medium text-balance text-on-dark outline-none md:text-[40px]"
           >
             {ANGLE_LABEL[angle]}
           </h1>
@@ -561,13 +561,13 @@ function Capture({
           </div>
 
           {/* controls */}
-          <div className="mt-4 flex flex-wrap items-center gap-2">
+          <div className="mt-4 flex flex-wrap items-stretch gap-2">
             {shot ? (
               <>
                 <button
                   type="button"
                   onClick={() => onRetake(angle)}
-                  className="inline-flex h-12 items-center gap-2 rounded-xl px-4 text-sm font-medium text-on-dark ring-1 ring-white/25 hover:bg-white/10"
+                  className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium text-on-dark ring-1 ring-white/25 hover:bg-white/10 sm:flex-none"
                 >
                   <RotateCcw className="size-4" aria-hidden />
                   Retake
@@ -576,7 +576,7 @@ function Capture({
                   <button
                     type="button"
                     onClick={() => goTo(SCAN_ANGLES.findIndex((a) => !shots[a]))}
-                    className="bg-silver inline-flex h-12 items-center gap-2 rounded-xl px-5 text-sm font-semibold text-obsidian hover:opacity-95"
+                    className="bg-silver inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold text-obsidian hover:opacity-95 sm:flex-none"
                   >
                     Next angle
                     <ArrowRight className="size-4" aria-hidden />
@@ -601,10 +601,13 @@ function Capture({
                 <button
                   type="button"
                   onClick={() => void start(facing === 'user' ? 'environment' : 'user')}
-                  className="inline-flex h-12 items-center gap-2 rounded-xl px-4 text-sm text-on-dark ring-1 ring-white/25 hover:bg-white/10"
+                  className="inline-flex h-12 min-w-12 items-center justify-center gap-2 rounded-xl px-4 text-sm text-on-dark ring-1 ring-white/25 hover:bg-white/10"
+                  aria-label="Switch camera"
                 >
                   <SwitchCamera className="size-4" aria-hidden />
-                  <span className="sr-only sm:not-sr-only">Switch camera</span>
+                  <span className="hidden sm:inline" aria-hidden>
+                    Switch camera
+                  </span>
                 </button>
               </>
             ) : camera !== 'unavailable' ? (
@@ -625,7 +628,7 @@ function Capture({
               <button
                 type="button"
                 onClick={() => void start(DEFAULT_FACING[angle])}
-                className="inline-flex h-12 items-center gap-2 rounded-xl px-4 text-sm text-on-dark ring-1 ring-white/25 hover:bg-white/10"
+                className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl px-4 text-sm text-on-dark ring-1 ring-white/25 hover:bg-white/10 sm:flex-none"
               >
                 <RefreshCcw className="size-4" aria-hidden />
                 Try camera again
@@ -636,7 +639,7 @@ function Capture({
                 type="button"
                 onClick={() => fileRef.current?.click()}
                 disabled={busy}
-                className="inline-flex h-12 items-center gap-2 rounded-xl px-4 text-sm text-on-dark ring-1 ring-white/25 hover:bg-white/10 disabled:opacity-60"
+                className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl px-4 text-sm text-on-dark ring-1 ring-white/25 hover:bg-white/10 disabled:opacity-60 sm:flex-none"
               >
                 <ImageUp className="size-4" aria-hidden />
                 Upload a photo
@@ -812,7 +815,7 @@ function Analysing({
       <h1
         ref={headingRef}
         tabIndex={-1}
-        className="mt-2 font-display text-[30px] leading-[1.1] font-medium text-on-dark outline-none md:text-[40px]"
+        className="mt-2 font-display text-[30px] leading-[1.1] font-medium text-balance text-on-dark outline-none md:text-[40px]"
       >
         Analysing scalp &amp; hair roots
       </h1>

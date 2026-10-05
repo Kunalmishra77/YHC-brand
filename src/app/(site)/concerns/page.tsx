@@ -36,7 +36,7 @@ export default function ConcernsPage() {
           </p>
         }
       />
-      <section className="container-yhc py-10 md:py-16">
+      <section className="container-yhc py-16 md:py-24">
         {concerns.length ? (
           <ConcernList concerns={concerns} />
         ) : (

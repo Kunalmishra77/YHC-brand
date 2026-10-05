@@ -66,7 +66,7 @@ export function InviteDialog() {
           Invite staff
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent mobileSheet>
         <DialogHeader>
           <DialogTitle>Invite a team member</DialogTitle>
           <DialogDescription>
@@ -93,6 +93,7 @@ export function InviteDialog() {
             <Label htmlFor="inv-email">Work email</Label>
             <Input
               id="inv-email"
+              className="h-11 bg-card"
               type="email"
               autoComplete="off"
               value={email}
@@ -146,7 +147,7 @@ export function RoleChangeDialog({
           Change role
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent mobileSheet>
         <DialogHeader>
           <DialogTitle>Change role · {name}</DialogTitle>
           <DialogDescription>

@@ -63,7 +63,7 @@ export default async function ConsultRoomPage({ params }: PageProps<'/consult/[a
   }
 
   return (
-    <div className="container-yhc py-8 md:py-12">
+    <div className="container-yhc py-10 md:py-14">
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <StatusChip tone="success">Booked · paid</StatusChip>
         <span className="price text-sm text-on-dark-muted">{appt.code}</span>
@@ -76,7 +76,7 @@ export default async function ConsultRoomPage({ params }: PageProps<'/consult/[a
           </Link>
         ) : null}
       </div>
-      <h1 className="display text-[32px] text-on-dark md:text-[44px]">
+      <h1 className="display text-[clamp(2rem,1.5rem+1.8vw,2.75rem)] text-balance text-on-dark">
         Your consultation with {doctor.name}
       </h1>
       <p className="mt-2 mb-8 text-on-dark-muted">{when}</p>
@@ -101,8 +101,8 @@ function Notice({
   return (
     <div className="container-yhc py-16 md:py-24">
       <div className="mx-auto max-w-lg text-center">
-        <h1 className="display text-[32px] text-on-dark md:text-[40px]">{title}</h1>
-        <p className="mt-3 text-on-dark-muted">{body}</p>
+        <h1 className="display text-[clamp(2rem,1.6rem+1.6vw,2.5rem)] text-balance text-on-dark">{title}</h1>
+        <p className="mt-3 text-pretty text-on-dark-muted">{body}</p>
         <div className="mt-6 flex justify-center">
           <Button asChild className="bg-silver h-12 px-6 text-base text-obsidian hover:opacity-90">
             <Link href={cta?.href ?? '/account'}>{cta?.label ?? 'Go to your account'}</Link>

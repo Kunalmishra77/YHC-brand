@@ -70,7 +70,7 @@ export function OrderStatusGate({
     return (
       <div aria-live="polite" aria-busy={phase === 'confirming'} className="py-6">
         <p className="eyebrow">Order {code}</p>
-        <h1 className="display mt-2 text-[32px] md:text-[44px]">Confirming payment…</h1>
+        <h1 className="display mt-2 text-[32px] text-balance md:text-[44px]">Confirming payment…</h1>
         {phase === 'confirming' ? (
           <div className="mt-5 flex items-center gap-3 text-body">
             <Loader2 className="size-5 animate-spin text-brand motion-reduce:animate-none" aria-hidden />

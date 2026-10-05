@@ -102,14 +102,14 @@ export function SettingRow({
                 id={inputId}
                 value={draft}
                 inputMode={kind === 'number' ? 'numeric' : undefined}
-                className="price"
+                className="price h-10 bg-card"
                 aria-invalid={error ? true : undefined}
                 onChange={(e) => setDraft(e.target.value)}
               />
             )}
             <Button
               variant="outline"
-              className="min-h-9 shrink-0"
+              className="h-10 shrink-0"
               disabled={!dirty || pending}
               onClick={() => review(draft)}
             >
@@ -125,7 +125,7 @@ export function SettingRow({
       </div>
 
       <Dialog open={confirm !== null} onOpenChange={(o) => !o && setConfirm(null)}>
-        <DialogContent>
+        <DialogContent mobileSheet>
           <DialogHeader>
             <DialogTitle>Change {settingKey}?</DialogTitle>
             <DialogDescription asChild>

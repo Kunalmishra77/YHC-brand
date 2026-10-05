@@ -65,7 +65,7 @@ export default function StoriesPage() {
     <>
       <section className="border-b border-line">
         <div className="container-yhc grid gap-8 py-16 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end md:py-24">
-          <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)]">
+          <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-balance">
             Real stories, only when patients choose to share them
           </h1>
           <p className="text-lg leading-relaxed text-body">
@@ -76,7 +76,7 @@ export default function StoriesPage() {
         </div>
       </section>
 
-      <section className="container-yhc py-14 md:py-20">
+      <section className="container-yhc py-16 md:py-24">
         <StoriesEmpty />
       </section>
 
@@ -84,7 +84,7 @@ export default function StoriesPage() {
       <section className="container-yhc pb-20 md:pb-28">
         <div className="grid gap-12 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16">
           <div className="md:sticky md:top-28 md:self-start">
-            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">
+            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
               What every story will include
             </h2>
             <p className="mt-5 max-w-md text-lg leading-relaxed text-body">
@@ -141,14 +141,14 @@ export default function StoriesPage() {
       {/* How patients can choose to share */}
       <section className="bg-obsidian text-on-dark">
         <div className="container-yhc py-20 md:py-28">
-          <h2 className="display max-w-2xl text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-on-dark">
+          <h2 className="display max-w-2xl text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance text-on-dark">
             If you would like to share yours
           </h2>
-          <ol className="mt-14 grid gap-px overflow-hidden rounded-2xl bg-line-dark md:grid-cols-4">
+          <ol className="mt-14 grid gap-px overflow-hidden rounded-2xl bg-line-dark sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((step, i) => (
-              <li key={step.title} className="flex flex-col bg-obsidian p-6 md:min-h-72 md:p-7">
+              <li key={step.title} className="flex flex-col bg-obsidian p-6 md:p-7 lg:min-h-72">
                 <span className="font-display text-5xl leading-none text-platinum/70">{i + 1}</span>
-                <h3 className="mt-8 text-lg font-semibold text-on-dark md:mt-auto">{step.title}</h3>
+                <h3 className="mt-8 text-lg font-semibold text-on-dark lg:mt-auto">{step.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-on-dark-muted">{step.body}</p>
               </li>
             ))}
@@ -159,7 +159,9 @@ export default function StoriesPage() {
       {/* Privacy promise */}
       <section className="container-yhc py-20 md:py-28">
         <div className="grid gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16">
-          <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]">Our privacy promise</h2>
+          <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
+            Our privacy promise
+          </h2>
           <div>
             <ul className="space-y-4 text-lg leading-relaxed text-body">
               {[

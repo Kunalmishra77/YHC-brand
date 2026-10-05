@@ -60,13 +60,13 @@ export default async function ConsultWorkspacePage({ params }: PageProps<'/docto
             <ChevronLeft className="size-4" aria-hidden />
             Today
           </Link>
-          <h1 className="display truncate text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-[1.1]">
+          <h1 className="display text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-[1.1] break-words">
             {customer.name}
-            <span className="ml-2 text-base font-normal text-muted-foreground">
+            <span className="ml-2 inline-block font-sans text-base font-normal whitespace-nowrap text-muted-foreground">
               · {concernLabel(appt.concern)}
             </span>
           </h1>
-          <p className="mt-0.5 text-sm text-body">
+          <p className="mt-1 text-sm text-body">
             {formatIst(new Date(appt.startsAt), 'EEE d MMM, h:mm aaa')}–
             {formatIst(new Date(appt.endsAt), "h:mm aaa 'IST'")} · {appt.code} ·{' '}
             {appt.kind === 'follow_up' ? 'Follow-up' : 'First consultation'}

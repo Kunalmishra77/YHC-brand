@@ -73,7 +73,7 @@ export function RefundDialog({
           {remainingPaise <= 0 ? 'Fully refunded' : label}
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent mobileSheet>
         <DialogHeader>
           <DialogTitle>Refund {target}</DialogTitle>
           <DialogDescription>
@@ -97,6 +97,7 @@ export function RefundDialog({
               <Label htmlFor="rf-amount">Amount (₹)</Label>
               <Input
                 id="rf-amount"
+                className="h-11 bg-card"
                 inputMode="decimal"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
@@ -153,7 +154,7 @@ export function OverrideStatusDialog({
           Mark exception
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent mobileSheet>
         <DialogHeader>
           <DialogTitle>Override status · {code}</DialogTitle>
           <DialogDescription>

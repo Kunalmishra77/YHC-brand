@@ -67,7 +67,7 @@ export default async function GuaranteePage() {
       {/* Status card */}
       <section
         aria-labelledby="g-status"
-        className="grid gap-6 rounded-xl border border-line bg-card p-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] md:p-6"
+        className="grid gap-6 rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] md:p-6"
       >
         <div>
           <ShieldCheck className="size-6 text-brand" aria-hidden />
@@ -135,7 +135,10 @@ export default async function GuaranteePage() {
       </section>
 
       {/* Claim */}
-      <section aria-labelledby="g-claim" className="rounded-xl border border-line bg-card p-5 md:p-6">
+      <section
+        aria-labelledby="g-claim"
+        className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
+      >
         <h2 id="g-claim" className="text-base font-semibold text-ink">
           Make a claim
         </h2>
@@ -189,7 +192,7 @@ export default async function GuaranteePage() {
             body="If you make a claim, its status and the doctor's decision show here."
           />
         ) : (
-          <ul className="mt-3 divide-y divide-line rounded-xl border border-line bg-card">
+          <ul className="mt-3 divide-y divide-line rounded-2xl bg-card shadow-card ring-1 ring-line/80">
             {claims.map((c) => (
               <li key={c.id} className="p-5">
                 <div className="flex flex-wrap items-center justify-between gap-2">

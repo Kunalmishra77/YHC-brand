@@ -193,7 +193,7 @@ export function PhotoPanel({
       )}
 
       <Dialog open={zoom !== null} onOpenChange={(open) => !open && setZoom(null)}>
-        <DialogContent className="sm:max-w-2xl">
+        <DialogContent mobileSheet className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>{zoom ? ANGLES.find((a) => a.id === zoom.angle)?.label : ''}</DialogTitle>
             <DialogDescription>
@@ -241,7 +241,7 @@ export function PhotoPanel({
       </Dialog>
 
       <Dialog open={compare} onOpenChange={setCompare}>
-        <DialogContent className="sm:max-w-3xl">
+        <DialogContent mobileSheet className="sm:max-w-3xl">
           <DialogHeader>
             <DialogTitle>Compare photos</DialogTitle>
             <DialogDescription>

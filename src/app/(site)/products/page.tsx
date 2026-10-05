@@ -38,7 +38,7 @@ export default function ProductsPage() {
           </p>
         }
       />
-      <div className="container-yhc space-y-24 py-14 md:py-20">
+      <div className="container-yhc space-y-24 py-16 md:py-24">
         {products.length === 0 ? (
           <EmptyState
             title="Products are being added"
@@ -47,8 +47,8 @@ export default function ProductsPage() {
         ) : null}
         {prescribed.length ? (
           <section>
-            <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
-              <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)]">
+            <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between md:gap-8">
+              <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
                 Prescribed after your consultation
               </h2>
               <Link
@@ -58,7 +58,7 @@ export default function ProductsPage() {
                 {terms.bookLabel}
               </Link>
             </div>
-            <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 md:grid-cols-3">
+            <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
               {prescribed.map((p) => (
                 <ProductTile key={p.id} product={p} />
               ))}
@@ -67,9 +67,11 @@ export default function ProductsPage() {
         ) : null}
         {open.length ? (
           <section>
-            <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)]">Everyday hair care</h2>
-            <p className="mt-2 text-body">No consultation needed. Gentle on a scalp under treatment.</p>
-            <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 md:grid-cols-3">
+            <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">Everyday hair care</h2>
+            <p className="mt-3 max-w-xl text-body">
+              No consultation needed. Gentle on a scalp under treatment.
+            </p>
+            <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
               {open.map((p) => (
                 <ProductTile key={p.id} product={p} />
               ))}

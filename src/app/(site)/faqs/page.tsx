@@ -21,11 +21,22 @@ export const metadata: Metadata = pageMetadata({
 });
 
 const CATEGORY_LABEL: Record<string, string> = {
+  scan: 'Scan and assessment',
   consultation: 'Consultation',
+  results: 'Treatment and results',
   plans: 'Plans and prices',
   guarantee: 'Money-back guarantee',
   delivery: 'Delivery',
+  privacy: 'Privacy',
 };
+
+/** Display order of FAQ groups; unknown categories follow in the order they appear. */
+const CATEGORY_ORDER = ['scan', 'consultation', 'results', 'plans', 'guarantee', 'delivery', 'privacy'];
+
+function categoryRank(category: string): number {
+  const i = CATEGORY_ORDER.indexOf(category);
+  return i === -1 ? CATEGORY_ORDER.length : i;
+}
 
 export default function FaqsPage() {
   const faqs = visibleFaqs(getFaqs(), getGuarantee() !== null);
@@ -66,25 +77,30 @@ export default function FaqsPage() {
           </p>
         }
       />
-      <div className="container-yhc space-y-14 py-12 md:py-16">
+      <div className="container-yhc space-y-14 py-16 md:py-24">
         {faqs.length === 0 ? (
           <EmptyState
             title="FAQs are being updated"
             body="Message us on WhatsApp and we'll answer directly."
           />
         ) : (
-          [...groups].map(([category, items]) => (
-            <section
-              key={category}
-              className="grid gap-6 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]"
-              aria-labelledby={`faq-${category}`}
-            >
-              <h2 id={`faq-${category}`} className="text-xl font-semibold text-ink">
-                {CATEGORY_LABEL[category] ?? category}
-              </h2>
-              <FaqList faqs={items} />
-            </section>
-          ))
+          [...groups]
+            .sort(([a], [b]) => categoryRank(a) - categoryRank(b))
+            .map(([category, items]) => (
+              <section
+                key={category}
+                className="grid gap-6 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-10"
+                aria-labelledby={`faq-${category}`}
+              >
+                <h2
+                  id={`faq-${category}`}
+                  className="font-display text-[1.75rem] leading-tight font-medium text-ink md:sticky md:top-24 md:self-start"
+                >
+                  {CATEGORY_LABEL[category] ?? category}
+                </h2>
+                <FaqList faqs={items} />
+              </section>
+            ))
         )}
       </div>
       <CtaBand

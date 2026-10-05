@@ -55,7 +55,7 @@ export function NewLeadDialog() {
           <span className="hidden sm:inline">New lead</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent mobileSheet className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>New lead</DialogTitle>
           <DialogDescription>

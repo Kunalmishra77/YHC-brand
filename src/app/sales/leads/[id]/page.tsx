@@ -39,10 +39,12 @@ export default async function LeadDetailPage({ params }: PageProps<'/sales/leads
       </Link>
 
       <header className="rounded-xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-7">
-        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="display text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-[1.05]">{lead.name}</h1>
+              <h1 className="display text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-[1.05] break-words">
+                {lead.name}
+              </h1>
               <StatusChip tone={stageTone(lead.stage)}>{lead.stageLabel}</StatusChip>
               {lead.consultPaid && lead.stage !== 'payment_successful' ? (
                 <StatusChip tone="success">₹500 PAID</StatusChip>
@@ -57,10 +59,10 @@ export default async function LeadDetailPage({ params }: PageProps<'/sales/leads
               <p className="mt-1 text-sm text-danger">Lost · {lead.lostReason}</p>
             ) : null}
           </div>
-          <div className="flex gap-2">
+          <div className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] gap-2 sm:flex lg:shrink-0">
             <a
               href={`tel:${lead.phone}`}
-              className="inline-flex h-11 items-center gap-2 rounded-md bg-obsidian px-4 text-sm font-medium text-on-dark hover:bg-obsidian/90"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-obsidian px-4 text-sm font-medium whitespace-nowrap text-on-dark hover:bg-obsidian/90"
             >
               <Phone className="size-4" aria-hidden />
               <span className="price">{prettyPhone}</span>
@@ -69,7 +71,7 @@ export default async function LeadDetailPage({ params }: PageProps<'/sales/leads
               href={`https://wa.me/${waNumber}`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex h-11 items-center gap-2 rounded-md border border-line bg-card px-4 text-sm font-medium text-ink hover:bg-mist"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-md border border-line bg-card px-4 text-sm font-medium whitespace-nowrap text-ink hover:bg-mist"
             >
               <MessageCircle className="size-4" aria-hidden />
               {t('common.whatsapp')}
@@ -99,7 +101,10 @@ export default async function LeadDetailPage({ params }: PageProps<'/sales/leads
         <div className="space-y-4">
           <PaymentCard consults={detail.consults} orders={detail.orders} />
 
-          <section aria-labelledby="qa-h" className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80">
+          <section
+            aria-labelledby="qa-h"
+            className="rounded-xl bg-card p-4 shadow-card ring-1 ring-line/80 md:p-5"
+          >
             <h2 id="qa-h" className="mb-3 font-semibold text-ink">
               Quick actions
             </h2>

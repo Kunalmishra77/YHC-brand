@@ -47,7 +47,9 @@ export default function BlogPage() {
 
       <section className="border-b border-line">
         <div className="container-yhc grid gap-8 py-16 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end md:py-24">
-          <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)]">Notes on hair, written plainly</h1>
+          <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-balance">
+            Notes on hair, written plainly
+          </h1>
           <div className="space-y-4">
             <p className="text-lg leading-relaxed text-body">
               Short guides to what is happening with your hair and scalp, and what a doctor looks for. General
@@ -64,7 +66,7 @@ export default function BlogPage() {
       {featured ? (
         <>
           {/* Featured article */}
-          <section className="container-yhc py-14 md:py-20">
+          <section className="container-yhc py-16 md:py-24">
             <article className="group relative grid gap-8 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-center md:gap-14">
               <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-[#efeeeb]">
                 <Image
@@ -78,7 +80,7 @@ export default function BlogPage() {
               </div>
               <div>
                 <ArticleMeta article={featured} />
-                <h2 className="display mt-4 text-[clamp(2.25rem,1.6rem+2.4vw,3.25rem)]">
+                <h2 className="display mt-4 text-[clamp(2.25rem,1.6rem+2.4vw,3.25rem)] text-balance">
                   <Link
                     href={`/blog/${featured.slug}`}
                     className="underline decoration-transparent underline-offset-[8px] group-hover:decoration-steel after:absolute after:inset-0"
@@ -100,7 +102,7 @@ export default function BlogPage() {
             <section className="container-yhc pb-20 md:pb-28">
               <div className="grid gap-10 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
                 <div className="md:sticky md:top-28 md:self-start">
-                  <h2 className="display text-[clamp(2rem,1.5rem+2vw,2.75rem)]">More to read</h2>
+                  <h2 className="display text-[clamp(2rem,1.5rem+2vw,2.75rem)] text-balance">More to read</h2>
                   <p className="mt-4 max-w-xs leading-relaxed text-body">
                     Not sure where to start? The hair concern pages cover the most common patterns.
                   </p>

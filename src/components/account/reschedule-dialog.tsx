@@ -36,7 +36,7 @@ export function RescheduleDialog({
           Reschedule
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent mobileSheet className="max-w-md">
         <DialogHeader>
           <DialogTitle>Change your consultation time</DialogTitle>
           <DialogDescription>Currently booked for {whenLabel}.</DialogDescription>

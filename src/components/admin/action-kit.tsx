@@ -72,7 +72,7 @@ export function ConfirmAction({
           {label}
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent mobileSheet>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription asChild>

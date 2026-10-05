@@ -350,7 +350,7 @@ function AllSet({
         <CheckCircle2 className="size-5" aria-hidden />
         <span className="text-sm font-medium">Hair profile sent · {photos} of 3 photos</span>
       </div>
-      <h1 className="display mt-3 text-[32px] md:text-[44px]">You&apos;re all set.</h1>
+      <h1 className="display mt-3 text-[32px] text-balance md:text-[44px]">You&apos;re all set.</h1>
       <p className="mt-3 text-lg text-ink">
         {doctorName} will see you on {when}.
       </p>

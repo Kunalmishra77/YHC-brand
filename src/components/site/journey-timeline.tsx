@@ -64,19 +64,22 @@ export function JourneyTimeline({
 }) {
   const dark = tone === 'dark';
   return (
-    <ol
-      className={cn(
-        'relative grid gap-0 lg:grid-cols-7 lg:gap-4',
-        // vertical rail on mobile, horizontal rail on desktop
-        "before:absolute before:top-2 before:bottom-2 before:left-[19px] before:w-px before:content-[''] lg:before:top-[19px] lg:before:right-[7%] lg:before:bottom-auto lg:before:left-[7%] lg:before:h-px lg:before:w-auto",
-        dark ? 'before:bg-line-dark' : 'before:bg-line',
-        className,
-      )}
-    >
+    <ol className={cn('relative grid max-w-2xl gap-0 lg:max-w-none lg:grid-cols-7 lg:gap-x-6', className)}>
       {steps.map((s, i) => {
         const Icon = s.icon;
+        const last = i === steps.length - 1;
         return (
-          <li key={s.title} className="relative flex gap-5 pb-8 last:pb-0 lg:flex-col lg:gap-0 lg:pb-0">
+          <li key={s.title} className="relative flex gap-5 pb-9 last:pb-0 lg:flex-col lg:gap-0 lg:pb-0">
+            {/* Connector to the next step: vertical below lg (icon centre line), horizontal from lg */}
+            {!last ? (
+              <span
+                aria-hidden
+                className={cn(
+                  'absolute top-12 bottom-1 left-5 w-px -translate-x-1/2 lg:top-5 lg:right-[-1rem] lg:bottom-auto lg:left-12 lg:h-px lg:w-auto lg:translate-x-0',
+                  dark ? 'bg-line-dark' : 'bg-line',
+                )}
+              />
+            ) : null}
             <span
               className={cn(
                 'relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full ring-4',
@@ -86,7 +89,7 @@ export function JourneyTimeline({
             >
               <Icon className="size-[18px]" aria-hidden />
             </span>
-            <div className="min-w-0 lg:mt-6">
+            <div className="min-w-0 pt-0.5 lg:mt-6 lg:pt-0">
               <p
                 className={cn(
                   'price text-[12px] tracking-[0.12em] uppercase',
@@ -97,13 +100,18 @@ export function JourneyTimeline({
               </p>
               <h3
                 className={cn(
-                  'mt-1 text-[17px] leading-snug font-semibold',
+                  'mt-1 text-[17px] leading-snug font-semibold text-balance lg:text-base xl:text-[17px]',
                   dark ? 'text-on-dark' : 'text-ink',
                 )}
               >
                 {s.title}
               </h3>
-              <p className={cn('mt-1.5 text-sm leading-relaxed', dark ? 'text-on-dark-muted' : 'text-body')}>
+              <p
+                className={cn(
+                  'mt-1.5 max-w-[52ch] text-sm leading-relaxed text-pretty',
+                  dark ? 'text-on-dark-muted' : 'text-body',
+                )}
+              >
                 {s.body}
               </p>
             </div>

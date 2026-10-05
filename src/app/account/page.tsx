@@ -2,10 +2,10 @@ import { CalendarClock, MessageSquareText, Package } from 'lucide-react';
 import Link from 'next/link';
 import { AppointmentChip } from '@/components/account/chips';
 import { formatDay, formatWhen } from '@/components/account/format';
+import { JourneyProgress } from '@/components/account/journey-progress';
 import { ACCOUNT_LINKS } from '@/components/account/links';
 import { PlanProgress } from '@/components/account/plan-progress';
 import { JoinConsultButton } from '@/components/journey/join-consult-button';
-import { JourneyTracker } from '@/components/journey/journey-tracker';
 import { StatusChip, type ChipTone } from '@/components/shared/status-chip';
 import { EmptyState } from '@/components/shared/states';
 import { Button } from '@/components/ui/button';
@@ -89,12 +89,12 @@ export default async function AccountOverviewPage() {
         {/* Next step — the one thing to do now */}
         <section
           aria-labelledby="next-step"
-          className="bg-hero-dark relative overflow-hidden rounded-xl p-6 text-on-dark shadow-raised md:p-8"
+          className="bg-hero-dark relative overflow-hidden rounded-3xl p-6 text-on-dark shadow-raised md:p-8"
         >
           <p className="text-[13px] font-semibold tracking-[0.12em] text-brand-on-dark uppercase">
             Next step
           </p>
-          <h2 id="next-step" className="display mt-3 text-[28px] text-on-dark md:text-[34px]">
+          <h2 id="next-step" className="display mt-3 text-[28px] text-balance text-on-dark md:text-[34px]">
             {step.title}
           </h2>
           <p className="mt-3 max-w-prose text-on-dark-muted">{step.body}</p>
@@ -109,10 +109,13 @@ export default async function AccountOverviewPage() {
         </section>
 
         {/* My journey (ADR-26) */}
-        {journeySteps ? <JourneyTracker steps={journeySteps} /> : null}
+        {journeySteps ? <JourneyProgress steps={journeySteps} /> : null}
 
         {/* Current plan */}
-        <section aria-labelledby="plan-heading" className="rounded-xl border border-line bg-card p-5 md:p-6">
+        <section
+          aria-labelledby="plan-heading"
+          className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
+        >
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="eyebrow">Your plan</p>
@@ -162,7 +165,7 @@ export default async function AccountOverviewPage() {
         {/* Upcoming consultation */}
         <section
           aria-labelledby="upcoming-heading"
-          className="rounded-xl border border-line bg-card p-5 md:p-6"
+          className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
         >
           <div className="flex items-center gap-2">
             <CalendarClock className="size-4 text-steel" aria-hidden />
@@ -221,7 +224,7 @@ export default async function AccountOverviewPage() {
         {/* Check-ins */}
         <section
           aria-labelledby="checkins-heading"
-          className="rounded-xl border border-line bg-card p-5 md:p-6"
+          className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
         >
           <div className="flex items-center gap-2">
             <MessageSquareText className="size-4 text-steel" aria-hidden />

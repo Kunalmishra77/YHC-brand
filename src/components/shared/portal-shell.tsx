@@ -1,10 +1,11 @@
 'use client';
 
-import { Menu, Repeat } from 'lucide-react';
+import { Menu, Repeat, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 
 export interface PortalNavItem {
@@ -18,6 +19,7 @@ export interface PortalNavItem {
 /**
  * Portal layout (docs/07 §6): fixed obsidian 248 px sidebar with a faint metallic light at the top,
  * light content area up to 1440 px. One shell for Doctor, Sales and Admin.
+ * Below `lg` the sidebar becomes a left sheet that closes itself on navigation.
  */
 export function PortalShell({
   portal,
@@ -32,31 +34,47 @@ export function PortalShell({
   topbar?: React.ReactNode;
   children: React.ReactNode;
 }) {
-  const sidebar = <SidebarContent portal={portal} nav={nav} user={user} />;
+  const [open, setOpen] = useState(false);
   return (
     <div className="min-h-dvh bg-pearl">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-[248px] flex-col overflow-hidden bg-sidebar text-sidebar-foreground lg:flex">
-        {sidebar}
+        <SidebarContent portal={portal} nav={nav} user={user} />
       </aside>
       <div className="flex min-h-dvh min-w-0 flex-col lg:pl-[248px]">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line bg-pearl/85 px-4 backdrop-blur-md md:px-8">
-          <Sheet>
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-2 border-b border-line bg-pearl/85 px-4 backdrop-blur-md sm:gap-3 md:px-8">
+          <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="size-10 lg:hidden" aria-label="Open navigation">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="-ml-2 size-11 shrink-0 lg:hidden"
+                aria-label="Open navigation"
+              >
                 <Menu className="size-5" />
               </Button>
             </SheetTrigger>
             <SheetContent
               side="left"
-              className="w-[264px] border-none bg-sidebar p-0 text-sidebar-foreground"
+              showCloseButton={false}
+              className="w-[min(288px,86vw)] gap-0 border-none bg-sidebar p-0 text-sidebar-foreground sm:max-w-none"
             >
               <SheetTitle className="sr-only">{portal} navigation</SheetTitle>
-              <div className="relative flex h-full flex-col overflow-hidden">{sidebar}</div>
+              <div className="relative flex h-full flex-col overflow-hidden pb-[env(safe-area-inset-bottom)]">
+                <SidebarContent portal={portal} nav={nav} user={user} onNavigate={() => setOpen(false)} />
+                <SheetClose
+                  className="absolute top-5 right-4 flex size-10 items-center justify-center rounded-full border border-line-dark text-on-dark-muted transition-colors hover:border-steel hover:text-on-dark"
+                  aria-label="Close navigation"
+                >
+                  <X className="size-4" aria-hidden />
+                </SheetClose>
+              </div>
             </SheetContent>
           </Sheet>
-          <div className="flex min-w-0 flex-1 items-center gap-3">{topbar}</div>
+          <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">{topbar}</div>
         </header>
-        <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 py-7 md:px-8 md:py-10">{children}</main>
+        <main className="mx-auto w-full max-w-[1440px] min-w-0 flex-1 px-4 pt-6 pb-12 sm:pt-7 md:px-8 md:pt-10 md:pb-16">
+          {children}
+        </main>
       </div>
     </div>
   );
@@ -76,10 +94,12 @@ function SidebarContent({
   portal,
   nav,
   user,
+  onNavigate,
 }: {
   portal: string;
   nav: PortalNavItem[];
   user: { name: string; role: string };
+  onNavigate?: () => void;
 }) {
   const pathname = usePathname();
   const root = nav[0]?.href ?? '/';
@@ -91,7 +111,7 @@ function SidebarContent({
         aria-hidden
       />
       <div className="relative px-6 pt-7 pb-6">
-        <Link href="/" className="font-display text-[24px] leading-none text-on-dark">
+        <Link href="/" onClick={onNavigate} className="font-display text-[24px] leading-none text-on-dark">
           Your Hair Company
         </Link>
         <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-line-dark bg-ink-2/80 px-2.5 py-1 text-[12px] font-medium text-on-dark-muted">
@@ -99,13 +119,17 @@ function SidebarContent({
           {portal}
         </p>
       </div>
-      <nav aria-label={portal} className="relative flex-1 space-y-0.5 overflow-y-auto px-3 pt-2">
+      <nav
+        aria-label={portal}
+        className="relative flex-1 space-y-0.5 overflow-y-auto overscroll-contain px-3 pt-2 pb-2"
+      >
         {nav.map((item) => {
           const active = item.href === root ? pathname === root : pathname.startsWith(item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               aria-current={active ? 'page' : undefined}
               className={cn(
                 'group relative flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors',
@@ -123,16 +147,16 @@ function SidebarContent({
               />
               <span
                 className={cn(
-                  '[&_svg]:size-[18px]',
+                  'flex shrink-0 [&_svg]:size-[18px]',
                   active ? 'text-platinum' : 'text-steel group-hover:text-platinum',
                 )}
                 aria-hidden
               >
                 {item.icon}
               </span>
-              <span className="flex-1">{item.label}</span>
+              <span className="min-w-0 flex-1 truncate">{item.label}</span>
               {item.count ? (
-                <span className="price min-w-6 rounded-full bg-[image:var(--yhc-silver)] px-1.5 py-0.5 text-center text-[11px] font-semibold text-obsidian">
+                <span className="price min-w-6 shrink-0 rounded-full bg-[image:var(--yhc-silver)] px-1.5 py-0.5 text-center text-[11px] font-semibold text-obsidian">
                   {item.count}
                 </span>
               ) : null}
@@ -147,12 +171,13 @@ function SidebarContent({
           </span>
           <div className="min-w-0">
             <p className="truncate text-sm font-medium text-on-dark">{user.name}</p>
-            <p className="text-[12px] text-on-dark-muted capitalize">{user.role}</p>
+            <p className="truncate text-[12px] text-on-dark-muted capitalize">{user.role}</p>
           </div>
         </div>
         <Link
           href="/demo"
-          className="mt-3 flex min-h-9 items-center justify-center gap-1.5 rounded-lg border border-line-dark text-[12px] text-on-dark-muted transition-colors hover:border-steel hover:text-on-dark"
+          onClick={onNavigate}
+          className="mt-3 flex min-h-10 items-center justify-center gap-1.5 rounded-lg border border-line-dark text-[12px] text-on-dark-muted transition-colors hover:border-steel hover:text-on-dark"
         >
           <Repeat className="size-3.5" aria-hidden />
           Switch demo role

@@ -113,14 +113,17 @@ export default async function AdminDashboard({ searchParams }: PageProps<'/admin
         title="Dashboard"
         description={`Last ${days} days · ${dateLabel(d.window.firstDate)} – ${dateLabel(d.window.lastDate, true)} (IST) · compared with the ${days} days before`}
         actions={
-          <nav aria-label="Date range" className="inline-flex rounded-md border border-line bg-card p-0.5">
+          <nav
+            aria-label="Date range"
+            className="flex w-full rounded-md border border-line bg-card p-1 md:inline-flex md:w-auto"
+          >
             {RANGE_OPTIONS.map((r) => (
               <Link
                 key={r}
                 href={`/admin?range=${r}`}
                 aria-current={r === range ? 'page' : undefined}
                 className={cn(
-                  'inline-flex min-h-9 items-center rounded-[5px] px-3 text-sm font-medium transition-colors',
+                  'inline-flex min-h-9 flex-1 items-center justify-center rounded-[5px] px-3 text-sm font-medium whitespace-nowrap transition-colors md:flex-none',
                   r === range ? 'bg-obsidian text-on-dark' : 'text-body hover:bg-mist',
                 )}
               >
@@ -143,7 +146,7 @@ export default async function AdminDashboard({ searchParams }: PageProps<'/admin
               <TooltipContent className="max-w-xs">{DEF.revenue}</TooltipContent>
             </Tooltip>
           </p>
-          <p className="mt-1 text-[44px] leading-none font-semibold tracking-tight text-ink md:text-[52px]">
+          <p className="price mt-2 text-[40px] leading-none tracking-tight break-words text-ink md:text-[52px]">
             {formatINR(rev.totalPaise)}
           </p>
           <p className="mt-2 text-[13px] text-muted-foreground">
@@ -185,7 +188,10 @@ export default async function AdminDashboard({ searchParams }: PageProps<'/admin
       </section>
 
       {/* KPI tiles (FR-M13-1, §17 definitions as tooltips) */}
-      <section aria-label="Key metrics" className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <section
+        aria-label="Key metrics"
+        className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 xl:grid-cols-3"
+      >
         <KpiTile
           label="New leads"
           value={formatCount(c.newLeads)}

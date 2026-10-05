@@ -40,9 +40,12 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  mobileSheet = false,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean;
+  /** Below `sm`, dock to the bottom as a full-width sheet (docs/07 §5: sheet on mobile, dialog on desktop). */
+  mobileSheet?: boolean;
 }) {
   return (
     <DialogPortal data-slot="dialog-portal">
@@ -51,10 +54,18 @@ function DialogContent({
         data-slot="dialog-content"
         className={cn(
           'fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg',
+          mobileSheet &&
+            'max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:max-h-[92dvh] max-sm:max-w-full max-sm:translate-x-0 max-sm:translate-y-0 max-sm:overflow-y-auto max-sm:overscroll-contain max-sm:rounded-t-2xl max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:px-5 max-sm:pt-7 max-sm:pb-[calc(1.25rem+env(safe-area-inset-bottom))] max-sm:data-[state=closed]:slide-out-to-bottom-10 max-sm:data-[state=closed]:zoom-out-100 max-sm:data-[state=open]:slide-in-from-bottom-10 max-sm:data-[state=open]:zoom-in-100 sm:max-h-[calc(100dvh-4rem)] sm:overflow-y-auto',
           className,
         )}
         {...props}
       >
+        {mobileSheet ? (
+          <span
+            aria-hidden
+            className="absolute top-2.5 left-1/2 h-1 w-10 -translate-x-1/2 rounded-full bg-line sm:hidden"
+          />
+        ) : null}
         {children}
         {showCloseButton && (
           <DialogPrimitive.Close

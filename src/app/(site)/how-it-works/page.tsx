@@ -85,19 +85,22 @@ export default function HowItWorksPage() {
         <JourneySteps steps={buildJourney(terms)} />
       </PageIntro>
 
-      <section className="container-yhc py-14 md:py-20">
-        <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)]">Each step in detail</h2>
+      <section className="container-yhc py-16 md:py-24">
+        <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">Each step in detail</h2>
         <ol className="mt-10 divide-y divide-line border-y border-line">
           {detail.map((step, i) => (
-            <li key={step.title} className="grid gap-4 py-8 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
+            <li
+              key={step.title}
+              className="grid gap-4 py-8 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-10 md:py-10"
+            >
               <h3 className="flex items-baseline gap-3 text-xl font-semibold text-ink">
                 <span className="price text-sm text-muted-foreground">Step {i + 1}</span>
                 {step.title}
               </h3>
-              <ul className="space-y-3 text-body">
+              <ul className="max-w-[62ch] space-y-3 leading-relaxed text-body">
                 {step.points.map((p) => (
                   <li key={p} className="flex gap-3">
-                    <span aria-hidden className="mt-2.5 h-px w-4 shrink-0 bg-steel" />
+                    <span aria-hidden className="mt-[0.8em] h-px w-4 shrink-0 bg-steel" />
                     <span>{p}</span>
                   </li>
                 ))}

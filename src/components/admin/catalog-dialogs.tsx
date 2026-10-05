@@ -144,7 +144,7 @@ export function ProductEditDialog({
           Edit
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent mobileSheet>
         <DialogHeader>
           <DialogTitle>Edit {product.name}</DialogTitle>
           <DialogDescription asChild>
@@ -168,6 +168,7 @@ export function ProductEditDialog({
             >
               <Input
                 id="pe-price"
+                className="h-11 bg-card"
                 inputMode="decimal"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
@@ -176,16 +177,29 @@ export function ProductEditDialog({
             <Field id="pe-days" label="Days of supply">
               <Input
                 id="pe-days"
+                className="h-11 bg-card"
                 inputMode="numeric"
                 value={days}
                 onChange={(e) => setDays(e.target.value)}
               />
             </Field>
             <Field id="pe-hsn" label="HSN code">
-              <Input id="pe-hsn" inputMode="numeric" value={hsn} onChange={(e) => setHsn(e.target.value)} />
+              <Input
+                id="pe-hsn"
+                className="h-11 bg-card"
+                inputMode="numeric"
+                value={hsn}
+                onChange={(e) => setHsn(e.target.value)}
+              />
             </Field>
             <Field id="pe-gst" label="GST rate (%)">
-              <Input id="pe-gst" inputMode="numeric" value={gst} onChange={(e) => setGst(e.target.value)} />
+              <Input
+                id="pe-gst"
+                className="h-11 bg-card"
+                inputMode="numeric"
+                value={gst}
+                onChange={(e) => setGst(e.target.value)}
+              />
             </Field>
             <div className="flex items-center justify-between gap-3 rounded-md border border-line p-3 sm:col-span-2">
               <Label htmlFor="pe-rx" className="flex-1">
@@ -288,7 +302,7 @@ export function PlanEditDialog({
           Edit
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent mobileSheet>
         <DialogHeader>
           <DialogTitle>Edit {plan.name}</DialogTitle>
           <DialogDescription asChild>
@@ -309,6 +323,7 @@ export function PlanEditDialog({
             <Field id="pl-price" label="Price (₹, incl. GST)">
               <Input
                 id="pl-price"
+                className="h-11 bg-card"
                 inputMode="decimal"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
@@ -317,6 +332,7 @@ export function PlanEditDialog({
             <Field id="pl-compare" label="Compare-at (₹)" hint="Optional; must be higher than the price.">
               <Input
                 id="pl-compare"
+                className="h-11 bg-card"
                 inputMode="decimal"
                 value={compare}
                 onChange={(e) => setCompare(e.target.value)}

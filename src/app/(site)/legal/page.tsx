@@ -21,7 +21,7 @@ export default function LegalIndexPage() {
     <>
       <section className="border-b border-line">
         <div className="container-yhc grid gap-8 py-16 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end md:py-24">
-          <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)]">Legal and policies</h1>
+          <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-balance">Legal and policies</h1>
           <div className="space-y-4">
             <p className="text-lg leading-relaxed text-body">
               How we handle your data, your orders and your care — written to be read, not skimmed past.
@@ -35,11 +35,11 @@ export default function LegalIndexPage() {
         </div>
       </section>
 
-      <section className="container-yhc py-12 md:py-20">
+      <section className="container-yhc py-16 md:py-24">
         <ol className="border-t border-line">
           {docs.map((d, i) => (
             <li key={d.slug} className="group relative border-b border-line">
-              <div className="grid gap-2 py-7 md:grid-cols-[64px_minmax(0,5fr)_minmax(0,6fr)_auto] md:items-baseline md:gap-8 md:py-9">
+              <div className="grid gap-2 py-7 md:grid-cols-[64px_minmax(0,1fr)] md:items-baseline md:gap-x-8 md:py-9 lg:grid-cols-[64px_minmax(0,5fr)_minmax(0,6fr)_auto]">
                 <span className="font-display text-2xl leading-none text-steel" aria-hidden>
                   {String(i + 1).padStart(2, '0')}
                 </span>
@@ -51,8 +51,10 @@ export default function LegalIndexPage() {
                     {d.title}
                   </Link>
                 </h2>
-                <p className="leading-relaxed text-body">{d.summary}</p>
-                <p className="text-[13px] whitespace-nowrap text-muted-foreground">
+                <p className="max-w-[60ch] leading-relaxed text-pretty text-body md:col-start-2 lg:col-start-auto">
+                  {d.summary}
+                </p>
+                <p className="text-[13px] whitespace-nowrap text-muted-foreground md:col-start-2 lg:col-start-auto">
                   Updated <time dateTime={d.lastUpdated}>{formatContentDate(d.lastUpdated)}</time>
                 </p>
               </div>

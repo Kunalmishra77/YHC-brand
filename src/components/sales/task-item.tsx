@@ -24,8 +24,8 @@ export function TaskItem({
   return (
     <li
       className={cn(
-        'flex flex-col gap-3 rounded-lg border bg-card p-3 sm:flex-row sm:items-center',
-        task.urgent ? 'border-danger/40' : 'border-line',
+        'flex flex-col gap-3 rounded-xl bg-card p-4 shadow-card ring-1 sm:flex-row sm:items-center sm:gap-4',
+        task.urgent ? 'ring-danger/40' : 'ring-line/80',
         pending && 'opacity-60',
       )}
     >

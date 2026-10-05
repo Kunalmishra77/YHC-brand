@@ -30,7 +30,7 @@ export default async function RevenuePage() {
         title="Revenue"
         description={`Your consultation fees and plans bought from your recommendations · ${current.label} so far`}
       />
-      <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mb-8 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 xl:grid-cols-4">
         <KpiTile
           label="Consultation fees this month"
           value={formatINR(current.consultPaise)}
@@ -94,11 +94,11 @@ export default async function RevenuePage() {
                 return (
                   <li
                     key={s.month}
-                    className="grid grid-cols-[72px_1fr] items-center gap-3 sm:grid-cols-[80px_1fr_120px]"
+                    className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 sm:grid-cols-[80px_minmax(0,1fr)_128px]"
                   >
-                    <span className="text-[13px] text-body">{s.label}</span>
+                    <span className="text-[13px] font-medium text-body">{s.label}</span>
                     <div
-                      className="flex h-6 overflow-hidden rounded-[4px] bg-mist/60"
+                      className="col-span-2 row-start-2 flex h-6 overflow-hidden rounded-[4px] bg-mist/60 sm:col-span-1 sm:row-start-auto"
                       role="img"
                       aria-label={`${s.label}: plans ${formatINR(s.planPaise)}, consultations ${formatINR(s.consultPaise)}`}
                     >
@@ -111,7 +111,7 @@ export default async function RevenuePage() {
                         style={{ width: `${(s.consultPaise / max) * 100}%` }}
                       />
                     </div>
-                    <span className="price col-start-2 text-[13px] text-ink sm:col-start-auto sm:text-right">
+                    <span className="price col-start-2 row-start-1 text-right text-[13px] text-ink sm:col-start-auto sm:row-start-auto">
                       {formatINR(total)}
                       <span className="block text-[12px] text-muted-foreground">
                         {s.planCount} plan{s.planCount === 1 ? '' : 's'} · {s.consultCount} consult

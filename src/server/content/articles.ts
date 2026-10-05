@@ -1,20 +1,160 @@
 import 'server-only';
 
-import type { Article } from './types';
+import type { EvidenceSource } from './evidence';
+import type { Article, ContentBlock } from './types';
 
 /*
  * Demo articles (FR-M1-1, FR-M1-4). General education only — every one is still waiting for
  * Dr. Tyagi's medical review, and the site labels it that way until `reviewStatus` changes.
  * TODO(client): Dr. Tyagi to review and approve each article before launch — see docs/12 (content)
- * Copy rules: PRD §15 — no outcome promises, no fixed timelines, no invented figures.
+ * Copy rules: PRD §15 — no outcome promises, no fixed timelines, no invented figures. Every figure
+ * below comes from the source listed in that article's "Sources" section (checked 2026-10-05).
  */
+
+const S = {
+  aadShedding: {
+    name: 'American Academy of Dermatology',
+    title: 'Do you have hair loss or hair shedding?',
+    url: 'https://www.aad.org/public/diseases/hair-loss/insider/shedding',
+  },
+  aadCauses: {
+    name: 'American Academy of Dermatology',
+    title: 'Hair loss: who gets and causes',
+    url: 'https://www.aad.org/public/diseases/hair-loss/causes/18-causes',
+  },
+  aadMale: {
+    name: 'American Academy of Dermatology',
+    title: 'What is male pattern hair loss, and can it be treated?',
+    url: 'https://www.aad.org/public/diseases/hair-loss/treatment/male-pattern-hair-loss-treatment',
+  },
+  aadFemale: {
+    name: 'American Academy of Dermatology',
+    title: 'Thinning hair and hair loss: could it be female pattern hair loss?',
+    url: 'https://www.aad.org/public/diseases/hair-loss/types/female-pattern',
+  },
+  aadFFA: {
+    name: 'American Academy of Dermatology',
+    title: 'Frontal fibrosing alopecia: overview',
+    url: 'https://www.aad.org/public/diseases/hair-loss/types/frontal-fibrosing-alopecia',
+  },
+  nhsHairLoss: {
+    name: 'NHS',
+    title: 'Hair loss',
+    url: 'https://www.nhs.uk/conditions/hair-loss/',
+  },
+  statpearlsHair: {
+    name: 'StatPearls (NCBI Bookshelf)',
+    title: 'Anatomy, Hair — Murphrey, Agarwal & Zito',
+    url: 'https://www.ncbi.nlm.nih.gov/books/NBK513312/',
+    year: 2023,
+  },
+  statpearlsTE: {
+    name: 'StatPearls (NCBI Bookshelf)',
+    title: 'Telogen Effluvium — Hughes, Syed & Saleh',
+    url: 'https://www.ncbi.nlm.nih.gov/books/NBK430848/',
+    year: 2024,
+  },
+  statpearlsAGA: {
+    name: 'StatPearls (NCBI Bookshelf)',
+    title: 'Androgenetic Alopecia — Ho, Sood & Zito',
+    url: 'https://www.ncbi.nlm.nih.gov/books/NBK430924/',
+    year: 2024,
+  },
+  ccFollicle: {
+    name: 'Cleveland Clinic',
+    title: 'Hair follicle: function, structure and associated conditions',
+    url: 'https://my.clevelandclinic.org/health/body/23435-hair-follicle',
+  },
+  ccTerminalHair: {
+    name: 'Cleveland Clinic',
+    title: 'Terminal hair: function and examples',
+    url: 'https://my.clevelandclinic.org/health/body/23140-terminal-hair',
+  },
+  ccTE: {
+    name: 'Cleveland Clinic',
+    title: 'Telogen effluvium',
+    url: 'https://my.clevelandclinic.org/health/diseases/24486-telogen-effluvium',
+  },
+  krupaShankar: {
+    name: 'International Journal of Trichology',
+    title: 'Male androgenetic alopecia: population-based study in 1,005 subjects — Krupa Shankar et al.',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/20927235/',
+    year: 2009,
+  },
+  dermnetTrichoscopy: {
+    name: 'DermNet',
+    title: 'Trichoscopy — Sadek et al.',
+    url: 'https://dermnetnz.org/topics/trichoscopy',
+    year: 2022,
+  },
+  dermnetFPHL: {
+    name: 'DermNet',
+    title: 'Female pattern hair loss',
+    url: 'https://dermnetnz.org/topics/female-pattern-hair-loss',
+  },
+  guoKatta: {
+    name: 'Dermatology Practical & Conceptual',
+    title: 'Diet and hair loss: effects of nutrient deficiency and supplement use — Guo & Katta',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC5315033/',
+    year: 2017,
+  },
+  fdaBiotin: {
+    name: 'U.S. Food and Drug Administration',
+    title: 'Biotin interference with troponin lab tests',
+    url: 'https://www.fda.gov/medical-devices/in-vitro-diagnostics/biotin-interference-troponin-lab-tests-assays-subject-biotin-interference',
+    year: 2022,
+  },
+} satisfies Record<string, EvidenceSource>;
+
+/** Sources per article, with links — the article body carries the same list as plain text. */
+const ARTICLE_SOURCES: Record<string, EvidenceSource[]> = {
+  'hair-shedding-vs-hair-loss': [
+    S.aadShedding,
+    S.statpearlsTE,
+    S.statpearlsHair,
+    S.statpearlsAGA,
+    S.krupaShankar,
+    S.aadFFA,
+    S.dermnetTrichoscopy,
+  ],
+  'hair-growth-cycle-explained': [
+    S.statpearlsHair,
+    S.ccFollicle,
+    S.ccTerminalHair,
+    S.statpearlsAGA,
+    S.aadMale,
+    S.aadFemale,
+    S.ccTE,
+  ],
+  'what-happens-in-a-video-consultation': [S.aadFFA, S.aadMale, S.dermnetTrichoscopy, S.statpearlsTE],
+  'how-to-take-scalp-photos': [S.dermnetTrichoscopy, S.ccTerminalHair, S.dermnetFPHL],
+  'nutrition-and-hair': [S.guoKatta, S.statpearlsTE, S.nhsHairLoss, S.aadCauses, S.fdaBiotin],
+};
+
+function sourcesBlocks(slug: string): ContentBlock[] {
+  const sources = ARTICLE_SOURCES[slug] ?? [];
+  if (sources.length === 0) return [];
+  return [
+    { type: 'heading', id: 'sources', text: 'Sources' },
+    {
+      type: 'list',
+      ordered: true,
+      items: sources.map((s) => `${s.name}${s.year ? ` (${s.year})` : ''}. ${s.title}.`),
+    },
+    {
+      type: 'paragraph',
+      text: 'Figures are general information from published sources and vary between studies. They are not claims about any YHC product.',
+    },
+  ];
+}
+
 const ARTICLES: Article[] = [
   {
     slug: 'hair-shedding-vs-hair-loss',
     title: 'Hair shedding vs hair loss: how to tell the difference',
-    dek: 'Finding hair on your pillow is not always a sign that something is wrong. Here is how shedding and thinning differ, and what each one usually means.',
+    dek: 'Finding hair on your pillow is not always a sign that something is wrong. Here is how shedding and thinning differ, what each one usually means, and when to get your roots checked.',
     category: 'Understanding hair',
-    readingMinutes: 5,
+    readingMinutes: 6,
     publishedOn: '2026-09-18',
     reviewStatus: 'pending_medical_review',
     image: 'textureDrop',
@@ -26,25 +166,30 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'shedding-is-normal', text: 'Some shedding is part of a healthy cycle' },
       {
         type: 'paragraph',
-        text: 'Every hair on your scalp grows for a long period, rests, and then falls out so a new hair can take its place. Because thousands of follicles are at different stages at any moment, losing some hair every day is expected. Dermatology bodies often describe losing roughly 50 to 100 scalp hairs a day as within the normal range, although it varies from person to person and from day to day.',
+        text: 'Every hair on your scalp grows for years, rests for a few months and then falls out so a new hair can take its place. A healthy scalp has roughly 80,000 to 120,000 hairs, and at any moment about 85–90% of follicles are in the growing phase while the rest are resting or shedding. Because of that constant turnover, the American Academy of Dermatology describes losing between 50 and 100 hairs a day as normal.',
       },
       {
         type: 'paragraph',
-        text: 'You may also notice more hair on wash days simply because loose hairs collect between washes. Long hair can look like more, too, because each strand is easier to see.',
+        text: 'You may notice more hair on wash days simply because loose hairs collect between washes. Long hair can look like more, too, because each strand is easier to see.',
       },
       { type: 'heading', id: 'increased-shedding', text: 'When shedding increases' },
       {
         type: 'paragraph',
-        text: 'Sometimes a larger number of follicles move into the resting phase together, and a few weeks to a few months later they shed at once. This pattern, called telogen effluvium, is often linked to a trigger such as a high fever, an illness, childbirth, surgery, a sudden change in diet, significant stress or a new medicine.',
+        text: 'Sometimes a larger number of follicles move into the resting phase together and shed at once. This pattern, called telogen effluvium, usually follows a trigger — a high fever, an illness, childbirth, surgery, rapid weight loss, a very stressful period or a new medicine. The shedding typically starts around three months after the trigger, although the gap can be anywhere from one to six months.',
       },
       {
         type: 'paragraph',
-        text: 'The hair usually falls out evenly across the scalp, and the follicles themselves are typically still able to grow hair. That is why a doctor will ask what happened in the months before the shedding started — not just what is happening now.',
+        text: 'The hair usually falls evenly across the scalp, and the follicles themselves are still able to grow hair. Once the trigger has passed, the AAD notes that hair tends to regain its normal fullness within about six to nine months. Shedding that carries on for longer than six months is described as chronic, and it deserves a closer look.',
+      },
+      {
+        type: 'callout',
+        title: 'Why the doctor asks about last season, not just last week',
+        text: 'Because the shedding lags behind the cause by months, the most useful question is often “what happened before this started?” — an illness, a new medicine, a baby, a crash diet.',
       },
       { type: 'heading', id: 'hair-loss', text: 'What hair loss looks like' },
       {
         type: 'paragraph',
-        text: 'Hair loss usually describes something different: hair that grows back thinner, shorter or not at all in particular areas. It tends to happen gradually, so people often notice it in photos before they notice it in the mirror.',
+        text: 'Hair loss is different: something stops hair from growing back as it was. In pattern hair loss (androgenetic alopecia), the growth phase gets shorter with each cycle and follicles gradually shrink, producing shorter, finer hairs. It is very common — in a population study of 1,005 men aged 30 to 50 in India, 58% had some degree of it. Because it happens slowly, people often notice it in photos before the mirror.',
       },
       {
         type: 'list',
@@ -58,7 +203,12 @@ const ARTICLES: Article[] = [
       },
       {
         type: 'paragraph',
-        text: 'Pattern hair loss, patchy hair loss and breakage each have different causes, and they are managed differently. Some people have more than one at the same time, which is one reason self-diagnosis from photos online is unreliable.',
+        text: 'Pattern hair loss, patchy hair loss, scarring hair loss and breakage each have different causes and are managed differently. Some people have more than one at once. In scarring forms, follicles are replaced by scar tissue — and once a follicle scars, it can no longer grow hair. That is the strongest reason not to wait and see when something looks unusual.',
+      },
+      { type: 'heading', id: 'how-doctors-tell', text: 'How a doctor tells them apart' },
+      {
+        type: 'paragraph',
+        text: 'A dermatologist combines your history with a close look at the scalp. Trichoscopy — examining the hair and scalp under roughly 20 to 160 times magnification — shows the follicle openings, the skin around them and the thickness of individual hairs. It can help distinguish scarring from non-scarring hair loss, and early pattern hair loss from shedding, and it can be repeated to follow progress.',
       },
       { type: 'heading', id: 'simple-checks', text: 'Simple things you can note at home' },
       {
@@ -79,7 +229,7 @@ const ARTICLES: Article[] = [
       {
         type: 'list',
         items: [
-          'Shedding that is still heavy after a few months, or keeps coming back',
+          'Shedding that is still heavy after about six months, or keeps coming back',
           'Patches of hair loss that appear quickly',
           'A scalp that is painful, burning, very itchy, red or scaly',
           'Hair loss along with other symptoms such as unusual tiredness, weight change or irregular periods',
@@ -94,8 +244,9 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'next-step', text: 'The next step' },
       {
         type: 'paragraph',
-        text: 'If you are not sure whether what you are seeing is shedding or thinning, a consultation is the simplest way to find out. In a YHC video consultation, Dr. Tyagi reviews your history and photos, explains what is likely happening in plain words, and only suggests treatment if it is right for you.',
+        text: 'If you are not sure whether you are seeing shedding or thinning, start with the guided 3D scalp scan. Your personalised assessment explains, in plain words, whether treatment looks suitable, whether a doctor should look first, or whether treatment is unlikely to help. If you go ahead, Dr. Tyagi reviews everything before your video consultation and only suggests treatment if it is right for you.',
       },
+      ...sourcesBlocks('hair-shedding-vs-hair-loss'),
     ],
   },
   {
@@ -103,7 +254,7 @@ const ARTICLES: Article[] = [
     title: 'Why hair changes are slow — the hair growth cycle explained',
     dek: 'Hair does not respond on the schedule we would like. Understanding the growth cycle explains why patience and consistent photos matter more than day-to-day checking.',
     category: 'Understanding hair',
-    readingMinutes: 5,
+    readingMinutes: 6,
     publishedOn: '2026-08-27',
     reviewStatus: 'pending_medical_review',
     image: 'serum',
@@ -115,29 +266,29 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'three-phases', text: 'Each hair follows its own cycle' },
       {
         type: 'paragraph',
-        text: 'A hair follicle does not produce hair continuously. It moves through phases, and each follicle on your scalp is on its own timetable.',
+        text: 'A hair follicle does not produce hair continuously. It moves through phases, and each follicle on your scalp is on its own timetable — which is why you never lose all your hair at once.',
       },
       {
         type: 'list',
         items: [
-          'Growth (anagen): the follicle actively produces hair. On the scalp this phase usually lasts for years, and it largely decides how long your hair can grow.',
-          'Transition (catagen): a short phase in which growth stops and the follicle shrinks.',
-          'Rest (telogen): the hair stays in place but no longer grows, typically for a few months.',
+          'Growth (anagen): the follicle actively produces hair. On the scalp this lasts about two to six years, and it largely decides how long your hair can grow.',
+          'Transition (catagen): a short phase of about two weeks in which growth stops and the follicle shrinks.',
+          'Rest (telogen): the hair stays in place but no longer grows, for about three months.',
           'Shedding (exogen): the old hair falls out, often pushed out by a new hair starting to grow beneath it.',
         ],
       },
       {
         type: 'paragraph',
-        text: 'At any time, most scalp follicles are in the growth phase and a smaller share are resting or shedding. That balance is what keeps hair looking full.',
+        text: 'At any time, roughly 85–90% of scalp follicles are in the growth phase and the rest are resting or shedding. That balance is what keeps hair looking full.',
       },
       { type: 'heading', id: 'why-slow', text: 'Why visible change takes time' },
       {
         type: 'paragraph',
-        text: 'Scalp hair grows slowly — commonly described as around a centimetre a month, though this varies between people. Even when a follicle starts producing a stronger hair, that new hair has to grow long enough to be noticed against the rest.',
+        text: 'Scalp hair grows about 0.35 mm a day — roughly a centimetre a month. Even when a follicle starts producing a stronger hair, that new hair has to grow long enough to be noticed against the rest.',
       },
       {
         type: 'paragraph',
-        text: 'Many treatments work by supporting the follicle or by helping it stay in the growth phase longer. Neither effect is visible overnight. This is why doctors usually judge progress over several months rather than weeks, and why stopping and starting a routine makes it hard to know what is helping.',
+        text: 'In pattern hair loss, the growth phase becomes shorter and follicles gradually shrink. Treatments aim to slow that process or to support follicles that are still active, and neither effect is visible overnight. Published reviews describe at least four to six months of consistent use before improvement is usually noticeable, and the AAD advises using minoxidil for about six to 12 months before judging how well it works. Some people do not respond at all, which is why progress is reviewed, not assumed.',
       },
       {
         type: 'callout',
@@ -145,21 +296,26 @@ const ARTICLES: Article[] = [
         text: 'With some treatments, a few people notice more shedding in the early weeks as resting hairs are replaced. It can be unsettling. If it happens to you, talk to your doctor before changing anything — do not simply stop.',
         tone: 'caution',
       },
+      {
+        type: 'paragraph',
+        text: 'There is a second reason for patience: for pattern hair loss, the benefit of treatment generally lasts only while it is used. Dermatologists note that stopping tends to mean losing the benefit over time, so a routine you can keep up matters more than an intense one.',
+      },
       { type: 'heading', id: 'what-affects-the-cycle', text: 'What can affect the cycle' },
       {
         type: 'list',
         items: [
           'Genetics and hormones, which play a large part in pattern hair loss',
           'Illness, high fever, surgery or childbirth',
-          'Low iron, thyroid changes and some other medical conditions',
+          'An under- or over-active thyroid',
+          'Low iron and some other nutritional gaps',
           'Sudden changes in diet or rapid weight loss',
-          'Some medicines',
-          'Ongoing stress',
+          'Some medicines, and stopping the contraceptive pill',
+          'Severe or ongoing stress',
         ],
       },
       {
         type: 'paragraph',
-        text: 'Because so many things can shift the cycle, the same visible change can have quite different causes in two people. That is why a plan should be chosen for your history, not copied from someone else.',
+        text: 'Because so many things can shift the cycle, the same visible change can have quite different causes in two people. That is why a plan should be chosen for your history and your roots, not copied from someone else.',
       },
       { type: 'heading', id: 'tracking-progress', text: 'How to track progress fairly' },
       {
@@ -188,60 +344,85 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'next-step', text: 'The next step' },
       {
         type: 'paragraph',
-        text: 'Individual results vary, and no honest doctor can promise a timeline. What a consultation can give you is a clear picture of what is likely going on and a sensible way to measure progress. You can book a video consultation with Dr. Tyagi whenever you are ready.',
+        text: 'Individual results vary, and no honest doctor can promise a timeline. What a scan and consultation can give you is a clear picture of what is likely going on, whether your roots are still active, and a fair way to measure progress. You can start your scan whenever you are ready.',
       },
+      ...sourcesBlocks('hair-growth-cycle-explained'),
     ],
   },
   {
     slug: 'what-happens-in-a-video-consultation',
-    title: 'What happens in a YHC video consultation',
-    dek: 'From choosing a time to receiving your plan on WhatsApp — a step-by-step look at the consultation, and how to make the most of it.',
+    title: 'From scan to consultation: what happens at each step',
+    dek: 'From your first details to a plan on WhatsApp — a step-by-step look at the scan, the assessment and the video consultation, and how to make the most of them.',
     category: 'Your consultation',
-    readingMinutes: 5,
+    readingMinutes: 6,
     publishedOn: '2026-07-30',
     reviewStatus: 'pending_medical_review',
     image: 'heroStage',
     body: [
       {
         type: 'paragraph',
-        text: 'If you have never had a video consultation before, it is reasonable to wonder what it involves. This guide walks through each step, so you know what to expect before you book.',
+        text: 'If you have never had a video consultation for your hair, it is reasonable to wonder what it involves. At YHC the consultation is the last step of a short journey that starts with your roots. This guide walks through each step, so you know what to expect.',
       },
-      { type: 'heading', id: 'booking', text: 'Booking your time' },
+      { type: 'heading', id: 'why-scan-first', text: 'Why we start with your roots' },
       {
         type: 'paragraph',
-        text: 'You start by choosing a time that suits you. You then confirm your mobile number with a one-time code, fill in a short form — your name, age and main concern — and pay the consultation fee online. Consultations are for adults aged 18 and over.',
+        text: 'Treatment can only support hair follicles that are still alive. In scarring forms of hair loss, follicles are replaced by scar tissue, and once a follicle scars it can no longer grow hair. Shedding, pattern thinning and scarring can look alike in a mirror, so looking at the scalp closely — the way dermatologists use magnified examination, called trichoscopy — comes before any recommendation.',
       },
+      { type: 'heading', id: 'details-and-scan', text: 'Step 1 and 2: your details and the 3D scan' },
       {
         type: 'paragraph',
-        text: 'Your confirmation, with a link to join the call, arrives on WhatsApp. You will also get a reminder before the consultation.',
+        text: 'You begin with a few basic details — your name, mobile number and address. You are then guided, step by step, to capture your hairline, crown and parting with your phone camera. Soft daylight, clean and dry unstyled hair, and no camera filters make the biggest difference.',
       },
-      { type: 'heading', id: 'before-the-call', text: 'Before the call' },
+      { type: 'heading', id: 'assessment', text: 'Step 3: your personalised assessment' },
       {
         type: 'paragraph',
-        text: 'After booking, you will be asked to complete a health questionnaire and upload a few scalp photos. This is the part that makes the biggest difference: Dr. Tyagi reads your history and looks at your photos before the call, so the time together is spent on you rather than on paperwork.',
+        text: 'Next you see your assessment, with its reasons in plain words. It shows one of three results:',
       },
       {
         type: 'list',
         items: [
-          'A list of medicines and supplements you take',
-          'Any recent blood test reports, if you have them',
-          'When you first noticed the change, and anything that happened around then',
-          'What you have already tried, and for how long',
+          'Treatment looks suitable — your roots look active, and you can continue to your health form',
+          'A doctor should look first — some signs, such as round patches or a long-standing bald area, need a doctor’s eye before any plan',
+          'Treatment is unlikely to help the scanned areas — for example where very few active roots are visible; we say so honestly rather than sell you a plan',
         ],
       },
-      { type: 'heading', id: 'during-the-call', text: 'During the call' },
       {
         type: 'paragraph',
-        text: 'The consultation is one to one, by video, with Dr. Tyagi. You will be asked to confirm who you are, and then the conversation usually covers:',
+        text: 'The assessment is a guide, not a diagnosis. The final assessment is always made by the doctor.',
+      },
+      { type: 'heading', id: 'health-form', text: 'Step 4: your health form' },
+      {
+        type: 'paragraph',
+        text: 'The health form asks about your history in more depth. It helps to have these to hand:',
+      },
+      {
+        type: 'list',
+        items: [
+          'A list of medicines and supplements you take, including any biotin',
+          'Any recent blood test reports, if you have them',
+          'When you first noticed the change, and anything that happened in the months before — illness, childbirth, surgery, stress, a change in diet',
+          'What you have already tried, for how long, and how it went',
+        ],
+      },
+      { type: 'heading', id: 'booking', text: 'Step 5: choosing a time' },
+      {
+        type: 'paragraph',
+        text: 'You then pick a time that suits you and pay the ₹500 consultation fee online. Consultations are for adults aged 18 and over. Your confirmation, with your appointment details and the doctor’s registration number, arrives on WhatsApp, followed by reminders before the call.',
+      },
+      { type: 'heading', id: 'during-the-call', text: 'Step 6: the consultation' },
+      {
+        type: 'paragraph',
+        text: 'Dr. Tyagi reviews your scan, assessment and health form before the call, so your time together is spent on you rather than on paperwork. The consultation is one to one, by video. You will be asked to confirm who you are, and then the conversation usually covers:',
       },
       {
         type: 'list',
         items: [
           'Your concern in your own words, and how it has changed over time',
           'Your general health, family history, diet, sleep and stress',
-          'A look at your scalp on camera, alongside the photos you sent',
+          'A look at your scalp on camera, alongside your scan',
           'What is likely going on, explained in plain language',
           'Whether treatment is appropriate for you — and if not, why not',
+          'What a realistic timeline for judging progress looks like',
         ],
       },
       {
@@ -251,7 +432,7 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'after-the-call', text: 'After the call' },
       {
         type: 'paragraph',
-        text: 'If treatment is right for you, you receive your prescription and a recommended plan on WhatsApp. The plan explains what each product is for and how to use it.',
+        text: 'If treatment is right for you, you receive a link to your prescription and recommended plan on WhatsApp. The plan explains what each product is for and how to use it.',
       },
       {
         type: 'callout',
@@ -260,12 +441,12 @@ const ARTICLES: Article[] = [
       },
       {
         type: 'paragraph',
-        text: 'If you do start a plan, it is delivered to your door, and care continues: short weekly check-ins, monthly progress photos and a follow-up review so your doctor can see how you are responding and adjust if needed.',
+        text: 'If you do start a plan, it is delivered to your door, and care continues: short check-ins, monthly progress photos and a follow-up review so your doctor can see how you are responding and adjust if needed. Treatments for pattern hair loss are judged over several months, and dermatologists note that people who start soon after noticing hair loss tend to see the best results.',
       },
       { type: 'heading', id: 'privacy', text: 'Who sees your information' },
       {
         type: 'paragraph',
-        text: 'Your health details, photos and consultation notes are kept for your doctor. Our support team helps with bookings, orders and delivery, and cannot see your clinical information. Nothing clinical is ever put into marketing messages.',
+        text: 'Your scan, health details, photos and consultation notes are for your doctor. Our support team helps with bookings, orders and delivery, and cannot see your clinical information. Clinical details are never written into WhatsApp messages or marketing.',
       },
       { type: 'heading', id: 'getting-ready', text: 'Getting ready on the day' },
       {
@@ -285,14 +466,15 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'next-step', text: 'The next step' },
       {
         type: 'paragraph',
-        text: 'Every YHC plan starts with this conversation, and you can decide afterwards whether a plan is for you. Individual results vary. When you are ready, choose a time that suits you.',
+        text: 'Every YHC plan starts with your roots, and you decide at each step whether to continue. Individual results vary. When you are ready, start with the scan.',
       },
+      ...sourcesBlocks('what-happens-in-a-video-consultation'),
     ],
   },
   {
     slug: 'how-to-take-scalp-photos',
     title: 'How to take scalp photos your doctor can actually use',
-    dek: 'Good photos make a consultation more useful and progress easier to judge. Here is how to capture your hairline, crown and parting clearly, with only a phone.',
+    dek: 'Good photos make your scan, your consultation and your progress reviews more useful. Here is how to capture your hairline, crown and parting clearly, with only a phone.',
     category: 'Your consultation',
     readingMinutes: 5,
     publishedOn: '2026-06-24',
@@ -301,7 +483,7 @@ const ARTICLES: Article[] = [
     body: [
       {
         type: 'paragraph',
-        text: 'Your doctor will look at your scalp on video, but photos taken in good light often show more than a live camera can. They also become the baseline for comparing progress later. A few minutes of care now makes them far more useful.',
+        text: 'Dermatologists rely on a close, well-lit view of the scalp — in clinic they often use magnified examination (trichoscopy), which can also be repeated to follow how someone responds to treatment. At home, careful phone photos are the next best thing. They become the baseline for your scan and for comparing progress later, so a few minutes of care makes them far more useful.',
       },
       { type: 'heading', id: 'before-you-start', text: 'Before you start' },
       {
@@ -341,7 +523,7 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'parting', text: 'Photo 3: parting' },
       {
         type: 'paragraph',
-        text: 'Comb your hair into a straight centre parting. Tilt your head forward slightly and photograph the parting from above, so it runs from the top of the image to the bottom. If you usually wear a side parting, take one of that as well.',
+        text: 'Comb your hair into a straight centre parting. Tilt your head forward slightly and photograph the parting from above, so it runs from the top of the image to the bottom. A wider parting is a common sign of female pattern hair loss, so this view matters for everyone. If you usually wear a side parting, take one of that as well.',
       },
       {
         type: 'callout',
@@ -351,23 +533,24 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'monthly-photos', text: 'Taking photos each month' },
       {
         type: 'paragraph',
-        text: 'Hair changes gradually, so the most useful comparison is between photos taken months apart in the same conditions. Try to repeat the same three angles, the same light, the same distance and the same hairstyle. Consistency matters more than a perfect shot.',
+        text: 'A scalp hair grows only about a centimetre a month, so the most useful comparison is between photos taken months apart in the same conditions. Repeat the same three angles, the same light, the same distance and the same hairstyle. Consistency matters more than a perfect shot.',
       },
       { type: 'heading', id: 'privacy', text: 'Where your photos go' },
       {
         type: 'paragraph',
-        text: 'Scalp photos you upload to YHC are stored privately and are seen only by your doctor for your care. They are never used in marketing unless you separately and explicitly agree, and you can withdraw that agreement at any time.',
+        text: 'Scalp photos you upload to YHC are stored privately and are seen only by your doctor for your care. They are never used in marketing unless you separately and explicitly agree in writing, and you can withdraw that agreement at any time.',
       },
       { type: 'heading', id: 'when-to-see-a-doctor', text: 'When to see a doctor' },
       {
         type: 'paragraph',
-        text: 'If you notice something unusual while taking photos — patches with no hair, broken hairs, redness, scaling, sores or a scalp that is tender to touch — mention it in your consultation, or see a doctor promptly if it is painful or spreading.',
+        text: 'If you notice something unusual while taking photos — patches with no hair, broken hairs, redness, scaling, shiny skin along the hairline, sores or a scalp that is tender to touch — mention it at your consultation, or see a doctor promptly if it is painful or spreading.',
       },
       { type: 'heading', id: 'next-step', text: 'The next step' },
       {
         type: 'paragraph',
-        text: 'Once you book a consultation, you will be prompted to upload these photos before your call, so Dr. Tyagi can review them in advance. Individual results of any treatment vary; good photos simply make it easier to see what is really happening.',
+        text: 'The guided 3D scan uses these same principles and walks you through each angle. Dr. Tyagi reviews your scan before your call. Individual results of any treatment vary; good photos simply make it easier to see what is really happening.',
       },
+      ...sourcesBlocks('how-to-take-scalp-photos'),
     ],
   },
   {
@@ -382,36 +565,36 @@ const ARTICLES: Article[] = [
     body: [
       {
         type: 'paragraph',
-        text: 'Search for hair health online and you will find a long list of foods and supplements said to make hair thicker. The reality is more modest, and more useful: nutrition can make a real difference for some people, particularly when something is missing, but it is rarely the whole story.',
+        text: 'Search for hair health online and you will find a long list of foods and supplements said to make hair thicker. The reality is more modest, and more useful: nutrition can make a real difference when something is actually missing, but it is rarely the whole story.',
       },
       { type: 'heading', id: 'what-is-understood', text: 'What is reasonably well understood' },
       {
         type: 'paragraph',
-        text: 'Hair follicles are among the most active cells in the body, and they need a steady supply of energy, protein and micronutrients. When the body is short of something, hair growth is often one of the first things to slow.',
+        text: 'Hair follicles are among the most active tissues in the body, and they need a steady supply of energy, protein and micronutrients. When the body is short of something, hair growth can slow or shedding can increase.',
       },
       {
         type: 'list',
         items: [
-          'Low iron stores are commonly linked to increased shedding, particularly in women',
-          'Very low protein intake, or rapid weight loss, can trigger a period of heavier shedding',
-          'Low levels of vitamin D, vitamin B12, zinc and folate have been associated with hair changes in some studies',
+          'Low iron is a recognised cause of temporary hair loss, and the NHS lists iron deficiency among its common causes',
+          'Very low protein intake, crash diets or rapid weight loss can trigger a period of heavier shedding, usually a few months later',
+          'Too little biotin, iron, protein or zinc can show up as noticeable hair loss, according to the AAD',
           'Thyroid conditions, which are not a nutritional problem but can look like one, also affect hair',
         ],
       },
       {
         type: 'paragraph',
-        text: 'In these situations, finding and correcting the underlying problem — with your doctor’s guidance — is what tends to help.',
+        text: 'In these situations, finding and correcting the underlying problem — with your doctor’s guidance — is what tends to help. The NHS notes that hair loss caused by a medical condition usually stops or grows back once you have recovered.',
       },
       { type: 'heading', id: 'what-is-not', text: 'What the evidence does not say' },
       {
         type: 'paragraph',
-        text: 'There is far less evidence that supplements help people who are not short of anything. Taking more of a vitamin than your body needs does not usually mean more hair, and some nutrients can cause problems in excess.',
+        text: 'A review of diet and hair loss in Dermatology Practical & Conceptual concluded that deficiencies should be corrected, but that research is lacking on whether supplements help people who are not deficient — and that some supplements can actually worsen hair loss or cause toxicity.',
       },
       {
         type: 'list',
         items: [
-          'Biotin deficiency is uncommon. High-dose biotin can also interfere with some blood tests, including certain thyroid and heart tests, so tell your doctor if you take it',
-          'Too much vitamin A or selenium has itself been linked to hair shedding',
+          'Biotin deficiency is uncommon. Biotin in supplements can also interfere with certain laboratory tests, including troponin, a heart test, so always tell your doctor and the lab if you take it',
+          'Too much of some nutrients, such as vitamin A or selenium, has itself been linked to hair loss',
           'No single food or “superfood” has been shown to reverse pattern hair loss',
           'Diet alone does not change the genetic and hormonal factors behind pattern hair loss',
         ],
@@ -419,7 +602,7 @@ const ARTICLES: Article[] = [
       {
         type: 'callout',
         title: 'Testing before supplementing',
-        text: 'If a deficiency is suspected, a simple blood test is usually the sensible first step. It tells you what, if anything, is low — rather than guessing.',
+        text: 'If a deficiency is suspected from your history or diet, a blood test is the sensible first step — it shows what, if anything, is low, rather than guessing. Results need interpreting: a low ferritin confirms low iron stores, but a normal ferritin does not always rule iron deficiency out.',
       },
       { type: 'heading', id: 'everyday-eating', text: 'Everyday eating that supports hair' },
       {
@@ -437,7 +620,7 @@ const ARTICLES: Article[] = [
       },
       {
         type: 'paragraph',
-        text: 'If you follow a vegetarian or vegan diet, are pregnant or breastfeeding, have heavy periods or a digestive condition, you may be more likely to run short of some nutrients. It is worth mentioning in your consultation.',
+        text: 'If you follow a vegetarian or vegan diet, are pregnant or breastfeeding, have heavy periods or a digestive condition, you may be more likely to run short of some nutrients. It is worth mentioning on your health form.',
       },
       { type: 'heading', id: 'supplements-in-a-plan', text: 'Where supplements fit in a plan' },
       {
@@ -457,8 +640,9 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'next-step', text: 'The next step' },
       {
         type: 'paragraph',
-        text: 'Nutrition is one piece of the picture. A consultation looks at the whole of it — your history, your scalp, your diet and any tests — and suggests what is worth doing. Individual results vary.',
+        text: 'Nutrition is one piece of the picture. The scan and consultation look at the whole of it — your roots, your history, your diet and any tests — and suggest what is worth doing. Individual results vary.',
       },
+      ...sourcesBlocks('nutrition-and-hair'),
     ],
   },
 ];
@@ -470,6 +654,11 @@ export function getArticles(): Article[] {
 
 export function getArticle(slug: string): Article | null {
   return ARTICLES.find((a) => a.slug === slug) ?? null;
+}
+
+/** Linked sources for an article (the body's "Sources" list carries the same entries as text). */
+export function getArticleSources(slug: string): EvidenceSource[] {
+  return ARTICLE_SOURCES[slug] ?? [];
 }
 
 /** Same category first, then most recent — never the article itself. */

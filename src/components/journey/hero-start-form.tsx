@@ -50,7 +50,7 @@ export function HeroStartForm({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'w-full max-w-md rounded-3xl bg-white/10 p-5 text-white shadow-[0_24px_80px_-24px_rgba(0,0,0,0.6)] ring-1 ring-white/20 backdrop-blur-2xl sm:p-7',
+        'w-full max-w-md rounded-[28px] bg-white/10 p-5 text-white shadow-[0_24px_80px_-24px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.12)] ring-1 ring-white/20 backdrop-blur-2xl sm:p-8',
         className,
       )}
     >
@@ -70,10 +70,10 @@ export function HeroStartForm({ className }: { className?: string }) {
             <ScanFace className="size-4" aria-hidden />
             Free · 3D scalp scan
           </div>
-          <h2 className="mt-2 font-display text-[28px] leading-[1.1] font-medium text-white sm:text-[32px]">
+          <h2 className="mt-3 font-display text-[28px] leading-[1.1] font-medium text-balance text-white sm:text-[32px]">
             Start your free hair assessment
           </h2>
-          <p className="mt-2 text-sm leading-relaxed text-white/75">
+          <p className="mt-2 text-sm leading-relaxed text-pretty text-white/75">
             A guided 3D scan of your scalp and hair roots, reviewed by a doctor — then a plan only if it can
             help you.
           </p>
@@ -187,7 +187,7 @@ export function HeroStartForm({ className }: { className?: string }) {
             Begin my 3D scan
             {!pending ? <ArrowRight className="size-4" aria-hidden /> : null}
           </button>
-          <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-[12px] text-white/60">
+          <p className="mt-3.5 flex items-center justify-center gap-1.5 text-center text-[12px] leading-snug text-white/60">
             <ShieldCheck className="size-3.5" aria-hidden />
             Reviewed by a dermatologist · Takes about 4 minutes
           </p>

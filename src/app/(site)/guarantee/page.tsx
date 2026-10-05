@@ -5,6 +5,7 @@ import { BackgroundVideo } from '@/components/site/background-video';
 import { FaqList } from '@/components/site/faq-list';
 import { GuaranteeConditionList, guaranteeStory, refundLine } from '@/components/site/guarantee-panel';
 import { PageIntro } from '@/components/site/page-intro';
+import { H1, H2, LEDE, SECTION_Y, SectionHeader } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { VideoLibrary } from '@/components/site/video-library';
 import { Button } from '@/components/ui/button';
@@ -68,12 +69,12 @@ export default function GuaranteePage() {
           className="absolute inset-0 -z-10 bg-gradient-to-r from-obsidian via-obsidian/70 to-transparent"
           aria-hidden
         />
-        <div className="container-yhc py-20 md:py-32">
+        <div className="container-yhc pt-20 pb-16 md:py-28 lg:py-32">
           <p className="eyebrow text-brand-on-dark">Money-back guarantee</p>
-          <h1 className="display mt-4 max-w-3xl text-[clamp(2.5rem,1.7rem+3vw,4.25rem)] leading-[1.04] text-on-dark">
+          <h1 className={`${H1} mt-4 max-w-3xl text-on-dark`}>
             A guarantee with its conditions in plain sight.
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-on-dark-muted">
+          <p className={`${LEDE} mt-6 text-on-dark-muted`}>
             Hair responds slowly and differently for everyone. {refundLine(guarantee)} if you follow your plan
             as prescribed, meet every condition below and a doctor confirms there has been no visible
             improvement.
@@ -108,16 +109,14 @@ export default function GuaranteePage() {
       </section>
 
       <section className="border-y border-line bg-card" aria-labelledby="claim-heading">
-        <div className="container-yhc py-20 md:py-28">
-          <h2 id="claim-heading" className="display text-[clamp(2.1rem,1.5rem+2.2vw,3.25rem)]">
-            How a claim works
-          </h2>
-          <ol className="mt-12 grid gap-px overflow-hidden rounded-2xl bg-line md:grid-cols-4">
+        <div className={`container-yhc ${SECTION_Y}`}>
+          <SectionHeader id="claim-heading" eyebrow="Step by step" title="How a claim works" />
+          <ol className="grid gap-px overflow-hidden rounded-2xl bg-line ring-1 ring-line sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((s, i) => (
-              <li key={s.title} className="bg-card p-6 md:min-h-60 md:p-7">
+              <li key={s.title} className="bg-card p-6 md:p-7 lg:min-h-64">
                 <span className="font-display text-5xl leading-none text-steel">{i + 1}</span>
                 <h3 className="mt-6 text-lg font-semibold text-ink">{s.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-body">{s.body}</p>
+                <p className="mt-2 max-w-[48ch] text-sm leading-relaxed text-pretty text-body">{s.body}</p>
               </li>
             ))}
           </ol>
@@ -125,33 +124,37 @@ export default function GuaranteePage() {
       </section>
 
       <section className="bg-[#0d0e10] text-on-dark" aria-labelledby="watch-guarantee-heading">
-        <div className="container-yhc grid items-center gap-10 py-20 md:grid-cols-2 md:py-28">
+        <div
+          className={`container-yhc grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 ${SECTION_Y}`}
+        >
           <div>
             <p className="eyebrow text-brand-on-dark">Watch</p>
-            <h2
-              id="watch-guarantee-heading"
-              className="display mt-4 text-[clamp(2.1rem,1.5rem+2.2vw,3.25rem)] text-on-dark"
-            >
+            <h2 id="watch-guarantee-heading" className={`${H2} mt-4 max-w-md text-on-dark`}>
               The guarantee in under a minute
             </h2>
-            <p className="mt-4 max-w-md text-on-dark-muted">
+            <p className="mt-4 max-w-md leading-relaxed text-pretty text-on-dark-muted">
               A silent explainer with captions over illustrative footage — not a testimonial.
             </p>
           </div>
-          <VideoLibrary className="md:grid-cols-1" videos={[guaranteeStory(guarantee)]} />
+          <VideoLibrary className="max-w-2xl lg:max-w-none" videos={[guaranteeStory(guarantee)]} />
         </div>
       </section>
 
       {faqs.length > 0 ? (
-        <section className="container-yhc grid gap-12 py-20 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:py-28">
-          <h2 className="display text-[clamp(2.1rem,1.5rem+2.2vw,3.25rem)]">Guarantee questions</h2>
+        <section
+          className={`container-yhc grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20 ${SECTION_Y}`}
+          aria-labelledby="guarantee-faq-heading"
+        >
+          <h2 id="guarantee-faq-heading" className={`${H2} max-w-md`}>
+            Guarantee questions
+          </h2>
           <FaqList faqs={faqs} />
         </section>
       ) : null}
 
       <section className="border-t border-line bg-card">
-        <div className="container-yhc flex flex-col items-start gap-6 py-16 md:flex-row md:items-center md:justify-between">
-          <p className="max-w-xl text-lg text-body">
+        <div className="container-yhc flex flex-col items-start gap-6 py-12 md:flex-row md:items-center md:justify-between md:gap-12 md:py-16">
+          <p className="max-w-xl text-lg leading-relaxed text-pretty text-body">
             The guarantee applies to plans prescribed after a consultation. It starts with a free 3D scan.
           </p>
           <Button asChild className="h-12 px-6">

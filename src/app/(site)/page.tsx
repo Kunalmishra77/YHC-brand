@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getConsultTerms } from '@/components/site/consult-fee';
 import { DoctorCard } from '@/components/site/doctor-card';
+import { EvidenceSection } from '@/components/site/evidence-section';
 import { FaqList, visibleFaqs } from '@/components/site/faq-list';
 import { GuaranteeVideoPanel, guaranteeStory } from '@/components/site/guarantee-panel';
 import { HairCycleDiagram } from '@/components/site/hair-cycle-diagram';
@@ -15,6 +16,16 @@ import { ProductTile } from '@/components/site/product-tile';
 import { ResultsGallery } from '@/components/site/results-gallery';
 import { Reveal } from '@/components/site/reveal';
 import { ScanVisual } from '@/components/site/scan-visual';
+import {
+  CTA_GHOST_DARK,
+  CTA_SILVER,
+  H2,
+  RAIL,
+  RAIL_ITEM,
+  SECTION_Y,
+  SectionHeader,
+  TEXT_LINK,
+} from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { VideoLibrary, type StoryVideo } from '@/components/site/video-library';
 import { Button } from '@/components/ui/button';
@@ -40,8 +51,6 @@ export const metadata: Metadata = {
 };
 
 const SHOWCASE = ['topical-hair-solution', 'scalp-serum', 'hair-nutrition-tablets'];
-
-const H2 = 'display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]';
 
 export default function HomePage() {
   const doctor = getDoctor();
@@ -143,7 +152,7 @@ export default function HomePage() {
       {/* 2b · The science */}
       <section
         id="science"
-        className="container-yhc scroll-mt-20 py-20 md:py-28"
+        className={`container-yhc scroll-mt-20 ${SECTION_Y}`}
         aria-labelledby="science-heading"
       >
         <div className="grid gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
@@ -152,20 +161,17 @@ export default function HomePage() {
             <h2 id="science-heading" className={`${H2} mt-4`}>
               Hair grows from roots. So that is where we start.
             </h2>
-            <p className="mt-6 text-lg leading-relaxed text-body">
+            <p className="mt-6 max-w-[62ch] text-lg leading-relaxed text-pretty text-body">
               Each hair grows from a follicle, fed by a tiny structure at its base called the dermal papilla.
               Follicles cycle between growth, transition and rest. Thinning often means more follicles resting
               — or growing smaller, finer hairs — for reasons that differ from person to person.
             </p>
-            <p className="mt-4 leading-relaxed text-body">
+            <p className="mt-4 max-w-[62ch] leading-relaxed text-pretty text-body">
               A plan can only support follicles that are still alive. That is why we look at your roots first,
               and why a doctor — not a shopping cart — decides what, if anything, you use.
             </p>
             <PatentSlot className="mt-8" />
-            <Link
-              href="/science"
-              className="mt-8 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-ink underline decoration-steel underline-offset-[6px] hover:decoration-ink"
-            >
+            <Link href="/science" className={`mt-6 text-ink ${TEXT_LINK}`}>
               Read the science in full <ArrowRight className="size-4" aria-hidden />
             </Link>
           </Reveal>
@@ -199,18 +205,21 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 2b′ · What the research says (content workstream owns the block) */}
+      <EvidenceSection variant="compact" />
+
       {/* 2c · Why we scan first */}
       <section id="scan" className="scroll-mt-20 bg-obsidian text-on-dark" aria-labelledby="scan-heading">
-        <div className="container-yhc grid items-center gap-12 py-20 md:grid-cols-2 md:gap-16 md:py-28">
-          <Reveal className="order-2 md:order-1">
-            <ScanVisual className="mx-auto max-w-md md:max-w-none" />
+        <div className={`container-yhc grid items-center gap-12 lg:grid-cols-2 lg:gap-20 ${SECTION_Y}`}>
+          <Reveal className="order-2 lg:order-1">
+            <ScanVisual className="aspect-[4/5] sm:aspect-[16/11] lg:aspect-[4/5]" />
           </Reveal>
-          <Reveal className="order-1 md:order-2" delayMs={120}>
+          <Reveal className="order-1 lg:order-2" delayMs={120}>
             <p className="eyebrow text-brand-on-dark">Why we scan first</p>
             <h2 id="scan-heading" className={`${H2} mt-4 text-on-dark`}>
               We only treat when there are roots to treat.
             </h2>
-            <p className="mt-6 text-lg leading-relaxed text-on-dark-muted">
+            <p className="mt-6 max-w-[62ch] text-lg leading-relaxed text-pretty text-on-dark-muted">
               A guided 3D scalp scan on your phone looks at where your roots are and how they are spread. If
               viable roots are present, a doctor builds on that. If they are not, we tell you honestly instead
               of selling you a plan.
@@ -234,7 +243,7 @@ export default function HomePage() {
                   <span className="price flex size-8 shrink-0 items-center justify-center rounded-full border border-line-dark text-sm text-on-dark">
                     {i + 1}
                   </span>
-                  <div>
+                  <div className="min-w-0 pt-1">
                     <p className="font-semibold text-on-dark">{title}</p>
                     <p className="mt-1 text-[15px] leading-relaxed text-on-dark-muted">{body}</p>
                   </div>
@@ -256,30 +265,24 @@ export default function HomePage() {
 
       {/* 2d · The journey */}
       <section className="border-b border-line bg-card" aria-labelledby="journey-heading">
-        <div className="container-yhc py-20 md:py-28">
-          <div className="grid gap-6 md:grid-cols-2 md:items-end">
-            <div>
-              <p className="eyebrow">Your journey</p>
-              <h2 id="journey-heading" className={`${H2} mt-4`}>
-                Seven considered steps, one doctor
-              </h2>
-            </div>
-            <p className="max-w-md text-body md:justify-self-end">
-              Every step has a reason. You see where you stand after the scan, and you only book a doctor’s
-              slot when it makes sense to.
-            </p>
-          </div>
-          <Reveal className="mt-14">
+        <div className={`container-yhc ${SECTION_Y}`}>
+          <SectionHeader
+            id="journey-heading"
+            eyebrow="Your journey"
+            title="Seven considered steps, one doctor"
+            lede="Every step has a reason. You see where you stand after the scan, and you only book a doctor’s slot when it makes sense to."
+          />
+          <Reveal>
             <JourneyTimeline steps={journey} tone="light" />
           </Reveal>
         </div>
       </section>
 
       {/* 2e · Doctor-recommended — meet Dr. Tyagi */}
-      <section className="container-yhc py-20 md:py-28" aria-label={`Meet ${doctor.name}`}>
-        <p className="eyebrow mb-8">{doctorClaimLabel()} · Dermatologist-led</p>
+      <section className={`container-yhc ${SECTION_Y}`} aria-label={`Meet ${doctor.name}`}>
+        <p className="eyebrow mb-8 md:mb-10">{doctorClaimLabel()} · Dermatologist-led</p>
         <DoctorCard doctor={doctor}>
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button asChild className="h-12 px-6">
               <Link href="/start">Begin my 3D scan</Link>
             </Button>
@@ -292,28 +295,19 @@ export default function HomePage() {
 
       {/* 2f · Before / after — consented results only */}
       <section className="border-y border-line bg-card" aria-labelledby="results-heading">
-        <div className="container-yhc py-20 md:py-28">
-          <div className="mb-12 grid gap-6 md:grid-cols-2 md:items-end">
-            <div>
-              <p className="eyebrow">Results</p>
-              <h2 id="results-heading" className={`${H2} mt-4`}>
-                Real results, shared with consent
-              </h2>
-            </div>
-            <div className="md:justify-self-end">
-              <p className="max-w-md text-body">
-                Before-and-after photos from patients who agreed in writing, with the time on plan stated.
-                Individual results vary.
-              </p>
-              <Link
-                href="/results"
-                className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-ink underline decoration-steel underline-offset-[6px]"
-              >
+        <div className={`container-yhc ${SECTION_Y}`}>
+          <SectionHeader
+            id="results-heading"
+            eyebrow="Results"
+            title="Real results, shared with consent"
+            lede="Before-and-after photos from patients who agreed in writing, with the time on plan stated. Individual results vary."
+            action={
+              <Link href="/results" className={`text-ink ${TEXT_LINK}`}>
                 How we collect results <ArrowRight className="size-4" aria-hidden />
               </Link>
-            </div>
-          </div>
-          <ResultsGallery results={results} />
+            }
+          />
+          <ResultsGallery results={results} layout="rail" />
         </div>
       </section>
 
@@ -325,56 +319,51 @@ export default function HomePage() {
         className="border-t border-line-dark bg-[#0d0e10] text-on-dark"
         aria-labelledby="watch-heading"
       >
-        <div className="container-yhc py-20 md:py-28">
-          <div className="mb-12 grid gap-6 md:grid-cols-2 md:items-end">
-            <div>
-              <p className="eyebrow text-brand-on-dark">Watch</p>
-              <h2 id="watch-heading" className={`${H2} mt-4 text-on-dark`}>
-                The science, the journey{guarantee ? ', the guarantee' : ''} — explained
-              </h2>
-            </div>
-            <p className="max-w-md text-on-dark-muted md:justify-self-end">
-              Short, silent explainers with captions over illustrative laboratory footage. No actors playing
-              patients, no testimonials.
-            </p>
-          </div>
+        <div className={`container-yhc ${SECTION_Y}`}>
+          <SectionHeader
+            id="watch-heading"
+            tone="dark"
+            eyebrow="Watch"
+            title={`The science, the journey${guarantee ? ', the guarantee' : ''} — explained`}
+            lede="Short, silent explainers with captions over illustrative laboratory footage. No actors playing patients, no testimonials."
+          />
           <VideoLibrary videos={stories} />
         </div>
       </section>
 
       {/* 2i · What a plan may include — secondary, quiet */}
-      <section className="container-yhc py-20 md:py-24" aria-labelledby="plan-heading">
-        <div className="grid gap-6 md:grid-cols-2 md:items-end">
-          <div>
-            <p className="eyebrow">Prescribed, not sold</p>
-            <h2 id="plan-heading" className="display mt-4 text-[clamp(1.9rem,1.5rem+1.6vw,2.75rem)]">
-              What a plan may include
-            </h2>
-          </div>
-          <p className="max-w-md text-body md:justify-self-end">
-            Only if the doctor decides treatment is right for you. Strength, dose and timing are set at your
-            consultation.
-          </p>
-        </div>
-        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3">
+      <section className={`container-yhc ${SECTION_Y}`} aria-labelledby="plan-heading">
+        <SectionHeader
+          id="plan-heading"
+          size="sm"
+          eyebrow="Prescribed, not sold"
+          title="What a plan may include"
+          lede="Only if the doctor decides treatment is right for you. Strength, dose and timing are set at your consultation."
+        />
+        <ul className={RAIL} aria-label="Products a plan may include">
           {showcase.map((p) => (
-            <ProductTile key={p.id} product={p} sizes="(min-width: 640px) 30vw, 100vw" />
+            <li key={p.id} className={RAIL_ITEM}>
+              <ProductTile product={p} sizes="(min-width: 1024px) 30vw, (min-width: 640px) 46vw, 82vw" />
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
       {/* 2j · FAQs */}
       <section className="border-t border-line bg-card" aria-labelledby="faq-heading">
-        <div className="container-yhc grid gap-12 py-20 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:py-28">
-          <div>
-            <h2 id="faq-heading" className={H2}>
+        <div
+          className={`container-yhc grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20 ${SECTION_Y}`}
+        >
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <p className="eyebrow">FAQs</p>
+            <h2 id="faq-heading" className={`${H2} mt-4 max-w-md`}>
               Questions people ask first
             </h2>
-            <Link
-              href="/faqs"
-              className="mt-7 inline-flex min-h-11 items-center text-sm font-medium text-ink underline decoration-steel underline-offset-[6px]"
-            >
-              All FAQs
+            <p className="mt-5 max-w-sm leading-relaxed text-pretty text-body">
+              Scans, consultations and what happens next — in plain words.
+            </p>
+            <Link href="/faqs" className={`mt-4 text-ink ${TEXT_LINK}`}>
+              All FAQs <ArrowRight className="size-4" aria-hidden />
             </Link>
           </div>
           <FaqList faqs={faqs} />
@@ -396,27 +385,23 @@ export default function HomePage() {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-obsidian via-obsidian/70 to-transparent" />
         </div>
-        <div className="container-yhc py-20 md:py-32">
+        <div className={`container-yhc ${SECTION_Y}`}>
           <div className="max-w-xl">
-            <h2 id="final-heading" className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-on-dark">
+            <h2
+              id="final-heading"
+              className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-balance text-on-dark"
+            >
               Start with your roots, not a product.
             </h2>
-            <p className="mt-5 text-lg leading-relaxed text-on-dark-muted">
+            <p className="mt-5 text-lg leading-relaxed text-pretty text-on-dark-muted">
               Begin with a free guided 3D scan. If treatment looks suitable, book a {terms.slotMinutes}-minute
               consultation with {doctor.name} — and decide only after you have spoken to a doctor.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Button
-                asChild
-                className="h-13 bg-[image:var(--yhc-silver)] px-7 text-base font-semibold text-obsidian hover:opacity-95"
-              >
+              <Button asChild className={CTA_SILVER}>
                 <Link href="/start">Begin my 3D scan</Link>
               </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="h-13 border-line-dark bg-transparent px-7 text-base text-on-dark hover:bg-graphite hover:text-on-dark"
-              >
+              <Button asChild variant="outline" className={CTA_GHOST_DARK}>
                 <a href={SITE.whatsappUrl}>
                   <MessageCircle className="size-4" aria-hidden />
                   Ask on WhatsApp

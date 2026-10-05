@@ -407,7 +407,7 @@ export function BookingFlow(props: BookingFlowProps) {
                       ) : (
                         <Button className="h-12 px-6 text-base md:px-10" onClick={() => setPayOpen(true)}>
                           <Lock className="size-4" aria-hidden />
-                          Pay {formatINR(hold.feePaise)} securely
+                          Pay {formatINR(hold.feePaise)}
                         </Button>
                       )}
                     </ContinueBar>
@@ -472,7 +472,7 @@ function StepHeading({
         id="step-title"
         ref={ref}
         tabIndex={-1}
-        className="display mt-2 text-[32px] outline-none md:text-[40px]"
+        className="display mt-2 text-[32px] text-balance outline-none md:text-[40px]"
       >
         {children}
       </h1>
@@ -573,7 +573,7 @@ function ConfirmedPanel({
         id="step-title"
         ref={headingRef}
         tabIndex={-1}
-        className="display mt-3 text-[32px] outline-none md:text-[44px]"
+        className="display mt-3 text-[32px] text-balance outline-none md:text-[44px]"
       >
         Your consultation is confirmed.
       </h1>
