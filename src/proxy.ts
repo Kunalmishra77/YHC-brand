@@ -14,7 +14,7 @@ const GATES: { prefix: string; roles: AppRole[] }[] = [
   { prefix: '/admin', roles: ['admin', 'ops'] },
 ];
 
-const demoMode = process.env.DEMO_MODE === 'true';
+const demoMode = process.env.DEMO_MODE?.trim() === 'true';
 
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;

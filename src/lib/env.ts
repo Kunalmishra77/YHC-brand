@@ -13,7 +13,10 @@ const clientSchema = z.object({
   NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
 });
 
-const emptyToUndefined = (v: string | undefined) => (v === '' ? undefined : v);
+const emptyToUndefined = (v: string | undefined) => {
+  const t = v?.trim();
+  return t ? t : undefined;
+};
 
 export const clientEnv = clientSchema.parse({
   NEXT_PUBLIC_SITE_URL: emptyToUndefined(process.env.NEXT_PUBLIC_SITE_URL),

@@ -27,4 +27,9 @@ const serverSchema = z
     path: ['DEMO_MODE'],
   });
 
-export const serverEnv = serverSchema.parse(process.env);
+// Trim every value: dashboards and shells sometimes store a trailing newline ("staging\n").
+const trimmed = Object.fromEntries(
+  Object.entries(process.env).map(([k, v]) => [k, typeof v === 'string' ? v.trim() : v]),
+);
+
+export const serverEnv = serverSchema.parse(trimmed);
