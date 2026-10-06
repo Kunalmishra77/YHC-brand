@@ -5,9 +5,11 @@ import { z } from 'zod';
 import { DEMO_COOKIE, DEMO_CUSTOMER_COOKIE } from '@/lib/demo-session';
 import { AppError } from '@/lib/errors';
 import { err, ok, type Result } from '@/lib/result';
+import { ensureDemoState } from '@/server/demo/persist';
 
 /** Runs an action body and maps failures to `{ ok: false, error }` — never leaks stack traces. */
 export async function guard<T>(fn: () => T | Promise<T>): Promise<Result<T>> {
+  await ensureDemoState();
   try {
     return ok(await fn());
   } catch (e) {

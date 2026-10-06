@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { runAdminAction, type ActionResult } from '@/server/admin/guard';
-import { resetAllDemoData } from '@/server/admin/state';
+import { resetSharedDemo } from '@/server/demo/persist';
 import { recordAudit } from '@/server/demo/store';
 
 const exportSchema = z.object({
@@ -23,8 +23,8 @@ export async function logExportAction(input: z.infer<typeof exportSchema>): Prom
 
 /** Restores seed data, fixtures edited from /admin and admin-only demo state. */
 export async function resetDemoAction(): Promise<ActionResult> {
-  return runAdminAction(['admin'], z.undefined(), undefined, () => {
-    resetAllDemoData();
+  return runAdminAction(['admin'], z.undefined(), undefined, async () => {
+    await resetSharedDemo();
     revalidatePath('/', 'layout');
     return 'Demo data reset to the original sample';
   });

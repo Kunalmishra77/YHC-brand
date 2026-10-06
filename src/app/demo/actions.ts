@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { DEMO_COOKIE, DEMO_CUSTOMER_COOKIE, DEMO_DEFAULT_CUSTOMER_ID } from '@/lib/demo-session';
 import { AppError } from '@/lib/errors';
 import { serverEnv } from '@/lib/env.server';
-import { resetDemo } from '@/server/demo/store';
+import { resetSharedDemo } from '@/server/demo/persist';
 
 const HOME: Record<string, string> = {
   customer: '/account',
@@ -50,6 +50,6 @@ export async function signOutDemo() {
 
 export async function resetDemoData() {
   assertDemo();
-  resetDemo();
+  await resetSharedDemo();
   redirect('/demo?reset=1');
 }

@@ -13,7 +13,7 @@ const shot = async (name) => {
   console.log('shot', name, page.url());
 };
 
-await page.goto(base + '/', { waitUntil: 'networkidle', timeout: 120000 });
+await page.goto(base + '/', { waitUntil: process.env.WAIT ?? 'networkidle', timeout: 120000 });
 const form = page.locator('form').filter({ hasText: 'Begin my 3D scan' }).first();
 await form.getByLabel('Full name').fill('Asha Verma');
 await form.getByLabel('Mobile number').fill('9876543210');
@@ -30,7 +30,7 @@ else await otp.first().fill('123456');
 const verify = page.getByRole('button', { name: /verify|continue|start/i }).first();
 if (await verify.isVisible().catch(() => false)) await verify.click();
 await page.waitForURL(/\/start\/scan/, { timeout: 60000 }).catch(() => {});
-await page.waitForLoadState('networkidle');
+await page.waitForLoadState(process.env.WAIT ?? 'networkidle');
 await shot('2-scan');
 
 // Four pre-scan questions: pick the first option each time (continue button if one appears).
@@ -57,13 +57,13 @@ await page.getByRole('button', { name: /analyse my scan/i }).click();
 await page.waitForTimeout(3000);
 await shot('4-analysing');
 await page.waitForURL(/\/start\/assessment/, { timeout: 60000 }).catch(() => {});
-await page.waitForLoadState('networkidle');
+await page.waitForLoadState(process.env.WAIT ?? 'networkidle');
 await shot('5-assessment');
 const cont = page.getByRole('link', { name: /continue to your health form/i }).first();
 if (await cont.isVisible().catch(() => false)) {
   await cont.click();
   await page.waitForURL(/\/start\/details/, { timeout: 60000 }).catch(() => {});
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState(process.env.WAIT ?? 'networkidle');
   await shot('6-details');
 }
 await browser.close();

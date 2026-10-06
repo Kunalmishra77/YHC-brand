@@ -5,6 +5,7 @@ import type { AppRole } from '@/lib/domain/types';
 import { AppError } from '@/lib/errors';
 import { serverEnv } from '@/lib/env.server';
 import { DEMO_COOKIE, DEMO_CUSTOMER_COOKIE, demoUserFor, isAppRole } from '@/lib/demo-session';
+import { ensureDemoState } from '@/server/demo/persist';
 
 export interface SessionUser {
   id: string;
@@ -25,6 +26,7 @@ export const ROUTE_ROLES: { prefix: string; roles: AppRole[]; aal2For: AppRole[]
 
 export async function getSessionUser(): Promise<SessionUser | null> {
   if (serverEnv.DEMO_MODE) {
+    await ensureDemoState(); // shared demo snapshot on serverless hosts (ADR-29)
     const jar = await cookies();
     const role = jar.get(DEMO_COOKIE)?.value;
     if (!role || !isAppRole(role)) return null;

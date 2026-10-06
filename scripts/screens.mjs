@@ -15,7 +15,7 @@ if (role && role !== '-') {
 }
 const page = await context.newPage();
 for (const p of paths) {
-  await page.goto(base + p, { waitUntil: 'networkidle', timeout: 120000 });
+  await page.goto(base + p, { waitUntil: process.env.WAIT ?? 'networkidle', timeout: 120000 });
   // Scroll through so lazy images load, then return to the top.
   await page.evaluate(async () => {
     for (let y = 0; y < document.body.scrollHeight; y += 600) {
@@ -24,7 +24,7 @@ for (const p of paths) {
     }
     window.scrollTo(0, 0);
   });
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState(process.env.WAIT ?? 'networkidle');
   await page.waitForTimeout(800);
   const name = `${width}${p.replace(/[^a-z0-9]+/gi, '_') || '_home'}.png`;
   await page.screenshot({ path: `${outDir}/${name}`, fullPage: process.env.FULL !== '0' });
