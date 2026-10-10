@@ -170,3 +170,11 @@ export const PRODUCT_GALLERY: Record<string, SiteImage[]> = {
   'gentle-strengthening-shampoo': [IMAGES.shampoo, IMAGES.heroStage, IMAGES.heroPortrait],
   'lightweight-conditioner': [IMAGES.conditioner, IMAGES.heroStage, IMAGES.heroPortrait],
 };
+
+/** Dr. Anil Tyagi's portrait (supplied by the clinic, 2026-10-10). */
+export const DOCTOR_PORTRAIT: SiteImage = {
+  src: '/media/img/dr-anil-tyagi.webp',
+  width: 1000,
+  height: 1211,
+  alt: 'Dr. Anil Tyagi, dermatologist, in a white coat with a stethoscope',
+};

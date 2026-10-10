@@ -1,7 +1,7 @@
 import { BadgeCheck, Video } from 'lucide-react';
 import Image from 'next/image';
 import type { Doctor } from '@/lib/domain/types';
-import { CLINICAL } from '@/lib/images';
+import { DOCTOR_PORTRAIT } from '@/lib/images';
 import { cn } from '@/lib/utils';
 
 /**
@@ -54,29 +54,24 @@ export function DoctorCard({
   );
 }
 
-/**
- * Illustrative consultation photograph (no face) with the credential card overlapping its lower edge.
- * The photo is never presented as Dr. Tyagi — the caption says so on the image itself.
- */
+/** Dr. Anil Tyagi's portrait with the credential card overlapping its lower edge. */
 function DoctorVisual({ doctor }: { doctor: Doctor }) {
-  const img = CLINICAL.consultCoat;
+  const img = DOCTOR_PORTRAIT;
   return (
     <div className="relative mx-auto w-full max-w-md">
-      <figure className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-obsidian ring-1 ring-line sm:aspect-[3/2] lg:aspect-[4/3]">
+      <figure className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-mist ring-1 ring-line">
         <Image
           src={img.src}
           alt={img.alt}
           fill
           sizes="(min-width: 1024px) 28rem, (min-width: 640px) 28rem, 100vw"
-          className="object-cover object-[70%_40%]"
+          className="object-cover object-[50%_20%]"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-b from-obsidian/55 via-transparent to-obsidian/30"
+          className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-obsidian/45 to-transparent"
           aria-hidden
         />
-        <figcaption className="absolute top-4 left-4 max-w-[calc(100%-2rem)] rounded-full bg-black/55 px-3 py-1.5 text-[11px] leading-snug font-medium text-on-dark backdrop-blur">
-          Illustrative image · {doctor.name}’s photo coming soon
-        </figcaption>
+        <figcaption className="sr-only">{doctor.name}</figcaption>
       </figure>
       <div className="relative -mt-14 px-3 sm:-mt-20 sm:px-6">
         <CredentialCard doctor={doctor} />
@@ -101,10 +96,7 @@ function CredentialCard({ doctor }: { doctor: Doctor }) {
           </span>
         </div>
         <div className="px-6 pt-6 pb-6">
-          <div className="flex size-12 items-center justify-center rounded-full bg-[image:var(--yhc-silver)] font-display text-xl text-obsidian">
-            T
-          </div>
-          <p className="mt-4 font-display text-[30px] leading-none">{doctor.name}</p>
+          <p className="font-display text-[30px] leading-none">{doctor.name}</p>
           <p className="mt-2 text-sm text-on-dark-muted">{doctor.qualifications}</p>
           <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-line-dark pt-5 text-sm">
             <div>
