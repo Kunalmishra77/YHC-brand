@@ -21,9 +21,9 @@ import type {
 export const DOCTOR: Doctor = {
   id: 'doc-tyagi',
   name: 'Dr. Anil Tyagi',
-  qualifications: 'MBBS, MD (Dermatology) · placeholder',
-  registrationNo: 'REG-PENDING',
-  council: 'State Medical Council · placeholder',
+  qualifications: 'Dermatologist', // TODO(client): full qualifications — docs/16 C1
+  registrationNo: 'to be added', // TODO(client): medical registration number — docs/16 C1
+  council: 'State Medical Council', // TODO(client): exact council name — docs/16 C1
   bio: 'Dr. Tyagi is a dermatologist who focuses on hair and scalp health. Every YHC plan starts with a one-to-one video consultation, a look at your history and scalp photos, and a routine chosen for you — not a one-size-fits-all kit.',
 };
 

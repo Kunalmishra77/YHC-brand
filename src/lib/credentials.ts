@@ -5,6 +5,6 @@
  */
 export function publicCredential(value: string | null | undefined): string | null {
   const v = value?.trim();
-  if (!v || /placeholder|pending/i.test(v)) return null;
+  if (!v || /placeholder|pending|to be added/i.test(v)) return null;
   return v;
 }
