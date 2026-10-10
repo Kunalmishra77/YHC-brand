@@ -5,7 +5,6 @@ import type { Doctor } from '@/lib/domain/types';
 import { LEGAL_PAGES, SITE } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { publicCredential } from '@/lib/credentials';
-import { LEGAL_ENTITY } from '@/server/content/legal';
 
 interface FooterLink {
   href: string;
@@ -40,13 +39,10 @@ const LINK =
   'inline-flex min-h-11 items-center text-sm text-on-dark-muted transition-colors hover:text-on-dark md:min-h-0 md:py-1.5';
 
 /**
- * Footer: brand, doctor credentials and contact; Explore / Patients / Legal columns; the medical
- * disclaimer and grievance officer (FR-M1-9, FR-M14-6); then one bottom bar with the copyright line and
- * the key policies.
+ * Footer: brand, lead doctor and contact; Explore / Patients / Legal columns (the medical disclaimer and
+ * grievance officer pages are linked under Legal — ADR-30); then the bottom bar with the credit line and key policies.
  */
 export function SiteFooter({ doctor }: { doctor: Doctor }) {
-  // TODO(client): grievance officer name — see docs/12 C (set LEGAL_ENTITY.grievanceOfficerName)
-  const grievanceName = LEGAL_ENTITY.grievanceOfficerName;
   const primaryPolicies = LEGAL_PAGES.filter((p) => p.primary);
   return (
     <footer className="mt-auto bg-obsidian pb-[calc(6rem+env(safe-area-inset-bottom))] text-on-dark-muted md:pb-0">
@@ -97,22 +93,7 @@ export function SiteFooter({ doctor }: { doctor: Doctor }) {
           listClassName="grid grid-cols-2 gap-x-6 md:grid-cols-1"
         />
       </div>
-      {/* Medical disclaimer + grievance officer */}
-      <div className="border-t border-line-dark">
-        <div className="container-yhc grid gap-2 py-6 text-[13px] leading-relaxed md:grid-cols-[minmax(0,1fr)_auto] md:items-baseline md:gap-10">
-          <p className="max-w-[80ch] text-pretty">{t('legal.disclaimer')}</p>
-          <p>
-            {t('legal.grievance')}
-            {grievanceName ? `: ${grievanceName}` : ''} ·{' '}
-            <a
-              href={`mailto:${SITE.grievanceOfficer.email}`}
-              className="underline decoration-on-dark-muted/40 underline-offset-4 transition-colors hover:text-on-dark hover:decoration-on-dark"
-            >
-              {SITE.grievanceOfficer.email}
-            </a>
-          </p>
-        </div>
-      </div>
+      {/* Disclaimer and grievance officer live on /legal/medical-disclaimer and /legal/grievance (linked above) — ADR-30 */}
       {/* Bottom bar: credit (client wording) · key policies */}
       <div className="border-t border-line-dark">
         <div className="container-yhc flex flex-col gap-4 py-6 text-[13px] md:flex-row md:items-center md:justify-between md:gap-10">
