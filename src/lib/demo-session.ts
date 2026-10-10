@@ -13,7 +13,7 @@ export function isAppRole(value: string): value is AppRole {
 
 const DEMO_USERS: Record<AppRole, { id: string; name: string }> = {
   customer: { id: 'u-customer', name: 'Rahul Mehra' },
-  doctor: { id: 'u-doctor', name: 'Dr. Tyagi' },
+  doctor: { id: 'u-doctor', name: 'Dr. Anil Tyagi' },
   sales: { id: 'u-priya', name: 'Priya Sharma' },
   ops: { id: 'u-arjun', name: 'Arjun Mehta' },
   admin: { id: 'u-admin', name: 'Kavya Iyer' },

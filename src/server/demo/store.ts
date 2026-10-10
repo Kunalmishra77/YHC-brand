@@ -1525,8 +1525,8 @@ function seed(now: Date): DemoState {
     });
   });
   const auditSpecs: [string, string, string, number][] = [
-    ['Dr. Tyagi', 'clinical.view', 'Intake · YHC-A-1001', 90],
-    ['Dr. Tyagi', 'consultation.complete', 'YHC-A-1001', 70],
+    ['Dr. Anil Tyagi', 'clinical.view', 'Intake · YHC-A-1001', 90],
+    ['Dr. Anil Tyagi', 'consultation.complete', 'YHC-A-1001', 70],
     ['Kavya Iyer', 'settings.update', 'consult.hold_minutes = 10', 60 * 26],
     ['Arjun Mehta', 'order.shipped', 'YHC-10005', 60 * 30],
     ['Kavya Iyer', 'role.change', 'neha@demo.yhc → sales', 60 * 72],

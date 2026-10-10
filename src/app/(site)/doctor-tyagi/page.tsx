@@ -1,12 +1,15 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { getConsultTerms } from '@/components/site/consult-fee';
 import { CtaBand } from '@/components/site/cta-band';
 import { DoctorCard } from '@/components/site/doctor-card';
 import { JsonLd } from '@/components/site/json-ld';
+import { H2, SECTION_Y, SectionHeader } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { Button } from '@/components/ui/button';
 import { clientEnv } from '@/lib/env';
+import { CLINICAL } from '@/lib/images';
 import { getDoctor } from '@/server/catalog';
 
 export const dynamic = 'force-dynamic';
@@ -56,7 +59,7 @@ export default function DoctorPage() {
         }}
       />
 
-      <section className="container-yhc py-16 md:py-24">
+      <section className={`container-yhc ${SECTION_Y}`}>
         <DoctorCard doctor={doctor} headingLevel="h1">
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button asChild className="h-12 px-6 text-base whitespace-normal">
@@ -70,8 +73,16 @@ export default function DoctorPage() {
       </section>
 
       <section className="border-y border-line bg-card">
-        <div className="container-yhc grid gap-10 py-14 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:py-24">
-          <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">Credentials</h2>
+        <div
+          className={`container-yhc grid gap-8 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-12 ${SECTION_Y}`}
+        >
+          <div>
+            <p className="eyebrow">Verify</p>
+            <h2 className={`${H2} mt-4`}>Credentials</h2>
+            <p className="mt-4 max-w-xs leading-relaxed text-pretty text-body">
+              The same details appear on every prescription you receive.
+            </p>
+          </div>
           <dl className="divide-y divide-line border-y border-line">
             {[
               ['Qualifications', doctor.qualifications],
@@ -89,17 +100,36 @@ export default function DoctorPage() {
       </section>
       {/* TODO(client): full name, qualifications, registration no., council and longer bio — see docs/12 C */}
 
-      <section className="container-yhc py-16 md:py-24">
-        <h2 className="display max-w-2xl text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
-          What a consultation covers
-        </h2>
-        <div className="mt-10 grid gap-x-12 gap-y-8 md:grid-cols-2">
-          {COVERS.map((c) => (
-            <div key={c.title} className="border-t border-platinum pt-5">
-              <h3 className="font-semibold text-ink">{c.title}</h3>
-              <p className="mt-2 text-body">{c.body}</p>
+      <section className={`container-yhc ${SECTION_Y}`} aria-labelledby="covers-heading">
+        <SectionHeader
+          id="covers-heading"
+          eyebrow={`${terms.slotMinutes} minutes, one to one`}
+          title="What a consultation covers"
+        />
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+          <figure>
+            <div className="relative aspect-[3/2] overflow-hidden rounded-2xl bg-obsidian ring-1 ring-line md:aspect-[16/9] lg:aspect-[4/5]">
+              <Image
+                src={CLINICAL.scalpExam.src}
+                alt={CLINICAL.scalpExam.alt}
+                fill
+                sizes="(min-width: 1024px) 38vw, 100vw"
+                className="object-cover"
+              />
             </div>
-          ))}
+            <figcaption className="mt-3 text-[13px] text-muted-foreground">
+              Illustrative image. Your own scalp photos are kept for your doctor, never used in marketing.
+            </figcaption>
+          </figure>
+          <div className="grid content-start gap-x-10 gap-y-8 sm:grid-cols-2">
+            {COVERS.map((c, i) => (
+              <div key={c.title} className="border-t border-line pt-5">
+                <span className="price text-sm text-muted-foreground">{String(i + 1).padStart(2, '0')}</span>
+                <h3 className="mt-2 text-lg font-semibold text-ink">{c.title}</h3>
+                <p className="mt-2 leading-relaxed text-pretty text-body">{c.body}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

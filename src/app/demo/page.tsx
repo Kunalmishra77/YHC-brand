@@ -16,7 +16,7 @@ const ROLES = [
   },
   {
     role: 'doctor',
-    title: 'Dr. Tyagi',
+    title: 'Dr. Anil Tyagi',
     who: 'Doctor Portal',
     see: "Today's consultations, calendar, the three-pane consultation workspace, one-click plan recommendation.",
   },

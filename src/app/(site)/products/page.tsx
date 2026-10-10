@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { EmptyState } from '@/components/shared/states';
 import { getConsultTerms } from '@/components/site/consult-fee';
 import { CtaBand } from '@/components/site/cta-band';
 import { PageIntro } from '@/components/site/page-intro';
 import { ProductTile } from '@/components/site/product-tile';
+import { SECTION_Y, SectionHeader, TEXT_LINK } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { IMAGES } from '@/lib/images';
 import { t } from '@/i18n/en';
@@ -38,47 +40,51 @@ export default function ProductsPage() {
           </p>
         }
       />
-      <div className="container-yhc space-y-24 py-16 md:py-24">
-        {products.length === 0 ? (
+      {products.length === 0 ? (
+        <div className={`container-yhc ${SECTION_Y}`}>
           <EmptyState
             title="Products are being added"
             body="Our range is listed here once each product's details are confirmed. You can still book a consultation."
           />
-        ) : null}
-        {prescribed.length ? (
-          <section>
-            <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between md:gap-8">
-              <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
-                Prescribed after your consultation
-              </h2>
-              <Link
-                href="/book"
-                className="inline-flex min-h-11 items-center text-sm font-medium text-brand underline underline-offset-4"
-              >
-                {terms.bookLabel}
+        </div>
+      ) : null}
+      {prescribed.length ? (
+        <section className={`container-yhc ${SECTION_Y}`} aria-labelledby="prescribed-heading">
+          <SectionHeader
+            id="prescribed-heading"
+            eyebrow="Prescription only"
+            title="Prescribed after your consultation"
+            lede="Strength, dose and routine are set by the doctor for one person. You can read about each product, but you can only order it with a prescription."
+            action={
+              <Link href="/book" className={`text-ink ${TEXT_LINK}`}>
+                {terms.bookLabel} <ArrowRight className="size-4" aria-hidden />
               </Link>
-            </div>
-            <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-              {prescribed.map((p) => (
-                <ProductTile key={p.id} product={p} />
-              ))}
-            </div>
-          </section>
-        ) : null}
-        {open.length ? (
-          <section>
-            <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">Everyday hair care</h2>
-            <p className="mt-3 max-w-xl text-body">
-              No consultation needed. Gentle on a scalp under treatment.
-            </p>
-            <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            }
+          />
+          <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            {prescribed.map((p) => (
+              <ProductTile key={p.id} product={p} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+      {open.length ? (
+        <section className="border-t border-line bg-card" aria-labelledby="everyday-heading">
+          <div className={`container-yhc ${SECTION_Y}`}>
+            <SectionHeader
+              id="everyday-heading"
+              eyebrow="No consultation needed"
+              title="Everyday hair care"
+              lede="Gentle on a scalp under treatment. Order directly, on their own or alongside a plan."
+            />
+            <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
               {open.map((p) => (
                 <ProductTile key={p.id} product={p} />
               ))}
             </div>
-          </section>
-        ) : null}
-      </div>
+          </div>
+        </section>
+      ) : null}
       <CtaBand
         bookLabel={terms.bookLabel}
         body="Not sure which products you need? That's what the consultation decides — based on your history, not a quiz score."

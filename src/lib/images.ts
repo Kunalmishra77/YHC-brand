@@ -67,6 +67,59 @@ export const MEDIA = {
   hairMacroWide: media('hair-macro-2', 1600, 900, 'Macro photograph of fine hair strands'),
 } as const;
 
+/**
+ * Clinical editorial stills (Unsplash licence, optimised WebP — sources in public/media/CREDITS.md).
+ * Faces are never shown. The white-coat images are illustrative only: they must always carry a visible
+ * "Illustrative image" note and must never be presented as Dr. Tyagi, our clinic or a patient.
+ */
+const still = (name: string, width: number, height: number, alt: string): SiteImage => ({
+  src: `/media/img/${name}.webp`,
+  width,
+  height,
+  alt,
+});
+
+export const CLINICAL = {
+  /** Doctor section — illustrative, never labelled as Dr. Tyagi. */
+  consultCoat: still(
+    'consult-coat',
+    1600,
+    1067,
+    'Illustrative image: a doctor in a white coat holding a stethoscope, face not shown',
+  ),
+  consultNotes: still(
+    'consult-notes',
+    1600,
+    900,
+    'Illustrative image: a doctor taking notes on a history form across a desk from a patient',
+  ),
+  consultRoom: still(
+    'clinic-desk',
+    1600,
+    900,
+    'Illustrative image: a doctor in a white coat writing on a clipboard in a consultation room',
+  ),
+  /** Trichoscopy-style macro of a scalp parting — where follicles are assessed. */
+  scalpParting: still(
+    'scalp-parting',
+    1600,
+    1067,
+    'Black-and-white macro photograph of a scalp parting showing individual hair roots',
+  ),
+  scalpPartingPortrait: still(
+    'scalp-parting-portrait',
+    1000,
+    1250,
+    'Black-and-white macro photograph of a scalp parting showing individual hair roots',
+  ),
+  scalpExam: still(
+    'scalp-exam',
+    1600,
+    1067,
+    'Hands parting hair to look closely at the scalp and hair density at the crown',
+  ),
+} as const;
+
 export interface SiteVideo {
   src: string;
   poster: string;

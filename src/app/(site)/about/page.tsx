@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { getConsultTerms } from '@/components/site/consult-fee';
 import { CtaBand } from '@/components/site/cta-band';
 import { buildJourney } from '@/components/site/journey-steps';
+import { H1, H2, SECTION_Y, TEXT_LINK } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { t } from '@/i18n/en';
-import { IMAGES } from '@/lib/images';
+import { CLINICAL, IMAGES } from '@/lib/images';
 import { getDoctor } from '@/server/catalog';
 
 export const dynamic = 'force-dynamic';
@@ -75,53 +76,43 @@ export default function AboutPage() {
       <section className="border-b border-line">
         <div className="container-yhc grid gap-10 py-14 md:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] md:items-center md:gap-12 md:py-24 lg:gap-16">
           <div className="min-w-0">
-            <h1 className="display text-[clamp(2.5rem,1.7rem+3.2vw,4.25rem)] text-balance">
-              Hair care that starts with a conversation.
-            </h1>
+            <h1 className={H1}>Hair care that starts with a conversation.</h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-body">
               Most hair products are sold before anyone asks a single question. Your Hair Company works the
               other way round: every plan begins with a one-to-one video consultation with {doctor.name}, and
               is reviewed as you go.
             </p>
             <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
-              <Link
-                href="/how-it-works"
-                className="inline-flex min-h-11 items-center text-sm font-medium text-ink underline decoration-steel underline-offset-[6px] hover:decoration-ink"
-              >
+              <Link href="/how-it-works" className={`text-ink ${TEXT_LINK}`}>
                 How it works
               </Link>
-              <Link
-                href="/doctor-tyagi"
-                className="inline-flex min-h-11 items-center text-sm font-medium text-ink underline decoration-steel underline-offset-[6px] hover:decoration-ink"
-              >
+              <Link href="/doctor-tyagi" className={`text-ink ${TEXT_LINK}`}>
                 About {doctor.name}
               </Link>
             </div>
           </div>
           <figure>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-obsidian">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-obsidian lg:aspect-[5/4]">
               <Image
-                src={IMAGES.heroPortrait.src}
-                alt={IMAGES.heroPortrait.alt}
+                src={CLINICAL.consultRoom.src}
+                alt={CLINICAL.consultRoom.alt}
                 fill
                 priority
                 sizes="(min-width: 768px) 42vw, 100vw"
-                className="object-cover object-[50%_65%]"
+                className="object-cover object-[55%_50%]"
               />
             </div>
             <figcaption className="mt-3 text-[12px] text-muted-foreground">
-              Concept still life of the YHC range — not a treatment result.
+              Illustrative image — not our clinic, staff or Dr. Tyagi.
             </figcaption>
           </figure>
         </div>
       </section>
 
       {/* 2 · Why doctor-led */}
-      <section className="container-yhc py-20 md:py-28">
+      <section className={`container-yhc ${SECTION_Y}`}>
         <div className="grid gap-10 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-16">
-          <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance md:sticky md:top-28 md:self-start">
-            Why doctor-led
-          </h2>
+          <h2 className={`${H2} md:sticky md:top-28 md:self-start`}>Why doctor-led</h2>
           <div className="max-w-[62ch] space-y-5 text-lg leading-relaxed text-body">
             {/* TODO(client): founding story in the client's own words — see docs/12 C */}
             <p>
@@ -145,15 +136,10 @@ export default function AboutPage() {
 
       {/* 3 · How YHC works */}
       <section className="bg-obsidian text-on-dark">
-        <div className="container-yhc py-20 md:py-28">
+        <div className={`container-yhc ${SECTION_Y}`}>
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <h2 className="display max-w-xl text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance text-on-dark">
-              How YHC works
-            </h2>
-            <Link
-              href="/how-it-works"
-              className="inline-flex min-h-11 items-center text-sm font-medium text-on-dark underline decoration-steel underline-offset-[6px]"
-            >
+            <h2 className={`${H2} max-w-xl text-on-dark`}>How YHC works</h2>
+            <Link href="/how-it-works" className={`text-on-dark ${TEXT_LINK}`}>
               Each step in detail
             </Link>
           </div>
@@ -173,11 +159,9 @@ export default function AboutPage() {
       </section>
 
       {/* 4 · What we will never do */}
-      <section className="container-yhc py-20 md:py-28">
+      <section className={`container-yhc ${SECTION_Y}`}>
         <div className="grid gap-6 md:grid-cols-2 md:items-end">
-          <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
-            What we will never do
-          </h2>
+          <h2 className={H2}>What we will never do</h2>
           <p className="max-w-md text-body md:justify-self-end">
             Trust in hair care is hard to earn and easy to lose. These are the lines we hold, in the product
             itself — not only in our copy.
@@ -200,11 +184,11 @@ export default function AboutPage() {
 
       {/* 5 · Values */}
       <section className="border-t border-line bg-[#efeeeb]/60">
-        <div className="container-yhc grid gap-12 py-20 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16 md:py-28">
+        <div
+          className={`container-yhc grid gap-12 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16 ${SECTION_Y}`}
+        >
           <div>
-            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
-              What we hold ourselves to
-            </h2>
+            <h2 className={H2}>What we hold ourselves to</h2>
             <div className="relative mt-10 aspect-[16/10] overflow-hidden rounded-2xl">
               <Image
                 src={IMAGES.textureDrop.src}
@@ -229,12 +213,10 @@ export default function AboutPage() {
       </section>
 
       {/* 6 · Team */}
-      <section className="container-yhc py-20 md:py-28">
+      <section className={`container-yhc ${SECTION_Y}`}>
         <div className="grid gap-10 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-16">
           <div>
-            <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
-              The people behind it
-            </h2>
+            <h2 className={H2}>The people behind it</h2>
             <p className="mt-5 max-w-sm leading-relaxed text-body">
               A small team built around one doctor’s consultations: care coordination, packing and delivery,
               and support.
@@ -243,13 +225,10 @@ export default function AboutPage() {
           <div className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
             <div className="bg-card p-7">
               <p className="text-[13px] text-muted-foreground">Lead doctor</p>
-              <p className="mt-3 font-display text-3xl leading-tight text-ink">{doctor.name}</p>
+              <p className="mt-3 font-display text-[2rem] leading-tight text-ink">{doctor.name}</p>
               <p className="mt-1.5 text-sm text-body">{doctor.qualifications}</p>
               <p className="mt-1 text-sm text-muted-foreground">Registration {doctor.registrationNo}</p>
-              <Link
-                href="/doctor-tyagi"
-                className="mt-6 inline-flex min-h-11 items-center text-sm font-medium text-ink underline decoration-steel underline-offset-[6px]"
-              >
+              <Link href="/doctor-tyagi" className={`mt-6 text-ink ${TEXT_LINK}`}>
                 Read the full profile
               </Link>
             </div>
@@ -257,7 +236,9 @@ export default function AboutPage() {
             <div className="flex flex-col justify-between bg-card p-7">
               <div>
                 <p className="text-[13px] text-muted-foreground">Care and support team</p>
-                <p className="mt-3 font-display text-3xl leading-tight text-ink">Introductions coming soon</p>
+                <p className="mt-3 font-display text-[2rem] leading-tight text-ink">
+                  Introductions coming soon
+                </p>
                 <p className="mt-3 text-sm leading-relaxed text-body">
                   The team who answer your WhatsApp messages and pack your orders will be introduced here.
                   They help with bookings, orders and delivery — they cannot see your clinical information.

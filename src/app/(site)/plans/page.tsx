@@ -6,6 +6,7 @@ import { getConsultTerms } from '@/components/site/consult-fee';
 import { CtaBand } from '@/components/site/cta-band';
 import { PageIntro } from '@/components/site/page-intro';
 import { PlanLadder } from '@/components/site/plan-ladder';
+import { H2, SECTION_Y } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { IMAGES } from '@/lib/images';
 import { Button } from '@/components/ui/button';
@@ -42,7 +43,7 @@ export default function PlansPage() {
         }
       />
 
-      <section className="container-yhc py-16 md:py-24">
+      <section className={`container-yhc ${SECTION_Y}`}>
         {plans.length ? (
           <PlanLadder plans={plans} guarantee={guarantee} creditLine={terms.creditLine} headingLevel="h2" />
         ) : (
@@ -63,8 +64,8 @@ export default function PlansPage() {
 
       {plans.length ? (
         <section className="border-y border-line bg-card">
-          <div className="container-yhc py-16 md:py-24">
-            <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">Side by side</h2>
+          <div className={`container-yhc ${SECTION_Y}`}>
+            <h2 className={H2}>Side by side</h2>
             <div className="mt-8 hidden overflow-x-auto sm:block">
               <table className="w-full min-w-[520px] text-left text-sm">
                 <caption className="sr-only">Plan comparison</caption>
@@ -172,10 +173,8 @@ export default function PlansPage() {
       ) : null}
 
       {guarantee ? (
-        <section className="container-yhc py-16 md:py-24">
-          <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
-            Money-back guarantee terms
-          </h2>
+        <section className={`container-yhc ${SECTION_Y}`}>
+          <h2 className={H2}>Money-back guarantee terms</h2>
           <p className="mt-3 max-w-2xl text-body">
             The guarantee applies only when every condition below is met. Read the{' '}
             <Link href="/legal/guarantee" className="text-brand underline underline-offset-4">

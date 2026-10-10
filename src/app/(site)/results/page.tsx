@@ -11,7 +11,7 @@ import { getPublishedResults } from '@/server/content/results';
 export const metadata: Metadata = pageMetadata({
   title: 'Results',
   description:
-    'Before-and-after photos from patients who gave written consent, with the time on plan stated. Individual results vary.',
+    'Before-and-after photos from real patients who gave written consent, after a plan prescribed by the doctor. Faces hidden for privacy. Individual results vary.',
   path: '/results',
 });
 
@@ -23,18 +23,18 @@ const PROCESS = [
   },
   {
     icon: Camera,
-    title: 'Same conditions, both photos',
-    body: 'Before and after photos are taken from the same angle and distance, in similar light, with no filters or retouching.',
+    title: 'Same area, both photos',
+    body: 'Before and after photos show the same area of the scalp, with no filters or retouching. We only crop them, to keep faces out of view.',
   },
   {
     icon: Ruler,
-    title: 'Time on plan, always stated',
-    body: 'Every result says how long the person had been on their plan between the two photos — no cherry-picked dates.',
+    title: 'Time between photos, stated',
+    body: 'Every result states the time between the two photos once the clinic has confirmed it from the patient record. Until then it reads “to be confirmed” — never a guessed date.',
   },
   {
     icon: ShieldCheck,
     title: 'Privacy by default',
-    body: 'Faces are cropped or blurred unless the consent covers identifiable use. Names and medical details are never shown.',
+    body: 'Photos are cropped to the scalp so faces are not shown. Patients appear as “Patient A”, “Patient B” — names and medical details are never shown.',
   },
 ];
 
@@ -49,7 +49,7 @@ export default function ResultsPage() {
       />
 
       <section className={`container-yhc ${SECTION_Y}`} aria-label="Before and after gallery">
-        <ResultsGallery results={results} placeholders={6} />
+        <ResultsGallery results={results} layout="grid" placeholders={6} />
       </section>
 
       <section className="border-y border-line bg-card" aria-labelledby="process-heading">

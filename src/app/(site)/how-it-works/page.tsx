@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { GuaranteeLine } from '@/components/shared/pricing';
 import { getConsultTerms } from '@/components/site/consult-fee';
 import { CtaBand } from '@/components/site/cta-band';
 import { buildJourney, JourneySteps } from '@/components/site/journey-steps';
 import { PageIntro } from '@/components/site/page-intro';
+import { H2, LEDE, SECTION_Y, SectionHeader, TEXT_LINK } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
-import { IMAGES } from '@/lib/images';
+import { CLINICAL } from '@/lib/images';
 import { getDoctor, getGuarantee } from '@/server/catalog';
 import { getSetting } from '@/server/demo/store';
 
@@ -74,7 +76,8 @@ export default function HowItWorksPage() {
     <>
       <PageIntro
         title="How it works"
-        image={IMAGES.textureDrop}
+        image={CLINICAL.consultNotes}
+        imageNote="Illustrative image"
         lede={
           <p>
             Five steps, from booking to follow-up. You only pay {terms.fee} to start; a plan is prescribed
@@ -85,9 +88,56 @@ export default function HowItWorksPage() {
         <JourneySteps steps={buildJourney(terms)} />
       </PageIntro>
 
-      <section className="container-yhc py-16 md:py-24">
-        <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">Each step in detail</h2>
-        <ol className="mt-10 divide-y divide-line border-y border-line">
+      {/* Why photos matter — dark split band to break up the two text-led sections */}
+      <section className="bg-obsidian text-on-dark" aria-labelledby="photos-heading">
+        <div
+          className={`container-yhc grid items-center gap-10 lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)] lg:gap-20 ${SECTION_Y}`}
+        >
+          <figure className="relative aspect-[3/2] overflow-hidden rounded-3xl bg-ink-2 ring-1 ring-line-dark">
+            <Image
+              src={CLINICAL.scalpParting.src}
+              alt={CLINICAL.scalpParting.alt}
+              fill
+              sizes="(min-width: 1024px) 45vw, 100vw"
+              className="object-cover"
+            />
+            <figcaption className="absolute bottom-4 left-4 rounded-full bg-black/55 px-3 py-1.5 text-[11px] font-medium text-on-dark backdrop-blur">
+              Illustrative photo · scalp parting up close
+            </figcaption>
+          </figure>
+          <div>
+            <p className="eyebrow text-brand-on-dark">Before your call</p>
+            <h2 id="photos-heading" className={`${H2} mt-4 text-on-dark`}>
+              Three photos, taken the same way each time
+            </h2>
+            <p className={`${LEDE} mt-6 text-on-dark-muted`}>
+              Thinning is judged at the scalp. Clear photos let {doctor.name} look at your roots before the
+              call — and give you a fair baseline to compare against at follow-up.
+            </p>
+            <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl bg-line-dark ring-1 ring-line-dark sm:grid-cols-3">
+              {[
+                ['Front hairline', 'Hair pushed back, soft daylight'],
+                ['Crown', 'From above — ask someone to help'],
+                ['Parting', 'Centre parting, camera straight above'],
+              ].map(([title, body]) => (
+                <li key={title} className="bg-obsidian p-5">
+                  <p className="font-semibold text-on-dark">{title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-on-dark-muted">{body}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className={`container-yhc ${SECTION_Y}`} aria-labelledby="detail-heading">
+        <SectionHeader
+          id="detail-heading"
+          eyebrow="Step by step"
+          title="Each step in detail"
+          lede="What happens, what you need to do and what it costs — before you commit to anything."
+        />
+        <ol className="divide-y divide-line border-y border-line">
           {detail.map((step, i) => (
             <li
               key={step.title}
@@ -113,12 +163,11 @@ export default function HowItWorksPage() {
             <GuaranteeLine policy={guarantee} />
           </div>
         ) : null}
-        <p className="mt-8 text-body">
-          Want to see prices first?{' '}
-          <Link href="/plans" className="text-brand underline underline-offset-4">
+        <p className="mt-8 flex flex-wrap items-center gap-x-3 text-body">
+          Want to see prices first?
+          <Link href="/plans" className={`text-ink ${TEXT_LINK}`}>
             Compare treatment plans
           </Link>
-          .
         </p>
       </section>
 

@@ -20,7 +20,7 @@ import type {
 // TODO(client): Dr. Tyagi full name, qualifications, registration no., council, bio — see docs/12 C
 export const DOCTOR: Doctor = {
   id: 'doc-tyagi',
-  name: 'Dr. Tyagi',
+  name: 'Dr. Anil Tyagi',
   qualifications: 'MBBS, MD (Dermatology) · placeholder',
   registrationNo: 'REG-PENDING',
   council: 'State Medical Council · placeholder',
@@ -453,7 +453,7 @@ export const GUARANTEE_POLICY: GuaranteePolicy = {
 };
 
 export const STAFF: StaffUser[] = [
-  { id: 'u-doctor', name: 'Dr. Tyagi', email: 'doctor@demo.yhc', role: 'doctor', active: true },
+  { id: 'u-doctor', name: 'Dr. Anil Tyagi', email: 'doctor@demo.yhc', role: 'doctor', active: true },
   { id: 'u-priya', name: 'Priya Sharma', email: 'priya@demo.yhc', role: 'sales', active: true },
   { id: 'u-rohit', name: 'Rohit Verma', email: 'rohit@demo.yhc', role: 'sales', active: true },
   { id: 'u-neha', name: 'Neha Gupta', email: 'neha@demo.yhc', role: 'sales', active: true },

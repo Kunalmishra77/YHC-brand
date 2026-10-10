@@ -1,16 +1,24 @@
-'use client';
-
-import { ChevronLeft, ChevronRight, ImageOff, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ImageOff, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
-import { useId, useState } from 'react';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import type { ResultEntry } from '@/server/content/results';
-import { RAIL, RAIL_ITEM } from './section';
+import { BeforeAfterSlider } from './before-after-slider';
+import { RAIL, RAIL_ITEM, TEXT_LINK } from './section';
+
+/** Shown under every result (copy rules: PRD §15). */
+const RESULT_DISCLAIMER =
+  'Individual results vary. Photos shared with the patient’s written consent; faces hidden for privacy. Unretouched.';
+
+export function resultDurationLabel(months: number | null): string {
+  if (months === null) return 'Duration: to be confirmed';
+  return `Duration: ${months} ${months === 1 ? 'month' : 'months'} between photos`;
+}
 
 /**
- * Consented before/after results (ADR-27). With data: a drag-to-compare frame per result and a
- * carousel between results. Without data: elegant, clearly labelled placeholder frames — never stock
- * or AI imagery standing in for a patient.
+ * Consented before/after results (ADR-27). With data: drag-to-compare frames — a grid on /results, a
+ * featured frame plus two smaller cards on the homepage. Without data: clearly labelled placeholder
+ * frames — never stock or AI imagery standing in for a patient.
  */
 export function ResultsGallery({
   results,
@@ -20,12 +28,12 @@ export function ResultsGallery({
 }: {
   results: ResultEntry[];
   placeholders?: number;
-  /** 'rail' scrolls sideways below lg (homepage teaser); 'grid' wraps into 2 → 3 columns (gallery page). */
-  layout?: 'grid' | 'rail';
+  /** 'grid' wraps into 1 → 2 → 3 columns (gallery page); 'featured' is the homepage teaser. */
+  layout?: 'grid' | 'featured';
   className?: string;
 }) {
   if (results.length === 0) {
-    const rail = layout === 'rail';
+    const rail = layout === 'featured';
     return (
       <div className={className}>
         <ul
@@ -42,11 +50,126 @@ export function ResultsGallery({
       </div>
     );
   }
+
+  if (layout === 'featured') {
+    const [featured, ...rest] = results;
+    const side = rest.slice(0, 2);
+    if (!featured) return null;
+    return (
+      <div className={className}>
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-8">
+          <ResultCard result={featured} sizes="(min-width: 1024px) 55vw, 100vw" priority />
+          {side.length > 0 ? (
+            <div className="flex flex-col gap-6">
+              <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1" aria-label="More results">
+                {side.map((r) => (
+                  <li key={r.id}>
+                    <ResultLinkCard result={r} />
+                  </li>
+                ))}
+              </ul>
+              <Link href="/results" className={`self-start text-ink ${TEXT_LINK}`}>
+                See all {results.length} results <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            </div>
+          ) : null}
+        </div>
+        <ConsentNote />
+      </div>
+    );
+  }
+
   return (
     <div className={className}>
-      <ResultsCarousel results={results} />
+      <ul
+        className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3"
+        aria-label="Before and after results"
+      >
+        {results.map((r) => (
+          <li key={r.id}>
+            <ResultCard result={r} />
+          </li>
+        ))}
+      </ul>
       <ConsentNote />
     </div>
+  );
+}
+
+function ResultCard({
+  result,
+  sizes,
+  priority = false,
+}: {
+  result: ResultEntry;
+  sizes?: string;
+  priority?: boolean;
+}) {
+  return (
+    <figure className="flex h-full min-w-0 flex-col">
+      <BeforeAfterSlider
+        before={result.before}
+        after={result.after}
+        label={`Compare before and after: ${result.patientLabel}, ${result.view.toLowerCase()} view`}
+        sizes={sizes}
+        priority={priority}
+        className="shadow-card ring-1 ring-line"
+      />
+      <ResultCaption result={result} />
+    </figure>
+  );
+}
+
+function ResultCaption({ result, compact = false }: { result: ResultEntry; compact?: boolean }) {
+  return (
+    <figcaption className={cn('space-y-1.5', compact ? 'pt-3' : 'pt-4')}>
+      <p className="text-[15px] font-medium text-pretty text-ink">
+        {result.patientLabel} <span className="text-steel">·</span> {result.concern}{' '}
+        <span className="text-steel">·</span> {result.view}
+      </p>
+      <p className="text-sm text-body">{resultDurationLabel(result.months)}</p>
+      {compact ? null : <p className="text-sm leading-relaxed text-pretty text-body">{result.note}</p>}
+      <p className="text-[13px] leading-relaxed text-pretty text-muted-foreground">{RESULT_DISCLAIMER}</p>
+    </figcaption>
+  );
+}
+
+/** Smaller homepage card: the two photos side by side, linking to the full gallery. */
+function ResultLinkCard({ result }: { result: ResultEntry }) {
+  return (
+    <figure className="min-w-0">
+      <Link
+        href="/results"
+        className="group grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-line shadow-card ring-1 ring-line focus-visible:ring-4 focus-visible:ring-brand/60 focus-visible:outline-none"
+        aria-label={`${result.patientLabel}, ${result.concern.toLowerCase()} — see all results`}
+      >
+        {(
+          [
+            ['Before', result.before],
+            ['After', result.after],
+          ] as const
+        ).map(([label, photo]) => (
+          <span key={label} className="relative block aspect-[4/5] overflow-hidden bg-ink-2">
+            <Image
+              src={photo.src}
+              alt={photo.alt}
+              fill
+              sizes="(min-width: 1024px) 20vw, (min-width: 640px) 25vw, 50vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            />
+            <span
+              className={cn(
+                'absolute top-2.5 left-2.5 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-[0.12em] uppercase backdrop-blur-sm',
+                label === 'Before' ? 'bg-black/60 text-white' : 'bg-white/85 text-ink',
+              )}
+            >
+              {label}
+            </span>
+          </span>
+        ))}
+      </Link>
+      <ResultCaption result={result} compact />
+    </figure>
   );
 }
 
@@ -75,118 +198,13 @@ function PlaceholderFrame({ index }: { index: number }) {
   );
 }
 
-function ResultsCarousel({ results }: { results: ResultEntry[] }) {
-  const [index, setIndex] = useState(0);
-  const current = results[index % results.length];
-  if (!current) return null;
-  const go = (delta: number) => setIndex((i) => (i + delta + results.length) % results.length);
-  return (
-    <div className="grid gap-8 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-center">
-      <CompareFrame key={current.id} result={current} />
-      <div>
-        <p className="eyebrow">
-          Result {index + 1} of {results.length}
-        </p>
-        <h3 className="display mt-3 text-3xl">{current.concern}</h3>
-        <dl className="mt-6 divide-y divide-line border-y border-line text-[15px]">
-          <div className="flex justify-between gap-4 py-3">
-            <dt className="text-muted-foreground">Time between photos</dt>
-            <dd className="text-right font-medium text-ink">{current.durationLabel}</dd>
-          </div>
-          <div className="flex justify-between gap-4 py-3">
-            <dt className="text-muted-foreground">Plan</dt>
-            <dd className="text-right text-ink">{current.planSummary}</dd>
-          </div>
-        </dl>
-        <p className="mt-4 text-sm text-body">Individual results vary. Shared with written consent.</p>
-        {results.length > 1 ? (
-          <div className="mt-6 flex gap-2">
-            <button
-              type="button"
-              onClick={() => go(-1)}
-              className="flex size-11 items-center justify-center rounded-full border border-steel text-ink hover:bg-mist"
-              aria-label="Previous result"
-            >
-              <ChevronLeft className="size-5" aria-hidden />
-            </button>
-            <button
-              type="button"
-              onClick={() => go(1)}
-              className="flex size-11 items-center justify-center rounded-full border border-steel text-ink hover:bg-mist"
-              aria-label="Next result"
-            >
-              <ChevronRight className="size-5" aria-hidden />
-            </button>
-          </div>
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
-/** Drag (or use arrow keys on) the handle to compare the two photos. */
-function CompareFrame({ result }: { result: ResultEntry }) {
-  const [pos, setPos] = useState(50);
-  const id = useId();
-  return (
-    <figure className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-ink-2 select-none md:aspect-square">
-      <Image
-        src={result.after.src}
-        alt={result.after.alt}
-        fill
-        sizes="(min-width: 768px) 55vw, 100vw"
-        className="object-cover"
-      />
-      <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
-        <Image
-          src={result.before.src}
-          alt={result.before.alt}
-          fill
-          sizes="(min-width: 768px) 55vw, 100vw"
-          className="object-cover"
-        />
-      </div>
-      <div
-        className="pointer-events-none absolute inset-y-0 w-px bg-white/90"
-        style={{ left: `${pos}%` }}
-        aria-hidden
-      >
-        <span className="absolute top-1/2 left-1/2 flex size-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-ink shadow-raised">
-          <ChevronLeft className="size-4" />
-          <ChevronRight className="-ml-1 size-4" />
-        </span>
-      </div>
-      <span className="absolute top-3 left-3 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-semibold tracking-[0.1em] text-white uppercase">
-        Before
-      </span>
-      <span className="absolute top-3 right-3 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-semibold tracking-[0.1em] text-white uppercase">
-        After · {result.durationLabel}
-      </span>
-      <label htmlFor={id} className="sr-only">
-        Compare before and after photos
-      </label>
-      <input
-        id={id}
-        type="range"
-        min={0}
-        max={100}
-        value={pos}
-        onChange={(e) => setPos(Number(e.target.value))}
-        className="absolute inset-0 size-full cursor-ew-resize opacity-0"
-      />
-    </figure>
-  );
-}
-
 function ConsentNote() {
   return (
-    <p
-      className={cn('mt-6 flex max-w-3xl items-start gap-2.5 text-sm leading-relaxed text-pretty text-body')}
-    >
+    <p className="mt-10 flex max-w-3xl items-start gap-2.5 text-sm leading-relaxed text-pretty text-body">
       <ShieldCheck className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
       <span>
-        Only real patients who gave written consent appear here, photographed under the same conditions, with
-        the time on plan stated. We never use stock or AI images as results. Individual results vary.
+        Only real patients who gave written consent appear here. Photos are cropped so faces are not shown and
+        are otherwise unretouched — we never use stock or AI images as results. Individual results vary.
       </span>
     </p>
   );

@@ -12,6 +12,7 @@ export function PageIntro({
   lede,
   children,
   image,
+  imageNote,
   tone = 'light',
   className,
 }: {
@@ -20,6 +21,8 @@ export function PageIntro({
   lede?: React.ReactNode;
   children?: React.ReactNode;
   image?: SiteImage;
+  /** Small chip on the image, e.g. "Illustrative image" for editorial stock. */
+  imageNote?: string;
   tone?: 'light' | 'dark';
   className?: string;
 }) {
@@ -76,6 +79,11 @@ export function PageIntro({
               sizes="(min-width: 768px) 40vw, 100vw"
               className="object-cover"
             />
+            {imageNote ? (
+              <span className="absolute top-4 left-4 rounded-full bg-black/55 px-3 py-1.5 text-[11px] font-medium text-on-dark backdrop-blur">
+                {imageNote}
+              </span>
+            ) : null}
           </div>
         ) : null}
       </div>

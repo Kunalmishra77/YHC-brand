@@ -6,6 +6,7 @@ import { CtaBand } from '@/components/site/cta-band';
 import { FaqList, visibleFaqs } from '@/components/site/faq-list';
 import { JsonLd } from '@/components/site/json-ld';
 import { PageIntro } from '@/components/site/page-intro';
+import { SECTION_Y } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import type { Faq } from '@/lib/domain/types';
 import { SITE } from '@/lib/site';
@@ -66,18 +67,24 @@ export default function FaqsPage() {
         lede={
           <p>
             Can&apos;t find your answer?{' '}
-            <a href={SITE.whatsappUrl} className="text-brand underline underline-offset-4">
+            <a
+              href={SITE.whatsappUrl}
+              className="font-medium text-ink underline decoration-steel underline-offset-4 hover:decoration-current"
+            >
               Message us on WhatsApp
             </a>{' '}
             or{' '}
-            <Link href="/contact" className="text-brand underline underline-offset-4">
+            <Link
+              href="/contact"
+              className="font-medium text-ink underline decoration-steel underline-offset-4 hover:decoration-current"
+            >
               contact us
             </Link>
             .
           </p>
         }
       />
-      <div className="container-yhc space-y-14 py-16 md:py-24">
+      <div className={`container-yhc space-y-12 md:space-y-16 ${SECTION_Y}`}>
         {faqs.length === 0 ? (
           <EmptyState
             title="FAQs are being updated"
@@ -89,7 +96,7 @@ export default function FaqsPage() {
             .map(([category, items]) => (
               <section
                 key={category}
-                className="grid gap-6 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-10"
+                className="grid gap-6 border-t border-line pt-10 first:border-t-0 first:pt-0 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-10"
                 aria-labelledby={`faq-${category}`}
               >
                 <h2

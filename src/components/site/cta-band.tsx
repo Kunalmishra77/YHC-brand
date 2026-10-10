@@ -1,6 +1,7 @@
 import { MessageCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { CTA_GHOST_DARK, CTA_SILVER, H2, SECTION_Y } from '@/components/site/section';
 import { Button } from '@/components/ui/button';
 import { IMAGES } from '@/lib/images';
 import { SITE } from '@/lib/site';
@@ -27,22 +28,15 @@ export function CtaBand({
         />
         <div className="absolute inset-0 bg-gradient-to-r from-obsidian to-transparent" />
       </div>
-      <div className="container-yhc py-20 md:py-28">
+      <div className={`container-yhc ${SECTION_Y}`}>
         <div className="max-w-xl">
-          <h2 className="display text-[clamp(2.25rem,1.6rem+2.6vw,3.5rem)] text-on-dark">{title}</h2>
-          <p className="mt-5 text-lg leading-relaxed text-on-dark-muted">{body}</p>
+          <h2 className={`${H2} text-on-dark`}>{title}</h2>
+          <p className="mt-5 text-lg leading-relaxed text-pretty text-on-dark-muted">{body}</p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <Button
-              asChild
-              className="h-12 bg-[image:var(--yhc-silver)] px-7 text-base font-semibold text-obsidian hover:opacity-95"
-            >
+            <Button asChild className={CTA_SILVER}>
               <Link href="/book">{bookLabel}</Link>
             </Button>
-            <Button
-              asChild
-              variant="outline"
-              className="h-12 border-line-dark bg-transparent px-7 text-base text-on-dark hover:bg-graphite hover:text-on-dark"
-            >
+            <Button asChild variant="outline" className={CTA_GHOST_DARK}>
               <a href={SITE.whatsappUrl}>
                 <MessageCircle className="size-4" aria-hidden />
                 Ask on WhatsApp

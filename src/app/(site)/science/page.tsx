@@ -13,7 +13,7 @@ import { REGULATORY_LABEL } from '@/components/site/product-meta';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
 import { doctorClaimLabel } from '@/lib/claims';
-import { MEDIA, VIDEOS } from '@/lib/images';
+import { CLINICAL, MEDIA, VIDEOS } from '@/lib/images';
 import { getDoctor, getProducts } from '@/server/catalog';
 
 export const metadata: Metadata = pageMetadata({
@@ -127,14 +127,14 @@ export default function SciencePage() {
         >
           <div className="relative aspect-[4/3] overflow-hidden rounded-3xl ring-1 ring-line-dark sm:aspect-[16/9] lg:aspect-auto lg:min-h-[28rem]">
             <Image
-              src={MEDIA.labMicroscopeHand.src}
-              alt={MEDIA.labMicroscopeHand.alt}
+              src={CLINICAL.scalpPartingPortrait.src}
+              alt={CLINICAL.scalpPartingPortrait.alt}
               fill
               sizes="(min-width: 1024px) 40vw, 100vw"
               className="object-cover"
             />
             <span className="absolute bottom-3 left-3 rounded-full bg-black/50 px-2.5 py-1 text-[11px] text-on-dark backdrop-blur">
-              Illustrative photo
+              Illustrative photo · scalp parting under magnification
             </span>
           </div>
           <div>

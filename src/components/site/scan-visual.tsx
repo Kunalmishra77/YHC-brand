@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { MEDIA } from '@/lib/images';
+import { CLINICAL } from '@/lib/images';
 import { cn } from '@/lib/utils';
 
 /**
@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
  * idea of looking at roots first — it is not a real scan output and is labelled as an illustration.
  */
 export function ScanVisual({ className }: { className?: string }) {
-  const img = MEDIA.hairMacro;
+  const img = CLINICAL.scalpPartingPortrait;
   return (
     <figure
       className={cn(
@@ -20,7 +20,7 @@ export function ScanVisual({ className }: { className?: string }) {
         alt={img.alt}
         fill
         sizes="(min-width: 768px) 45vw, 100vw"
-        className="object-cover opacity-70"
+        className="object-cover opacity-80"
       />
       <div
         className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/30 to-obsidian/40"

@@ -32,7 +32,7 @@ import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
 import { doctorClaimLabel } from '@/lib/claims';
 import { clientEnv } from '@/lib/env';
-import { MEDIA, VIDEOS } from '@/lib/images';
+import { CLINICAL, MEDIA, VIDEOS } from '@/lib/images';
 import { SITE } from '@/lib/site';
 import { getDoctor, getFaqs, getGuarantee, getProducts } from '@/server/catalog';
 import { getPublishedResults } from '@/server/content/results';
@@ -176,6 +176,20 @@ export default function HomePage() {
             <Link href="/science" className={`mt-6 text-ink ${TEXT_LINK}`}>
               Read the science in full <ArrowRight className="size-4" aria-hidden />
             </Link>
+            <figure className="mt-10 hidden lg:block">
+              <div className="relative aspect-[3/2] overflow-hidden rounded-2xl bg-obsidian ring-1 ring-line">
+                <Image
+                  src={CLINICAL.scalpExam.src}
+                  alt={CLINICAL.scalpExam.alt}
+                  fill
+                  sizes="(min-width: 1024px) 34vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
+              <figcaption className="mt-3 text-[13px] text-muted-foreground">
+                Density and roots are judged at the scalp, not at the ends. Illustrative image.
+              </figcaption>
+            </figure>
           </Reveal>
           <Reveal delayMs={120}>
             <div className="rounded-3xl bg-card p-5 shadow-card ring-1 ring-line sm:p-8">
@@ -253,10 +267,7 @@ export default function HomePage() {
               ))}
             </ol>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button
-                asChild
-                className="h-12 bg-[image:var(--yhc-silver)] px-7 text-base font-semibold text-obsidian hover:opacity-95"
-              >
+              <Button asChild className={CTA_SILVER}>
                 <Link href="/start">Begin my 3D scan</Link>
               </Button>
               <p className="text-[13px] text-on-dark-muted">Free · final assessment always by the doctor</p>
@@ -282,7 +293,9 @@ export default function HomePage() {
 
       {/* 2e · Doctor-recommended — meet Dr. Tyagi */}
       <section className={`container-yhc ${SECTION_Y}`} aria-label={`Meet ${doctor.name}`}>
-        <p className="eyebrow mb-8 md:mb-10">{doctorClaimLabel()} · Dermatologist-led</p>
+        <p className="eyebrow mb-8 text-balance md:mb-10">
+          {doctorClaimLabel()} · <span className="whitespace-nowrap">Dermatologist-led</span>
+        </p>
         <DoctorCard doctor={doctor}>
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button asChild className="h-12 px-6">
@@ -302,36 +315,19 @@ export default function HomePage() {
             id="results-heading"
             eyebrow="Results"
             title="Real results, shared with consent"
-            lede="Before-and-after photos from patients who agreed in writing, with the time on plan stated. Individual results vary."
+            lede="Before-and-after photos from real patients who agreed in writing, each after a plan prescribed by the doctor. Faces are hidden for privacy. Individual results vary."
             action={
               <Link href="/results" className={`text-ink ${TEXT_LINK}`}>
                 How we collect results <ArrowRight className="size-4" aria-hidden />
               </Link>
             }
           />
-          <ResultsGallery results={results} layout="rail" />
+          <ResultsGallery results={results} layout="featured" />
         </div>
       </section>
 
       {/* 2g · Money-back guarantee (hidden while guarantee.enabled = false) */}
       {guarantee ? <GuaranteeVideoPanel guarantee={guarantee} /> : null}
-
-      {/* 2h · Watch */}
-      <section
-        className="border-t border-line-dark bg-[#0d0e10] text-on-dark"
-        aria-labelledby="watch-heading"
-      >
-        <div className={`container-yhc ${SECTION_Y}`}>
-          <SectionHeader
-            id="watch-heading"
-            tone="dark"
-            eyebrow="Watch"
-            title={`The science, the journey${guarantee ? ', the guarantee' : ''} — explained`}
-            lede="Short, silent explainers with captions over illustrative laboratory footage. No actors playing patients, no testimonials."
-          />
-          <VideoLibrary videos={stories} />
-        </div>
-      </section>
 
       {/* 2i · What a plan may include — secondary, quiet */}
       <section className={`container-yhc ${SECTION_Y}`} aria-labelledby="plan-heading">
@@ -349,6 +345,23 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* 2h · Watch */}
+      <section
+        className="border-t border-line-dark bg-[#0d0e10] text-on-dark"
+        aria-labelledby="watch-heading"
+      >
+        <div className={`container-yhc ${SECTION_Y}`}>
+          <SectionHeader
+            id="watch-heading"
+            tone="dark"
+            eyebrow="Watch"
+            title={`The science, the journey${guarantee ? ', the guarantee' : ''} — explained`}
+            lede="Short, silent explainers with captions over illustrative laboratory footage. No actors playing patients, no testimonials."
+          />
+          <VideoLibrary videos={stories} />
+        </div>
       </section>
 
       {/* 2j · FAQs */}
