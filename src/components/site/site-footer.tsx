@@ -4,6 +4,7 @@ import { t } from '@/i18n/en';
 import type { Doctor } from '@/lib/domain/types';
 import { LEGAL_PAGES, SITE } from '@/lib/site';
 import { cn } from '@/lib/utils';
+import { publicCredential } from '@/lib/credentials';
 import { LEGAL_ENTITY } from '@/server/content/legal';
 
 interface FooterLink {
@@ -56,20 +57,17 @@ export function SiteFooter({ doctor }: { doctor: Doctor }) {
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-pretty">
             Science-first hair care. A dermatologist reviews every case before anything is prescribed.
           </p>
-          <dl className="mt-6 grid max-w-sm gap-3 border-t border-line-dark pt-5 text-sm">
-            <div>
-              <dt className="text-[12px] tracking-[0.08em] text-on-dark-muted/80 uppercase">Lead doctor</dt>
-              <dd className="mt-0.5 text-on-dark">
-                {doctor.name}, {doctor.qualifications}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-[12px] tracking-[0.08em] text-on-dark-muted/80 uppercase">Registration</dt>
-              <dd className="mt-0.5 text-on-dark">
-                <span className="price">Reg. No. {doctor.registrationNo}</span> · {doctor.council}
-              </dd>
-            </div>
-          </dl>
+          {/* FR-M1-9: lead doctor + registration on every page; placeholders are never shown to visitors */}
+          <p className="mt-6 max-w-sm border-t border-line-dark pt-5 text-sm leading-relaxed">
+            <span className="text-on-dark">Consultations led by {doctor.name}</span>
+            {publicCredential(doctor.qualifications) ? `, ${publicCredential(doctor.qualifications)}` : ''}
+            {publicCredential(doctor.registrationNo) ? (
+              <span className="mt-1 block">
+                Reg. No. <span className="price">{doctor.registrationNo}</span>
+                {publicCredential(doctor.council) ? ` · ${publicCredential(doctor.council)}` : ''}
+              </span>
+            ) : null}
+          </p>{' '}
           <ul className="mt-5 flex flex-wrap gap-x-5 text-sm">
             <li>
               <a
@@ -99,7 +97,6 @@ export function SiteFooter({ doctor }: { doctor: Doctor }) {
           listClassName="grid grid-cols-2 gap-x-6 md:grid-cols-1"
         />
       </div>
-
       {/* Medical disclaimer + grievance officer */}
       <div className="border-t border-line-dark">
         <div className="container-yhc grid gap-2 py-6 text-[13px] leading-relaxed md:grid-cols-[minmax(0,1fr)_auto] md:items-baseline md:gap-10">
@@ -116,27 +113,22 @@ export function SiteFooter({ doctor }: { doctor: Doctor }) {
           </p>
         </div>
       </div>
-
-      {/* Bottom bar: copyright · key policies */}
+      {/* Bottom bar: credit (client wording) · key policies */}
       <div className="border-t border-line-dark">
-        <div className="container-yhc flex flex-col gap-3 py-5 text-[13px] md:flex-row md:items-center md:justify-between md:gap-10">
-          <p className="text-pretty">
-            <span className="text-on-dark">© 2026 All Rights Reserved</span>
-            <span aria-hidden> · </span>
-            Powering India&apos;s Automation Revolution, a product of Centure AI Private Limited.
-          </p>
+        <div className="container-yhc flex flex-col gap-4 py-6 text-[13px] md:flex-row md:items-center md:justify-between md:gap-10">
+          <div className="space-y-1">
+            <p className="text-on-dark">
+              © 2026 AGENTiX. All rights reserved. Powering India&rsquo;s Automation Revolution.
+            </p>
+            <p>A product of SANTURE AI PRIVATE LIMITED</p>
+          </div>
           <nav aria-label="Key policies" className="shrink-0">
-            <ul className="flex flex-wrap items-center">
-              {primaryPolicies.map((p, i) => (
-                <li key={p.slug} className="flex items-center">
-                  {i > 0 ? (
-                    <span className="px-2.5 text-on-dark-muted/50" aria-hidden>
-                      ·
-                    </span>
-                  ) : null}
+            <ul className="flex flex-wrap items-center gap-x-5">
+              {primaryPolicies.map((p) => (
+                <li key={p.slug}>
                   <Link
                     href={`/legal/${p.slug}`}
-                    className="inline-flex min-h-11 items-center text-on-dark transition-colors hover:text-on-dark-muted md:min-h-8"
+                    className="inline-flex min-h-11 items-center text-on-dark-muted transition-colors hover:text-on-dark md:min-h-8"
                   >
                     {p.title}
                   </Link>
@@ -145,7 +137,7 @@ export function SiteFooter({ doctor }: { doctor: Doctor }) {
             </ul>
           </nav>
         </div>
-      </div>
+      </div>{' '}
     </footer>
   );
 }

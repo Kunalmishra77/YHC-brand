@@ -7,6 +7,7 @@ import { DoctorCard } from '@/components/site/doctor-card';
 import { JsonLd } from '@/components/site/json-ld';
 import { H2, SECTION_Y, SectionHeader } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
+import { publicCredential } from '@/lib/credentials';
 import { Button } from '@/components/ui/button';
 import { clientEnv } from '@/lib/env';
 import { CLINICAL } from '@/lib/images';
@@ -53,7 +54,9 @@ export default function DoctorPage() {
           name: doctor.name,
           description: doctor.bio,
           medicalSpecialty: 'Dermatology',
-          identifier: { '@type': 'PropertyValue', name: doctor.council, value: doctor.registrationNo },
+          ...(publicCredential(doctor.registrationNo)
+            ? { identifier: { '@type': 'PropertyValue', name: doctor.council, value: doctor.registrationNo } }
+            : {}),
           url: `${clientEnv.NEXT_PUBLIC_SITE_URL}/doctor-tyagi`,
           memberOf: { '@type': 'Organization', name: 'Your Hair Company' },
         }}
@@ -85,9 +88,9 @@ export default function DoctorPage() {
           </div>
           <dl className="divide-y divide-line border-y border-line">
             {[
-              ['Qualifications', doctor.qualifications],
-              ['Medical registration no.', doctor.registrationNo],
-              ['Registered with', doctor.council],
+              ['Qualifications', publicCredential(doctor.qualifications) ?? 'Being added'],
+              ['Medical registration no.', publicCredential(doctor.registrationNo) ?? 'Being added'],
+              ['Registered with', publicCredential(doctor.council) ?? 'Being added'],
               ['Consultations', `${terms.slotMinutes}-minute video call · ${terms.fee}`],
             ].map(([label, value]) => (
               <div key={label} className="grid gap-1 py-4 sm:grid-cols-[220px_minmax(0,1fr)] sm:gap-6">

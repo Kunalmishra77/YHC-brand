@@ -1,6 +1,7 @@
 import { BadgeCheck, Video } from 'lucide-react';
 import Image from 'next/image';
 import type { Doctor } from '@/lib/domain/types';
+import { publicCredential } from '@/lib/credentials';
 import { DOCTOR_PORTRAIT } from '@/lib/images';
 import { cn } from '@/lib/utils';
 
@@ -33,7 +34,9 @@ export function DoctorCard({
         <Heading className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
           {doctor.name}
         </Heading>
-        <p className="mt-2 text-lg text-ink">{doctor.qualifications}</p>
+        <p className="mt-2 text-lg text-ink">
+          {publicCredential(doctor.qualifications) ?? 'Dermatologist · hair and scalp'}
+        </p>
         <p className="mt-6 max-w-prose text-lg leading-relaxed text-pretty text-body">{doctor.bio}</p>
         <ul className="mt-8 grid max-w-prose gap-3 text-body sm:grid-cols-2">
           {[
@@ -97,15 +100,17 @@ function CredentialCard({ doctor }: { doctor: Doctor }) {
         </div>
         <div className="px-6 pt-6 pb-6">
           <p className="font-display text-[30px] leading-none">{doctor.name}</p>
-          <p className="mt-2 text-sm text-on-dark-muted">{doctor.qualifications}</p>
+          <p className="mt-2 text-sm text-on-dark-muted">
+            {publicCredential(doctor.qualifications) ?? 'Dermatologist · hair and scalp'}
+          </p>
           <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-line-dark pt-5 text-sm">
             <div>
               <dt className="text-[12px] text-on-dark-muted">Registration</dt>
-              <dd className="price mt-0.5">{doctor.registrationNo}</dd>
+              <dd className="price mt-0.5">{publicCredential(doctor.registrationNo) ?? 'Being added'}</dd>
             </div>
             <div>
               <dt className="text-[12px] text-on-dark-muted">Council</dt>
-              <dd className="mt-0.5">{doctor.council}</dd>
+              <dd className="mt-0.5">{publicCredential(doctor.council) ?? 'Being added'}</dd>
             </div>
             <div>
               <dt className="text-[12px] text-on-dark-muted">Focus</dt>

@@ -18,7 +18,7 @@ const fromLocal = (key) => {
 const VARS = {
   DEMO_MODE: 'true',
   APP_ENV: 'staging',
-  NEXT_PUBLIC_SITE_URL: 'https://yhc-brand.vercel.app',
+  NEXT_PUBLIC_SITE_URL: 'https://yourhaircompany.com',
   ENABLE_EXPERIMENTAL_COREPACK: '1',
   NEXT_PUBLIC_SUPABASE_URL: fromLocal('NEXT_PUBLIC_SUPABASE_URL'),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: fromLocal('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
