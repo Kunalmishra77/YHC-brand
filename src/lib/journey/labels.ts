@@ -1,4 +1,5 @@
 import type {
+  CaptureZone,
   FamilyHistory,
   LongBaldAreas,
   Miniaturisation,
@@ -12,11 +13,28 @@ import type {
 
 /** Plain-language labels for the journey (shared by patient, doctor and scan UIs). */
 
+/** Capture zones (current scan) plus the legacy angle ids of older stored scans. */
 export const ANGLE_LABEL: Record<ScanAngle, string> = {
-  front: 'Front hairline',
+  forehead_left: 'Forehead – Left',
+  forehead_centre: 'Forehead – Centre',
+  forehead_right: 'Forehead – Right',
+  top: 'Top of head',
   crown: 'Crown',
   parting: 'Parting',
+  back: 'Back of head',
+  front: 'Front hairline',
   closeup: 'Scalp close-up',
+};
+
+/** Short helper text under each zone title. */
+export const ZONE_HINT: Record<CaptureZone, string> = {
+  forehead_left: 'Left temple and the left side of your hairline',
+  forehead_centre: 'The middle of your front hairline',
+  forehead_right: 'Right temple and the right side of your hairline',
+  top: 'Mid-scalp, between the hairline and the crown',
+  crown: 'The swirl at the top-back of your head',
+  parting: 'Along your usual parting line',
+  back: 'Lower back of the head, above the neck',
 };
 
 export const ZONE_LABEL: Record<ScalpZone, string> = {

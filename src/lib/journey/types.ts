@@ -3,9 +3,30 @@
  * Shared, serialisable types — used by the server journey module and the client components.
  */
 
-export type ScanAngle = 'front' | 'crown' | 'parting' | 'closeup';
+/** The seven guided capture zones of the scan, in capture order. */
+export const CAPTURE_ZONES = [
+  'forehead_left',
+  'forehead_centre',
+  'forehead_right',
+  'top',
+  'crown',
+  'parting',
+  'back',
+] as const;
 
-export const SCAN_ANGLES: readonly ScanAngle[] = ['front', 'crown', 'parting', 'closeup'];
+export type CaptureZone = (typeof CAPTURE_ZONES)[number];
+
+/** Zones that cannot be skipped (the doctor needs the hairline and the crown). */
+export const REQUIRED_ZONES: readonly CaptureZone[] = ['forehead_centre', 'crown'];
+
+/** Fewest zones a patient must capture before the analysis runs. */
+export const MIN_CAPTURED_ZONES = 4;
+
+/** Angle ids from the earlier four-angle scan — kept so stored scans still render. */
+export type LegacyScanAngle = 'front' | 'crown' | 'parting' | 'closeup';
+
+/** Anything that may appear in a stored scan's `angles` list. */
+export type ScanAngle = CaptureZone | LegacyScanAngle;
 
 export type ScalpZone = 'hairline' | 'temples' | 'mid_scalp' | 'crown' | 'parting';
 
@@ -40,7 +61,10 @@ export interface ScanAnswers {
 export interface ScanResult {
   id: string;
   capturedAt: string;
+  /** captured zones (older scans: the four legacy angles) */
   angles: ScanAngle[];
+  /** zones the patient chose to skip (absent on older scans) */
+  skippedZones?: CaptureZone[];
   answers: ScanAnswers;
   metrics: ScanMetrics;
   suitability: Suitability;

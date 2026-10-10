@@ -118,7 +118,7 @@ export async function startJourneyAction(
 }
 
 // ---------------------------------------------------------------------------------------------
-// step 2 — scan (demo: answers + which angles were captured; photos never leave the device)
+// step 2 — scan (demo: answers + which zones were captured/skipped; photos never leave the device)
 
 export async function submitScanAction(
   raw: z.input<typeof submitScanSchema>,

@@ -3,13 +3,14 @@ import 'server-only';
 import type { Appointment } from '@/lib/domain/types';
 import { AppError } from '@/lib/errors';
 import type {
+  CaptureZone,
   JourneyStep,
   JourneyTrackerStep,
-  ScanAngle,
   ScanAnswers,
   ScanResult,
 } from '@/lib/journey/types';
 import { JOURNEY_STEPS } from '@/lib/journey/types';
+import { orderZones } from '@/lib/journey/zones';
 import { formatINR } from '@/lib/money';
 import { formatIst } from '@/lib/time';
 import type { JourneyDetails } from '@/lib/validation/journey';
@@ -106,10 +107,13 @@ export function startJourney(input: { customerId: string; address: JourneyAddres
   return journey;
 }
 
-/** Step 2 → 3. The server computes the (simulated) result; the client only sends answers + angles. */
+/**
+ * Step 2 → 3. The server computes the (simulated) result; the client only sends the answers and
+ * which zones were captured or skipped.
+ */
 export function saveScan(
   customerId: string,
-  input: { answers: ScanAnswers; angles: ScanAngle[] },
+  input: { answers: ScanAnswers; capturedZones: CaptureZone[]; skippedZones?: CaptureZone[] },
 ): ScanResult {
   const journey = state().journeys.get(customerId);
   if (!journey) throw new AppError('journey_missing', 'Please start with your basic details.', 409);
@@ -117,7 +121,8 @@ export function saveScan(
   const scan: ScanResult = {
     id: nextId('scan'),
     capturedAt: nowIso(),
-    angles: [...input.angles],
+    angles: orderZones(input.capturedZones),
+    skippedZones: orderZones(input.skippedZones ?? []),
     answers: { ...input.answers },
     ...result,
   };
@@ -195,7 +200,9 @@ export function journeyTracker(journey: Journey, now = new Date()): JourneyTrack
   const live = appt && appt.status === 'booked' && new Date(appt.endsAt) > now;
   const note: Record<JourneyStep, string | null> = {
     details: 'Name, mobile and address',
-    scan: journey.scan ? `${journey.scan.angles.length} angles captured` : 'Guided phone-camera scan',
+    scan: journey.scan
+      ? `${journey.scan.angles.length} ${journey.scan.skippedZones ? 'zones' : 'angles'} captured`
+      : 'Guided phone-camera scan',
     assessment: journey.scan ? 'Demo analysis — final assessment by your doctor' : null,
     health_form: journey.details ? 'Sent to your doctor' : 'History, medicines and consents',
     book: booked && appt ? `${appt.code} · ${formatINR(appt.feePaise)} paid` : 'Pick a time with the doctor',

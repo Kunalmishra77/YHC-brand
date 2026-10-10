@@ -1,11 +1,12 @@
-import type { ScanAngle } from '@/lib/journey/types';
 import { cn } from '@/lib/utils';
 
+export type GuideVariant = 'front' | 'crown' | 'parting' | 'closeup';
+
 /**
- * Framing overlays for the guided scan: where to place the head/scalp for each angle. Pure SVG, drawn
- * over the live camera view (or the empty viewfinder) in platinum strokes.
+ * Decorative line drawings for the scan intro and analysis screens (platinum strokes on the dark
+ * stage). The per-zone capture guidance lives in ./scan/head-diagrams.tsx.
  */
-export function AngleGuide({ angle, className }: { angle: ScanAngle; className?: string }) {
+export function AngleGuide({ angle, className }: { angle: GuideVariant; className?: string }) {
   return (
     <svg
       viewBox="0 0 200 200"

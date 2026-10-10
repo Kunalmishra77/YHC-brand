@@ -1,58 +1,28 @@
 'use client';
 
-import {
-  AlertCircle,
-  ArrowLeft,
-  ArrowRight,
-  Camera,
-  CameraOff,
-  Check,
-  ImageUp,
-  Loader2,
-  RefreshCcw,
-  RotateCcw,
-  ScanLine,
-  SwitchCamera,
-} from 'lucide-react';
+import { AlertCircle, ArrowLeft, ArrowRight, Check, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { submitScanAction } from '@/app/(site)/start/actions';
-import {
-  ANGLE_LABEL,
-  DURATION_ANSWERS,
-  FAMILY_ANSWERS,
-  LONG_BALD_ANSWERS,
-  PATTERN_ANSWERS,
-} from '@/lib/journey/labels';
-import { SCAN_ANGLES, type ScanAngle, type ScanAnswers } from '@/lib/journey/types';
+import { DURATION_ANSWERS, FAMILY_ANSWERS, LONG_BALD_ANSWERS, PATTERN_ANSWERS } from '@/lib/journey/labels';
+import { CAPTURE_ZONES, type CaptureZone, type ScanAnswers } from '@/lib/journey/types';
+import { orderZones } from '@/lib/journey/zones';
 import { cn } from '@/lib/utils';
 import { AngleGuide } from './angle-guide';
 import styles from './journey.module.css';
 import { ProgressRing } from './meters';
+import { type ZoneShots, ZoneCapture } from './scan/zone-capture';
 
 /*
- * Guided 3D scalp scan (ADR-26 demo). Pre-scan questions → 4 guided camera captures (getUserMedia with
- * a file-upload fallback) → staged "analysis". Photos are re-encoded/downscaled on a canvas and kept
- * only as local previews — nothing is uploaded; the server receives the answers and which angles
- * were captured, and computes a SIMULATED result.
+ * Guided 3D scalp scan (ADR-26 demo). Pre-scan questions -> 7 guided zone captures (getUserMedia with
+ * a photo-picker fallback; at least 4 zones incl. Forehead - Centre and Crown) -> staged "analysis".
+ * Photos are re-encoded/downscaled on a canvas and kept only as local previews; nothing is uploaded.
+ * The server receives the answers and which zones were captured/skipped, and computes a SIMULATED
+ * result.
  */
 
 type Phase = 'intro' | 'questions' | 'capture' | 'analysing';
-
-const ANGLE_TIPS: Record<ScanAngle, string> = {
-  front: 'Face the camera, push your hair back so the forehead and temples are in view.',
-  crown: 'Hold the phone above the top-back of your head, or ask someone to help.',
-  parting: 'Part your hair in the middle and point the camera straight down along the line.',
-  closeup: 'Bring the camera close to the area that worries you most. Good light helps.',
-};
-
-const DEFAULT_FACING: Record<ScanAngle, 'user' | 'environment'> = {
-  front: 'user',
-  crown: 'environment',
-  parting: 'environment',
-  closeup: 'environment',
-};
 
 const STAGES = [
   'Mapping scalp surface',
@@ -61,8 +31,6 @@ const STAGES = [
   'Checking roots and scalp health',
 ] as const;
 const ANALYSIS_MS = 6000;
-const MAX_EDGE = 1280;
-
 interface Question<K extends keyof ScanAnswers> {
   key: K;
   title: string;
@@ -102,33 +70,13 @@ const QUESTIONS: [
   },
 ];
 
-type Shot = { url: string; kb: number };
-
-async function encodeToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
-  return new Promise((resolve, reject) =>
-    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('encode_failed'))), 'image/jpeg', 0.8),
-  );
-}
-
-/** Downscale + re-encode (drops EXIF/GPS). Source is a video frame or a decoded bitmap. */
-async function reencode(source: CanvasImageSource, width: number, height: number): Promise<Blob> {
-  const scale = Math.min(1, MAX_EDGE / Math.max(width, height));
-  const canvas = document.createElement('canvas');
-  canvas.width = Math.round(width * scale);
-  canvas.height = Math.round(height * scale);
-  const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error('no_canvas');
-  ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
-  return encodeToBlob(canvas);
-}
-
 export function ScanStudio({ firstName, hasScan }: { firstName: string; hasScan: boolean }) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>('intro');
   const [qIndex, setQIndex] = useState(0);
   const [answers, setAnswers] = useState<Partial<ScanAnswers>>({});
-  const [shots, setShots] = useState<Partial<Record<ScanAngle, Shot>>>({});
-  const [angleIndex, setAngleIndex] = useState(0);
+  const [shots, setShots] = useState<ZoneShots>({});
+  const [skipped, setSkipped] = useState<CaptureZone[]>([]);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const urls = useRef<string[]>([]);
 
@@ -141,12 +89,13 @@ export function ScanStudio({ firstName, hasScan }: { firstName: string; hasScan:
 
   useEffect(() => {
     headingRef.current?.focus({ preventScroll: true });
-  }, [phase, qIndex, angleIndex]);
+  }, [phase, qIndex]);
 
-  const addShot = (angle: ScanAngle, blob: Blob) => {
+  const addShot = (zone: CaptureZone, blob: Blob) => {
     const url = URL.createObjectURL(blob);
     urls.current.push(url);
-    setShots((prev) => ({ ...prev, [angle]: { url, kb: Math.round(blob.size / 1024) } }));
+    setShots((prev) => ({ ...prev, [zone]: { url, kb: Math.round(blob.size / 1024) } }));
+    setSkipped((prev) => prev.filter((z) => z !== zone));
   };
 
   const complete = useMemo(
@@ -156,7 +105,8 @@ export function ScanStudio({ firstName, hasScan }: { firstName: string; hasScan:
         : null,
     [answers],
   );
-  const captured = useMemo(() => SCAN_ANGLES.filter((a) => shots[a]), [shots]);
+  const capturedZones = useMemo(() => orderZones(CAPTURE_ZONES.filter((z) => shots[z])), [shots]);
+  const skippedZones = useMemo(() => orderZones(skipped), [skipped]);
 
   return (
     <div className="mx-auto w-full max-w-5xl">
@@ -184,26 +134,25 @@ export function ScanStudio({ firstName, hasScan }: { firstName: string; hasScan:
       ) : null}
 
       {phase === 'capture' ? (
-        <Capture
-          angleIndex={angleIndex}
-          onAngle={setAngleIndex}
+        <ZoneCapture
           shots={shots}
-          headingRef={headingRef}
+          skipped={skipped}
           onShot={addShot}
-          onRetake={(a) => setShots((prev) => ({ ...prev, [a]: undefined }))}
+          onSkip={(z) => setSkipped((prev) => (prev.includes(z) ? prev : [...prev, z]))}
           onBack={() => {
             setQIndex(QUESTIONS.length - 1);
             setPhase('questions');
           }}
-          onDone={() => setPhase('analysing')}
+          onFinish={() => setPhase('analysing')}
         />
       ) : null}
 
       {phase === 'analysing' && complete ? (
         <Analysing
           answers={complete}
-          angles={captured}
-          preview={shots.closeup?.url ?? shots.crown?.url ?? null}
+          capturedZones={capturedZones}
+          skippedZones={skippedZones}
+          preview={shots.crown?.url ?? shots.top?.url ?? shots.forehead_centre?.url ?? null}
           headingRef={headingRef}
           onDone={() => router.push('/start/assessment')}
           onBack={() => setPhase('capture')}
@@ -212,7 +161,6 @@ export function ScanStudio({ firstName, hasScan }: { firstName: string; hasScan:
     </div>
   );
 }
-
 // ---------------------------------------------------------------------------------------------
 
 function Intro({
@@ -242,13 +190,13 @@ function Intro({
             : "Let's map your scalp and hair roots"}
         </h1>
         <p className="mt-4 max-w-xl text-on-dark-muted">
-          Four quick questions, then your phone camera guides you through four angles. The scan builds a
-          picture of root density and scalp health for your doctor to review.
+          Four quick questions, then your phone camera guides you through seven scalp zones, one close-up at a
+          time. The scan builds a picture of root density and scalp health for your doctor to review.
         </p>
         <ol className="mt-7 grid gap-3 sm:grid-cols-3">
           {[
             ['4 questions', 'About your hair history'],
-            ['4 angles', 'Hairline, crown, parting, close-up'],
+            ['7 zones', 'Hairline, top, crown, parting and back'],
             ['Analysis', 'Roots, density and scalp health'],
           ].map(([t, d], i) => (
             <li key={t} className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
@@ -277,8 +225,8 @@ function Intro({
           ) : null}
         </div>
         <p className="mt-5 max-w-xl text-[13px] text-on-dark-muted">
-          Demo: your photos stay on this device and are never uploaded. Only which angles you captured is
-          sent, and the analysis is simulated — your doctor makes the final assessment.
+          Demo: your photos stay on this device and are never uploaded. Only which zones you scanned is sent,
+          and the analysis is simulated — your doctor makes the final assessment.
         </p>
       </div>
       <div className="relative mx-auto aspect-square w-full max-w-[380px]">
@@ -375,368 +323,20 @@ function Questions({
     </section>
   );
 }
-
-// ---------------------------------------------------------------------------------------------
-
-type CameraState = 'idle' | 'starting' | 'live' | 'unavailable';
-
-function Capture({
-  angleIndex,
-  onAngle,
-  shots,
-  headingRef,
-  onShot,
-  onRetake,
-  onBack,
-  onDone,
-}: {
-  angleIndex: number;
-  onAngle: (i: number) => void;
-  shots: Partial<Record<ScanAngle, Shot>>;
-  headingRef: React.Ref<HTMLHeadingElement>;
-  onShot: (angle: ScanAngle, blob: Blob) => void;
-  onRetake: (angle: ScanAngle) => void;
-  onBack: () => void;
-  onDone: () => void;
-}) {
-  const angle = SCAN_ANGLES[angleIndex] ?? 'front';
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [camera, setCamera] = useState<CameraState>('idle');
-  const [facing, setFacing] = useState<'user' | 'environment'>(DEFAULT_FACING[angle]);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [flash, setFlash] = useState(false);
-  const shot = shots[angle];
-  const ready = SCAN_ANGLES.filter((a) => shots[a]).length;
-
-  const stop = useCallback(() => {
-    for (const t of streamRef.current?.getTracks() ?? []) t.stop();
-    streamRef.current = null;
-  }, []);
-
-  useEffect(() => stop, [stop]);
-
-  const start = useCallback(
-    async (face: 'user' | 'environment') => {
-      stop();
-      setError(null);
-      if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
-        setCamera('unavailable');
-        return;
-      }
-      setCamera('starting');
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: { ideal: face }, width: { ideal: 1280 }, height: { ideal: 960 } },
-          audio: false,
-        });
-        streamRef.current = stream;
-        setFacing(face);
-        const video = videoRef.current;
-        if (video) {
-          video.srcObject = stream;
-          await video.play().catch(() => undefined);
-        }
-        setCamera('live');
-      } catch {
-        stop();
-        setCamera('unavailable');
-      }
-    },
-    [stop],
-  );
-
-  const goTo = (i: number) => {
-    const next = SCAN_ANGLES[i];
-    onAngle(i);
-    if (next && camera === 'live' && DEFAULT_FACING[next] !== facing) void start(DEFAULT_FACING[next]);
-  };
-
-  const capture = async () => {
-    const video = videoRef.current;
-    if (!video || video.videoWidth === 0) return;
-    setBusy(true);
-    setFlash(true);
-    window.setTimeout(() => setFlash(false), 180);
-    try {
-      onShot(angle, await reencode(video, video.videoWidth, video.videoHeight));
-    } catch {
-      setError('We could not capture that frame. Please try again or upload a photo.');
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const upload = async (file: File | undefined) => {
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      setError('That file is not a photo. Please choose a JPG or PNG.');
-      return;
-    }
-    setBusy(true);
-    setError(null);
-    try {
-      const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
-      const blob = await reencode(bitmap, bitmap.width, bitmap.height);
-      bitmap.close();
-      onShot(angle, blob);
-    } catch {
-      setError('We could not read that photo. Please try another one.');
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <section>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <BackButton onClick={onBack}>Back to questions</BackButton>
-        <p className="text-[13px] text-on-dark-muted" aria-live="polite">
-          {ready} of {SCAN_ANGLES.length} angles captured
-        </p>
-      </div>
-
-      <div className="mt-4 grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-10">
-        <div className="min-w-0">
-          <p className="text-[13px] font-semibold tracking-[0.14em] text-brand-on-dark uppercase">
-            Angle {angleIndex + 1} of {SCAN_ANGLES.length}
-          </p>
-          <h1
-            ref={headingRef}
-            tabIndex={-1}
-            className="mt-2 font-display text-[30px] leading-[1.1] font-medium text-balance text-on-dark outline-none md:text-[40px]"
-          >
-            {ANGLE_LABEL[angle]}
-          </h1>
-          <p className="mt-2 max-w-xl text-on-dark-muted">{ANGLE_TIPS[angle]}</p>
-
-          {/* viewfinder */}
-          <div className="relative mt-5 aspect-[4/3] w-full overflow-hidden rounded-3xl bg-black ring-1 ring-white/15">
-            <video
-              ref={videoRef}
-              playsInline
-              muted
-              className={cn(
-                'absolute inset-0 size-full object-cover',
-                camera === 'live' && !shot ? 'opacity-100' : 'opacity-0',
-                facing === 'user' && '-scale-x-100',
-              )}
-            />
-            {shot ? (
-              // eslint-disable-next-line @next/next/no-img-element -- local blob preview, never uploaded
-              <img
-                src={shot.url}
-                alt={`${ANGLE_LABEL[angle]} capture preview`}
-                className="absolute inset-0 size-full object-cover"
-              />
-            ) : null}
-            {!shot ? (
-              <div className={cn('absolute inset-0', camera !== 'live' && styles.grid)}>
-                <AngleGuide angle={angle} className="absolute inset-0 m-auto h-full max-h-full w-auto" />
-                {camera === 'live' ? <span className={styles.scanLine} aria-hidden /> : null}
-              </div>
-            ) : null}
-            {flash ? <div className="absolute inset-0 bg-white/70" aria-hidden /> : null}
-
-            {!shot && camera !== 'live' ? (
-              <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-2 bg-gradient-to-t from-black/85 to-transparent p-4 pt-10 text-center">
-                {camera === 'unavailable' ? (
-                  <p className="flex items-center gap-1.5 text-sm text-on-dark">
-                    <CameraOff className="size-4" aria-hidden />
-                    Camera not available — upload a photo instead.
-                  </p>
-                ) : (
-                  <p className="text-sm text-on-dark-muted">Allow camera access when your browser asks.</p>
-                )}
-              </div>
-            ) : null}
-            {shot ? (
-              <span className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-black/60 px-2.5 py-1 text-[12px] text-on-dark">
-                <Check className="size-3.5" aria-hidden />
-                Captured · {shot.kb} KB · stays on this device
-              </span>
-            ) : null}
-          </div>
-
-          {/* controls */}
-          <div className="mt-4 flex flex-wrap items-stretch gap-2">
-            {shot ? (
-              <>
-                <button
-                  type="button"
-                  onClick={() => onRetake(angle)}
-                  className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium text-on-dark ring-1 ring-white/25 hover:bg-white/10 sm:flex-none"
-                >
-                  <RotateCcw className="size-4" aria-hidden />
-                  Retake
-                </button>
-                {ready < SCAN_ANGLES.length ? (
-                  <button
-                    type="button"
-                    onClick={() => goTo(SCAN_ANGLES.findIndex((a) => !shots[a]))}
-                    className="bg-silver inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold text-obsidian hover:opacity-95 sm:flex-none"
-                  >
-                    Next angle
-                    <ArrowRight className="size-4" aria-hidden />
-                  </button>
-                ) : null}
-              </>
-            ) : camera === 'live' ? (
-              <>
-                <button
-                  type="button"
-                  onClick={() => void capture()}
-                  disabled={busy}
-                  className="bg-silver inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl px-6 text-[15px] font-semibold text-obsidian hover:opacity-95 disabled:opacity-70 sm:flex-none"
-                >
-                  {busy ? (
-                    <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
-                  ) : (
-                    <Camera className="size-4" aria-hidden />
-                  )}
-                  Capture {ANGLE_LABEL[angle].toLowerCase()}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => void start(facing === 'user' ? 'environment' : 'user')}
-                  className="inline-flex h-12 min-w-12 items-center justify-center gap-2 rounded-xl px-4 text-sm text-on-dark ring-1 ring-white/25 hover:bg-white/10"
-                  aria-label="Switch camera"
-                >
-                  <SwitchCamera className="size-4" aria-hidden />
-                  <span className="hidden sm:inline" aria-hidden>
-                    Switch camera
-                  </span>
-                </button>
-              </>
-            ) : camera !== 'unavailable' ? (
-              <button
-                type="button"
-                onClick={() => void start(DEFAULT_FACING[angle])}
-                disabled={camera === 'starting'}
-                className="bg-silver inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl px-6 text-[15px] font-semibold text-obsidian hover:opacity-95 disabled:opacity-70 sm:flex-none"
-              >
-                {camera === 'starting' ? (
-                  <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
-                ) : (
-                  <Camera className="size-4" aria-hidden />
-                )}
-                Turn on camera
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => void start(DEFAULT_FACING[angle])}
-                className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl px-4 text-sm text-on-dark ring-1 ring-white/25 hover:bg-white/10 sm:flex-none"
-              >
-                <RefreshCcw className="size-4" aria-hidden />
-                Try camera again
-              </button>
-            )}
-            {!shot ? (
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                disabled={busy}
-                className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl px-4 text-sm text-on-dark ring-1 ring-white/25 hover:bg-white/10 disabled:opacity-60 sm:flex-none"
-              >
-                <ImageUp className="size-4" aria-hidden />
-                Upload a photo
-              </button>
-            ) : null}
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              className="sr-only"
-              tabIndex={-1}
-              aria-hidden
-              onChange={(e) => {
-                void upload(e.currentTarget.files?.[0]);
-                e.currentTarget.value = '';
-              }}
-            />
-          </div>
-          <p aria-live="assertive" className="mt-2 min-h-5 text-sm text-[#ffb4a8]">
-            {error}
-          </p>
-        </div>
-
-        {/* angle checklist */}
-        <aside className="lg:pt-10">
-          <ol className="grid grid-cols-2 gap-2 lg:grid-cols-1">
-            {SCAN_ANGLES.map((a, i) => {
-              const s = shots[a];
-              const active = i === angleIndex;
-              return (
-                <li key={a}>
-                  <button
-                    type="button"
-                    onClick={() => goTo(i)}
-                    aria-current={active ? 'step' : undefined}
-                    className={cn(
-                      'flex w-full items-center gap-3 rounded-2xl p-2.5 text-left ring-1 transition-colors',
-                      active ? 'bg-white/12 ring-white/50' : 'bg-white/5 ring-white/10 hover:ring-white/25',
-                    )}
-                  >
-                    <span className="relative size-12 shrink-0 overflow-hidden rounded-xl bg-black ring-1 ring-white/10">
-                      {s ? (
-                        // eslint-disable-next-line @next/next/no-img-element -- local blob preview
-                        <img src={s.url} alt="" className="size-full object-cover" />
-                      ) : (
-                        <AngleGuide angle={a} className="size-full" />
-                      )}
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block truncate text-sm font-medium text-on-dark">
-                        {ANGLE_LABEL[a]}
-                      </span>
-                      <span className={cn('block text-[12px]', s ? 'text-platinum' : 'text-on-dark-muted')}>
-                        {s ? 'Captured' : active ? 'Now' : 'To do'}
-                      </span>
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
-          <button
-            type="button"
-            disabled={ready < SCAN_ANGLES.length}
-            onClick={() => {
-              stop();
-              onDone();
-            }}
-            className="bg-silver mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[15px] font-semibold text-obsidian hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            <ScanLine className="size-4" aria-hidden />
-            Analyse my scan
-          </button>
-          {ready < SCAN_ANGLES.length ? (
-            <p className="mt-2 text-center text-[12px] text-on-dark-muted">
-              Capture all four angles to continue.
-            </p>
-          ) : null}
-        </aside>
-      </div>
-    </section>
-  );
-}
-
 // ---------------------------------------------------------------------------------------------
 
 function Analysing({
   answers,
-  angles,
+  capturedZones,
+  skippedZones,
   preview,
   headingRef,
   onDone,
   onBack,
 }: {
   answers: ScanAnswers;
-  angles: ScanAngle[];
+  capturedZones: CaptureZone[];
+  skippedZones: CaptureZone[];
   preview: string | null;
   headingRef: React.Ref<HTMLHeadingElement>;
   onDone: () => void;
@@ -753,7 +353,7 @@ function Analysing({
   // Server computes and stores the (simulated) result while the staged animation runs.
   useEffect(() => {
     let cancelled = false;
-    void submitScanAction({ answers, angles })
+    void submitScanAction({ answers, capturedZones, skippedZones })
       .then((res) => {
         if (cancelled) return;
         setResult(res.ok ? 'ok' : { error: res.error.message });
@@ -764,7 +364,7 @@ function Analysing({
     return () => {
       cancelled = true;
     };
-  }, [answers, angles, attempt]);
+  }, [answers, capturedZones, skippedZones, attempt]);
 
   useEffect(() => {
     const started = performance.now();

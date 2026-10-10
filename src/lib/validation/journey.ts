@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { SCAN_ANGLES } from '@/lib/journey/types';
+import { CAPTURE_ZONES, MIN_CAPTURED_ZONES } from '@/lib/journey/types';
+import { zoneSelectionIssue } from '@/lib/journey/zones';
 import { MIN_AGE, concernSchema, intakeSchema, mobileSchema, otpSchema } from './booking';
 
 /*
@@ -36,15 +37,26 @@ export const scanAnswersSchema = z.object({
   familyHistory: z.enum(['yes', 'no', 'not_sure']),
 });
 
-/** Demo: only which angles were captured is sent — the photos never leave the device. */
-export const submitScanSchema = z.object({
-  answers: scanAnswersSchema,
-  angles: z
-    .array(z.enum(['front', 'crown', 'parting', 'closeup']))
-    .min(SCAN_ANGLES.length, 'Please capture all four angles')
-    .max(SCAN_ANGLES.length)
-    .refine((a) => new Set(a).size === a.length, 'Each angle once, please'),
-});
+const captureZoneSchema = z.enum(CAPTURE_ZONES);
+
+/** Demo: only which zones were captured or skipped is sent — the photos never leave the device. */
+export const submitScanSchema = z
+  .object({
+    answers: scanAnswersSchema,
+    capturedZones: z.array(captureZoneSchema).max(CAPTURE_ZONES.length),
+    skippedZones: z.array(captureZoneSchema).max(CAPTURE_ZONES.length).default([]),
+  })
+  .superRefine((v, ctx) => {
+    const issue = zoneSelectionIssue(v.capturedZones, v.skippedZones);
+    if (!issue) return;
+    const message =
+      issue.code === 'required_missing'
+        ? 'Please scan your front hairline and crown.'
+        : issue.code === 'too_few'
+          ? `Please scan at least ${MIN_CAPTURED_ZONES} zones.`
+          : 'Each zone once, please.';
+    ctx.addIssue({ code: 'custom', path: ['capturedZones'], message });
+  });
 
 export const GENDER_OPTIONS = [
   { value: 'male', label: 'Male' },

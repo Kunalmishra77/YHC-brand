@@ -54,7 +54,11 @@ export default function HomePage() {
       />
 
       {/* 2 · Hero — video, headline left, glass start form right */}
-      <HomeHero doctorName={doctor.name} registrationNo={doctor.registrationNo} guaranteeOn={guarantee !== null} />
+      <HomeHero
+        doctorName={doctor.name}
+        registrationNo={doctor.registrationNo}
+        guaranteeOn={guarantee !== null}
+      />
       {/* 3 · Take your scalp scan */}
       <ScanInvite />
       {/* 4 · Why choose Your Hair Company */}

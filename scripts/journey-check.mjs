@@ -16,7 +16,7 @@ const shot = async (name) => {
 await page.goto(base + '/', { waitUntil: process.env.WAIT ?? 'networkidle', timeout: 120000 });
 const form = page.locator('form').filter({ hasText: 'Begin my 3D scan' }).first();
 await form.getByLabel('Full name').fill('Asha Verma');
-await form.getByLabel('Mobile number').fill('9876543210');
+await form.getByLabel('Mobile number').fill('98' + String(Math.floor(Math.random() * 1e8)).padStart(8, '0'));
 await form.getByLabel('Address').fill('14 Park Street, Lucknow');
 await form.getByLabel('PIN code').fill('226001');
 await form.getByRole('checkbox').click();
@@ -35,29 +35,43 @@ await shot('2-scan');
 
 // Four pre-scan questions: pick the first option each time (continue button if one appears).
 for (let q = 0; q < 4; q++) {
-  const option = page.locator('main button').filter({ hasNotText: /back/i }).first();
+  const option = page.locator('main [role="radio"]').first();
+  if (!(await option.isVisible().catch(() => false))) break;
   await option.click();
   await page.waitForTimeout(600);
-  const next = page.getByRole('button', { name: /^(next|continue|start the scan)/i }).first();
-  if (await next.isVisible().catch(() => false)) await next.click();
+  const next = page.getByRole('button', { name: /^(continue|start the scan)/i }).first();
+  if ((await next.isVisible().catch(() => false)) && (await next.isEnabled())) await next.click();
   await page.waitForTimeout(600);
 }
 await shot('3-capture');
 
-// Four angles via the upload fallback (headless has no camera).
+// Seven zones via the camera sheet's upload fallback (headless has no camera); SKIP lists zone
+// indexes to skip instead (optional zones only), to exercise the skip rules.
 const photo = process.env.PHOTO ?? 'public/images/concept/texture-tablets.webp';
-for (let a = 0; a < 4; a++) {
-  await page.locator('input[type="file"]').setInputFiles(photo);
-  await page.waitForTimeout(1500);
-  const nextAngle = page.getByRole('button', { name: /next angle/i });
-  if (await nextAngle.isVisible().catch(() => false)) await nextAngle.click();
-  await page.waitForTimeout(500);
+const skip = new Set((process.env.SKIP ?? '2,5').split(',').map(Number));
+for (let z = 0; z < 7; z++) {
+  const skipBtn = page.getByRole('button', { name: /skip for now/i });
+  if (skip.has(z) && (await skipBtn.isVisible().catch(() => false))) {
+    await skipBtn.click();
+  } else {
+    await page.getByRole('button', { name: /^(scan|retake) /i }).click();
+    await page.waitForTimeout(800);
+    await page.locator('input[type="file"]').setInputFiles(photo);
+    await page.waitForTimeout(1500);
+    if (z === 0) await shot('3b-camera');
+    await page.getByRole('button', { name: /^done$/i }).click();
+    await page.waitForTimeout(500);
+    if (z === 0) await shot('3c-zone-captured');
+    await page.getByRole('button', { name: /^(next|analyse my scan)/i }).click();
+  }
+  await page.waitForTimeout(700);
+  console.log('zone', z, skip.has(z) ? 'skipped' : 'captured');
 }
-await page.getByRole('button', { name: /analyse my scan/i }).click();
 await page.waitForTimeout(3000);
 await shot('4-analysing');
 await page.waitForURL(/\/start\/assessment/, { timeout: 60000 }).catch(() => {});
 await page.waitForLoadState(process.env.WAIT ?? 'networkidle');
+await page.getByText(/loading your assessment/i).waitFor({ state: 'detached', timeout: 60000 }).catch(() => {});
 await shot('5-assessment');
 const cont = page.getByRole('link', { name: /continue to your health form/i }).first();
 if (await cont.isVisible().catch(() => false)) {

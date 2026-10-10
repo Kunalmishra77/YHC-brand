@@ -51,7 +51,11 @@ export default async function StartPage() {
             <ul className="mt-8 space-y-4">
               {[
                 { icon: UserRound, t: 'Basic details', d: 'Name, mobile and address — about 30 seconds.' },
-                { icon: ScanFace, t: 'Guided 3D scan', d: 'Your phone camera, four angles, a few minutes.' },
+                {
+                  icon: ScanFace,
+                  t: 'Guided 3D scan',
+                  d: 'Your phone camera, seven guided scalp zones, a few minutes.',
+                },
                 {
                   icon: Stethoscope,
                   t: 'Doctor review',

@@ -129,6 +129,9 @@ export function AssessmentReport({
           <p className="mt-5 text-[13px] text-muted-foreground">
             Scanned {formatIst(new Date(scan.capturedAt))} ·{' '}
             {scan.angles.map((a) => ANGLE_LABEL[a]).join(', ')}
+            {scan.skippedZones?.length
+              ? ` · Skipped: ${scan.skippedZones.map((z) => ANGLE_LABEL[z]).join(', ')}`
+              : ''}
           </p>
         </div>
       </section>

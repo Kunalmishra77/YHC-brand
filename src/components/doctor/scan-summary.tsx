@@ -58,9 +58,12 @@ export function ScanSummary({ scan }: { scan: ScanResult }) {
         <Answer label="Family history" value={answerLabel(FAMILY_ANSWERS, scan.answers.familyHistory)} />
       </dl>
       <p className="text-[12px] text-muted-foreground">
-        Scanned {formatIst(new Date(scan.capturedAt), 'd MMM yyyy, h:mm aaa')} ·{' '}
-        {scan.angles.map((a) => ANGLE_LABEL[a]).join(', ')}. Simulated from the patient&apos;s answers — not
-        an image analysis; your examination decides.
+        Scanned {formatIst(new Date(scan.capturedAt), 'd MMM yyyy, h:mm aaa')} · Captured:{' '}
+        {scan.angles.map((a) => ANGLE_LABEL[a]).join(', ')}
+        {scan.skippedZones?.length
+          ? ` · Skipped: ${scan.skippedZones.map((z) => ANGLE_LABEL[z]).join(', ')}`
+          : ''}
+        . Simulated from the patient&apos;s answers — not an image analysis; your examination decides.
       </p>
     </div>
   );

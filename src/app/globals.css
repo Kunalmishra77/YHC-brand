@@ -202,3 +202,13 @@
     }
   }
 }
+
+/* Seamless marquee (src/components/home/marquee.tsx): two identical copies, slide by half. */
+@keyframes yhc-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% - 0.625rem));
+  }
+}

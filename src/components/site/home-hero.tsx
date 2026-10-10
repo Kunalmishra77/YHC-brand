@@ -103,7 +103,7 @@ export function HomeHero({
       </div>
 
       <a
-        href="#credibility"
+        href="#scan"
         className="absolute bottom-8 left-1/2 hidden size-11 -translate-x-1/2 items-center justify-center rounded-full border border-white/15 text-on-dark-muted transition-colors hover:text-on-dark lg:flex"
         aria-label="Scroll to the next section"
       >
