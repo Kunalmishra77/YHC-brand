@@ -1,0 +1,23 @@
+# Keep deploy uploads small: the client's raw asset drop (~200 MB) stays local — website media is
+# prebuilt into public/media by scripts/build-assets.mjs. Mirrors .gitignore for everything else.
+/YHC-assets/
+node_modules/
+.pnpm-store/
+.next/
+out/
+build/
+dist/
+coverage/
+playwright-report/
+test-results/
+blob-report/
+supabase/.branches/
+supabase/.temp/
+.env
+.env.*
+!.env.example
+*.log
+*.pem
+*.tsbuildinfo
+.scaffold-tmp/
+design/references/
