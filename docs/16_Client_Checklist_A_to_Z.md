@@ -28,11 +28,11 @@ Send files through a shared drive folder; send passwords/keys only through a pas
 
 | # | Item | Who |
 |---|---|---|
-| B1 ⭐ | **Logo** files: SVG colour/black/white + favicon | YHC |
+| B1 | **Logo** — ✅ PNG received 2026-10-18 and live (header, footer, favicon). Still useful: an **SVG** version for the sharpest rendering | YHC |
 | B2 | Brand guidelines (colours/fonts) if any — otherwise we keep the current silver/white/black direction | YHC |
 | B3 ⭐ | **Dr. Tyagi photos**: 2–3 portraits + 1 consultation photo (natural light) | YHC |
 | B4 | **Dr. Tyagi intro video** (30–60 s) and, ideally, short videos: the science, the 3D scan, the guarantee | YHC |
-| B5 ⭐ | **Product photos**: pack front/back, texture, in-hand, for every product (replaces the current concept images) | YHC |
+| B5 | **Product photos** — ✅ pack renders for all 4 products × men/women received 2026-10-18 and live. Still useful: real (non-render) photos of the finished packs | YHC |
 | B6 | Brand film / clinic or lab footage you own (replaces the stock b-roll in the hero) | YHC |
 
 ## C. Doctor & medical
@@ -57,6 +57,12 @@ Send files through a shared drive folder; send passwords/keys only through a pas
 | D3 ⭐ | MRP, **HSN code and GST rate** per product (CA to confirm) | YHC + CA |
 | D4 ⭐ | **Patent details** — patent / application number, title, country, what exactly is patented. Without this we cannot say "patented" anywhere | YHC |
 | D5 | Lab reports, certifications, manufacturing info (GMP etc.) | YHC |
+| D6 ⭐ | **Finasteride in the Hair Regrowth Solution** — the men's *and women's* labels list finasteride (a prescription medicine). Needs medical + regulatory sign-off: is it really in both formulas, at what strength, and is the women's version intended? Until confirmed the site sells it only on prescription and shows a pregnancy/breastfeeding warning | YHC + Dr. Tyagi |
+| D7 ⭐ | **Label claims to revise before launch** — "Prevents hair fall & regrow hair", "Boosts hair growth", "Stem cell therapy… cell regeneration", "100% organic" / "100% natural" (contradicted by finasteride), "360-degree healing", "proven". These risk the Drugs & Magic Remedies Act / ASCI / CCPA rules. The website does not repeat them, but the pack photos show them | YHC + regulatory advisor |
+| D8 ⭐ | **Tablet amounts look wrong** — label shows Vitamin A **70 mg**, Biotin **100 mg**, Iron **68 mg** per tablet (far above safe daily levels; likely mcg/unit errors). Confirm against the master formula; the site shows ingredients without amounts until then | YHC + manufacturer |
+| D9 ⭐ | **Capsule vs powder** — the "Hair Regrowth Capsule" label's directions and table describe the **powder** (1/3 spoon, "1 gm powder contains"). Confirm the capsule formula, strength per capsule and directions | YHC + manufacturer |
+| D10 | **MRP online** — labels show MRP ₹1,999 (solution, tablets) and ₹3,999 (powder). Confirm whether products are sold only inside plans (current site) or also individually, and the capsule MRP | YHC |
+| D11 | **Legal entity** — labels say *Marketed by Santure Health Care Pvt. Ltd.* while the footer credit says *SANTURE AI PRIVATE LIMITED*. Confirm which entity sells (affects invoices, legal pages, grievance officer) | YHC |
 
 ## E. Trust content
 

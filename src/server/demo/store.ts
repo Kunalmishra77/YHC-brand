@@ -1185,7 +1185,7 @@ function seed(now: Date): DemoState {
     chiefComplaint: 'Thinning over 8 months, worse after a stressful period.',
     observations: 'Diffuse thinning, mid-scalp. Scalp healthy; no scaling.',
     assessment: 'Likely pattern thinning with a shedding component (provisional).',
-    treatmentPlan: 'Topical solution nightly, scalp serum, nutrition tablets. Review in 8 weeks.',
+    treatmentPlan: 'Hair regrowth solution at night, Ayurvedic capsules, nourishing tablets. Review in 8 weeks.',
     followUpInstructions: 'Use the routine daily. Share progress photos every month.',
     privateNotes: 'Discussed realistic expectations; patient anxious about cost.',
     identityVerified: true,
@@ -1288,7 +1288,7 @@ function seed(now: Date): DemoState {
     chiefComplaint: 'Crown thinning for about 2 years.',
     observations: 'Reduced density at crown; mild miniaturisation.',
     assessment: 'Pattern thinning at crown (provisional).',
-    treatmentPlan: 'Topical solution once daily at night; scalp serum; nutrition tablets after breakfast.',
+    treatmentPlan: 'Hair regrowth solution once daily at night; Ayurvedic capsules as directed; nourishing tablet after dinner.',
     followUpInstructions: 'Follow-up consultation in 8 weeks. Upload progress photos monthly.',
     privateNotes: 'Family history paternal side.',
     identityVerified: true,
@@ -1381,8 +1381,8 @@ function seed(now: Date): DemoState {
       lines: plan
         ? [{ label: plan.name, qty: 1, amountPaise: plan.pricePaise }]
         : [
-            { label: 'Gentle Strengthening Shampoo', qty: 1, amountPaise: 69900 },
-            { label: 'Lightweight Conditioner', qty: 1, amountPaise: 59900 },
+            { label: 'Hair Nourishing Tablets (reorder)', qty: 1, amountPaise: 69900 },
+            { label: 'Hair Regrowth Powder (reorder)', qty: 1, amountPaise: 59900 },
           ],
       subtotalPaise: plan?.pricePaise ?? total,
       creditPaise: k === 0 ? 50000 : 0,
@@ -1436,7 +1436,7 @@ function seed(now: Date): DemoState {
     status: 'sent',
     planId: 'plan-3',
     productIds: ['prod-topical', 'prod-serum'],
-    note: 'Karan, start with the topical at night and the serum in the morning. We will review at 8 weeks.',
+    note: 'Karan, start with the solution at night and the capsules as we discussed. We will review at 8 weeks.',
     items: SAMPLE_RX.slice(0, 2),
     createdAt: iso(subHours(now, 30)),
     expiresAt: iso(addHours(now, 42)),
@@ -1574,7 +1574,7 @@ function nextActionFor(stage: LeadStage): string | null {
 
 const SAMPLE_RX: PrescriptionItem[] = [
   {
-    genericName: 'Topical solution (as discussed)',
+    genericName: 'YHC Hair Regrowth Solution',
     strength: 'As prescribed',
     dosage: '1 ml',
     frequency: 'Once daily, night',
@@ -1582,18 +1582,18 @@ const SAMPLE_RX: PrescriptionItem[] = [
     instructions: 'Apply to dry scalp; wash hands after use',
   },
   {
-    genericName: 'Scalp serum',
+    genericName: 'YHC Hair Regrowth Capsules',
     strength: '—',
-    dosage: '4–5 drops',
-    frequency: 'Once daily, morning',
+    dosage: 'As directed',
+    frequency: 'As directed',
     duration: '12 weeks',
-    instructions: 'Massage gently',
+    instructions: 'Take with water after a meal',
   },
   {
-    genericName: 'Nutrition tablets',
+    genericName: 'YHC Hair Nourishing Tablets',
     strength: '—',
     dosage: '1 tablet',
-    frequency: 'Once daily after breakfast',
+    frequency: 'Once daily after dinner',
     duration: '12 weeks',
     instructions: 'With water',
   },

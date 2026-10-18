@@ -1,5 +1,6 @@
 import { Reveal } from '@/components/site/reveal';
 import { SECTION_Y } from '@/components/site/section';
+import { ingredientImage } from '@/lib/brand-media';
 import { DARK_PRODUCT_IMAGES, PRODUCT_IMAGES } from '@/lib/images';
 import { getProducts } from '@/server/catalog';
 import { ingredientNote } from './ingredients/ingredient-notes';
@@ -21,11 +22,15 @@ export function IngredientsExplorer() {
         tagline: p.tagline,
         image: image ? { src: image.src, alt: image.alt } : null,
         dark: DARK_PRODUCT_IMAGES.has(p.slug),
-        ingredients: p.ingredients.map((ing) => ({
-          name: ing.name,
-          role: ing.role,
-          note: ingredientNote(ing.name, ing.role),
-        })),
+        ingredients: p.ingredients.map((ing) => {
+          const photo = ingredientImage(ing.name);
+          return {
+            name: ing.name,
+            role: ing.role,
+            note: ingredientNote(ing.name, ing.role),
+            image: photo ? photo.src : null,
+          };
+        }),
       };
     });
 

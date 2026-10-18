@@ -66,7 +66,7 @@ export function CheckoutFlow({ signedIn: initialSignedIn }: { signedIn: Checkout
         <EmptyState
           icon={ShoppingBag}
           title="Nothing to check out yet"
-          body="Your cart is empty. Add shampoo or conditioner, or book a consultation for a personalised plan."
+          body="Your cart is empty. YHC products are supplied after a consultation — book one for a personalised plan."
           action={
             <Button asChild className="h-11">
               <Link href="/products">Browse products</Link>

@@ -1,5 +1,6 @@
-import { Stethoscope } from 'lucide-react';
+import { Pill, ShieldAlert, Stethoscope } from 'lucide-react';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getConsultTerms } from '@/components/site/consult-fee';
@@ -11,7 +12,7 @@ import { pageMetadata } from '@/components/site/seo';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
 import { clientEnv } from '@/lib/env';
-import { PRODUCT_GALLERY } from '@/lib/images';
+import { LABEL_PARTIES, PRODUCT_MEDIA, ingredientImage } from '@/lib/brand-media';
 import { formatINR } from '@/lib/money';
 import { getProduct, getProducts } from '@/server/catalog';
 
@@ -39,6 +40,8 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
   const terms = getConsultTerms();
   const base = clientEnv.NEXT_PUBLIC_SITE_URL;
   const buyable = !product.requiresConsultation && product.pricePaise !== null;
+  const media = PRODUCT_MEDIA[product.slug];
+  const hasFinasteride = product.ingredients.some((i) => /finasteride/i.test(i.name));
 
   return (
     <>
@@ -80,9 +83,8 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
       />
 
       <section className="container-yhc grid grid-cols-1 gap-10 py-10 md:grid-cols-2 md:gap-12 md:py-16 lg:gap-16">
-        {/* Gallery — TODO(client): product photography — see docs/12 D-P2 */}
         <div className="min-w-0 md:sticky md:top-24 md:self-start">
-          <ProductGallery images={PRODUCT_GALLERY[product.slug] ?? []} name={product.name} />
+          <ProductGallery lines={media?.lines ?? {}} name={product.name} />
         </div>
 
         <div className="min-w-0">
@@ -93,13 +95,24 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
             / <span className="text-body">{product.name}</span>
           </nav>
           <p className="mt-5 text-sm text-muted-foreground">
-            {REGULATORY_LABEL[product.regulatoryCategory]} · {product.daysOfSupply}-day supply
+            {REGULATORY_LABEL[product.regulatoryCategory]}
+            {media ? ` · ${media.pack}` : ''} · For men and for women
           </p>
           <h1 className="display mt-3 text-[clamp(2.5rem,1.8rem+2.6vw,4rem)] text-balance">{product.name}</h1>
           <p className="mt-3 text-xl text-pretty text-ink">{product.tagline}</p>
           <p className="mt-6 max-w-prose text-lg leading-relaxed text-pretty text-body">
             {product.description}
           </p>
+
+          {hasFinasteride ? (
+            <p className="mt-6 flex max-w-prose items-start gap-2.5 rounded-xl bg-mist p-4 text-sm leading-relaxed text-ink">
+              <ShieldAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
+              <span>
+                Contains finasteride, a prescription medicine. It is not suitable during pregnancy or
+                breastfeeding — tell the doctor if either applies, or if you are planning a pregnancy.
+              </span>
+            </p>
+          ) : null}
 
           <div className="mt-10 rounded-2xl border border-line bg-card p-5 shadow-card sm:p-6">
             {buyable && product.pricePaise !== null ? (
@@ -137,16 +150,29 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
           <div>
             <h2 className="text-xl font-semibold text-ink">Ingredients and their roles</h2>
             <dl className="mt-5 divide-y divide-line border-y border-line">
-              {product.ingredients.map((ing) => (
-                <div
-                  key={ing.name}
-                  className="grid gap-1 py-4 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] sm:gap-6"
-                >
-                  <dt className="font-medium text-ink">{ing.name}</dt>
-                  <dd className="text-sm text-body">{ing.role}</dd>
-                </div>
-              ))}
+              {product.ingredients.map((ing) => {
+                const photo = ingredientImage(ing.name);
+                return (
+                  <div key={ing.name} className="grid grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-4 py-3.5">
+                    <div className="relative flex size-14 items-center justify-center overflow-hidden rounded-full bg-mist ring-1 ring-line">
+                      {photo ? (
+                        <Image src={photo.src} alt="" fill sizes="56px" className="object-cover" />
+                      ) : (
+                        <Pill className="size-5 text-body" aria-hidden />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <dt className="font-medium text-ink">{ing.name}</dt>
+                      <dd className="text-sm text-body">{ing.role}</dd>
+                    </div>
+                  </div>
+                );
+              })}
             </dl>
+            <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">
+              Ingredient photos are illustrative. Amounts are shown on the pack; your doctor explains them at
+              the consultation.
+            </p>
           </div>
           <div className="space-y-10">
             <div>
@@ -158,6 +184,16 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
               <p className="mt-3 text-body">{product.whatToExpect}</p>
               <p className="mt-3 text-sm font-medium text-ink">{t('common.resultsVary')}</p>
             </div>
+            <dl className="space-y-2 text-sm text-body">
+              <div>
+                <dt className="inline font-medium text-ink">Marketed by: </dt>
+                <dd className="inline">{LABEL_PARTIES.marketedBy}</dd>
+              </div>
+              <div>
+                <dt className="inline font-medium text-ink">Manufactured by: </dt>
+                <dd className="inline">{LABEL_PARTIES.manufacturedBy}</dd>
+              </div>
+            </dl>
             <p className="text-sm text-muted-foreground">
               Category: {REGULATORY_LABEL[product.regulatoryCategory]}. {t('legal.disclaimer')}
             </p>

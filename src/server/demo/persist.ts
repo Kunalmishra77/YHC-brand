@@ -16,6 +16,11 @@ import { GUARANTEE_POLICY, PLANS, PRODUCTS, STAFF } from './fixtures';
  */
 
 const ROW_ID = 'default';
+/**
+ * Bump when the catalog fixtures change shape or content (e.g. the real YHC range, 2026-10-18): a stored
+ * snapshot from an older revision keeps its orders and journeys but not its catalog.
+ */
+const CATALOG_REVISION = 2;
 
 interface Globals {
   __yhcDemo?: unknown;
@@ -31,6 +36,7 @@ interface Snapshot {
   admin: unknown;
   kept: [string, string][];
   catalog: { products: unknown[]; plans: unknown[]; staff: unknown[]; policy: Record<string, unknown> };
+  catalogRevision?: number;
 }
 
 const g = globalThis as unknown as Globals;
@@ -60,6 +66,7 @@ function capture(): Snapshot {
       staff: STAFF,
       policy: GUARANTEE_POLICY as unknown as Record<string, unknown>,
     },
+    catalogRevision: CATALOG_REVISION,
   };
 }
 
@@ -74,7 +81,9 @@ function restore(snapshot: Snapshot) {
   }
   if (snapshot.admin) g.__yhcAdmin = snapshot.admin;
   g.__yhcKeptConsultPayments = new Map(snapshot.kept);
-  // Admin edits mutate the catalog fixtures in place; mirror that.
+  // Admin edits mutate the catalog fixtures in place; mirror that — unless the snapshot predates the
+  // current catalog, in which case the code's fixtures win.
+  if (snapshot.catalogRevision !== CATALOG_REVISION) return;
   replaceArray(PRODUCTS, snapshot.catalog.products);
   replaceArray(PLANS, snapshot.catalog.plans);
   replaceArray(STAFF, snapshot.catalog.staff);

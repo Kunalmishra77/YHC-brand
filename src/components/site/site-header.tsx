@@ -17,7 +17,7 @@ export function SiteHeader() {
   return (
     <HeaderFrame>
       <div className="container-yhc flex h-16 items-center justify-between gap-4">
-        <Logo className="shrink-0 [&_span]:transition-colors group-data-[dark=true]/hdr:[&_span]:text-on-dark" />
+        <Logo adaptive priority />
 
         <nav aria-label="Main" className="hidden h-full items-stretch gap-5 lg:flex xl:gap-7">
           {SITE_NAV.map((item) => (

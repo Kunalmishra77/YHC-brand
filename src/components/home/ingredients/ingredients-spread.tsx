@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, Plus, Stethoscope } from 'lucide-react';
+import { ArrowRight, Pill, Plus, Stethoscope } from 'lucide-react';
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,6 +14,8 @@ export interface SpreadIngredient {
   role: string;
   /** Plain-language explanation (ingredient-notes.ts). */
   note: string;
+  /** Illustrative photo of the ingredient (brand-media.ts). */
+  image: string | null;
 }
 
 export interface SpreadProduct {
@@ -29,10 +31,12 @@ export interface SpreadProduct {
 const EASE = [0.2, 0.7, 0.2, 1] as const;
 
 /**
- * Desktop mosaic slots (6-column grid, fixed row height): one hero tile, two squares, two wide tiles —
- * an editorial "product spread". Below `lg` every tile is an edge-to-edge snap card instead.
+ * Desktop mosaic slots (6-column grid, fixed row height). Four products → a 2×2 spread of tall pack
+ * photographs; five → one hero tile, two squares and two wide tiles. Below `lg` every tile is an
+ * edge-to-edge snap card instead.
  */
-const SLOTS = [
+const SLOTS_4 = ['lg:col-span-3 lg:row-span-2', 'lg:col-span-3 lg:row-span-2', 'lg:col-span-3 lg:row-span-2', 'lg:col-span-3 lg:row-span-2'] as const;
+const SLOTS_5 = [
   'lg:col-span-4 lg:row-span-2',
   'lg:col-span-2',
   'lg:col-span-2',
@@ -51,6 +55,7 @@ export function IngredientsSpread({ products }: { products: SpreadProduct[] }) {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
+  const slots: readonly string[] = products.length === 4 ? SLOTS_4 : SLOTS_5;
   const product = products[productIdx] ?? products[0];
   if (!product) return null;
   const tabId = (slug: string) => `${uid}-tab-${slug}`;
@@ -110,7 +115,7 @@ export function IngredientsSpread({ products }: { products: SpreadProduct[] }) {
                   'group/tile relative aspect-[4/5] w-[72%] shrink-0 snap-start overflow-hidden text-left min-[430px]:w-[62%] sm:w-[38%] lg:aspect-auto lg:w-auto',
                   'focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none',
                   p.dark ? 'bg-obsidian' : 'bg-[#efeeeb]',
-                  SLOTS[i] ?? 'lg:col-span-3',
+                  slots[i] ?? 'lg:col-span-3',
                 )}
               >
                 {p.image ? (
@@ -118,7 +123,7 @@ export function IngredientsSpread({ products }: { products: SpreadProduct[] }) {
                     src={p.image.src}
                     alt=""
                     fill
-                    sizes={i === 0 ? '(min-width: 1024px) 38vw, 72vw' : '(min-width: 1024px) 20vw, 72vw'}
+                    sizes={products.length === 4 || i === 0 ? '(min-width: 1024px) 30vw, 72vw' : '(min-width: 1024px) 20vw, 72vw'}
                     className={cn(
                       'object-cover transition-[transform,opacity] duration-[1200ms] ease-yhc group-hover/tile:scale-[1.03] motion-reduce:transition-none',
                       !selected && 'lg:opacity-55 lg:group-hover/tile:opacity-100',
@@ -174,8 +179,15 @@ export function IngredientsSpread({ products }: { products: SpreadProduct[] }) {
                           aria-expanded={isOpen}
                           aria-controls={regionId}
                           onClick={() => setOpenIdx(isOpen ? null : i)}
-                          className="group/row grid min-h-16 w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 py-3 text-left focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none focus-visible:ring-inset"
+                          className="group/row grid min-h-16 w-full grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-4 py-3 text-left focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none focus-visible:ring-inset"
                         >
+                          <span className="relative flex size-12 items-center justify-center overflow-hidden rounded-full bg-mist ring-1 ring-line">
+                            {ing.image ? (
+                              <Image src={ing.image} alt="" fill sizes="48px" className="object-cover transition-transform duration-700 ease-yhc group-hover/row:scale-110 motion-reduce:transition-none" />
+                            ) : (
+                              <Pill className="size-4 text-body" aria-hidden />
+                            )}
+                          </span>
                           <span className="min-w-0">
                             <span className="block font-medium text-ink">{ing.name}</span>
                             <span className="mt-0.5 block text-sm text-body">{ing.role}</span>
@@ -201,7 +213,7 @@ export function IngredientsSpread({ products }: { products: SpreadProduct[] }) {
                         )}
                       >
                         <div className="overflow-hidden" inert={!isOpen}>
-                          <p className="max-w-[52ch] pr-14 pb-5 text-[15px] leading-relaxed text-pretty text-body">
+                          <p className="max-w-[52ch] pr-14 pb-5 pl-16 text-[15px] leading-relaxed text-pretty text-body">
                             {ing.note}
                           </p>
                         </div>

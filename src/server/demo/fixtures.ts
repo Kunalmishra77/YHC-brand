@@ -60,23 +60,42 @@ export const PLANS: Plan[] = [
   },
 ];
 
-// TODO(client): real product list, regulatory categories, HSN, GST, photos — see docs/12 D-P2
+/*
+ * The real YHC range, transcribed from the client's label artwork (YHC-assets, 2026-10-18). Each
+ * product comes in a men's and a women's pack with the same listed formula (src/lib/brand-media.ts).
+ * Copy states what is on the label and how the doctor uses it — never the label's efficacy claims
+ * (ADR-32). Ingredient amounts are left out until the master formula is confirmed (docs/16 D).
+ * TODO(client): regulatory category, HSN/GST, MRP policy and final directions per product — docs/16 D.
+ */
 const EXPECT =
   'Hair grows in slow cycles. Many people first notice less shedding; any change in density takes several months of steady use. Individual results vary, and Dr. Tyagi reviews your progress at follow-up.';
+
+const AYURVEDIC_BLEND = [
+  { name: 'Amla (Phyllanthus emblica)', role: 'Fruit listed in the Ayurvedic blend' },
+  { name: 'Arjun (Terminalia arjuna)', role: 'Bark listed in the Ayurvedic blend' },
+  { name: 'Bhringraj (Eclipta prostrata)', role: 'Herb traditionally used in Ayurvedic hair care' },
+  { name: 'Shatavari (Asparagus racemosus)', role: 'Root listed in the Ayurvedic blend' },
+  { name: 'Shuddh lakh (Laccifer lacca)', role: 'Purified lac resin listed in the blend' },
+  { name: 'Ashwagandha (Withania somnifera)', role: 'Root listed in the Ayurvedic blend' },
+];
 
 export const PRODUCTS: Product[] = [
   {
     id: 'prod-topical',
-    slug: 'topical-hair-solution',
-    name: 'Topical Hair Solution',
-    tagline: 'Prescription topical, dosed by Dr. Tyagi',
+    slug: 'hair-regrowth-solution',
+    name: 'Hair Regrowth Solution',
+    tagline: 'Topical scalp solution · 60 ml · prescription only',
     description:
-      'A leave-on scalp solution prescribed after your consultation. Strength and frequency are set for you, based on your pattern and history.',
+      'A leave-on solution applied to the scalp. Alongside branded cosmetic actives, its label lists finasteride, a prescription medicine — so this solution is supplied only when Dr. Tyagi prescribes it after a consultation, with directions set for you.',
     ingredients: [
-      { name: 'Active ingredient (as prescribed)', role: 'Supports the hair growth cycle' },
-      { name: 'Propylene glycol-free base', role: 'Gentler on sensitive scalps' },
+      { name: 'Redensyl', role: 'Branded cosmetic active listed on the label' },
+      { name: 'Anagain', role: 'Pea-sprout extract (branded active) listed on the label' },
+      { name: 'Procapil', role: 'Branded cosmetic active listed on the label' },
+      { name: 'Capilia Longa', role: 'Turmeric-derived branded active listed on the label' },
+      { name: 'Finasteride', role: 'Prescription medicine — used only when the doctor prescribes it' },
     ],
-    howToUse: 'Apply to a dry scalp as directed on your prescription. Wash hands after use.',
+    howToUse:
+      'Follow your prescription. Label directions: take 1 ml in the dropper, apply in drops to the scalp where hair is thinning, massage in with your fingertips, twice a day. Wash your hands after use.',
     whatToExpect: EXPECT,
     regulatoryCategory: 'drug',
     requiresConsultation: true,
@@ -87,17 +106,24 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-tablets',
-    slug: 'hair-nutrition-tablets',
-    name: 'Hair Nutrition Tablets',
-    tagline: 'Daily nutrients, matched to your intake answers',
+    slug: 'hair-nourishing-tablets',
+    name: 'Hair Nourishing Tablets',
+    tagline: 'Daily tablet · 30 tablets · botanicals, vitamins and minerals',
     description:
-      'A daily supplement included when your consultation suggests a nutritional gap. Not a substitute for a balanced diet.',
+      'A once-a-day tablet that combines three botanicals with vitamins and minerals. Dr. Tyagi includes it when your history and intake answers point to a nutritional gap; it does not replace a balanced diet.',
     ingredients: [
-      { name: 'Biotin', role: 'B-vitamin involved in keratin production' },
-      { name: 'Iron and zinc', role: 'Minerals linked with hair health' },
-      { name: 'Vitamin D3', role: 'Commonly low; checked at consultation' },
+      { name: 'Green tea (Camellia sinensis)', role: 'Botanical listed on the label' },
+      { name: 'Bhringraj (Eclipta prostrata)', role: 'Herb traditionally used in Ayurvedic hair care' },
+      { name: 'Pumpkin seed (Cucurbita pepo)', role: 'Seed extract listed on the label' },
+      { name: 'Iron', role: 'Mineral' },
+      { name: 'Zinc', role: 'Mineral' },
+      { name: 'Vitamin A', role: 'Vitamin' },
+      { name: 'Copper', role: 'Trace mineral' },
+      { name: 'Folic acid', role: 'B-group vitamin' },
+      { name: 'Vitamin B5', role: 'B-group vitamin' },
+      { name: 'Biotin', role: 'B-group vitamin' },
     ],
-    howToUse: 'One tablet a day after a meal, or as prescribed.',
+    howToUse: 'One tablet after dinner, as the label directs — or as your doctor advises.',
     whatToExpect: EXPECT,
     regulatoryCategory: 'supplement',
     requiresConsultation: true,
@@ -108,66 +134,39 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-serum',
-    slug: 'scalp-serum',
-    name: 'Scalp Serum',
-    tagline: 'Lightweight serum for scalp comfort',
+    slug: 'hair-regrowth-capsules',
+    name: 'Hair Regrowth Capsules',
+    tagline: 'Ayurvedic capsules · 30 capsules · with amla and bhringraj',
     description:
-      'A non-greasy serum with peptides and botanical extracts that conditions the scalp. Part of most YHC plans.',
-    ingredients: [
-      { name: 'Peptide complex', role: 'Scalp conditioning' },
-      { name: 'Rosemary leaf extract', role: 'Traditional botanical for scalp care' },
-      { name: 'Niacinamide', role: 'Supports the scalp barrier' },
-    ],
-    howToUse: 'Massage 4–5 drops into the scalp at night.',
+      'An Ayurvedic blend of six plant ingredients, led by amla and bhringraj, in capsule form. Dr. Tyagi decides whether it belongs in your plan and how to take it.',
+    ingredients: AYURVEDIC_BLEND,
+    howToUse: 'Take as your doctor directs.',
     whatToExpect: EXPECT,
-    regulatoryCategory: 'cosmetic',
+    regulatoryCategory: 'ayurvedic',
     requiresConsultation: true,
     pricePaise: null,
     daysOfSupply: 30,
-    hsn: '3305',
-    gstRate: 18,
+    hsn: '3004',
+    gstRate: 12,
   },
   {
     id: 'prod-shampoo',
-    slug: 'gentle-strengthening-shampoo',
-    name: 'Gentle Strengthening Shampoo',
-    tagline: 'Sulphate-free daily cleanser',
+    slug: 'hair-regrowth-powder',
+    name: 'Hair Regrowth Powder',
+    tagline: 'Ayurvedic powder · 30 servings · mixed with water',
     description:
-      'A mild shampoo that cleans without stripping the scalp. Safe to use alongside your treatment routine.',
-    ingredients: [
-      { name: 'Mild amino-acid surfactants', role: 'Gentle cleansing' },
-      { name: 'Panthenol', role: 'Conditions hair' },
-    ],
-    howToUse: 'Use on wet hair 3–4 times a week. Rinse well.',
-    whatToExpect: 'A clean, comfortable scalp. A shampoo alone does not change hair density.',
-    regulatoryCategory: 'cosmetic',
-    requiresConsultation: false,
-    pricePaise: 69900,
-    daysOfSupply: 45,
-    hsn: '3305',
-    gstRate: 18,
-  },
-  {
-    id: 'prod-conditioner',
-    slug: 'lightweight-conditioner',
-    name: 'Lightweight Conditioner',
-    tagline: 'Detangles without weighing hair down',
-    description: 'A light conditioner for lengths and ends that reduces breakage from combing.',
-    ingredients: [
-      { name: 'Hydrolysed proteins', role: 'Smooths the hair surface' },
-      { name: 'Glycerin', role: 'Holds moisture' },
-    ],
-    howToUse: 'Apply to lengths after shampoo, leave 2 minutes, rinse.',
-    whatToExpect: 'Softer, easier-to-comb hair with less breakage.',
-    regulatoryCategory: 'cosmetic',
-    requiresConsultation: false,
-    pricePaise: 59900,
-    daysOfSupply: 45,
-    hsn: '3305',
-    gstRate: 18,
+      'The same six-ingredient Ayurvedic blend as the capsules, as a powder you mix with water. Some people find a powder easier than capsules; the doctor recommends one or the other.',
+    ingredients: AYURVEDIC_BLEND,
+    howToUse: 'Label directions: one-third of a spoon in water, twice a day — or as your doctor advises.',
+    whatToExpect: EXPECT,
+    regulatoryCategory: 'ayurvedic',
+    requiresConsultation: true,
+    pricePaise: null,
+    daysOfSupply: 30,
+    hsn: '3004',
+    gstRate: 12,
   },
 ];
-
 /*
  * Concern pages and FAQs: general education, worded to match published sources (AAD, NHS, DermNet,
  * StatPearls) — see src/server/content/evidence.ts for the citations. Never a diagnosis or a promise.
@@ -200,7 +199,7 @@ export const CONCERNS: Concern[] = [
       'Pain, burning, redness or sores on the scalp',
       'Shedding along with tiredness, feeling cold, weight change or irregular periods',
     ],
-    relatedProducts: ['hair-nutrition-tablets', 'scalp-serum', 'gentle-strengthening-shampoo'],
+    relatedProducts: ['hair-nourishing-tablets', 'hair-regrowth-capsules', 'hair-regrowth-powder'],
   },
   {
     slug: 'thinning',
@@ -227,7 +226,7 @@ export const CONCERNS: Concern[] = [
       'Scalp pain, scaling or redness',
       'Thinning together with acne, new facial hair or irregular periods',
     ],
-    relatedProducts: ['topical-hair-solution', 'scalp-serum', 'hair-nutrition-tablets'],
+    relatedProducts: ['hair-regrowth-solution', 'hair-regrowth-capsules', 'hair-nourishing-tablets'],
   },
   {
     slug: 'receding_hairline',
@@ -250,7 +249,7 @@ export const CONCERNS: Concern[] = [
       'Eyebrow loss along with hairline change',
       'Very fast change over a few months',
     ],
-    relatedProducts: ['topical-hair-solution', 'scalp-serum', 'gentle-strengthening-shampoo'],
+    relatedProducts: ['hair-regrowth-solution', 'hair-regrowth-capsules', 'hair-regrowth-powder'],
   },
   {
     slug: 'crown_thinning',
@@ -273,7 +272,7 @@ export const CONCERNS: Concern[] = [
       'Scalp sores, crusting or pain at the crown',
       'Thinning that is spreading quickly',
     ],
-    relatedProducts: ['topical-hair-solution', 'hair-nutrition-tablets', 'scalp-serum'],
+    relatedProducts: ['hair-regrowth-solution', 'hair-nourishing-tablets', 'hair-regrowth-capsules'],
   },
   {
     slug: 'dandruff_scalp',
@@ -298,7 +297,8 @@ export const CONCERNS: Concern[] = [
       'Thick plaques, bleeding or weeping on the scalp',
       'Hair loss in the itchy or flaky area',
     ],
-    relatedProducts: ['gentle-strengthening-shampoo', 'lightweight-conditioner', 'scalp-serum'],
+    // None of the current range is a scalp-condition product; the doctor advises at consultation.
+    relatedProducts: [],
   },
 ];
 
@@ -404,7 +404,7 @@ export const FAQS: Faq[] = [
     category: 'plans',
     question: 'Can I buy products without a consultation?',
     answer:
-      'Everyday care products such as the shampoo and conditioner can be bought directly. Prescription and treatment products are only available after a consultation, because the right choice and strength depend on your scan, history and the doctor’s assessment. (Pending client confirmation.)',
+      'Every product in the current YHC range is supplied after a consultation, because the right choice — and for the solution, the prescription — depends on your scan, history and the doctor’s assessment. (Pending client confirmation.)',
   },
   {
     id: 'faq-guarantee',

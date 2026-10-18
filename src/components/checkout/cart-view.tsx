@@ -46,7 +46,7 @@ export function CartView({ catalog, add }: { catalog: CatalogItemView[]; add: Ad
       <div className="mx-auto max-w-5xl">
         <p className="eyebrow">Your cart</p>
         <h1 className="display mt-3 text-[clamp(2rem,1.5rem+1.8vw,2.75rem)] text-balance">
-          Everyday care, delivered
+          Your cart
         </h1>
 
         {add?.kind === 'needs_consult' ? (
@@ -77,7 +77,7 @@ export function CartView({ catalog, add }: { catalog: CatalogItemView[]; add: Ad
             <EmptyState
               icon={ShoppingBag}
               title="Your cart is empty"
-              body="Shampoo and conditioner can be bought directly. Treatments are prescribed after a consultation with Dr. Tyagi."
+              body="YHC products are supplied after a consultation with Dr. Tyagi, as part of your plan."
               action={
                 <div className="flex flex-wrap justify-center gap-2">
                   <Button asChild variant="outline" className="h-12 border-steel px-6">

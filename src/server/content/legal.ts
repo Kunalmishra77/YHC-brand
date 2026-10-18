@@ -579,7 +579,7 @@ function disclaimer(c: LegalContext): ContentBlock[] {
     ul(
       'Hair responds slowly and differently for everyone. Individual results vary.',
       'We do not promise specific outcomes or timelines.',
-      'Concept images on this site show products, not treatment results.',
+      'Product images on this site are renders of our packs and ingredient photos are illustrative; they show products, not treatment results.',
     ),
     h('safety', 'Using treatment safely'),
     ul(

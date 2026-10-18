@@ -49,3 +49,6 @@ yarn-error.log*
 
 .vercel
 .env*
+
+# Client's raw asset drop (~200 MB). Website media is built from it by scripts/build-assets.mjs into public/media.
+/YHC-assets/

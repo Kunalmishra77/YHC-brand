@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Products',
   description:
-    'Prescription treatments dosed by Dr. Tyagi and everyday hair-care products, with every ingredient and its role listed.',
+    'The YHC range — hair regrowth solution, nourishing tablets, Ayurvedic capsules and powder, for men and for women — with every ingredient listed. Supplied after a consultation with Dr. Tyagi.',
   path: '/products',
 });
 
@@ -35,8 +35,8 @@ export default function ProductsPage() {
         tone="dark"
         lede={
           <p>
-            Treatment products are prescribed after your consultation, so the strength and routine fit you.
-            Everyday care products can be bought directly. {t('common.inclGst')}.
+            Four products, each in a men’s and a women’s pack. They are supplied after your consultation, so
+            the choice and routine fit you. {t('common.inclGst')}.
           </p>
         }
       />
@@ -52,16 +52,16 @@ export default function ProductsPage() {
         <section className={`container-yhc ${SECTION_Y}`} aria-labelledby="prescribed-heading">
           <SectionHeader
             id="prescribed-heading"
-            eyebrow="Prescription only"
-            title="Prescribed after your consultation"
-            lede="Strength, dose and routine are set by the doctor for one person. You can read about each product, but you can only order it with a prescription."
+            eyebrow="The YHC range"
+            title="Chosen at your consultation"
+            lede="The doctor decides which products belong in your plan and how to use them. The solution contains a prescription medicine and is supplied only with a prescription."
             action={
               <Link href="/book" className={`text-ink ${TEXT_LINK}`}>
                 {terms.bookLabel} <ArrowRight className="size-4" aria-hidden />
               </Link>
             }
           />
-          <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 xl:grid-cols-4">
             {prescribed.map((p) => (
               <ProductTile key={p.id} product={p} />
             ))}

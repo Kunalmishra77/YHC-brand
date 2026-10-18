@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 /*
  * End-to-end through the booking / checkout / plan server actions against the in-memory demo store.
@@ -20,6 +20,7 @@ vi.mock('next/headers', () => ({
 vi.mock('next/cache', () => ({ revalidatePath: () => undefined }));
 
 const { db, resetDemo } = await import('@/server/demo/store');
+const { PRODUCTS } = await import('@/server/demo/fixtures');
 const book = await import('./actions');
 const checkout = await import('../checkout/actions');
 const plan = await import('../../r/[token]/actions');
@@ -148,6 +149,19 @@ describe('booking actions', () => {
 });
 
 describe('checkout actions', () => {
+  // The real YHC range is consult-only, so direct checkout is exercised with a test-only care product.
+  const careProduct = {
+    ...PRODUCTS[0]!, // eslint-disable-line @typescript-eslint/no-non-null-assertion -- fixture always has products
+    id: 'prod-test-care',
+    slug: 'test-care',
+    name: 'Test Care Product',
+    regulatoryCategory: 'cosmetic' as const,
+    requiresConsultation: false,
+    pricePaise: 69900,
+  };
+  beforeAll(() => void PRODUCTS.push(careProduct));
+  afterAll(() => void PRODUCTS.splice(PRODUCTS.indexOf(careProduct), 1));
+
   const address = {
     fullName: 'Asha Verma',
     line1: '12 MG Road',
@@ -159,16 +173,16 @@ describe('checkout actions', () => {
 
   it('prices on the server and refuses prescription-only products', async () => {
     const q = await checkout.quoteCartAction([
-      { productId: 'prod-shampoo', qty: 2 },
+      { productId: 'prod-test-care', qty: 2 },
       { productId: 'prod-topical', qty: 1 },
     ]);
     if (!q.ok) throw new Error(q.error.message);
     expect(q.data.totalPaise).toBe(2 * 69900);
-    expect(q.data.unavailable).toEqual(['Topical Hair Solution']);
+    expect(q.data.unavailable).toEqual(['Hair Regrowth Solution']);
   });
 
   it('requires sign-in, then creates a paid order', async () => {
-    const items = [{ productId: 'prod-shampoo', qty: 1 }];
+    const items = [{ productId: 'prod-test-care', qty: 1 }];
     const anon = await checkout.payCartAction({ items, address, consent: true });
     expect(anon.ok).toBe(false);
     await signIn();

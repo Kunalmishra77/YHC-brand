@@ -1,8 +1,6 @@
-/**
- * Concept imagery (AI-generated product still-lifes, ADR-25) used until the client's real photography
- * arrives. No people, no doctor likeness, no before/after — packaging is unlabelled.
- * TODO(client): replace with real product and doctor photography — see docs/12 C.
- */
+import { PRODUCT_MEDIA } from '@/lib/brand-media';
+
+/** A site image with its intrinsic size (for next/image) and alt text. */
 export interface SiteImage {
   src: string;
   width: number;
@@ -10,34 +8,55 @@ export interface SiteImage {
   alt: string;
 }
 
-const img = (name: string, width: number, height: number, alt: string): SiteImage => ({
-  src: `/images/concept/${name}.webp`,
-  width,
-  height,
-  alt,
-});
+const real = (src: string, width: number, height: number, alt: string): SiteImage => ({ src, width, height, alt });
 
+/**
+ * Page-level imagery. Since the client's asset drop (2026-10-18) these are the real YHC packs and the
+ * ingredient flat-lays (src/lib/brand-media.ts); the earlier concept still-lifes (ADR-25) are retired.
+ */
 export const IMAGES = {
-  hero: img(
-    'hero',
-    2000,
-    1116,
-    'YHC serum, cleanser and supplement jar on a dark stone plinth under soft studio light',
+  heroPortrait: real(
+    '/media/products/solution-women-0.webp',
+    1000,
+    1250,
+    'YHC Hair Regrowth Solution for women, black bottle with a blush label, with flowers on stone',
   ),
-  heroPortrait: img(
-    'hero-portrait',
+  heroStage: real(
+    '/media/products/solution-men-0.webp',
+    1000,
+    1250,
+    'YHC Hair Regrowth Solution for men, black bottle with a mint label, on dark stone with botanicals',
+  ),
+  topical: real(
+    '/media/products/solution-men-1.webp',
+    1000,
+    1500,
+    'YHC Hair Regrowth Solution for men with its dropper cap, on dark stone',
+  ),
+  tablets: real(
+    '/media/products/tablets-men-0.webp',
+    1000,
+    1250,
+    'YHC Hair Nourishing Tablets for men, black jar with a mint label, with seeds and leaves on stone',
+  ),
+  serum: real(
+    '/media/ingredients/board-bowls.webp',
     1200,
-    1490,
-    'YHC serum, cleanser and supplement jar on a dark stone plinth',
+    1200,
+    'Bowls of amla, arjun bark, bhringraj, shatavari, ashwagandha and lac resin',
   ),
-  heroStage: img('hero-stage', 1400, 1302, 'YHC products on a dark stone plinth'),
-  serum: img('serum', 1200, 1200, 'Frosted glass serum bottle with a silver dropper on pale stone'),
-  topical: img('topical', 1200, 1200, 'Amber glass topical solution bottle with a dropper on pale stone'),
-  tablets: img('tablets', 1200, 1200, 'White supplement jar with a brushed silver lid and tablets on stone'),
-  shampoo: img('shampoo', 900, 1125, 'Matte black pump bottle of shampoo beside a white jar'),
-  conditioner: img('conditioner', 900, 1126, 'White conditioner jar with a polished silver lid'),
-  textureDrop: img('texture-drop', 1400, 789, 'A drop of clear serum on pale stone'),
-  textureTablets: img('texture-tablets', 1400, 1011, 'Small white tablets on a stone surface'),
+  textureDrop: real(
+    '/media/ingredients/board-solution.webp',
+    1200,
+    1200,
+    'Flat-lay of pea sprouts, turmeric, amber drops, glass vials and a molecule model',
+  ),
+  textureTablets: real(
+    '/media/ingredients/board-tablet.webp',
+    1200,
+    1200,
+    'Flat-lay of green tea, bhringraj, pumpkin seeds, minerals and vitamin-rich foods',
+  ),
 } as const;
 
 /**
@@ -150,27 +169,18 @@ export const VIDEOS = {
   },
 } as const satisfies Record<string, SiteVideo>;
 
-/** Product slug → concept image. */
-export const PRODUCT_IMAGES: Record<string, SiteImage> = {
-  'topical-hair-solution': IMAGES.topical,
-  'hair-nutrition-tablets': IMAGES.tablets,
-  'scalp-serum': IMAGES.serum,
-  'gentle-strengthening-shampoo': IMAGES.shampoo,
-  'lightweight-conditioner': IMAGES.conditioner,
-};
+/** Product slug → hero photograph of the real pack (men's line; the product page offers both lines). */
+export const PRODUCT_IMAGES: Record<string, SiteImage> = Object.fromEntries(
+  Object.entries(PRODUCT_MEDIA).map(([slug, media]) => [slug, media.lines.men[0]]),
+) as Record<string, SiteImage>;
 
-/** Products photographed on dark backgrounds — cards use an obsidian frame for these. */
-export const DARK_PRODUCT_IMAGES = new Set(['gentle-strengthening-shampoo', 'lightweight-conditioner']);
+/** Pack photography is low-key (black bottles) — cards use an obsidian frame for every product. */
+export const DARK_PRODUCT_IMAGES = new Set(Object.keys(PRODUCT_MEDIA));
 
-/** Secondary gallery shots per product (detail, then the range). */
-export const PRODUCT_GALLERY: Record<string, SiteImage[]> = {
-  'topical-hair-solution': [IMAGES.topical, IMAGES.textureDrop, IMAGES.heroStage],
-  'hair-nutrition-tablets': [IMAGES.tablets, IMAGES.textureTablets, IMAGES.heroStage],
-  'scalp-serum': [IMAGES.serum, IMAGES.textureDrop, IMAGES.heroStage],
-  'gentle-strengthening-shampoo': [IMAGES.shampoo, IMAGES.heroStage, IMAGES.heroPortrait],
-  'lightweight-conditioner': [IMAGES.conditioner, IMAGES.heroStage, IMAGES.heroPortrait],
-};
-
+/** Gallery shots per product (men's line; see PRODUCT_MEDIA for both lines). */
+export const PRODUCT_GALLERY: Record<string, SiteImage[]> = Object.fromEntries(
+  Object.entries(PRODUCT_MEDIA).map(([slug, media]) => [slug, media.lines.men]),
+);
 /** Dr. Anil Tyagi's portrait (supplied by the clinic, 2026-10-10). */
 export const DOCTOR_PORTRAIT: SiteImage = {
   src: '/media/img/dr-anil-tyagi.webp',

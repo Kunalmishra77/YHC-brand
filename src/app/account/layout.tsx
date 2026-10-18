@@ -38,7 +38,7 @@ export default async function AccountLayout({ children }: LayoutProps<'/account'
     <div className="flex min-h-dvh flex-col bg-pearl">
       <header className="border-b border-white/5 bg-obsidian text-on-dark print:hidden">
         <div className="container-yhc flex h-14 items-center justify-between gap-3 md:h-16">
-          <Logo tone="light" className="[&>span]:text-[22px] md:[&>span]:text-[26px]" />
+          <Logo tone="light" />
           <div className="flex items-center gap-1">
             <Button
               asChild

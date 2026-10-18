@@ -2,17 +2,60 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import { LINE_LABEL, type ProductLine } from '@/lib/brand-media';
 import type { SiteImage } from '@/lib/images';
 import { cn } from '@/lib/utils';
 
-/** Main image + thumbnails. Concept imagery until product photography arrives (ADR-25). */
-export function ProductGallery({ images, name }: { images: SiteImage[]; name: string }) {
+const LINE_DOT: Record<ProductLine, string> = { men: 'bg-[#bfe3cb]', women: 'bg-[#f0c3cf]' };
+
+/**
+ * Pack photography with a men/women switch (same listed formula, two packs) and thumbnails.
+ * The images are renders of the real YHC packs, labelled as such.
+ */
+export function ProductGallery({
+  lines,
+  name,
+}: {
+  lines: Partial<Record<ProductLine, SiteImage[]>>;
+  name: string;
+}) {
+  const available = (Object.keys(LINE_LABEL) as ProductLine[]).filter((l) => (lines[l]?.length ?? 0) > 0);
+  const [line, setLine] = useState<ProductLine>(available[0] ?? 'men');
   const [active, setActive] = useState(0);
+  const images = lines[line] ?? [];
   const main = images[active] ?? images[0];
   if (!main) return null;
+
   return (
     <div>
-      <div className="relative aspect-square overflow-hidden rounded-2xl bg-[#efeeeb]">
+      {available.length > 1 ? (
+        <div
+          role="group"
+          aria-label={`${name} packs`}
+          className="mb-3 inline-flex rounded-full bg-mist p-1 text-[14px] font-medium"
+        >
+          {available.map((l) => (
+            <button
+              key={l}
+              type="button"
+              aria-pressed={l === line}
+              onClick={() => {
+                setLine(l);
+                setActive(0);
+              }}
+              className={cn(
+                'inline-flex min-h-10 items-center gap-2 rounded-full px-4 transition-colors',
+                l === line ? 'bg-obsidian text-on-dark shadow-card' : 'text-body hover:text-ink',
+              )}
+            >
+              <span aria-hidden className={cn('size-2.5 rounded-full', LINE_DOT[l])} />
+              {LINE_LABEL[l]}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-obsidian">
         <Image
           key={main.src}
           src={main.src}
@@ -20,27 +63,28 @@ export function ProductGallery({ images, name }: { images: SiteImage[]; name: st
           fill
           priority
           sizes="(min-width: 768px) 50vw, 100vw"
-          className="animate-in object-cover duration-300 fade-in motion-reduce:animate-none"
+          className="animate-in object-cover duration-500 fade-in motion-reduce:animate-none"
         />
-        <span className="absolute bottom-3 left-3 rounded-full bg-white/75 px-2.5 py-1 text-[12px] text-body backdrop-blur">
-          Concept image
+        <span className="absolute bottom-3 left-3 rounded-full bg-black/55 px-2.5 py-1 text-[12px] text-white/85 backdrop-blur">
+          Pack render
         </span>
       </div>
+
       {images.length > 1 ? (
-        <div className="mt-3 grid grid-cols-3 gap-3" role="group" aria-label={`${name} images`}>
+        <div className="mt-3 grid grid-cols-5 gap-2 sm:gap-3" role="group" aria-label={`${name} images`}>
           {images.map((img, i) => (
             <button
               key={img.src}
               type="button"
               onClick={() => setActive(i)}
               aria-pressed={i === active}
-              aria-label={`Show image ${i + 1}`}
+              aria-label={`Show image ${i + 1} of ${images.length}`}
               className={cn(
-                'relative aspect-square overflow-hidden rounded-lg ring-1 transition',
-                i === active ? 'ring-2 ring-ink' : 'ring-line hover:ring-steel',
+                'relative aspect-square overflow-hidden rounded-lg bg-obsidian ring-1 transition',
+                i === active ? 'ring-2 ring-ink' : 'ring-line opacity-80 hover:opacity-100 hover:ring-steel',
               )}
             >
-              <Image src={img.src} alt="" fill sizes="20vw" className="object-cover" />
+              <Image src={img.src} alt="" fill sizes="(min-width: 768px) 10vw, 20vw" className="object-cover" />
             </button>
           ))}
         </div>
