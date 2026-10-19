@@ -36,6 +36,7 @@ export function SiteHeader() {
           {/* Account: text from sm to lg and from xl; an icon in the tighter lg range */}
           <SiteNavLink
             href="/account"
+            prefetch={false}
             className={`hidden min-h-11 items-center rounded-full px-3 text-sm font-medium sm:inline-flex lg:hidden xl:inline-flex ${HDR_LINK}`}
             activeClassName={HDR_LINK_ACTIVE}
           >
@@ -43,6 +44,7 @@ export function SiteHeader() {
           </SiteNavLink>
           <SiteNavLink
             href="/account"
+            prefetch={false}
             aria-label={t('nav.account')}
             className={`hidden size-11 items-center justify-center rounded-full lg:inline-flex xl:hidden ${HDR_LINK}`}
             activeClassName={HDR_LINK_ACTIVE}

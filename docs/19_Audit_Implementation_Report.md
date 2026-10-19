@@ -81,9 +81,12 @@ IDs are set; events `details_submitted`, `scan_started`, `scan_completed`, `cons
 |---|---|---|
 | Typecheck / lint / unit + integration tests | **Pass** | `pnpm typecheck` 0, `pnpm lint` 0, `pnpm test` 22 files / 140 tests |
 | Production build | **Pass** (1 warning: OG file reads trace the project) | `pnpm build` |
-| Journey: details → OTP → 4 questions → 7-zone scan (2 skipped) → assessment → health form → booking | **Pass** (local) | `scripts/_e2e.mjs`, `scripts/journey-check.mjs` |
+| Journey: details → OTP → 4 questions → 7-zone scan (2 skipped) → assessment → health form → booking | **Pass** (local + live yourhaircompany.com) | `scripts/e2e-journey.mjs`, `scripts/journey-check.mjs` |
 | Held slot survives refresh | **Pass** | same slot + countdown after reload |
-| Consultation payment (demo Razorpay) | see §3a | |
+| Consultation payment (demo Razorpay) → confirmation → patient portal | **Pass** (local + live); failed-payment path shows "nothing was charged" | `e2e-journey.mjs` |
+| Plan link `/r/<valid>` renders; `/r/<invalid>` 404 | **Pass** (live) | |
+| Access code: wrong code rejected, right code opens the doctor portal | **Pass** (live) | |
+| Browser console on 6 public pages (visitor) | **Pass** — 0 errors, CSP blocks nothing | live run |
 | Forged admin cookie → access-code form | **Pass** | |
 | Logged-out `/account` → `/start`; `/book` → `/start`; `/assessment` → 308 | **Pass** | |
 | `/r/invalid` → 404; `/concerns/hair_fall` → 308 | **Pass** | |
@@ -113,6 +116,7 @@ IDs are set; events `details_submitted`, `scan_started`, `scan_completed`, `cons
 | Build | Dynamic file reads in OG cards trace the whole project | Larger server bundle | P3 | Switch OG reads to static imports |
 | UX-07 | Guarantee seal ring text renders ~5 px (decorative, aria-hidden) | Visual only | P3 | Redraw the seal |
 | Demo | Seeded admin/doctor demo data and `assessment-quiz.tsx` kept unused | Code tidiness | P3 | Delete after client confirms |
+| Fixed during testing | A local dev server with the hosted keys was writing test journeys into the live demo snapshot | Test data visible in the live demo | — | Fixed: snapshot sync disabled when APP_ENV=local; live snapshot purged 19 Oct |
 
 ## 5. Deployment readiness
 

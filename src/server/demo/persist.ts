@@ -42,8 +42,13 @@ interface Snapshot {
 const g = globalThis as unknown as Globals;
 
 function enabled() {
+  // Never from a developer machine: a local server with the hosted keys in .env.local would otherwise
+  // write its test journeys into the live demo's shared snapshot (found 2026-10-19).
   return Boolean(
-    serverEnv.DEMO_MODE && clientEnv.NEXT_PUBLIC_SUPABASE_URL && serverEnv.SUPABASE_SERVICE_ROLE_KEY,
+    serverEnv.DEMO_MODE &&
+      serverEnv.APP_ENV !== 'local' &&
+      clientEnv.NEXT_PUBLIC_SUPABASE_URL &&
+      serverEnv.SUPABASE_SERVICE_ROLE_KEY,
   );
 }
 
