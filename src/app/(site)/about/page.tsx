@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { publicCredential } from '@/lib/credentials';
 import { getConsultTerms } from '@/components/site/consult-fee';
 import { CtaBand } from '@/components/site/cta-band';
 import { buildJourney } from '@/components/site/journey-steps';
@@ -15,7 +16,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'About Your Hair Company',
   description:
-    'Why Your Hair Company starts every plan with a doctor: consultation first, honest expectations, your prescription is yours, and follow-up care.',
+    'Why Your Hair Company starts every plan with a doctor: consultation first, honest expectations, a prescription that is yours, and follow-up care.',
   path: '/about',
 });
 
@@ -226,8 +227,10 @@ export default function AboutPage() {
             <div className="bg-card p-7">
               <p className="text-[13px] text-muted-foreground">Lead doctor</p>
               <p className="mt-3 font-display text-[2rem] leading-tight text-ink">{doctor.name}</p>
-              <p className="mt-1.5 text-sm text-body">{doctor.qualifications}</p>
-              <p className="mt-1 text-sm text-muted-foreground">Registration {doctor.registrationNo}</p>
+              <p className="mt-1.5 text-sm text-body">{publicCredential(doctor.qualifications) ?? 'Dermatologist'}</p>
+              {publicCredential(doctor.registrationNo) ? (
+                <p className="mt-1 text-sm text-muted-foreground">Registration {doctor.registrationNo}</p>
+              ) : null}
               <Link href="/doctor-tyagi" className={`mt-6 text-ink ${TEXT_LINK}`}>
                 Read the full profile
               </Link>

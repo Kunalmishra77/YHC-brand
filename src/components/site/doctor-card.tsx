@@ -2,6 +2,7 @@ import { BadgeCheck, Video } from 'lucide-react';
 import Image from 'next/image';
 import type { Doctor } from '@/lib/domain/types';
 import { publicCredential } from '@/lib/credentials';
+import { getConsultTerms } from './consult-fee';
 import { DOCTOR_PORTRAIT } from '@/lib/images';
 import { cn } from '@/lib/utils';
 
@@ -104,21 +105,25 @@ function CredentialCard({ doctor }: { doctor: Doctor }) {
             {publicCredential(doctor.qualifications) ?? 'Dermatologist · hair and scalp'}
           </p>
           <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-line-dark pt-5 text-sm">
-            <div>
-              <dt className="text-[12px] text-on-dark-muted">Registration</dt>
-              <dd className="price mt-0.5">{publicCredential(doctor.registrationNo) ?? 'Being added'}</dd>
-            </div>
-            <div>
-              <dt className="text-[12px] text-on-dark-muted">Council</dt>
-              <dd className="mt-0.5">{publicCredential(doctor.council) ?? 'Being added'}</dd>
-            </div>
+            {publicCredential(doctor.registrationNo) ? (
+              <div>
+                <dt className="text-[12px] text-on-dark-muted">Registration</dt>
+                <dd className="price mt-0.5">{doctor.registrationNo}</dd>
+              </div>
+            ) : null}
+            {publicCredential(doctor.registrationNo) && publicCredential(doctor.council) ? (
+              <div>
+                <dt className="text-[12px] text-on-dark-muted">Council</dt>
+                <dd className="mt-0.5">{doctor.council}</dd>
+              </div>
+            ) : null}
             <div>
               <dt className="text-[12px] text-on-dark-muted">Focus</dt>
               <dd className="mt-0.5">Hair &amp; scalp</dd>
             </div>
             <div>
               <dt className="text-[12px] text-on-dark-muted">Consults</dt>
-              <dd className="mt-0.5">One to one, 30 min</dd>
+              <dd className="mt-0.5">One to one, {getConsultTerms().slotMinutes} min</dd>
             </div>
           </dl>
         </div>

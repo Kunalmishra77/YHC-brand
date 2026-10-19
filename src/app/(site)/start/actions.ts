@@ -7,7 +7,7 @@ import type { ConfirmedView, HoldView, SlotDayView } from '@/components/booking/
 import type { Suitability } from '@/lib/journey/types';
 import { AppError } from '@/lib/errors';
 import { serverEnv } from '@/lib/env.server';
-import { requireRole } from '@/lib/rbac';
+import { getSessionUser, requireRole } from '@/lib/rbac';
 import type { Result } from '@/lib/result';
 import { appointmentIdSchema } from '@/lib/validation/booking';
 import {
@@ -46,6 +46,7 @@ import {
   otpAttempts,
   slotDays,
 } from '../book/booking-views';
+import { claimCustomerByDemoOtp } from '@/server/demo/otp-claim';
 
 /*
  * Patient journey actions (ADR-26). The demo store plays Postgres; `journeyPayAction` plays the
@@ -99,13 +100,14 @@ export async function startJourneyAction(
     }
     otpAttempts().delete(phone);
 
-    const customer = findOrCreateCustomer({ phone, name: input.name, source: 'website' });
-    const town = input.address.split(',').at(-1)?.trim();
-    if (customer.city === '—' && town) customer.city = town.slice(0, 40);
-    const journey = startJourney({
-      customerId: customer.id,
-      address: { line: input.address, pincode: input.pincode },
+    const session = await getSessionUser();
+    const customer = claimCustomerByDemoOtp({
+      phone,
+      name: input.name,
+      source: 'website',
+      sessionCustomerId: session?.customerId ?? null,
     });
+    const journey = startJourney({ customerId: customer.id });
     // TODO(store): a proper consents table (docs/09); the audit log records it for the demo.
     recordAudit(
       `customer:${customer.id}`,

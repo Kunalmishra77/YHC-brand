@@ -1,8 +1,7 @@
 import 'server-only';
 
-import { cookies } from 'next/headers';
 import { z } from 'zod';
-import { DEMO_COOKIE, DEMO_CUSTOMER_COOKIE } from '@/lib/demo-session';
+import { setDemoSession } from '@/server/demo/session';
 import { AppError } from '@/lib/errors';
 import { err, ok, type Result } from '@/lib/result';
 import { ensureDemoState } from '@/server/demo/persist';
@@ -24,12 +23,8 @@ export async function guard<T>(fn: () => T | Promise<T>): Promise<Result<T>> {
 }
 
 /**
- * Demo sign-in after phone OTP (ADR-23). Phase 03: Supabase phone-OTP session instead.
- * httpOnly + sameSite=lax; 12 h like the demo role switcher.
+ * Demo sign-in after phone OTP (ADR-23). Signed cookies (ADR-33); Phase 03: Supabase phone-OTP session.
  */
 export async function setCustomerSession(customerId: string): Promise<void> {
-  const jar = await cookies();
-  const opts = { httpOnly: true, sameSite: 'lax' as const, path: '/', maxAge: 60 * 60 * 12 };
-  jar.set(DEMO_COOKIE, 'customer', opts);
-  jar.set(DEMO_CUSTOMER_COOKIE, customerId, opts);
+  await setDemoSession('customer', customerId);
 }

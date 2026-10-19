@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
+import { concernPath } from '@/lib/concern-path';
 import type { Concern, HairConcern } from '@/lib/domain/types';
 import { cn } from '@/lib/utils';
 import { saveAssessmentResult } from './actions';
@@ -221,7 +222,7 @@ export function AssessmentQuiz({ concerns, bookLabel }: { concerns: Concern[]; b
             </Button>
             {concern ? (
               <Button asChild variant="outline" className="h-12 border-steel px-6 text-base">
-                <Link href={`/concerns/${concern.slug}`}>Read about {concern.title.toLowerCase()}</Link>
+                <Link href={concernPath(concern.slug)}>Read about {concern.title.toLowerCase()}</Link>
               </Button>
             ) : null}
           </div>

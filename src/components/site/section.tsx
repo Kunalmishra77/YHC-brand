@@ -6,7 +6,8 @@ import { cn } from '@/lib/utils';
  */
 
 /** Vertical rhythm for a standard section. */
-export const SECTION_Y = 'py-16 md:py-24 lg:py-28';
+// Audit spacing tokens: 56 px mobile, 80 px desktop (UX-01, audit section D).
+export const SECTION_Y = 'py-14 lg:py-20';
 /** Rhythm for a quieter, secondary band (CTA strips, closing notes). */
 export const SECTION_Y_SM = 'py-12 md:py-16';
 

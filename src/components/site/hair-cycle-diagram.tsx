@@ -183,7 +183,7 @@ export function HairCycleDiagram({
           <li key={p.name} className="min-w-0">
             <p
               className={cn(
-                'text-[11px] font-semibold tracking-[0.1em] uppercase sm:text-xs sm:tracking-[0.12em]',
+                'text-xs font-semibold tracking-[0.08em] uppercase sm:tracking-[0.12em]',
                 dark ? 'text-brand-on-dark' : 'text-brand',
               )}
             >

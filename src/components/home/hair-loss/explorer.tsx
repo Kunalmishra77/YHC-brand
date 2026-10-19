@@ -127,12 +127,13 @@ export function HairLossExplorer({ types }: { types: HairLossTypeView[] }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.4, ease: EASE }}
+              className="grid gap-8 xl:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] xl:items-start xl:gap-10"
             >
-              <figure className="rounded-[var(--radius-xl)] bg-card p-4 ring-1 ring-line sm:p-6">
+              <figure className="rounded-[var(--radius-xl)] bg-card p-4 ring-1 ring-line sm:p-6 xl:sticky xl:top-24">
                 <div
                   role="img"
                   aria-label={active.illustrationAlt}
-                  className="grid grid-cols-2 gap-3 sm:gap-8"
+                  className="grid grid-cols-2 gap-3 sm:gap-6"
                 >
                   {(['side', 'top'] as const).map((view) => (
                     <div key={view} className="flex flex-col items-center">
@@ -155,7 +156,8 @@ export function HairLossExplorer({ types }: { types: HairLossTypeView[] }) {
                 </figcaption>
               </figure>
 
-              <div className="mt-8">
+              <div className="min-w-0">
+              <div>
                 <p className="eyebrow">{active.aka}</p>
                 <h3 className="display mt-3 text-[clamp(2rem,1.6rem+1.6vw,2.75rem)]">{active.name}</h3>
                 {active.urgent ? (
@@ -182,6 +184,7 @@ export function HairLossExplorer({ types }: { types: HairLossTypeView[] }) {
                   ))}
                 </div>
               ) : null}
+              </div>
             </motion.div>
           </AnimatePresence>
         </div>
@@ -288,7 +291,7 @@ function DetailAccordion({ type, baseId }: { type: HairLossTypeView; baseId: str
                   transition={{ duration: reduce ? 0 : 0.4, ease: EASE }}
                   className="overflow-hidden"
                 >
-                  <div className="max-w-[62ch] pb-5 text-[15px] text-body">{item.body}</div>
+                  <div className="max-w-[62ch] pb-5 text-base text-body md:text-[15px]">{item.body}</div>
                 </motion.div>
               ) : null}
             </AnimatePresence>

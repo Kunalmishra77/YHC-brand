@@ -75,12 +75,13 @@ export interface ScanResult {
 
 export type JourneyStep = 'details' | 'scan' | 'assessment' | 'health_form' | 'book' | 'consultation';
 
+/** The one step list for the journey (stepper, portal tracker, homepage How it works — audit CON-03). */
 export const JOURNEY_STEPS: readonly { id: JourneyStep; label: string }[] = [
   { id: 'details', label: 'Details' },
   { id: 'scan', label: '3D scan' },
   { id: 'assessment', label: 'Assessment' },
   { id: 'health_form', label: 'Health form' },
-  { id: 'book', label: 'Book slot' },
+  { id: 'book', label: 'Book & pay' },
   { id: 'consultation', label: 'Consultation' },
 ];
 

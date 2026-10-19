@@ -80,7 +80,7 @@ export function PageIntro({
               className="object-cover"
             />
             {imageNote ? (
-              <span className="absolute top-4 left-4 rounded-full bg-black/55 px-3 py-1.5 text-[11px] font-medium text-on-dark backdrop-blur">
+              <span className="absolute top-4 left-4 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-on-dark backdrop-blur">
                 {imageNote}
               </span>
             ) : null}

@@ -53,7 +53,7 @@ export function ExpectTimeline({ phases }: { phases: ExpectPhase[] }) {
       <div className="min-w-0">
         {/* Axis */}
         <div ref={axisRef} aria-hidden onMouseLeave={() => setHovered(null)}>
-          <p className="mb-5 text-[11px] font-semibold tracking-[0.2em] text-ink uppercase">Months on plan</p>
+          <p className="mb-5 text-xs font-semibold tracking-[0.2em] text-ink uppercase">Months on plan</p>
           <div className="space-y-1">
             {phases.map((p, i) => (
               <div
@@ -64,7 +64,7 @@ export function ExpectTimeline({ phases }: { phases: ExpectPhase[] }) {
               >
                 <span
                   className={cn(
-                    'text-[11px] font-semibold text-steel tabular-nums transition-colors duration-500',
+                    'text-xs font-semibold text-steel tabular-nums transition-colors duration-500',
                     active === p.id && 'text-ink',
                   )}
                 >
@@ -144,9 +144,9 @@ export function ExpectTimeline({ phases }: { phases: ExpectPhase[] }) {
                     onClick={() => setOpen(isOpen ? null : p.id)}
                     className="group/row grid min-h-16 w-full grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-2 py-3 text-left focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none focus-visible:ring-inset sm:gap-4"
                   >
-                    <span className="text-[11px] font-semibold text-steel tabular-nums">{num(i)}</span>
+                    <span className="text-xs font-semibold text-steel tabular-nums">{num(i)}</span>
                     <span className="min-w-0">
-                      <span className="block text-[11px] font-semibold tracking-[0.18em] text-brand uppercase">
+                      <span className="block text-xs font-semibold tracking-[0.18em] text-brand uppercase">
                         {p.when}
                       </span>
                       <span className="mt-1 block text-[17px] leading-snug font-medium text-ink">
@@ -178,7 +178,7 @@ export function ExpectTimeline({ phases }: { phases: ExpectPhase[] }) {
                 >
                   <div className="overflow-hidden" inert={!isOpen}>
                     <div className="pr-4 pb-6 pl-10 sm:pr-16 sm:pl-12">
-                      <p className="max-w-[58ch] text-[15px] leading-relaxed text-pretty text-body">
+                      <p className="max-w-[58ch] text-base leading-relaxed text-pretty text-body md:text-[15px]">
                         {p.body}
                       </p>
                       {p.sources.length > 0 ? (

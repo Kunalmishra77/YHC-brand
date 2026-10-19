@@ -17,7 +17,11 @@ export type ArticleImageKey =
 export interface Article {
   slug: string;
   title: string;
+  /** Short `<title>` (≤ 39 chars, the layout appends " · Your Hair Company") when `title` is longer (SEO-04). */
+  seoTitle?: string;
   dek: string;
+  /** Meta description, 140–155 chars (SEO-04). Falls back to `dek`. */
+  seoDescription?: string;
   category: ArticleCategory;
   readingMinutes: number;
   /** ISO date (YYYY-MM-DD), Asia/Kolkata business date. */

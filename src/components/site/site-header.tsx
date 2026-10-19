@@ -130,12 +130,14 @@ export function SiteHeader() {
                       <Link href="/book">{t('common.bookConsultation')}</Link>
                     </Button>
                   </SheetClose>
-                  <Button asChild variant="outline" className="h-12 border-steel">
-                    <a href={SITE.whatsappUrl}>
-                      <MessageCircle className="size-4" aria-hidden />
-                      {t('common.whatsapp')}
-                    </a>
-                  </Button>
+                  {SITE.whatsappAvailable ? (
+                    <Button asChild variant="outline" className="h-12 border-steel">
+                      <a href={SITE.whatsappUrl}>
+                        <MessageCircle className="size-4" aria-hidden />
+                        {t('common.whatsapp')}
+                      </a>
+                    </Button>
+                  ) : null}
                 </div>
               </div>
             </SheetContent>

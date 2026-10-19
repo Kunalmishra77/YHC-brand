@@ -1,13 +1,13 @@
-import { Clock, Link2Off, MessageCircle } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { PlanCheckout } from '@/components/checkout/plan-checkout';
 import type { PlanOptionView } from '@/components/checkout/types';
 import { GuaranteeLine } from '@/components/shared/pricing';
 import { StatusChip } from '@/components/shared/status-chip';
 import { Button } from '@/components/ui/button';
+import { publicCredential } from '@/lib/credentials';
 import { formatIst } from '@/lib/time';
-import { SITE } from '@/lib/site';
 import { getDoctor, getGuarantee, getPlans, getProduct } from '@/server/catalog';
 import { db, quotePlan } from '@/server/demo/store';
 import { getCurrentCustomer } from '@/server/session';
@@ -22,15 +22,8 @@ export default async function PlanLinkPage({ params }: PageProps<'/r/[token]'>) 
   const rec = s.recommendations.find((r) => r.token === token);
   const doctor = getDoctor();
 
-  if (!rec || rec.status === 'draft') {
-    return (
-      <LinkProblem
-        icon={<Link2Off className="size-6 text-steel" aria-hidden />}
-        title="This link doesn't look right"
-        body="It may be incomplete — please open it again from your WhatsApp message. If it still doesn't work, message us and we'll send a fresh one."
-      />
-    );
-  }
+  // FUN-06: unknown or unsent links are a real 404 (see ./not-found.tsx), not a 200 error page.
+  if (!rec || rec.status === 'draft') notFound();
 
   if (rec.status === 'paid') {
     const order = s.orders.find((o) => o.recommendationId === rec.id && o.status !== 'pending_payment');
@@ -52,24 +45,10 @@ export default async function PlanLinkPage({ params }: PageProps<'/r/[token]'>) 
     );
   }
 
+  // Expired links: `notFound()` cannot send 410, so they share the 404 page, whose copy says
+  // "invalid or has expired" and offers a fresh link / booking.
   const expired = rec.status !== 'sent' || new Date(rec.expiresAt) < new Date();
-  if (expired) {
-    return (
-      <LinkProblem
-        icon={<Clock className="size-6 text-steel" aria-hidden />}
-        title="This plan link has expired"
-        body={`For your safety, plan links work for a limited time. Your prescription from ${doctor.name} is still yours — message us and our team will send a new link.`}
-        action={
-          <Button asChild className="h-12 px-6">
-            <a href={SITE.whatsappUrl}>
-              <MessageCircle className="size-4" aria-hidden />
-              Ask for a new link on WhatsApp
-            </a>
-          </Button>
-        }
-      />
-    );
-  }
+  if (expired) notFound();
 
   const patient = s.customers.find((c) => c.id === rec.customerId);
   const firstName = patient?.name.split(' ')[0] ?? '';
@@ -105,7 +84,8 @@ export default async function PlanLinkPage({ params }: PageProps<'/r/[token]'>) 
               “{rec.note}”
             </blockquote>
             <figcaption className="mt-4 text-sm text-on-dark-muted">
-              {doctor.name}, {doctor.qualifications} · Reg. No. {doctor.registrationNo}
+              {doctor.name}, {doctor.qualifications}
+              {publicCredential(doctor.registrationNo) ? ` · Reg. No. ${doctor.registrationNo}` : null}
             </figcaption>
           </figure>
 

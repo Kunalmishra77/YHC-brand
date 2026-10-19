@@ -6,7 +6,7 @@ import type { ConfirmedView, HoldView, SignedInView, SlotDayView } from '@/compo
 import type { AppointmentStatus } from '@/lib/domain/types';
 import { AppError } from '@/lib/errors';
 import { serverEnv } from '@/lib/env.server';
-import { requireRole } from '@/lib/rbac';
+import { getSessionUser, requireRole } from '@/lib/rbac';
 import type { Result } from '@/lib/result';
 import {
   appointmentIdSchema,
@@ -38,6 +38,7 @@ import {
   signedInView,
   slotDays,
 } from './booking-views';
+import { claimCustomerByDemoOtp } from '@/server/demo/otp-claim';
 
 /*
  * Booking server actions (FR-M3-3..10). The demo store plays Postgres; `payConsultationAction` plays
@@ -99,7 +100,8 @@ export async function verifyOtpAction(
       throw new AppError('otp_invalid', 'That code does not match. Check the message and try again.', 422);
     }
     otpAttempts().delete(phone);
-    const customer = findOrCreateCustomer({ phone, source: 'website' });
+    const session = await getSessionUser();
+    const customer = claimCustomerByDemoOtp({ phone, source: 'website', sessionCustomerId: session?.customerId ?? null });
     await setCustomerSession(customer.id);
     return signedInView(customer);
   });

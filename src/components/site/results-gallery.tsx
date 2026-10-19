@@ -10,8 +10,9 @@ import { RAIL, RAIL_ITEM, TEXT_LINK } from './section';
 const RESULT_DISCLAIMER =
   'Individual results vary. Photos shared with the patient’s written consent; faces hidden for privacy. Unretouched.';
 
-export function resultDurationLabel(months: number | null): string {
-  if (months === null) return 'Duration: to be confirmed';
+/** Null until the clinic confirms the months between photos — then nothing is shown (ADR-33). */
+export function resultDurationLabel(months: number | null): string | null {
+  if (months === null) return null;
   return `Duration: ${months} ${months === 1 ? 'month' : 'months'} between photos`;
 }
 
@@ -127,7 +128,9 @@ function ResultCaption({ result, compact = false }: { result: ResultEntry; compa
         {result.patientLabel} <span className="text-steel">·</span> {result.concern}{' '}
         <span className="text-steel">·</span> {result.view}
       </p>
-      <p className="text-sm text-body">{resultDurationLabel(result.months)}</p>
+      {resultDurationLabel(result.months) ? (
+        <p className="text-sm text-body">{resultDurationLabel(result.months)}</p>
+      ) : null}
       {compact ? null : <p className="text-sm leading-relaxed text-pretty text-body">{result.note}</p>}
       <p className="text-[13px] leading-relaxed text-pretty text-muted-foreground">{RESULT_DISCLAIMER}</p>
     </figcaption>
@@ -159,7 +162,7 @@ function ResultLinkCard({ result }: { result: ResultEntry }) {
             />
             <span
               className={cn(
-                'absolute top-2.5 left-2.5 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-[0.12em] uppercase backdrop-blur-sm',
+                'absolute top-2.5 left-2.5 rounded-full px-2 py-0.5 text-xs font-semibold tracking-[0.12em] uppercase backdrop-blur-sm',
                 label === 'Before' ? 'bg-black/60 text-white' : 'bg-white/85 text-ink',
               )}
             >
@@ -182,7 +185,7 @@ function PlaceholderFrame({ index }: { index: number }) {
             key={label}
             className="relative flex aspect-[4/5] flex-col items-center justify-center gap-2 bg-[#f1efec] bg-[radial-gradient(circle_at_1px_1px,rgba(107,112,120,0.18)_1px,transparent_0)] [background-size:14px_14px]"
           >
-            <span className="absolute top-3 left-3 rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-semibold tracking-[0.1em] text-ink uppercase">
+            <span className="absolute top-3 left-3 rounded-full bg-white/80 px-2.5 py-1 text-xs font-semibold tracking-[0.1em] text-ink uppercase">
               {label}
             </span>
             <ImageOff className="size-5 text-steel" aria-hidden />

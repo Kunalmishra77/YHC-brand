@@ -59,12 +59,12 @@ export function DoctorFeature() {
     >
       <div className="grid lg:grid-cols-2">
         {/* Portrait — edge to edge on every screen */}
-        <div className="relative lg:min-h-[52rem]">
+        <div className="relative lg:min-h-[40rem]">
           <div className="relative lg:absolute lg:inset-0">
             <PortraitParallax
               image={DOCTOR_PORTRAIT}
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="aspect-[4/5] bg-ink-2 sm:aspect-[5/4] lg:aspect-auto lg:h-full"
+              className="aspect-square bg-ink-2 sm:aspect-[5/4] lg:aspect-auto lg:h-full"
             />
             <div
               className="pointer-events-none absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/10 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-obsidian/40"
@@ -97,14 +97,14 @@ export function DoctorFeature() {
         </div>
 
         {/* Text block */}
-        <div className="flex items-center px-[var(--yhc-gutter)] pt-14 pb-16 sm:pt-16 md:pb-24 lg:px-16 lg:py-24 xl:px-24">
+        <div className="flex items-center px-[var(--yhc-gutter)] pt-12 pb-14 sm:pt-14 lg:px-16 lg:py-16 xl:px-20">
           <Reveal className="w-full max-w-xl">
             <p className="eyebrow text-brand-on-dark">
               {doctorClaimLabel()} · <span className="whitespace-nowrap">Dermatologist-led</span>
             </p>
             <h2
               id="doctor-feature-heading"
-              className="display mt-5 text-[clamp(3rem,1.9rem+4.6vw,5.5rem)] leading-[0.95] text-balance text-on-dark"
+              className="display mt-4 text-[clamp(2.75rem,1.8rem+3.8vw,4.75rem)] leading-[0.95] text-balance text-on-dark"
             >
               {doctor.name}
             </h2>
@@ -116,21 +116,21 @@ export function DoctorFeature() {
               </p>
             ) : null}
 
-            <div className="mt-10 border-l border-platinum/60 pl-5 sm:pl-6">
+            <div className="mt-7 border-l border-platinum/60 pl-5 sm:pl-6">
               <p className="font-display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)] leading-snug font-medium text-balance text-on-dark">
                 Assessment first. Treatment only when it can help.
               </p>
               <p className="mt-3 text-[13px] text-on-dark-muted">How every YHC plan begins</p>
             </div>
 
-            <p className="mt-8 text-[17px] leading-relaxed text-pretty text-on-dark-muted">{doctor.bio}</p>
+            <p className="mt-6 text-base leading-relaxed text-pretty text-on-dark-muted lg:text-[17px]">{doctor.bio}</p>
 
-            <h3 className="mt-12 mb-1 text-[13px] font-semibold tracking-[0.12em] text-brand-on-dark uppercase">
+            <h3 className="mt-8 mb-1 text-[13px] font-semibold tracking-[0.12em] text-brand-on-dark uppercase">
               What he assesses and treats
             </h3>
             <TreatmentIndex items={TREATMENTS} />
 
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button asChild className={`group w-full rounded-full sm:w-auto ${CTA_SILVER}`}>
                 <Link href="/doctor-tyagi">
                   Meet {doctor.name}

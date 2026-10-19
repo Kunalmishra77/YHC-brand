@@ -14,7 +14,7 @@ import { ScanExplorer } from './scan-invite/scan-explorer';
  */
 
 const STEPS = [
-  { title: 'A few details', body: 'Name, mobile and address — about 30 seconds.' },
+  { title: 'A few details', body: 'Name and mobile, confirmed with a code — about 30 seconds.' },
   {
     title: `Up to ${CAPTURE_ZONES.length} guided zones`,
     body: `Your phone camera, with on-screen guidance. At least ${MIN_CAPTURED_ZONES} are needed.`,
@@ -39,7 +39,7 @@ export function ScanInvite() {
         <Reveal className="lg:col-start-1 lg:row-start-1">
           <p className="eyebrow">Take your scalp scan</p>
           <h2 id="scan-invite-heading" className="mt-5">
-            <span className="display block text-[clamp(4.25rem,2.5rem+8vw,9rem)] leading-[0.9] tracking-[-0.01em]">
+            <span className="display block text-[clamp(3.25rem,2rem+5.5vw,6rem)] leading-[0.9] tracking-[-0.01em]">
               Look closer.
             </span>
             <span className="mt-5 block max-w-[24ch] font-display text-[clamp(1.75rem,1.4rem+1.2vw,2.375rem)] leading-tight font-medium text-body">
@@ -68,7 +68,7 @@ export function ScanInvite() {
                 <span className="price pt-0.5 text-[13px] text-muted-foreground">0{i + 1}</span>
                 <div className="min-w-0">
                   <p className="font-semibold text-ink">{step.title}</p>
-                  <p className="mt-1 text-[15px] leading-relaxed text-body">{step.body}</p>
+                  <p className="mt-1 text-base leading-relaxed text-body md:text-[15px]">{step.body}</p>
                 </div>
               </li>
             ))}

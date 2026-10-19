@@ -2,8 +2,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Logo } from '@/components/shared/logo';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { serverEnv } from '@/lib/env.server';
-import { resetDemoData, signOutDemo, switchDemoRole } from './actions';
+import { demoCustomerSummary } from '@/server/demo/role-summary';
+import { hasDemoAccessCookie } from '@/server/demo/session';
+import { resetDemoData, signOutDemo, switchDemoRole, unlockDemo } from './actions';
 
 export const metadata = { title: 'Demo — choose a role', robots: { index: false } };
 
@@ -11,7 +15,10 @@ const ROLES = [
   {
     role: 'customer',
     title: 'Customer',
-    who: 'Rahul Mehra · day 34 of a 3-month plan',
+    // FUN-10: same seeded plan + planProgress() as the portal, read at render time.
+    get who() {
+      return demoCustomerSummary();
+    },
     see: 'Plan progress, consultations, orders, progress photos, guarantee tracker, reorder.',
   },
   {
@@ -44,8 +51,53 @@ export default async function DemoPage(props: PageProps<'/demo'>) {
   if (!serverEnv.DEMO_MODE) notFound();
   const sp = await props.searchParams;
   const next = typeof sp.next === 'string' ? sp.next : '';
+  if (!(await hasDemoAccessCookie())) {
+    const error =
+      sp.error === 'limit'
+        ? 'Too many attempts. Please wait 15 minutes and try again.'
+        : sp.error === 'code'
+          ? 'That code is not right. Please check it and try again.'
+          : null;
+    return (
+      <main id="main" className="min-h-dvh bg-pearl">
+        <div className="container-yhc max-w-md py-12 md:py-20">
+          <Logo />
+          <h1 className="display mt-10 text-3xl">Demo access</h1>
+          <p className="mt-3 text-body">
+            The staff portals and the role switcher are for the YHC team. Enter the access code you were
+            given. Patients can start on the website — no code needed.
+          </p>
+          <form action={unlockDemo} className="mt-8 space-y-3" noValidate>
+            <input type="hidden" name="next" value={next} />
+            <Label htmlFor="demo-code">Access code</Label>
+            <Input
+              id="demo-code"
+              name="code"
+              type="password"
+              autoComplete="off"
+              required
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? 'demo-code-error' : undefined}
+              className="h-12"
+            />
+            {error ? (
+              <p id="demo-code-error" role="alert" className="text-sm text-danger">
+                {error}
+              </p>
+            ) : null}
+            <Button type="submit" className="h-12 w-full">
+              Continue
+            </Button>
+          </form>
+          <Button asChild variant="ghost" className="mt-6 h-11">
+            <Link href="/">Back to the website</Link>
+          </Button>
+        </div>
+      </main>
+    );
+  }
   return (
-    <main className="min-h-dvh bg-pearl">
+    <main id="main" className="min-h-dvh bg-pearl">
       <div className="container-yhc max-w-3xl py-12 md:py-20">
         <Logo />
         <h1 className="display mt-10 text-3xl">See the platform from each side</h1>

@@ -1,6 +1,5 @@
 import { ArrowRight, Check } from 'lucide-react';
 import Link from 'next/link';
-import { t } from '@/i18n/en';
 import type { GuaranteePolicy } from '@/lib/domain/types';
 import { getGuarantee } from '@/server/catalog';
 import { GuaranteeSeal } from './guarantee/seal';
@@ -85,11 +84,6 @@ export function GuaranteeCompact() {
             >
               Full terms
             </Link>
-            {guarantee.isDraft ? (
-              <p className="mt-1 inline-flex items-center rounded-full border border-dashed border-steel px-3 py-1 text-[13px] text-on-dark-muted">
-                {t('common.draftTerms')}
-              </p>
-            ) : null}
           </div>
         </div>
       </div>

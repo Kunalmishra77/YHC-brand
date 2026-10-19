@@ -54,7 +54,7 @@ function VideoCard({ story }: { story: StoryVideo }) {
               className="object-cover opacity-80 transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/30 to-transparent" />
-            <span className="absolute top-3 left-3 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-on-dark backdrop-blur">
+            <span className="absolute top-3 left-3 rounded-full bg-white/10 px-2.5 py-1 text-xs font-medium text-on-dark backdrop-blur">
               Illustrative b-roll
             </span>
             <span className="absolute inset-0 m-auto flex size-14 items-center justify-center rounded-full border border-white/30 bg-white/15 text-white backdrop-blur-md transition-transform group-hover:scale-105 motion-reduce:transition-none">

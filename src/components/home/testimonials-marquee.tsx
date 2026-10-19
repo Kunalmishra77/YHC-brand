@@ -45,7 +45,7 @@ export function TestimonialsMarquee() {
           lede={NOTE}
         />
         {items.length >= 3 ? (
-          <Marquee label="Patient testimonials" durationSec={60} itemClassName="flex">
+          <Marquee label="Patient testimonials" durationSec={60} minItems={6} itemClassName="flex">
             {items.map((item) => (
               <QuoteCard key={item.id} item={item} />
             ))}
@@ -67,10 +67,12 @@ export function TestimonialsMarquee() {
 /** Empty state: how a patient can share their experience, with consent. No quotes, no names. */
 function ShareYourStory() {
   return (
-    <section className="relative overflow-hidden bg-card" aria-labelledby="testimonials-heading">
+    <section className="relative isolate overflow-hidden bg-card" aria-labelledby="testimonials-heading">
       <div className="absolute inset-x-0 top-0 h-px bg-line" aria-hidden />
+      {/* Decorative glyph sits behind everything (-z-10 inside the isolated section) and behind the
+          heading column only, so it never overlaps or tints a step card. */}
       <span
-        className="pointer-events-none absolute -top-10 right-[-1rem] font-display text-[16rem] leading-none text-mist select-none md:right-8 md:text-[22rem]"
+        className="pointer-events-none absolute -top-10 left-[-1rem] -z-10 font-display text-[12rem] leading-none text-mist select-none md:left-4 md:text-[18rem]"
         aria-hidden
       >
         ”
@@ -106,16 +108,17 @@ function ShareYourStory() {
             </div>
           </Reveal>
 
-          <ol className="grid gap-px overflow-hidden rounded-[var(--radius-xl)] bg-line ring-1 ring-line sm:grid-cols-3 lg:self-end">
+          {/* Static cards (no per-card fade-in), so none is ever left faded or partly hidden. */}
+          <ol className="relative grid gap-px overflow-hidden rounded-[var(--radius-xl)] bg-line ring-1 ring-line sm:grid-cols-3 lg:self-end">
             {STEPS.map((step, i) => (
-              <li key={step.title} className="bg-card">
-                <Reveal delay={i * 0.08} className="h-full p-5 sm:p-6">
-                  <span className="font-display text-[2rem] leading-none text-steel" aria-hidden>
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <h3 className="mt-3 text-base font-semibold">{step.title}</h3>
-                  <p className="mt-2 text-[15px] leading-relaxed text-pretty text-body">{step.text}</p>
-                </Reveal>
+              <li key={step.title} className="h-full bg-card p-5 sm:p-6">
+                <span className="font-display text-[2rem] leading-none text-steel" aria-hidden>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 className="mt-3 text-base font-semibold">{step.title}</h3>
+                <p className="mt-2 text-base leading-relaxed text-pretty text-body sm:text-[15px]">
+                  {step.text}
+                </p>
               </li>
             ))}
           </ol>

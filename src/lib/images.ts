@@ -140,7 +140,10 @@ export const CLINICAL = {
 } as const;
 
 export interface SiteVideo {
+  /** H.264 MP4 (universal fallback). */
   src: string;
+  /** Optional VP9 WebM, offered first when present (smaller). */
+  webm?: string;
   poster: string;
   /** Short description for screen readers (b-roll has no audio). */
   label: string;
@@ -149,21 +152,25 @@ export interface SiteVideo {
 export const VIDEOS = {
   hero: {
     src: '/media/video/hero-microscope.mp4',
+    webm: '/media/video/hero-microscope.webm',
     poster: '/media/img/poster-hero-microscope.jpg',
     label: 'Slow close-up of a laboratory microscope (illustrative footage)',
   },
   science: {
     src: '/media/video/science-cellular.mp4',
+    webm: '/media/video/science-cellular.webm',
     poster: '/media/img/poster-science-cellular.jpg',
     label: 'Abstract microscopic texture in blue light (illustrative footage)',
   },
   journey: {
     src: '/media/video/journey-formulation.mp4',
+    webm: '/media/video/journey-formulation.webm',
     poster: '/media/img/poster-journey-formulation.jpg',
     label: 'Glass laboratory tubes in soft blue light (illustrative footage)',
   },
   guarantee: {
     src: '/media/video/guarantee-bubbles.mp4',
+    webm: '/media/video/guarantee-bubbles.webm',
     poster: '/media/img/poster-guarantee-bubbles.jpg',
     label: 'Slow bubbles rising through clear liquid (illustrative footage)',
   },

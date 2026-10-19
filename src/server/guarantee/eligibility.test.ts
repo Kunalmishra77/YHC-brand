@@ -61,14 +61,16 @@ describe('evaluateEligibility', () => {
     expect(r.refundPaise).toBe(724950);
   });
 
-  it('reports pending (not failed) while the plan is still running', () => {
+  it('reports on track / pending (not failed) while the plan is still running', () => {
     const input = happy('2026-02-03');
     input.photos = [{ takenOn: '2026-01-30' }];
     input.consults = [];
     const r = evaluateEligibility(POLICY, input);
     expect(r.eligible).toBe(false);
-    expect(byId(r, 'min_plan_months')?.state).toBe('pending');
-    expect(byId(r, 'monthly_photos')?.state).toBe('pending');
+    expect(byId(r, 'min_plan_months')?.state).toBe('on_track');
+    expect(byId(r, 'checkin_response')?.state).toBe('on_track');
+    expect(byId(r, 'monthly_photos')?.state).toBe('on_track');
+    expect(r.rules.filter((x) => x.state === 'on_track').every((x) => !x.passed)).toBe(true);
     expect(byId(r, 'monthly_photos')?.detail).toContain('Month 2 photos are due by 2 Mar 2026');
     expect(byId(r, 'followup_consult')?.state).toBe('pending');
     expect(byId(r, 'claim_window')?.state).toBe('pending');
@@ -88,6 +90,49 @@ describe('evaluateEligibility', () => {
     const input = happy('2026-04-10');
     input.checkins = input.checkins.map((c, i) => ({ ...c, replied: i !== 2 }));
     expect(byId(evaluateEligibility(POLICY, input), 'checkin_response')?.passed).toBe(true);
+  });
+
+  it('reports pending when nothing can be measured yet', () => {
+    const input = happy('2026-01-05');
+    input.checkins = [];
+    input.photos = [];
+    input.consults = [];
+    const r = evaluateEligibility(POLICY, input);
+    expect(byId(r, 'checkin_response')?.state).toBe('pending');
+    expect(byId(r, 'monthly_photos')?.state).toBe('pending');
+  });
+
+  it('shows a booked upcoming follow-up as on track', () => {
+    const input = happy('2026-02-03');
+    input.consults = [{ kind: 'follow_up', status: 'booked', on: '2026-02-20' }];
+    const rule = byId(evaluateEligibility(POLICY, input), 'followup_consult');
+    expect(rule?.state).toBe('on_track');
+    expect(rule?.passed).toBe(false);
+  });
+
+  // FUN-02: "at least 75%" — 75 and 76 are on target, 74 is not; before and after the plan finishes.
+  describe.each([
+    { pct: 74, total: 50, replied: 37, onTarget: false },
+    { pct: 75, total: 4, replied: 3, onTarget: true },
+    { pct: 76, total: 25, replied: 19, onTarget: true },
+  ])('check-in response at $pct%', ({ pct, total, replied, onTarget }) => {
+    const withReplies = (today: string): EligibilityInput => ({
+      ...happy(today),
+      checkins: Array.from({ length: total }, (_, i) => ({ sentOn: '2026-01-10', replied: i < replied })),
+    });
+
+    it(`is ${onTarget ? 'on track' : 'not met'} before the plan finishes`, () => {
+      const rule = byId(evaluateEligibility(POLICY, withReplies('2026-02-15')), 'checkin_response');
+      expect(rule?.detail).toContain(`(${pct}%)`);
+      expect(rule?.state).toBe(onTarget ? 'on_track' : 'not_met');
+      expect(rule?.passed).toBe(false);
+    });
+
+    it(`is ${onTarget ? 'met' : 'not met'} after the plan finishes`, () => {
+      const rule = byId(evaluateEligibility(POLICY, withReplies('2026-04-10')), 'checkin_response');
+      expect(rule?.state).toBe(onTarget ? 'met' : 'not_met');
+      expect(rule?.passed).toBe(onTarget);
+    });
   });
 
   it('fails monthly photos when a month is missed', () => {

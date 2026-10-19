@@ -26,17 +26,19 @@ export async function generateMetadata({ params }: PageProps<'/blog/[slug]'>): P
   const article = getArticle(slug);
   if (!article) return { title: 'Article not found' };
   const base = pageMetadata({
-    title: article.title,
-    description: article.dek,
+    title: article.seoTitle ?? article.title,
+    description: article.seoDescription ?? article.dek,
     path: `/blog/${article.slug}`,
+    // The 1200×630 card comes from ./opengraph-image.tsx (SEO-02).
+    ownImage: true,
   });
   return {
     ...base,
     openGraph: {
       ...base.openGraph,
+      title: article.title,
       type: 'article',
       publishedTime: article.publishedOn,
-      images: [{ url: articleImage(article).src, alt: articleImage(article).alt }],
     },
   };
 }
@@ -94,6 +96,24 @@ export default async function ArticlePage({ params }: PageProps<'/blog/[slug]'>)
             url: siteUrl,
             email: SITE.supportEmail,
           },
+        }}
+      />
+      {/* SEO-06. lastReviewed only once the article is medically reviewed (no review date is stored yet).
+          TODO(client): reviewedBy Physician once registration is confirmed — docs/16 C1 */}
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'MedicalWebPage',
+          name: article.title,
+          headline: article.title,
+          description: article.seoDescription ?? article.dek,
+          url,
+          inLanguage: 'en-IN',
+          datePublished: article.publishedOn,
+          audience: { '@type': 'PeopleAudience', audienceType: 'Patient' },
+          about: { '@type': 'Thing', name: article.category },
+          isPartOf: { '@type': 'WebSite', name: 'Your Hair Company', url: siteUrl },
+          publisher: { '@type': 'Organization', name: 'Your Hair Company', url: siteUrl },
         }}
       />
 
@@ -216,7 +236,7 @@ export default async function ArticlePage({ params }: PageProps<'/blog/[slug]'>)
                   variant="outline"
                   className="h-12 border-line-dark bg-transparent px-6 text-base text-on-dark hover:bg-graphite hover:text-on-dark"
                 >
-                  <Link href="/assessment">Take the assessment first</Link>
+                  <Link href="/start">Start with the free 3D scan</Link>
                 </Button>
               </div>
             </div>

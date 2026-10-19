@@ -139,7 +139,7 @@ function InlineFigure({
         tall ? 'aspect-[4/5.4]' : 'aspect-square',
       )}
     >
-      <p className="price absolute top-4 left-5 text-[11px] tracking-[0.16em] text-steel uppercase">
+      <p className="price absolute top-4 left-5 text-xs tracking-[0.16em] text-steel uppercase">
         Fig. {pad(index + 1)}
       </p>
       <Figure id={id} play={inView} reduced={reduced} targets={targets} />
@@ -165,10 +165,10 @@ function StageChrome({ index, total, kicker }: { index: number; total: number; k
         />
       </svg>
       <div className="absolute inset-x-8 top-5 flex items-center justify-between gap-4 xl:inset-x-10">
-        <p className="price truncate text-[11px] tracking-[0.16em] text-on-dark-muted uppercase">
+        <p className="price truncate text-xs tracking-[0.16em] text-on-dark-muted uppercase">
           Fig. {pad(index + 1)} — {kicker}
         </p>
-        <p className="shrink-0 text-[11px] tracking-[0.16em] text-steel uppercase">Illustrative</p>
+        <p className="shrink-0 text-xs tracking-[0.16em] text-steel uppercase">Illustrative</p>
       </div>
       <div className="absolute inset-x-8 bottom-5 flex gap-1.5 xl:inset-x-10">
         {Array.from({ length: total }, (_, i) => (

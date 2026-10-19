@@ -94,7 +94,7 @@ export function IngredientsSpread({ products }: { products: SpreadProduct[] }) {
           aria-label="Products"
           aria-orientation="horizontal"
           onKeyDown={onTabKeyDown}
-          className="-mx-[var(--yhc-gutter)] flex snap-x snap-mandatory scroll-px-[var(--yhc-gutter)] [scrollbar-width:none] gap-2 overflow-x-auto overscroll-x-contain px-[var(--yhc-gutter)] lg:mx-0 lg:grid lg:auto-rows-[11rem] lg:grid-cols-6 lg:overflow-visible lg:px-0 xl:auto-rows-[12.5rem] [&::-webkit-scrollbar]:hidden"
+          className="-mx-[var(--yhc-gutter)] flex snap-x snap-mandatory scroll-px-[var(--yhc-gutter)] [scrollbar-width:none] gap-2 overflow-x-auto overscroll-x-contain px-[var(--yhc-gutter)] lg:mx-0 lg:grid lg:auto-rows-[9rem] lg:grid-cols-6 lg:overflow-visible lg:px-0 xl:auto-rows-[10rem] [&::-webkit-scrollbar]:hidden"
         >
           {products.map((p, i) => {
             const selected = i === productIdx;
@@ -121,7 +121,7 @@ export function IngredientsSpread({ products }: { products: SpreadProduct[] }) {
                 {p.image ? (
                   <Image
                     src={p.image.src}
-                    alt=""
+                    alt={p.image.alt}
                     fill
                     sizes={products.length === 4 || i === 0 ? '(min-width: 1024px) 30vw, 72vw' : '(min-width: 1024px) 20vw, 72vw'}
                     className={cn(
@@ -133,11 +133,14 @@ export function IngredientsSpread({ products }: { products: SpreadProduct[] }) {
                 {/* Thin caption bar; inverted when selected. */}
                 <span
                   className={cn(
-                    'absolute inset-x-0 bottom-0 flex min-h-12 items-center justify-between gap-3 px-4 py-2.5 text-[11px] font-semibold tracking-[0.18em] uppercase transition-colors duration-500',
+                    'absolute inset-x-0 bottom-0 flex min-h-12 items-center justify-between gap-3 px-4 py-2.5 text-xs font-semibold tracking-[0.16em] uppercase transition-colors duration-500',
                     selected ? 'bg-obsidian text-on-dark' : 'bg-white/90 text-ink backdrop-blur-sm',
                   )}
                 >
-                  <span className="min-w-0 truncate">{p.name}</span>
+                  {/* The image alt already names the product (with pack size) for the tab's accessible name. */}
+                  <span className="min-w-0 truncate" aria-hidden={p.image ? true : undefined}>
+                    {p.name}
+                  </span>
                   <span className="shrink-0 font-medium tracking-normal normal-case">
                     {p.ingredients.length} ingredients
                   </span>
@@ -157,7 +160,7 @@ export function IngredientsSpread({ products }: { products: SpreadProduct[] }) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.5, ease: EASE }}
             >
-              <p className="text-[11px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+              <p className="text-xs font-semibold tracking-[0.2em] text-muted-foreground uppercase">
                 Inside
               </p>
               <h3 className="display mt-3 text-[clamp(2.25rem,1.7rem+2vw,3.25rem)] leading-[1] text-balance">
@@ -213,7 +216,7 @@ export function IngredientsSpread({ products }: { products: SpreadProduct[] }) {
                         )}
                       >
                         <div className="overflow-hidden" inert={!isOpen}>
-                          <p className="max-w-[52ch] pr-14 pb-5 pl-16 text-[15px] leading-relaxed text-pretty text-body">
+                          <p className="max-w-[52ch] pr-14 pb-5 pl-16 text-base md:text-[15px] leading-relaxed text-pretty text-body">
                             {ing.note}
                           </p>
                         </div>

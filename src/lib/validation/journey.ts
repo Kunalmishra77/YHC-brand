@@ -12,15 +12,7 @@ import { MIN_AGE, concernSchema, intakeSchema, mobileSchema, otpSchema } from '.
 export const startJourneySchema = z.object({
   name: z.string().trim().min(2, 'Please enter your full name').max(80, 'Please keep it under 80 characters'),
   mobile: mobileSchema,
-  address: z
-    .string()
-    .trim()
-    .min(6, 'Please enter your address (house, street, city)')
-    .max(200, 'Please keep it under 200 characters'),
-  pincode: z
-    .string()
-    .trim()
-    .regex(/^[1-9]\d{5}$/, 'Enter a 6-digit PIN code'),
+  // No address here (ADR-33, audit UX-04): it is collected at plan checkout, when it is needed.
   consent: z.boolean().refine((v) => v, 'Please agree to continue'),
 });
 export type StartJourneyInput = z.input<typeof startJourneySchema>;

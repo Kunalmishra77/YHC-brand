@@ -110,6 +110,13 @@ for (const [key, files] of Object.entries(PRODUCTS)) {
   }
 }
 
+// JPEG pack crops for share cards (next/og cannot decode WebP).
+mkdirSync(join(OUT, 'products', 'og'), { recursive: true });
+for (const [key, files] of Object.entries(PRODUCTS)) {
+  const info = await sharp(files[0]).resize(520, 630, { fit: 'cover' }).jpeg({ quality: 80, mozjpeg: true }).toFile(join(OUT, 'products', 'og', `${key}.jpg`));
+  report.push(`${info.width}x${info.height}\t${Math.round(info.size / 1024)} KB\t${join(OUT, 'products', 'og', `${key}.jpg`)}`);
+}
+
 /* ---------- ingredient crops [left, top, width, height] from the client's flat-lay boards ---------- */
 const BOARDS = {
   capsule: P('exec-9397c4a7-4437-4458-b731-42f26a55bb27.png'),

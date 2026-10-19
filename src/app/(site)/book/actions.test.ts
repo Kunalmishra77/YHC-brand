@@ -65,6 +65,22 @@ describe('booking actions', () => {
     expect(jar.get('yhc_demo_customer')).toBe(view.customerId);
   });
 
+  it('signs a session cookie and refuses a demo OTP claim of someone else’s number (SEC-02)', async () => {
+    await signIn();
+    expect(jar.get('yhc_demo_sig')).toBeTruthy();
+    jar.clear(); // another visitor, another browser
+    const res = await book.verifyOtpAction({ mobile: '9812345678', code: '123456' });
+    expect(res.ok).toBe(false);
+    if (!res.ok) expect(res.error.code).toBe('demo_number_in_use');
+  });
+
+  it('ignores a hand-made role cookie without a valid signature (SEC-01)', async () => {
+    jar.set('yhc_demo_role', 'admin');
+    jar.set('yhc_demo_sig', 'forged');
+    const { getSessionUser } = await import('@/lib/rbac');
+    expect(await getSessionUser()).toBeNull();
+  });
+
   it('blocks under-18s in the short form', async () => {
     await signIn();
     const res = await book.holdSlotAction({ ...details, age: '17', startsAt: await firstSlot() });
@@ -137,11 +153,13 @@ describe('booking actions', () => {
       familyHistory: 'Father',
       photos: 3,
     };
+    const ownerCookies = new Map(jar);
     jar.clear();
     await signIn('9898989898');
     expect((await book.saveIntakeAction(form)).ok).toBe(false);
+    // Back on the owner's own browser (signed session) — a fresh browser could not claim the number.
     jar.clear();
-    await signIn();
+    for (const [k, v] of ownerCookies) jar.set(k, v);
     expect((await book.saveIntakeAction(form)).ok).toBe(true);
     const appt = db().appointments.find((a) => a.id === hold.data.appointmentId);
     expect(appt?.intakeDone && appt.photosDone).toBe(true);

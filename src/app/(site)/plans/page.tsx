@@ -19,7 +19,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Treatment plans',
   description:
-    'Compare 1, 2 and 3-month treatment plans: total price, price per month and savings. Plans are prescribed after your consultation with Dr. Tyagi.',
+    'Compare 1, 2 and 3-month treatment plans by total price, price per month and savings. Plans are prescribed after a consultation with Dr. Tyagi.',
   path: '/plans',
 });
 

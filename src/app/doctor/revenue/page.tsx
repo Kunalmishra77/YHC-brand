@@ -2,14 +2,14 @@ import type { Metadata } from 'next';
 import { KpiTile } from '@/components/shared/kpi-tile';
 import { PageHeader } from '@/components/shared/page-header';
 import { EmptyState } from '@/components/shared/states';
-import { formatINR } from '@/lib/money';
+import { formatINR, formatINRWhole } from '@/lib/money';
 import { requireDoctorPage } from '@/server/doctor/auth';
 import { getRevenue } from '@/server/doctor/queries';
 
 export const metadata: Metadata = { title: 'Revenue · Doctor Portal' };
 
 function delta(current: number, previous: number, unit: 'money' | 'count') {
-  const fmt = (v: number) => (unit === 'money' ? formatINR(v) : String(v));
+  const fmt = (v: number) => (unit === 'money' ? formatINRWhole(v) : String(v));
   if (previous === 0 && current === 0) return 'No change vs last month';
   if (previous === 0) return `Up from ${fmt(0)} last month`;
   const pct = Math.round(((current - previous) / previous) * 100);
@@ -19,49 +19,58 @@ function delta(current: number, previous: number, unit: 'money' | 'count') {
 
 export default async function RevenuePage() {
   await requireDoctorPage('/doctor/revenue');
-  const { series, current, previous, byPlan, recsSent, recsPaid } = getRevenue();
+  const {
+    series,
+    current,
+    previous,
+    avgPlanPaise,
+    byPlan,
+    recsSent,
+    recsPaid,
+    planOrdersAllTime,
+    planOrdersWithoutLink,
+  } = getRevenue();
   const max = Math.max(1, ...series.map((s) => s.consultPaise + s.planPaise));
   const planMax = Math.max(1, ...byPlan.map((b) => b.paise));
-  const avgPlan = current.planCount ? Math.round(current.planPaise / current.planCount) : 0;
 
   return (
     <>
       <PageHeader
         title="Revenue"
-        description={`Your consultation fees and plans bought from your recommendations · ${current.label} so far`}
+        description={`Your consultation fees and paid plan orders ·${current.label} so far`}
       />
       <div className="mb-8 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 xl:grid-cols-4">
         <KpiTile
           label="Consultation fees this month"
-          value={formatINR(current.consultPaise)}
+          value={formatINRWhole(current.consultPaise)}
           delta={delta(current.consultPaise, previous.consultPaise, 'money')}
           definition="₹ fees of paid consultations (booked, completed or no-show), by consultation date (IST). Refunds are not deducted in the demo."
         />
         <KpiTile
           label="Plan revenue this month"
-          value={formatINR(current.planPaise)}
+          value={formatINRWhole(current.planPaise)}
           delta={delta(current.planPaise, previous.planPaise, 'money')}
-          definition="Amount paid for plan orders created from your recommendations, after the consultation credit, by payment date (IST). Includes GST."
+          definition="Amount paid for every paid plan order (not pending, cancelled or refunded), after the consultation credit, by payment date (IST). Includes GST. Rounded to whole rupees."
         />
         <KpiTile
-          label="Plans bought this month"
+          label="Plans paid this month"
           value={String(current.planCount)}
           delta={
-            avgPlan
-              ? `Average ${formatINR(avgPlan)} per plan`
+            avgPlanPaise
+              ? `Average ${formatINRWhole(avgPlanPaise)} per plan`
               : delta(current.planCount, previous.planCount, 'count')
           }
-          definition="Number of paid plan orders from your recommendations this month."
+          definition="Number of paid plan orders this month (the same orders as plan revenue), by payment date (IST). Average = plan revenue ÷ plans paid, rounded to whole rupees."
         />
         <KpiTile
-          label="Recommendations paid"
+          label="Plan links paid · all time"
           value={`${recsPaid} of ${recsSent}`}
           delta={
             recsSent
-              ? `${Math.round((recsPaid / recsSent) * 100)}% of plans sent were bought`
-              : 'No plans sent yet'
+              ? `${Math.round((recsPaid / recsSent) * 100)}% of plan links sent were paid`
+              : 'No plan links sent yet'
           }
-          definition="All time: recommendations with a paid plan ÷ recommendations sent."
+          definition={`All time: plan links you sent (recommendations) that were paid ÷ plan links sent. ${planOrdersWithoutLink} of ${planOrdersAllTime} paid plan orders were placed without a plan link (e.g. reorders), so they count in "Plans paid" but not here.`}
         />
       </div>
 

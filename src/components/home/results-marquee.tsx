@@ -21,7 +21,7 @@ export function ResultsMarquee() {
     view: r.view,
     before: { src: r.before.src, alt: r.before.alt },
     after: { src: r.after.src, alt: r.after.alt },
-    duration: resultDurationLabel(r.months),
+    duration: resultDurationLabel(r.months) ?? '',
     note: r.note,
   }));
 
@@ -34,7 +34,7 @@ export function ResultsMarquee() {
       <Reveal className="container-yhc text-center">
         <p className="eyebrow">Before &amp; after</p>
         <h2 id="results-heading" className="mt-5">
-          <span className="display block text-[clamp(4.5rem,2.4rem+9vw,10rem)] leading-[0.88] tracking-[-0.015em]">
+          <span className="display block text-[clamp(3.25rem,2rem+5.5vw,6rem)] leading-[0.88] tracking-[-0.015em]">
             Results
           </span>
           <span className="sr-only">: </span>
@@ -42,7 +42,7 @@ export function ResultsMarquee() {
             What happened when they used it?
           </span>
         </h2>
-        <p className="mx-auto mt-5 max-w-md text-[15px] leading-relaxed text-pretty text-body">
+        <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-pretty text-body md:text-[15px]">
           Real patients, photographed before starting and at a later visit, after a plan prescribed by the
           doctor. Tap a photo to compare.
         </p>

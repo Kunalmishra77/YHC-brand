@@ -33,12 +33,14 @@ export default async function AssessmentPage() {
             <Link href="/start/details">Talk to a doctor about other options</Link>
           </Button>
           <PrintSummaryButton />
-          <Button asChild variant="outline" className="h-12 border-steel px-6 text-base">
-            <a href={SITE.whatsappUrl} target="_blank" rel="noreferrer">
-              <MessageCircle className="size-4" aria-hidden />
-              Ask us on WhatsApp
-            </a>
-          </Button>
+          {SITE.whatsappAvailable ? (
+            <Button asChild variant="outline" className="h-12 border-steel px-6 text-base">
+              <a href={SITE.whatsappUrl} target="_blank" rel="noreferrer">
+                <MessageCircle className="size-4" aria-hidden />
+                Ask us on WhatsApp
+              </a>
+            </Button>
+          ) : null}
         </div>
         <p className="text-[13px] text-muted-foreground">
           A consultation can still help you understand the cause and talk through other options with the

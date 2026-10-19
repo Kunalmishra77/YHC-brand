@@ -11,8 +11,9 @@ import { getPublishedResults } from '@/server/content/results';
 export const metadata: Metadata = pageMetadata({
   title: 'Results',
   description:
-    'Before-and-after photos from real patients who gave written consent, after a plan prescribed by the doctor. Faces hidden for privacy. Individual results vary.',
+    'Before-and-after photos from patients who gave written consent, after a plan prescribed by the doctor. Faces hidden for privacy. Results vary.',
   path: '/results',
+  ownImage: true,
 });
 
 const PROCESS = [
@@ -29,7 +30,7 @@ const PROCESS = [
   {
     icon: Ruler,
     title: 'Time between photos, stated',
-    body: 'Every result states the time between the two photos once the clinic has confirmed it from the patient record. Until then it reads “to be confirmed” — never a guessed date.',
+    body: 'The time between the two photos is shown only once the clinic has confirmed it from the patient record — never a guessed date.',
   },
   {
     icon: ShieldCheck,

@@ -2,6 +2,7 @@ import { ScanLine } from 'lucide-react';
 import Link from 'next/link';
 import { SECTION_Y, SectionHeader, TEXT_LINK } from '@/components/site/section';
 import { Button } from '@/components/ui/button';
+import { concernPath } from '@/lib/concern-path';
 import type { HairConcern } from '@/lib/domain/types';
 import { getConcerns } from '@/server/catalog';
 import { EVIDENCE } from '@/server/content/evidence';
@@ -166,7 +167,7 @@ export function HairLossTypes() {
         : null,
       links: concernSlugs.flatMap((slug) => {
         const c = concernBySlug.get(slug);
-        return c ? [{ href: `/concerns/${c.slug}`, label: `About ${c.title.toLowerCase()}` }] : [];
+        return c ? [{ href: concernPath(c.slug), label: `About ${c.title.toLowerCase()}` }] : [];
       }),
     };
   });
@@ -183,7 +184,7 @@ export function HairLossTypes() {
 
         <HairLossExplorer types={types} />
 
-        <div className="mt-14 flex flex-col gap-6 border-t border-line pt-10 md:mt-20 md:flex-row md:items-center md:justify-between">
+        <div className="mt-10 flex flex-col gap-6 border-t border-line pt-8 md:mt-12 md:flex-row md:items-center md:justify-between">
           <div className="max-w-xl">
             <p className="display text-[clamp(1.75rem,1.5rem+1vw,2.25rem)]">Not sure which? Take the scan.</p>
             <p className="mt-2 text-pretty text-body">
@@ -193,7 +194,7 @@ export function HairLossTypes() {
                   {' '}
                   Flaking or an itchy scalp is a scalp condition rather than hair loss —{' '}
                   <Link
-                    href={`/concerns/${scalpConcern.slug}`}
+                    href={concernPath(scalpConcern.slug)}
                     className="text-ink underline decoration-steel underline-offset-4 hover:decoration-current"
                   >
                     read about {scalpConcern.title.toLowerCase()}

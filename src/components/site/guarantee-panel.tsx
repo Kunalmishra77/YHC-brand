@@ -1,6 +1,5 @@
 import { Check } from 'lucide-react';
 import Link from 'next/link';
-import { t } from '@/i18n/en';
 import type { GuaranteePolicy } from '@/lib/domain/types';
 import { VIDEOS } from '@/lib/images';
 import { cn } from '@/lib/utils';
@@ -119,9 +118,6 @@ export function GuaranteeVideoPanel({ guarantee }: { guarantee: GuaranteePolicy 
               Full terms
             </Link>
           </div>
-          {guarantee.isDraft ? (
-            <p className="mt-4 text-[13px] text-on-dark-muted">{t('common.draftTerms')}</p>
-          ) : null}
         </div>
       </div>
     </section>

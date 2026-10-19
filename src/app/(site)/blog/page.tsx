@@ -19,7 +19,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Hair health articles',
   description:
-    'Plain-English guides to hair and scalp health from Your Hair Company — shedding, the growth cycle, scalp photos, nutrition and what happens in a consultation.',
+    'Plain-English guides to hair and scalp health: shedding, the growth cycle, scalp photos, nutrition and what happens in a video consultation.',
   path: '/blog',
 });
 

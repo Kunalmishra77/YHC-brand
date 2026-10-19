@@ -152,7 +152,10 @@ const ARTICLES: Article[] = [
   {
     slug: 'hair-shedding-vs-hair-loss',
     title: 'Hair shedding vs hair loss: how to tell the difference',
+    seoTitle: 'Hair shedding vs hair loss',
     dek: 'Finding hair on your pillow is not always a sign that something is wrong. Here is how shedding and thinning differ, what each one usually means, and when to get your roots checked.',
+    seoDescription:
+      'Hair on your pillow is not always a sign of a problem. How shedding and thinning differ, what each usually means, and when to get your roots checked.',
     category: 'Understanding hair',
     readingMinutes: 6,
     publishedOn: '2026-09-18',
@@ -252,7 +255,10 @@ const ARTICLES: Article[] = [
   {
     slug: 'hair-growth-cycle-explained',
     title: 'Why hair changes are slow — the hair growth cycle explained',
+    seoTitle: 'The hair growth cycle explained',
     dek: 'Hair does not respond on the schedule we would like. Understanding the growth cycle explains why patience and consistent photos matter more than day-to-day checking.',
+    seoDescription:
+      'Hair does not change on the schedule we would like. How the growth cycle works, and why patience and consistent photos matter more than daily checks.',
     category: 'Understanding hair',
     readingMinutes: 6,
     publishedOn: '2026-08-27',
@@ -352,7 +358,10 @@ const ARTICLES: Article[] = [
   {
     slug: 'what-happens-in-a-video-consultation',
     title: 'From scan to consultation: what happens at each step',
+    seoTitle: 'What happens in a hair consultation',
     dek: 'From your first details to a plan on WhatsApp — a step-by-step look at the scan, the assessment and the video consultation, and how to make the most of them.',
+    seoDescription:
+      'From your first details to a plan on WhatsApp: a step-by-step look at the scan, assessment and video consultation, and how to make the most of each.',
     category: 'Your consultation',
     readingMinutes: 6,
     publishedOn: '2026-07-30',
@@ -474,7 +483,10 @@ const ARTICLES: Article[] = [
   {
     slug: 'how-to-take-scalp-photos',
     title: 'How to take scalp photos your doctor can actually use',
+    seoTitle: 'How to take scalp photos for a doctor',
     dek: 'Good photos make your scan, your consultation and your progress reviews more useful. Here is how to capture your hairline, crown and parting clearly, with only a phone.',
+    seoDescription:
+      'Good photos make your scan, consultation and progress reviews more useful. How to capture your hairline, crown and parting clearly with just a phone.',
     category: 'Your consultation',
     readingMinutes: 5,
     publishedOn: '2026-06-24',
@@ -556,7 +568,10 @@ const ARTICLES: Article[] = [
   {
     slug: 'nutrition-and-hair',
     title: 'Nutrition and hair: what the evidence does and does not say',
+    seoTitle: 'Nutrition and hair: what evidence says',
     dek: 'Diet matters for hair, but not always in the way supplement advertising suggests. A plain look at what is reasonably well understood — and what is not.',
+    seoDescription:
+      'Diet matters for hair, but not always in the way supplement advertising suggests. A plain look at what is reasonably well understood, and what is not.',
     category: 'Everyday care',
     readingMinutes: 6,
     publishedOn: '2026-05-21',

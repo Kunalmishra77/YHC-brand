@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock, ShieldCheck, XCircle } from 'lucide-react';
+import { CheckCircle2, Clock, ShieldCheck, TrendingUp, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ClaimChip } from '@/components/account/chips';
@@ -8,7 +8,6 @@ import { ACCOUNT_LINKS } from '@/components/account/links';
 import { GuaranteeTerms } from '@/components/shared/pricing';
 import { StatusChip, type ChipTone } from '@/components/shared/status-chip';
 import { EmptyState } from '@/components/shared/states';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
 import { formatINR } from '@/lib/money';
@@ -27,6 +26,7 @@ const STATE: Record<
   { tone: ChipTone; words: string; icon: typeof CheckCircle2; iconClass: string }
 > = {
   met: { tone: 'success', words: 'Met', icon: CheckCircle2, iconClass: 'text-success' },
+  on_track: { tone: 'info', words: 'On track', icon: TrendingUp, iconClass: 'text-info' },
   pending: { tone: 'pending', words: 'In progress', icon: Clock, iconClass: 'text-steel' },
   not_met: { tone: 'danger', words: 'Not met', icon: XCircle, iconClass: 'text-danger' },
 };
@@ -42,7 +42,8 @@ export default async function GuaranteePage() {
   const claims = customerClaims(customer.id);
   const openClaim = claims.find((c) => OPEN_CLAIM.includes(c.status));
   const outstanding = status.rules.filter((r) => !r.passed);
-  const met = status.rules.filter((r) => r.passed).length;
+  const met = status.rules.filter((r) => r.state === 'met').length;
+  const onTrack = status.rules.filter((r) => r.state === 'on_track').length;
 
   return (
     <div className="space-y-8">
@@ -57,11 +58,6 @@ export default async function GuaranteePage() {
             reviews every claim.
           </p>
         </div>
-        {policy.isDraft ? (
-          <Badge variant="outline" className="shrink-0 border-warning text-warning">
-            {t('common.draftTerms')}
-          </Badge>
-        ) : null}
       </header>
 
       {/* Status card */}
@@ -112,6 +108,7 @@ export default async function GuaranteePage() {
         <div>
           <p className="text-sm font-medium text-ink">
             {met} of {status.rules.length} conditions met
+            {onTrack > 0 ? ` · ${onTrack} on track` : ''}
           </p>
           <ul className="mt-3 divide-y divide-line">
             {status.rules.map((r) => {

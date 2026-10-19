@@ -149,7 +149,7 @@ export function ScalpMap({ areas, className }: { areas: ScalpZone[]; className?:
         <rect x="95" y="60" width="10" height="110" rx="5" className={zone('parting')} strokeWidth="1.2" />
         {/* crown */}
         <circle cx="100" cy="166" r="30" className={zone('crown')} strokeWidth="1.2" />
-        <text x="100" y="226" textAnchor="middle" className="fill-muted-foreground" fontSize="10">
+        <text x="100" y="226" textAnchor="middle" className="fill-muted-foreground" fontSize="12">
           Back of head
         </text>
       </svg>

@@ -13,9 +13,9 @@ import { TreatmentIndex, type TreatmentArea } from './doctor-feature/treatment-i
 import { CountUp, RiseTile, ScanRings } from './why-choose/motion';
 
 /**
- * Homepage section 4 · Why choose Your Hair Company — editorial, after the client's "Hair Bureau"
- * reference: one oversized serif word, then full-bleed alternating splits (photograph | short text
- * block) for the two biggest differentiators, then a quiet accordion for the rest. Every figure is
+ * Homepage section 4 · Why choose Your Hair Company — editorial ("Hair Bureau" reference), compacted
+ * for the audit (UX-01): oversized word + lede, a three-tile bento (photograph · consultation · scalp
+ * first), then a quiet accordion for the rest. Every figure is
  * true and settings-driven; the guarantee row appears only while a guarantee policy is active.
  */
 export function WhyChoose() {
@@ -59,79 +59,64 @@ export function WhyChoose() {
   ];
 
   return (
-    <section aria-labelledby="why-heading" className="bg-card">
-      {/* Oversized word, centred, generous air */}
-      <div className={`container-yhc text-center ${SECTION_Y} pb-12 md:pb-16 lg:pb-20`}>
-        <RiseTile>
-          <p className="eyebrow">Why choose Your Hair Company</p>
-          <h2 id="why-heading" className="mt-6">
-            <span className="display block text-[clamp(4rem,2.2rem+8.5vw,9rem)] leading-[0.9] tracking-[-0.01em]">
-              Considered.
-            </span>
-            <span className="mx-auto mt-5 block max-w-[26ch] font-display text-[clamp(1.75rem,1.4rem+1.2vw,2.375rem)] leading-tight font-medium text-body">
-              Run like a good clinic — not like a shop.
-            </span>
-          </h2>
-          <p className="mx-auto mt-6 max-w-[52ch] leading-relaxed text-pretty text-body">
+    <section aria-labelledby="why-heading" className={`bg-card ${SECTION_Y}`}>
+      <div className="container-yhc">
+        {/* Header: oversized word left, lede right (compact — audit UX-01) */}
+        <RiseTile className="grid gap-5 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-16">
+          <div>
+            <p className="eyebrow">Why choose Your Hair Company</p>
+            <h2 id="why-heading" className="mt-4">
+              <span className="display block text-[clamp(3rem,1.8rem+5vw,6rem)] leading-[0.92] tracking-[-0.01em]">
+                Considered.
+              </span>
+              <span className="mt-3 block max-w-[26ch] font-display text-[clamp(1.5rem,1.25rem+1vw,2.125rem)] leading-tight font-medium text-body">
+                Run like a good clinic — not like a shop.
+              </span>
+            </h2>
+          </div>
+          <p className="max-w-[46ch] text-base leading-relaxed text-pretty text-body lg:justify-self-end lg:pb-2">
             Most hair brands start with a product and look for a buyer. We start with your scalp and a doctor,
             and talk about treatment only if it can help.
           </p>
         </RiseTile>
-      </div>
 
-      {/* Split 1 · photograph | consultation */}
-      <div className="grid border-t border-line lg:grid-cols-2">
-        <SplitImage image={CLINICAL.consultNotes} caption="Illustrative image" />
-        <div className="flex items-center bg-card px-[var(--yhc-gutter)] py-14 sm:py-16 lg:px-16 lg:py-20 xl:px-24">
-          <RiseTile className="max-w-md">
-            <p className="text-[12px] font-semibold tracking-[0.14em] text-brand uppercase">
-              One to one · on video
+        {/* Bento: photograph · consultation · scalp first */}
+        <div className="mt-10 grid gap-4 lg:mt-14 lg:grid-cols-12 lg:gap-5">
+          <SplitImage image={CLINICAL.consultNotes} caption="Illustrative image" className="lg:col-span-5" />
+          <RiseTile
+            order={1}
+            className="flex flex-col justify-center rounded-[1.75rem] bg-pearl p-7 ring-1 ring-line sm:p-9 lg:col-span-4"
+          >
+            <p className="text-[12px] font-semibold tracking-[0.14em] text-brand uppercase">One to one · on video</p>
+            <p className="mt-3 flex items-end gap-3 leading-none">
+              <CountUp value={slotMinutes} className="font-display text-[clamp(4rem,3rem+3vw,5.5rem)] font-medium text-ink" />
+              <span className="pb-2 font-display text-[clamp(1.5rem,1.3rem+0.8vw,2rem)] text-muted-foreground">minutes</span>
             </p>
-            <p className="mt-4 flex items-end gap-3 leading-none">
-              <CountUp
-                value={slotMinutes}
-                className="font-display text-[clamp(6rem,4rem+7vw,9.5rem)] font-medium text-ink"
-              />
-              <span className="pb-3 font-display text-[clamp(1.75rem,1.4rem+1vw,2.25rem)] text-muted-foreground">
-                minutes
-              </span>
-            </p>
-            <h3 className="mt-4 font-display text-[clamp(1.75rem,1.45rem+1vw,2.25rem)] leading-tight font-medium">
+            <h3 className="mt-3 font-display text-[clamp(1.5rem,1.3rem+0.8vw,2rem)] leading-tight font-medium">
               With {doctor.name}. Not a chatbot, not a sales call.
             </h3>
-            <p className="mt-4 text-[15px] leading-relaxed text-body">
-              He reads your history and scan before the call, explains what is likely going on in plain words,
-              and answers your questions.
+            <p className="mt-3 text-base leading-relaxed text-body md:text-[15px]">
+              He reads your history and scan before the call, explains what is likely going on in plain words, and
+              answers your questions.
+            </p>
+          </RiseTile>
+          <RiseTile
+            order={2}
+            className="relative isolate flex flex-col justify-end overflow-hidden rounded-[1.75rem] bg-obsidian p-7 text-on-dark sm:p-9 lg:col-span-3"
+          >
+            <ScanRings className="absolute -top-16 -right-16 -z-10 size-[18rem] text-platinum/50" />
+            <p className="text-[12px] font-semibold tracking-[0.14em] text-brand-on-dark uppercase">Step zero</p>
+            <h3 className="display mt-3 text-[clamp(2.5rem,2rem+2vw,3.5rem)] leading-[0.95] text-on-dark">Scalp first.</h3>
+            <p className="mt-3 text-base leading-relaxed text-on-dark-muted md:text-[15px]">
+              If no viable roots are seen, we tell you honestly instead of selling you a plan.
             </p>
           </RiseTile>
         </div>
-      </div>
 
-      {/* Split 2 · photograph then text on phones; text | photograph on desktop */}
-      <div className="grid lg:grid-cols-2">
-        <SplitImage image={CLINICAL.scalpExam} className="lg:order-last" />
-        <div className="relative isolate flex items-center overflow-hidden bg-obsidian px-[var(--yhc-gutter)] py-14 text-on-dark sm:py-16 lg:px-16 lg:py-20 xl:px-24">
-          <ScanRings className="absolute -right-24 -bottom-24 -z-10 size-[22rem] text-platinum/60 sm:size-[26rem]" />
-          <RiseTile className="max-w-md">
-            <p className="text-[12px] font-semibold tracking-[0.14em] text-brand-on-dark uppercase">
-              Step zero
-            </p>
-            <h3 className="display mt-4 text-[clamp(3.5rem,2.4rem+4.5vw,6rem)] leading-[0.95] text-on-dark">
-              Scalp first.
-            </h3>
-            <p className="mt-5 text-[15px] leading-relaxed text-on-dark-muted">
-              We look at your scalp before anything else. If no viable roots are seen, we tell you honestly
-              instead of selling you a plan.
-            </p>
-          </RiseTile>
-        </div>
-      </div>
-
-      {/* The rest, quietly: an accordion */}
-      <div className={`container-yhc ${SECTION_Y}`}>
-        <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-16">
+        {/* The rest, quietly: an accordion */}
+        <div className="mx-auto mt-12 grid max-w-5xl gap-8 lg:mt-16 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-16">
           <RiseTile>
-            <p className="display text-[clamp(2rem,1.5rem+2vw,3rem)] leading-tight text-balance">
+            <p className="display text-[clamp(1.75rem,1.4rem+1.6vw,2.75rem)] leading-tight text-balance">
               The details, plainly.
             </p>
           </RiseTile>
@@ -154,7 +139,7 @@ function SplitImage({
   return (
     <figure
       className={cn(
-        'group relative aspect-[4/3] overflow-hidden bg-obsidian sm:aspect-[16/10] lg:aspect-auto lg:min-h-[36rem]',
+        'group relative aspect-[16/10] overflow-hidden rounded-[1.75rem] bg-obsidian lg:aspect-auto lg:min-h-[24rem]',
         className,
       )}
     >
@@ -162,7 +147,7 @@ function SplitImage({
         src={image.src}
         alt={image.alt}
         fill
-        sizes="(min-width: 1024px) 50vw, 100vw"
+        sizes="(min-width: 1024px) 40vw, 100vw"
         className="object-cover grayscale transition-transform duration-[1600ms] ease-out group-hover:scale-[1.03]"
       />
       {caption ? (

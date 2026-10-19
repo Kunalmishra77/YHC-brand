@@ -21,6 +21,7 @@ import type {
   Recommendation,
 } from '@/lib/domain/types';
 import { formatINR } from '@/lib/money';
+import { SCAN_OVERRIDE_MIN } from '@/lib/validation/recommendation';
 import { formatIst } from '@/lib/time';
 import { t } from '@/i18n/en';
 import { cn } from '@/lib/utils';
@@ -79,6 +80,8 @@ export function OutcomePane(props: {
   linkTtlHours: number;
   recommendation: Recommendation | null;
   leadStage: LeadStage | null;
+  /** FUN-07: false → the doctor must give a reason before recommending without a 3D scan */
+  hasScan: boolean;
   prescriptionBase: Omit<
     PrescriptionData,
     'items' | 'advice' | 'followUpInWeeks' | 'chiefComplaint' | 'assessment'
@@ -129,6 +132,7 @@ function Builder({
   credit,
   creditWindowDays,
   linkTtlHours,
+  hasScan,
   prescriptionBase,
 }: Parameters<typeof OutcomePane>[0]) {
   const [protocolId, setProtocolId] = useState<string | null>(null);
@@ -138,6 +142,7 @@ function Builder({
   const [planId, setPlanId] = useState<string>('plan-3');
   const [followUp, setFollowUp] = useState<number>(notes.followUpInWeeks ?? 8);
   const [note, setNote] = useState('');
+  const [scanOverride, setScanOverride] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -166,6 +171,8 @@ function Builder({
   if (!consentOk) missing.push('tick identity verified and consent recorded (Consult)');
   if (productIds.length === 0) missing.push('pick at least one product');
   if (!items.some((i) => i.genericName.trim())) missing.push('add a prescription item');
+  if (!hasScan && scanOverride.trim().length < SCAN_OVERRIDE_MIN)
+    missing.push(`give a reason for recommending without a 3D scan (at least ${SCAN_OVERRIDE_MIN} characters)`);
 
   function submit() {
     setError(null);
@@ -183,6 +190,7 @@ function Builder({
         note,
         followUpInWeeks: followUp,
         notes: { ...notes, followUpInWeeks: followUp },
+        scanOverrideReason: hasScan ? undefined : scanOverride.trim(),
       });
       if (res.ok) {
         toast.success('Plan sent on WhatsApp', { description: `Link valid for ${linkTtlHours} hours.` });
@@ -425,6 +433,30 @@ function Builder({
           className="bg-card"
         />
       </OutcomeSection>
+
+      {!hasScan ? (
+        <OutcomeSection
+          title="No 3D scan on file"
+          hint="This patient has no scan. Say why you are recommending without one — saved with the recommendation for the clinical record."
+        >
+          <Label htmlFor="scan-override" className="sr-only">
+            Reason for recommending without a 3D scan
+          </Label>
+          <Textarea
+            id="scan-override"
+            value={scanOverride}
+            onChange={(e) => setScanOverride(e.target.value)}
+            rows={2}
+            maxLength={500}
+            aria-describedby="scan-override-hint"
+            placeholder="e.g. Scalp examined on video; patient could not complete the phone scan."
+            className="bg-card"
+          />
+          <p id="scan-override-hint" className="mt-1 text-[12px] text-muted-foreground">
+            At least {SCAN_OVERRIDE_MIN} characters. Not shared with the patient.
+          </p>
+        </OutcomeSection>
+      ) : null}
 
       <section className="sticky bottom-0 border-t border-line bg-pearl/95 px-4 py-4 backdrop-blur md:px-5">
         {quote && plan ? (

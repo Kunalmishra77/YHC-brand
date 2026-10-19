@@ -1,12 +1,15 @@
 'use client';
 
 import { Menu, Repeat, X } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { BRAND_LOGO } from '@/lib/brand-media';
 import { cn } from '@/lib/utils';
+import { SkipLink } from './skip-link';
 
 export interface PortalNavItem {
   href: string;
@@ -37,6 +40,7 @@ export function PortalShell({
   const [open, setOpen] = useState(false);
   return (
     <div className="min-h-dvh bg-pearl">
+      <SkipLink />
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-[248px] flex-col overflow-hidden bg-sidebar text-sidebar-foreground lg:flex">
         <SidebarContent portal={portal} nav={nav} user={user} />
       </aside>
@@ -72,7 +76,11 @@ export function PortalShell({
           </Sheet>
           <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">{topbar}</div>
         </header>
-        <main className="mx-auto w-full max-w-[1440px] min-w-0 flex-1 px-4 pt-6 pb-12 sm:pt-7 md:px-8 md:pt-10 md:pb-16">
+        <main
+          id="main"
+          tabIndex={-1}
+          className="mx-auto w-full max-w-[1440px] min-w-0 flex-1 px-4 pt-6 pb-12 outline-none sm:pt-7 md:px-8 md:pt-10 md:pb-16"
+        >
           {children}
         </main>
       </div>
@@ -111,8 +119,15 @@ function SidebarContent({
         aria-hidden
       />
       <div className="relative px-6 pt-7 pb-6">
-        <Link href="/" onClick={onNavigate} className="font-display text-[24px] leading-none text-on-dark">
-          Your Hair Company
+        <Link href="/" onClick={onNavigate} aria-label="Your Hair Company — home" className="inline-flex h-10 items-center">
+          <Image
+            src={BRAND_LOGO.light.src}
+            width={BRAND_LOGO.light.width}
+            height={BRAND_LOGO.light.height}
+            alt=""
+            sizes="120px"
+            className="h-full w-auto"
+          />
         </Link>
         <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-line-dark bg-ink-2/80 px-2.5 py-1 text-[12px] font-medium text-on-dark-muted">
           <span className="size-1.5 rounded-full bg-[image:var(--yhc-silver)]" aria-hidden />
@@ -156,7 +171,7 @@ function SidebarContent({
               </span>
               <span className="min-w-0 flex-1 truncate">{item.label}</span>
               {item.count ? (
-                <span className="price min-w-6 shrink-0 rounded-full bg-[image:var(--yhc-silver)] px-1.5 py-0.5 text-center text-[11px] font-semibold text-obsidian">
+                <span className="price min-w-6 shrink-0 rounded-full bg-[image:var(--yhc-silver)] px-1.5 py-0.5 text-center text-xs font-semibold text-obsidian">
                   {item.count}
                 </span>
               ) : null}

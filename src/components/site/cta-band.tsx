@@ -36,12 +36,14 @@ export function CtaBand({
             <Button asChild className={CTA_SILVER}>
               <Link href="/book">{bookLabel}</Link>
             </Button>
-            <Button asChild variant="outline" className={CTA_GHOST_DARK}>
-              <a href={SITE.whatsappUrl}>
-                <MessageCircle className="size-4" aria-hidden />
-                Ask on WhatsApp
-              </a>
-            </Button>
+            {SITE.whatsappAvailable ? (
+              <Button asChild variant="outline" className={CTA_GHOST_DARK}>
+                <a href={SITE.whatsappUrl}>
+                  <MessageCircle className="size-4" aria-hidden />
+                  Ask on WhatsApp
+                </a>
+              </Button>
+            ) : null}
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ import { db, getSettingNumber } from '@/server/demo/store';
 import { getDoctor } from '@/server/catalog';
 import { requireJourneyStep } from '@/server/journey/guard';
 import { journeyAppointment } from '@/server/journey/store';
-import { bookedAt, confirmedView, slotDays } from '../../book/booking-views';
+import { bookedAt, confirmedView, holdView, slotDays } from '../../book/booking-views';
 
 export const metadata: Metadata = { title: 'Book your consultation', robots: { index: false } };
 
@@ -18,6 +18,20 @@ export default async function JourneyBookPage() {
   const appt = journeyAppointment(journey);
   const paidAt = appt && appt.status !== 'held' ? bookedAt(appt.id, db().events) : null;
   const confirmed = appt && paidAt ? confirmedView(appt, paidAt) : null;
+  // Refresh keeps a live hold (audit FUN-04): the hold is server-side, keyed to the appointment.
+  const now = new Date();
+  const held = confirmed
+    ? undefined
+    : db()
+        .appointments.filter(
+          (a) =>
+            a.customerId === journey.customerId &&
+            a.status === 'held' &&
+            a.holdExpiresAt !== null &&
+            Date.parse(a.holdExpiresAt) > now.getTime(),
+        )
+        .at(-1);
+  const liveHold = held ? holdView(held, now) : null;
 
   const slotMinutes = getSettingNumber('consult.slot_minutes');
 
@@ -37,6 +51,7 @@ export default async function JourneyBookPage() {
           holdMinutes={getSettingNumber('consult.hold_minutes')}
           creditDays={getSettingNumber('consult.credit_window_days')}
           initialConfirmed={confirmed}
+          initialHold={liveHold}
         />
       </JourneyCard>
     </JourneyShell>

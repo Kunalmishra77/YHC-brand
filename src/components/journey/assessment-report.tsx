@@ -153,7 +153,7 @@ function Metric({ title, value, hint }: { title: string; value: number; hint: st
     <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:gap-4 sm:text-left">
       <ProgressRing value={value} size={96} stroke={7} label={`${title} ${value} out of 100`}>
         <span className="price text-[22px] text-ink">{value}</span>
-        <span className="text-[11px] text-muted-foreground">of 100</span>
+        <span className="text-xs text-muted-foreground">of 100</span>
       </ProgressRing>
       <div className="mt-2 sm:mt-0">
         <p className="text-sm font-medium text-ink">{title}</p>

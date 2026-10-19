@@ -15,7 +15,7 @@ export function PlanLadder({
 }: {
   plans: Plan[];
   guarantee: GuaranteePolicy | null;
-  /** e.g. "₹500 consultation fee credited if bought within 7 days (pending confirmation)" */
+  /** e.g. "₹500 consultation fee credited if bought within 7 days" */
   creditLine: string | null;
   headingLevel?: 'h2' | 'h3';
 }) {

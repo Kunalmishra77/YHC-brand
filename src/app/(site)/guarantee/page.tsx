@@ -9,7 +9,6 @@ import { H1, H2, LEDE, SECTION_Y, SectionHeader } from '@/components/site/sectio
 import { pageMetadata } from '@/components/site/seo';
 import { VideoLibrary } from '@/components/site/video-library';
 import { Button } from '@/components/ui/button';
-import { t } from '@/i18n/en';
 import { VIDEOS } from '@/lib/images';
 import { getFaqs, getGuarantee } from '@/server/catalog';
 
@@ -19,7 +18,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Money-back guarantee',
   description:
-    'How the YHC money-back guarantee works: the conditions, how to claim and how a doctor reviews every claim.',
+    'How the Your Hair Company money-back guarantee works: the conditions that apply, how to make a claim, and how a doctor personally reviews every claim.',
   path: '/guarantee',
 });
 
@@ -79,9 +78,6 @@ export default function GuaranteePage() {
             as prescribed, meet every condition below and a doctor confirms there has been no visible
             improvement.
           </p>
-          {guarantee.isDraft ? (
-            <p className="mt-4 text-[13px] text-on-dark-muted">{t('common.draftTerms')}</p>
-          ) : null}
         </div>
       </section>
 

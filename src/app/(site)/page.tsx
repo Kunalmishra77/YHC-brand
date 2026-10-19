@@ -14,6 +14,7 @@ import { WhyChoose } from '@/components/home/why-choose';
 import { HomeHero } from '@/components/site/home-hero';
 import { JsonLd } from '@/components/site/json-ld';
 import { pageMetadata } from '@/components/site/seo';
+import { BRAND_LOGO } from '@/lib/brand-media';
 import { clientEnv } from '@/lib/env';
 import { SITE } from '@/lib/site';
 import { getDoctor, getGuarantee } from '@/server/catalog';
@@ -25,10 +26,11 @@ export const metadata: Metadata = {
   ...pageMetadata({
     title: 'Science-first, doctor-led hair care',
     description:
-      'Hair care begins with science, not with products. Start with a guided 3D scalp scan; a dermatologist decides whether treatment can help before anything is prescribed.',
+      'Hair care begins with science, not products. Take a guided 3D scalp scan; a dermatologist decides if treatment can help before anything is prescribed.',
     path: '/',
   }),
-  title: { absolute: 'Your Hair Company — Hair care begins with science, not with products' },
+  // SEO-04: under 60 characters.
+  title: { absolute: 'Your Hair Company — Science-first, doctor-led hair care' },
 };
 
 /**
@@ -38,6 +40,8 @@ export const metadata: Metadata = {
 export default function HomePage() {
   const doctor = getDoctor();
   const guarantee = getGuarantee();
+  const siteUrl = clientEnv.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '');
+  const logoUrl = `${siteUrl}${BRAND_LOGO.dark.src}`;
 
   return (
     <>
@@ -49,6 +53,22 @@ export default function HomePage() {
           url: clientEnv.NEXT_PUBLIC_SITE_URL,
           email: SITE.supportEmail,
           description: 'Science-first, doctor-led hair care: scalp scan, video consultation and follow-up.',
+          areaServed: 'IN',
+          logo: logoUrl,
+        }}
+      />
+      {/* SEO-06: only confirmed facts — no address or phone until the clinic details are confirmed.
+          TODO(client): reviewedBy/employee Physician once registration is confirmed — docs/16 C1 */}
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'MedicalClinic',
+          name: 'Your Hair Company',
+          url: siteUrl,
+          logo: logoUrl,
+          image: logoUrl,
+          email: SITE.supportEmail,
+          medicalSpecialty: 'Dermatology',
           areaServed: 'IN',
         }}
       />

@@ -12,9 +12,10 @@ import { pageMetadata } from '@/components/site/seo';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
 import { clientEnv } from '@/lib/env';
-import { LABEL_PARTIES, PRODUCT_MEDIA, ingredientImage } from '@/lib/brand-media';
+import { LABEL_PARTIES, PRODUCT_MEDIA, ingredientImage, productHero } from '@/lib/brand-media';
 import { formatINR } from '@/lib/money';
 import { getProduct, getProducts } from '@/server/catalog';
+import { PRODUCT_SEO_DESCRIPTION, clampDescription } from '@/server/content/seo-copy';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,8 +29,10 @@ export async function generateMetadata({ params }: PageProps<'/products/[slug]'>
   if (!product) return { title: 'Product not found' };
   return pageMetadata({
     title: product.name,
-    description: `${product.tagline}. ${product.description}`.slice(0, 160),
+    description:
+      PRODUCT_SEO_DESCRIPTION[product.slug] ?? clampDescription(`${product.tagline}. ${product.description}`),
     path: `/products/${product.slug}`,
+    ownImage: true,
   });
 }
 
@@ -38,7 +41,8 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
   const product = getProduct(slug);
   if (!product) notFound();
   const terms = getConsultTerms();
-  const base = clientEnv.NEXT_PUBLIC_SITE_URL;
+  const base = clientEnv.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '');
+  const hero = productHero(product.slug);
   const buyable = !product.requiresConsultation && product.pricePaise !== null;
   const media = PRODUCT_MEDIA[product.slug];
   const hasFinasteride = product.ingredients.some((i) => /finasteride/i.test(i.name));
@@ -53,6 +57,8 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
           description: product.description,
           brand: { '@type': 'Brand', name: 'Your Hair Company' },
           url: `${base}/products/${product.slug}`,
+          // SEO-06: absolute URL of the men-line pack hero (front of pack only, ADR-32).
+          ...(hero ? { image: `${base}${hero.src}` } : {}),
           ...(buyable && product.pricePaise !== null
             ? {
                 offers: {

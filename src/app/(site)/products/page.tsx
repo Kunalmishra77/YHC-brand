@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Products',
   description:
-    'The YHC range — hair regrowth solution, nourishing tablets, Ayurvedic capsules and powder, for men and for women — with every ingredient listed. Supplied after a consultation with Dr. Tyagi.',
+    'The YHC range of solution, tablets, capsules and powder, for men and for women, with every ingredient listed. Supplied after a doctor consultation.',
   path: '/products',
 });
 

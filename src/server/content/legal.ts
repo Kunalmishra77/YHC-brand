@@ -185,7 +185,8 @@ function privacy(c: LegalContext): ContentBlock[] {
       'Messaging: our WhatsApp Business service provider, MSG91 for SMS and one-time codes, and Resend for email.',
       'Video consultations and scheduling: LiveKit (or Google Meet as a fallback) for the call, and Google Calendar for the doctor’s schedule — appointment times only, never health details.',
       'Delivery: Shiprocket and its courier partners — your name, phone number and address only.',
-      'Hosting and operations: Supabase (database and file storage), our website host, and Sentry for error monitoring, configured to exclude health information.',
+      // Audit SEC-07: list only what runs. Add Sentry back here when error monitoring is switched on.
+      'Hosting and operations: Vercel (website hosting, India region) and Supabase (database and file storage, India region).',
       'Analytics and advertising measurement: Google Analytics and Meta, only with your cookie consent and never with health information.',
     ),
     p(

@@ -30,6 +30,9 @@ export const en = {
     demoBadge: 'Demo',
     draftTerms: 'Draft terms — pending approval',
     resultsVary: 'Individual results vary.',
+    skipToContent: 'Skip to content',
+    pauseVideo: 'Pause video',
+    playVideo: 'Play video',
   },
   nav: {
     concerns: 'Hair concerns',
@@ -43,6 +46,7 @@ export const en = {
     results: 'Results',
     guarantee: 'Guarantee',
     doctorShort: 'Doctor',
+    plansShort: 'Plans',
     beginScan: 'Begin 3D scan',
     account: 'My account',
   },

@@ -1,15 +1,24 @@
-// TODO(client): WhatsApp business number, support email, grievance officer — see docs/12 C / D-P7
+// TODO(client): WhatsApp business number (env NEXT_PUBLIC_WHATSAPP_NUMBER), support hours, grievance
+// officer — see docs/18 (audit FUN-01, CON-05, SEC-05).
+const whatsappNumber = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '').replace(/\D/g, '');
+
 export const SITE = {
-  whatsappUrl: 'https://wa.me/910000000000?text=Hi%20YHC',
+  /** True once the real WhatsApp Business number is configured; until then WhatsApp buttons are hidden. */
+  whatsappAvailable: whatsappNumber.length >= 10,
+  /** wa.me link, or the contact page while no number is configured (never a dead placeholder number). */
+  whatsappUrl: whatsappNumber.length >= 10 ? `https://wa.me/${whatsappNumber}?text=Hi%20YHC` : '/contact',
   supportEmail: 'care@yourhaircompany.com',
+  /** Support / consultation hours, e.g. 'Mon–Sat, 10 am – 7 pm IST'; null hides every hours line. */
+  supportHours: null as string | null,
   grievanceOfficer: { name: 'Grievance Officer', email: 'grievance@yourhaircompany.com' },
 } as const;
 
-/** Trust-led main navigation (ADR-27). Plans, products and concerns stay reachable via the footer/pages. */
+/** Trust-led main navigation (ADR-27). Plans are listed for price transparency (audit UX-10). */
 export const SITE_NAV = [
   { href: '/science', key: 'nav.science' },
   { href: '/start', key: 'nav.scan' },
   { href: '/results', key: 'nav.results' },
+  { href: '/plans', key: 'nav.plansShort' },
   { href: '/guarantee', key: 'nav.guarantee' },
   { href: '/doctor-tyagi', key: 'nav.doctorShort' },
   { href: '/faqs', key: 'nav.faqs' },

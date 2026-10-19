@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'How it works',
   description:
-    'Book, consult, receive your plan, get it delivered and keep in touch at follow-up. Every step of the Your Hair Company journey, with fees.',
+    'Book, consult, receive your plan, get it delivered and keep in touch at follow-up. Every step of the Your Hair Company journey, with the fees.',
   path: '/how-it-works',
 });
 
@@ -51,7 +51,7 @@ export default function HowItWorksPage() {
         'If treatment is right for you, your plan and prescription are shared on WhatsApp after the call.',
         `The payment link stays valid for ${linkHours} hours. You choose 1, 2 or 3 months.`,
         terms.creditEnabled
-          ? `${terms.fee} consultation fee is credited against your first plan if you buy within ${terms.creditWindowDays} days of your consultation (pending confirmation).`
+          ? `${terms.fee} consultation fee is credited against your first plan if you buy within ${terms.creditWindowDays} days of your consultation.`
           : 'There is no obligation to buy. Your prescription is yours either way.',
       ],
     },
@@ -101,7 +101,7 @@ export default function HowItWorksPage() {
               sizes="(min-width: 1024px) 45vw, 100vw"
               className="object-cover"
             />
-            <figcaption className="absolute bottom-4 left-4 rounded-full bg-black/55 px-3 py-1.5 text-[11px] font-medium text-on-dark backdrop-blur">
+            <figcaption className="absolute bottom-4 left-4 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-on-dark backdrop-blur">
               Illustrative photo · scalp parting up close
             </figcaption>
           </figure>

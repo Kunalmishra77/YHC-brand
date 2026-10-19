@@ -2,6 +2,7 @@ import { MessageCircle, Repeat } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AccountNav, type AccountTab } from '@/components/account/account-nav';
+import { SkipLink } from '@/components/shared/skip-link';
 import { Logo } from '@/components/shared/logo';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
@@ -36,6 +37,7 @@ export default async function AccountLayout({ children }: LayoutProps<'/account'
 
   return (
     <div className="flex min-h-dvh flex-col bg-pearl">
+      <SkipLink />
       <header className="border-b border-white/5 bg-obsidian text-on-dark print:hidden">
         <div className="container-yhc flex h-14 items-center justify-between gap-3 md:h-16">
           <Logo tone="light" />
@@ -83,14 +85,15 @@ export default async function AccountLayout({ children }: LayoutProps<'/account'
               </div>
             </div>
           </div>
-          <main id="main" className="container-yhc flex-1 py-8 md:py-12 print:p-0">
+          <main id="main" tabIndex={-1} className="container-yhc flex-1 py-8 outline-none md:py-12 print:p-0">
             {children}
           </main>
         </>
       ) : (
         <main
           id="main"
-          className="container-yhc flex flex-1 flex-col items-center justify-center py-16 text-center"
+          tabIndex={-1}
+          className="container-yhc flex flex-1 flex-col items-center justify-center py-16 text-center outline-none"
         >
           <p className="display text-[28px]">Sign in to see your account</p>
           <p className="mt-2 max-w-sm text-body">

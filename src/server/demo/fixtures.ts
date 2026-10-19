@@ -355,14 +355,14 @@ export const FAQS: Faq[] = [
     category: 'consultation',
     question: 'Is the ₹500 adjusted if I buy a plan?',
     answer:
-      'Yes. If you buy your recommended plan within 7 days of your consultation, ₹500 is deducted from the plan price. (Pending client confirmation.)',
+      'Yes. If you buy your recommended plan within 7 days of your consultation, ₹500 is deducted from the plan price.',
   },
   {
     id: 'faq-consult-reschedule',
     category: 'consultation',
     question: 'Can I reschedule or cancel my consultation?',
     answer:
-      'You can reschedule free of charge up to 6 hours before your slot. Cancel more than 24 hours ahead for a full refund of the fee; later cancellations are not refunded but include one free reschedule. Missed consultations are not refunded. (Draft policy — pending confirmation.)',
+      'You can reschedule free of charge up to 6 hours before your slot. Cancel more than 24 hours ahead for a full refund of the fee; later cancellations are not refunded but include one free reschedule. Missed consultations are not refunded.',
   },
   {
     id: 'faq-results-when',
@@ -404,21 +404,21 @@ export const FAQS: Faq[] = [
     category: 'plans',
     question: 'Can I buy products without a consultation?',
     answer:
-      'Every product in the current YHC range is supplied after a consultation, because the right choice — and for the solution, the prescription — depends on your scan, history and the doctor’s assessment. (Pending client confirmation.)',
+      'Every product in the current YHC range is supplied after a consultation, because the right choice — and for the solution, the prescription — depends on your scan, history and the doctor’s assessment.',
   },
   {
     id: 'faq-guarantee',
     category: 'guarantee',
     question: 'How does the money-back guarantee work?',
     answer:
-      'If you follow your prescribed plan continuously for at least 3 months, reply to at least 75% of check-ins, share progress photos every month and attend your follow-up consultation, and see no visible improvement, you can claim a full refund of your plan payments within 30 days of finishing the plan. A doctor reviews every claim. (Draft terms — pending approval.)',
+      'If you follow your prescribed plan continuously for at least 3 months, reply to at least 75% of check-ins, share progress photos every month and attend your follow-up consultation, and see no visible improvement, you can claim a full refund of your plan payments within 30 days of finishing the plan. A doctor reviews every claim.',
   },
   {
     id: 'faq-delivery',
     category: 'delivery',
     question: 'How long does delivery take?',
     answer:
-      'Usually a few working days after payment. You get tracking on WhatsApp as soon as your order ships. (Delivery times pending confirmation.)',
+      'Usually a few working days after payment. You get tracking on WhatsApp as soon as your order ships.',
   },
   {
     id: 'faq-privacy-who',
@@ -439,7 +439,7 @@ export const FAQS: Faq[] = [
 // TODO(client): approved terms — see docs/15 D-P1. Values are our recommendation, shown as DRAFT.
 export const GUARANTEE_POLICY: GuaranteePolicy = {
   version: 1,
-  name: 'YHC Money-Back Guarantee v1 (DRAFT)',
+  name: 'YHC Money-Back Guarantee v1', // TODO(client): terms pending approval — docs/15 D-P1 (isDraft keeps the admin warning)
   refundPercent: 100,
   minPlanMonths: 3,
   claimWindowDays: 30,

@@ -210,7 +210,7 @@ export default async function AdminDashboard({ searchParams }: PageProps<'/admin
           DEF.bookingConversion,
           c.bookingConversion,
           p.bookingConversion,
-          'No slot holds in this period',
+          'No leads from this period booked a slot',
         )}
         {rateTile('Show-up rate', DEF.showUp, c.showUp, p.showUp, 'No finished consultations yet')}
         {rateTile(

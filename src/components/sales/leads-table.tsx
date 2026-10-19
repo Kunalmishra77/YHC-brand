@@ -387,7 +387,7 @@ export function LeadsTable({
                         <span
                           aria-hidden
                           className={cn(
-                            'inline-flex size-6 items-center justify-center rounded-full text-[10px] font-semibold',
+                            'inline-flex size-6 items-center justify-center rounded-full text-xs font-semibold',
                             l.ownerId === currentUserId ? 'bg-obsidian text-on-dark' : 'bg-mist text-ink',
                           )}
                         >

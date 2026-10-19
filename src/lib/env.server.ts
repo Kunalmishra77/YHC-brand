@@ -14,6 +14,8 @@ const serverSchema = z
     DEMO_MODE: z.preprocess((v) => v === 'true', z.boolean()).default(false),
     LOG_LEVEL: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']).default('info'),
     SUPABASE_SERVICE_ROLE_KEY: optional, // required from Phase 01
+    DEMO_SESSION_SECRET: optional, // signs demo session cookies (ADR-33); required on hosted demos
+    DEMO_ACCESS_CODE: optional, // shared code for /demo and staff portals (ADR-33)
     CRON_SECRET: optional, // phase 01
     LINK_SIGNING_SECRET: optional, // phase 04
     ENCRYPTION_KEY: optional, // phase 05
@@ -21,6 +23,10 @@ const serverSchema = z
     RAZORPAY_WEBHOOK_SECRET: optional,
     WHATSAPP_PROVIDER: z.enum(['log', 'generic-http', 'meta-cloud']).default('log'),
     SENTRY_DSN: optional,
+  })
+  .refine((env) => !(env.DEMO_MODE && env.APP_ENV !== 'local' && (!env.DEMO_SESSION_SECRET || !env.DEMO_ACCESS_CODE)), {
+    message: 'Hosted demos need DEMO_SESSION_SECRET and DEMO_ACCESS_CODE (ADR-33)',
+    path: ['DEMO_ACCESS_CODE'],
   })
   .refine((env) => !(env.DEMO_MODE && env.APP_ENV === 'production'), {
     message: 'DEMO_MODE must never be enabled in production',

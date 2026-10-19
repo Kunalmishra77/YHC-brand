@@ -112,6 +112,7 @@ export default async function ConsultWorkspacePage({ params }: PageProps<'/docto
           linkTtlHours: ws.linkTtlHours,
           recommendation: ws.recommendation,
           leadStage: ws.leadStage,
+          hasScan: scan !== null,
           prescriptionBase: {
             doctor: DOCTOR,
             patient: { name: customer.name, age: customer.age, gender: customer.gender },

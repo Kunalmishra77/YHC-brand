@@ -1,7 +1,6 @@
 'use client';
 
-import { animate, motion, useInView, useReducedMotion } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
+import { motion, useReducedMotion } from 'motion/react';
 import { cn } from '@/lib/utils';
 
 /** Bento tile entrance: rise + fade once in view, staggered by `order`. Static with reduced motion. */
@@ -29,30 +28,22 @@ export function RiseTile({
 }
 
 /**
- * Counts up to a real, settings-driven number once visible. Server-rendered with the final value so
- * no-JS, crawlers and reduced-motion users always see the true figure.
+ * A real, settings-driven figure that fades up once visible. It is never animated through other
+ * numbers: a factual value (e.g. consultation length) must read the same in every frame, screenshot
+ * and text extraction (audit CON-03).
  */
 export function CountUp({ value, className }: { value: number; className?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-10% 0px' });
   const reduce = useReducedMotion();
-  const [shown, setShown] = useState(value);
-
-  useEffect(() => {
-    if (!inView || reduce) return;
-    const controls = animate(0, value, {
-      duration: 1.4,
-      ease: [0.2, 0.7, 0.2, 1],
-      onUpdate: (v) => setShown(Math.round(v)),
-    });
-    return () => controls.stop();
-  }, [inView, reduce, value]);
-
   return (
-    <span ref={ref} className={cn('tabular-nums', className)}>
-      <span aria-hidden>{shown}</span>
-      <span className="sr-only">{value}</span>
-    </span>
+    <motion.span
+      className={cn('inline-block tabular-nums', className)}
+      initial={reduce ? false : { opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-10% 0px' }}
+      transition={{ duration: 0.9, ease: [0.2, 0.7, 0.2, 1] }}
+    >
+      {value}
+    </motion.span>
   );
 }
 

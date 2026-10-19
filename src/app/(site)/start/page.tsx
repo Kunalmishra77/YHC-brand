@@ -3,13 +3,16 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { HeroStartForm } from '@/components/journey/hero-start-form';
 import { JourneyStepper } from '@/components/journey/journey-stepper';
+import { pageMetadata } from '@/components/site/seo';
 import { getJourneyForCustomer, resumeHref } from '@/server/journey/store';
 import { getCurrentCustomer } from '@/server/session';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Start your free hair assessment',
-  description: 'Basic details, a guided 3D scalp scan and a personalised assessment reviewed by a doctor.',
-};
+  description:
+    'Start your free hair assessment: basic details, a guided 3D scalp scan and a personalised assessment reviewed by a doctor before any treatment.',
+  path: '/start',
+});
 
 export const dynamic = 'force-dynamic';
 

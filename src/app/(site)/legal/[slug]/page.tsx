@@ -17,6 +17,7 @@ import {
   isLegalSlug,
   type LegalContext,
 } from '@/server/content/legal';
+import { LEGAL_SEO_DESCRIPTION } from '@/server/content/seo-copy';
 import { tocFromBlocks } from '@/server/content/types';
 import { getSettingNumber } from '@/server/demo/store';
 
@@ -27,7 +28,11 @@ export async function generateMetadata({ params }: PageProps<'/legal/[slug]'>): 
   const { slug } = await params;
   if (!isLegalSlug(slug)) return { title: 'Page not found' };
   const doc = getLegalSummary(slug);
-  return pageMetadata({ title: doc.title, description: doc.summary, path: `/legal/${slug}` });
+  return pageMetadata({
+    title: doc.title,
+    description: LEGAL_SEO_DESCRIPTION[slug] ?? doc.summary,
+    path: `/legal/${slug}`,
+  });
 }
 
 function legalContext(): LegalContext {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatINR, paise, rupeesToPaise } from './money';
+import { formatINR, formatINRWhole, paise, rupeesToPaise } from './money';
 
 describe('money', () => {
   it('formats with Indian grouping and no decimals for whole rupees', () => {
@@ -10,6 +10,13 @@ describe('money', () => {
 
   it('keeps paise when present', () => {
     expect(formatINR(1050)).toBe('₹10.50');
+  });
+
+  it('rounds KPI amounts to whole rupees (FUN-08)', () => {
+    expect(formatINRWhole(1083233)).toBe('₹10,832');
+    expect(formatINRWhole(1083250)).toBe('₹10,833');
+    expect(formatINRWhole(1499900)).toBe('₹14,999');
+    expect(formatINRWhole(0)).toBe('₹0');
   });
 
   it('converts rupees to paise without float drift', () => {

@@ -211,6 +211,29 @@ describe('computePeriod', () => {
     expect(m.funnel.map((s) => s.conversion)).toEqual([null, 0.75, 2 / 3, 0.5, 1, 0]);
   });
 
+  it('keeps funnel stages monotonic and derives booking conversion from them (FUN-09)', () => {
+    const counts = m.funnel.map((s) => s.count);
+    for (let i = 1; i < counts.length; i++) expect(counts[i]).toBeLessThanOrEqual(counts[i - 1] ?? 0);
+    const by = (k: string) => m.funnel.find((s) => s.key === k)?.count ?? 0;
+    expect(by('leads')).toBe(m.newLeads);
+    expect(m.bookingConversion).toEqual(ratio(by('paid'), by('booked')));
+    expect(m.bookingConversion.value).toBe(m.funnel.find((s) => s.key === 'paid')?.conversion);
+  });
+
+  it('ignores bookings by leads outside the cohort in booking conversion (FUN-09)', () => {
+    const s = empty();
+    s.leads = [lead('l1', 'c1', '2026-09-28T04:00:00Z'), lead('old', 'c7', '2026-06-01T04:00:00Z')];
+    s.appointments = [
+      appt('a1', 'c1', '2026-09-29T05:00:00Z', 'completed'),
+      // an older lead's paid bookings in this window: period activity, not part of this cohort
+      appt('b1', 'c7', '2026-09-29T06:00:00Z', 'completed'),
+      appt('b2', 'c7', '2026-09-30T06:00:00Z', 'booked'),
+    ];
+    const r = computePeriod(s, opts, windowFor(7, NOW));
+    expect(r.funnel.map((x) => x.count).slice(0, 4)).toEqual([1, 1, 1, 1]);
+    expect(r.bookingConversion).toMatchObject({ num: 1, den: 1 });
+  });
+
   it('computes §17 rates', () => {
     expect(m.newLeads).toBe(4);
     expect(m.leadToPaid.value).toBe(0.5);

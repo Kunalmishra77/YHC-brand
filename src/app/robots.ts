@@ -7,7 +7,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/account', '/doctor', '/sales', '/admin', '/demo', '/api', '/r/', '/consult', '/auth'],
+      // Private routes are protected by auth and X-Robots-Tag (proxy); this only saves crawl budget.
+      disallow: ['/account', '/doctor', '/sales', '/admin', '/demo', '/api', '/r/', '/consult/', '/cart', '/checkout', '/order/'],
     },
     sitemap: `${base}/sitemap.xml`,
     host: base,

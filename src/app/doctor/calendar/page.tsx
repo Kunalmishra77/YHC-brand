@@ -92,7 +92,7 @@ function DayColumn({ day, hourPx = HOUR_PX }: { day: CalendarDay; hourPx?: numbe
             title={`${b.title} · ${formatMinutes(b.startMin)}–${formatMinutes(b.endMin)}`}
           >
             {b.kind !== 'available' ? (
-              <span className="block truncate px-1.5 pt-1 text-[11px] font-medium">{b.title}</span>
+              <span className="block truncate px-1.5 pt-1 text-xs font-medium">{b.title}</span>
             ) : null}
           </div>
         );
@@ -143,7 +143,7 @@ function TimeGutter({ hourPx = HOUR_PX }: { hourPx?: number }) {
       {Array.from({ length: (END - START) / 60 + 1 }, (_, h) => (
         <span
           key={h}
-          className="price absolute right-2 -translate-y-1/2 text-[11px] text-muted-foreground"
+          className="price absolute right-2 -translate-y-1/2 text-xs text-muted-foreground"
           style={{ top: h * hourPx }}
         >
           {formatMinutes(START + h * 60)}

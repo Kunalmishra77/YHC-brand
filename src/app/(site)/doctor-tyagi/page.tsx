@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Meet Dr. Tyagi',
   description:
-    'Dr. Tyagi leads every Your Hair Company consultation. Qualifications, medical registration and what a video consultation covers.',
+    'Dr. Tyagi leads every Your Hair Company consultation. See his qualifications, medical registration and exactly what a video consultation covers.',
   path: '/doctor-tyagi',
 });
 
@@ -87,17 +87,22 @@ export default function DoctorPage() {
             </p>
           </div>
           <dl className="divide-y divide-line border-y border-line">
-            {[
-              ['Qualifications', publicCredential(doctor.qualifications) ?? 'Being added'],
-              ['Medical registration no.', publicCredential(doctor.registrationNo) ?? 'Being added'],
-              ['Registered with', publicCredential(doctor.council) ?? 'Being added'],
-              ['Consultations', `${terms.slotMinutes}-minute video call · ${terms.fee}`],
-            ].map(([label, value]) => (
-              <div key={label} className="grid gap-1 py-4 sm:grid-cols-[220px_minmax(0,1fr)] sm:gap-6">
-                <dt className="text-sm text-muted-foreground">{label}</dt>
-                <dd className="font-medium text-ink">{value}</dd>
-              </div>
-            ))}
+            {(
+              [
+                ['Qualifications', publicCredential(doctor.qualifications)],
+                ['Medical registration no.', publicCredential(doctor.registrationNo)],
+                // The council is only meaningful next to a registration number.
+                ['Registered with', publicCredential(doctor.registrationNo) ? publicCredential(doctor.council) : null],
+                ['Consultations', `${terms.slotMinutes}-minute video call · ${terms.fee}`],
+              ] satisfies [string, string | null][]
+            )
+              .filter((row): row is [string, string] => row[1] !== null)
+              .map(([label, value]) => (
+                <div key={label} className="grid gap-1 py-4 sm:grid-cols-[220px_minmax(0,1fr)] sm:gap-6">
+                  <dt className="text-sm text-muted-foreground">{label}</dt>
+                  <dd className="font-medium text-ink">{value}</dd>
+                </div>
+              ))}
           </dl>
         </div>
       </section>

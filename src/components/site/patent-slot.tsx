@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 /**
  * Patent claim slot (ADR-27). Shows the patent number/title only once `CLAIMS.patent` is verified;
- * until then a clearly labelled, deliberately quiet placeholder — never the word "patented".
+ * until then it renders nothing (ADR-33: unconfirmed facts are hidden, not labelled).
  */
 export function PatentSlot({
   tone = 'light',
@@ -16,6 +16,7 @@ export function PatentSlot({
   className?: string;
 }) {
   const patent = verifiedPatent(CLAIMS);
+  if (!patent) return null;
   const dark = tone === 'dark';
 
   if (compact) {

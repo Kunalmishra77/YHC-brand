@@ -16,7 +16,7 @@ export function getConsultTerms() {
     creditWindowDays,
     // TODO(client): confirm the consultation-fee credit — see docs/12 / docs/15 pending
     creditLine: creditEnabled
-      ? `${formatINR(feePaise)} consultation fee credited if you buy within ${creditWindowDays} days of your consultation (pending confirmation)`
+      ? `${formatINR(feePaise)} consultation fee credited if you buy within ${creditWindowDays} days of your consultation`
       : null,
     bookLabel: `Book consultation · ${formatINR(feePaise)}`,
   };

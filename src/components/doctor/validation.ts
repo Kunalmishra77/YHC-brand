@@ -72,6 +72,8 @@ export const recommendationSchema = z.object({
   note: text(1500),
   followUpInWeeks: z.number().int().min(1).max(52),
   notes: notesSchema,
+  /** required (min 10 chars) only when the patient has no scan on file — see lib/validation/recommendation */
+  scanOverrideReason: z.string().max(500).optional(),
 });
 export type RecommendationForm = z.infer<typeof recommendationSchema>;
 

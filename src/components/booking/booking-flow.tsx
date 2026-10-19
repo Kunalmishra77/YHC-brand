@@ -188,7 +188,7 @@ export function BookingFlow(props: BookingFlowProps) {
   };
 
   const when = confirmed?.when ?? hold?.when ?? (slot ? slot.label : null);
-  const creditNote = `${fee} is credited against your first plan if bought within ${creditDays} days (pending confirmation).`;
+  const creditNote = `${fee} is credited against your first plan if bought within ${creditDays} days.`;
   const ticketStatus =
     step === 4 ? (
       <StatusChip tone="success">Booked · {fee} paid</StatusChip>

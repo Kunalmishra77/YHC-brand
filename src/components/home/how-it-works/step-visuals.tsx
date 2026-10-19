@@ -89,9 +89,7 @@ function Card({ children, className }: { children: React.ReactNode; className?: 
 }
 
 function Kicker({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-[10px] font-semibold tracking-[0.16em] text-brand-on-dark uppercase">{children}</p>
-  );
+  return <p className="text-xs font-semibold tracking-[0.16em] text-brand-on-dark uppercase">{children}</p>;
 }
 
 /* 1 · Basic details ------------------------------------------------------------------------------ */
@@ -99,17 +97,17 @@ function DetailsVisual({ active, still }: VisualProps) {
   const fields = [
     { label: 'Name', w: '70%' },
     { label: 'Mobile', w: '58%' },
-    { label: 'Address', w: '84%' },
+    { label: 'One-time code', w: '46%' },
   ];
   return (
     <Phone>
       <div className="flex h-full flex-col px-4 pt-9 pb-4">
-        <Kicker>Step 1 of 7</Kicker>
+        <Kicker>Step 1 of 6</Kicker>
         <p className="mt-1.5 text-[18px] leading-tight font-semibold text-on-dark">Your details</p>
         <div className="mt-5 space-y-3.5">
           {fields.map((f, i) => (
             <div key={f.label}>
-              <p className="text-[10px] text-on-dark-muted">{f.label}</p>
+              <p className="text-xs text-on-dark-muted">{f.label}</p>
               <div className="mt-1 flex h-8 items-center rounded-lg border border-line-dark bg-ink-2 px-2.5">
                 <motion.span
                   className="block h-1.5 origin-left rounded-full bg-platinum/70"
@@ -217,7 +215,7 @@ function ScanStepVisual({ active, still }: VisualProps) {
             }
           />
           <span className="absolute bottom-5 left-1/2 size-12 -translate-x-1/2 rounded-full border-[3px] border-on-dark" />
-          <span className="absolute right-3 bottom-8 rounded-full bg-obsidian/70 px-2.5 py-1 text-[10px] text-on-dark">
+          <span className="absolute right-3 bottom-8 rounded-full bg-obsidian/70 px-2.5 py-1 text-xs text-on-dark">
             Done
           </span>
         </Phone>
@@ -240,8 +238,8 @@ function ScanStepVisual({ active, still }: VisualProps) {
               ))}
             </div>
             <div className="flex items-baseline justify-between px-3.5 pt-3">
-              <p className="text-[9px] text-muted-foreground">Scan 1 of 4</p>
-              <p className="text-[9px] font-medium text-brand">How to scan</p>
+              <p className="text-xs text-muted-foreground">Scan 1 of 4</p>
+              <p className="text-xs font-medium text-brand">How to scan</p>
             </div>
             <p className="px-3.5 pt-0.5 text-[18px] leading-tight font-semibold text-ink">Crown</p>
             <div className="flex justify-between px-3 pt-1.5">
@@ -257,15 +255,15 @@ function ScanStepVisual({ active, still }: VisualProps) {
                 animate={{ opacity: active ? 0 : 0.6 }}
                 transition={tr(still, 0.3, 0.8)}
               />
-              <span className="absolute top-1.5 left-2 rounded-full bg-obsidian/70 px-1.5 py-0.5 text-[8px] text-on-dark">
+              <span className="absolute top-1.5 left-2 rounded-full bg-obsidian/70 px-1.5 py-0.5 text-xs text-on-dark">
                 Magnified
               </span>
             </div>
             <div className="mt-auto space-y-1.5 px-3.5 pb-4">
-              <span className="mx-auto flex h-7 w-20 items-center justify-center gap-1 rounded-full border border-obsidian text-[10px] font-medium text-ink">
+              <span className="mx-auto flex h-7 w-20 items-center justify-center gap-1 rounded-full border border-obsidian text-xs font-medium text-ink">
                 <Camera className="size-3" /> Scan
               </span>
-              <span className="flex h-8 items-center justify-center rounded-full bg-obsidian text-[11px] font-semibold text-on-dark">
+              <span className="flex h-8 items-center justify-center rounded-full bg-obsidian text-xs font-semibold text-on-dark">
                 Next
               </span>
             </div>
@@ -325,7 +323,7 @@ function AssessmentVisual({ active, still }: VisualProps) {
           ))}
         </ul>
       </div>
-      <p className="mt-4 text-[10px] tracking-[0.12em] text-on-dark-muted uppercase">Possible outcomes</p>
+      <p className="mt-4 text-xs tracking-[0.12em] text-on-dark-muted uppercase">Possible outcomes</p>
       <ul className="mt-2 space-y-1.5">
         {outcomes.map((o, i) => {
           const Icon = o.icon;
@@ -343,7 +341,7 @@ function AssessmentVisual({ active, still }: VisualProps) {
           );
         })}
       </ul>
-      <p className="mt-3 text-[10px] text-steel">Demo · final assessment by the doctor</p>
+      <p className="mt-3 text-xs text-steel">Demo · final assessment by the doctor</p>
     </Card>
   );
 }
@@ -383,7 +381,7 @@ function HealthVisual({ active, still }: VisualProps) {
           transition={tr(still, 0.3, 1.6)}
         />
       </div>
-      <p className="mt-2 text-[10px] text-steel">Read by your doctor before you meet</p>
+      <p className="mt-2 text-xs text-steel">Read by your doctor before you meet</p>
     </Card>
   );
 }
@@ -399,9 +397,9 @@ function SlotVisual({ active, still, terms }: VisualProps & { terms: SlotTerms }
     <Card>
       <div className="flex items-baseline justify-between">
         <Kicker>Choose a slot</Kicker>
-        <span className="text-[10px] text-steel">Illustrative times</span>
+        <span className="text-xs text-steel">Illustrative times</span>
       </div>
-      <div className="mt-3 grid grid-cols-7 gap-1 text-center text-[10px] text-steel">
+      <div className="mt-3 grid grid-cols-7 gap-1 text-center text-xs text-steel">
         {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
           <span key={i}>{d}</span>
         ))}
@@ -412,7 +410,7 @@ function SlotVisual({ active, still, terms }: VisualProps & { terms: SlotTerms }
           <span
             key={d}
             className={cn(
-              'relative flex h-6 items-center justify-center rounded-md text-[11px]',
+              'relative flex h-6 items-center justify-center rounded-md text-xs',
               available.has(d) ? 'text-on-dark' : 'text-steel/60',
             )}
           >
@@ -438,7 +436,7 @@ function SlotVisual({ active, still, terms }: VisualProps & { terms: SlotTerms }
           <motion.span
             key={t}
             className={cn(
-              'price flex-1 rounded-full border py-1.5 text-center text-[11px]',
+              'price flex-1 rounded-full border py-1.5 text-center text-xs',
               i === 1 ? 'border-platinum text-on-dark' : 'border-line-dark text-on-dark-muted',
             )}
             initial={false}
@@ -465,7 +463,7 @@ function ConsultVisual({ active, still }: VisualProps) {
   return (
     <div className="relative w-[330px] pb-16">
       <div className="relative h-[196px] overflow-hidden rounded-3xl border border-line-dark bg-[radial-gradient(ellipse_at_50%_40%,#3a3d42,#1c1e21_70%)]">
-        <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-obsidian/70 px-2.5 py-1 text-[10px] text-on-dark">
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-obsidian/70 px-2.5 py-1 text-xs text-on-dark">
           <motion.span
             className="size-1.5 rounded-full bg-on-dark"
             initial={false}
@@ -478,7 +476,7 @@ function ConsultVisual({ active, still }: VisualProps) {
           <span className="flex size-16 items-center justify-center rounded-full border border-platinum/40 bg-graphite">
             <Stethoscope className="size-7 text-platinum" />
           </span>
-          <span className="text-[11px] text-on-dark-muted">Your doctor</span>
+          <span className="text-xs text-on-dark-muted">Your doctor</span>
         </div>
         <div className="absolute right-3 bottom-12 flex h-16 w-12 items-center justify-center rounded-xl border border-line-dark bg-obsidian">
           <UserRound className="size-5 text-steel" />
@@ -510,7 +508,7 @@ function ConsultVisual({ active, still }: VisualProps) {
             <span key={w} className="block h-1.5 rounded-full bg-graphite" style={{ width: w }} />
           ))}
         </div>
-        <p className="mt-3 text-[10px] text-steel">Only if treatment is right for you</p>
+        <p className="mt-3 text-xs text-steel">Only if treatment is right for you</p>
       </motion.div>
     </div>
   );

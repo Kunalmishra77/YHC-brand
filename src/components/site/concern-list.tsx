@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
+import { concernPath } from '@/lib/concern-path';
 import type { Concern } from '@/lib/domain/types';
 import { cn } from '@/lib/utils';
 
@@ -10,7 +11,7 @@ export function ConcernList({ concerns, className }: { concerns: Concern[]; clas
       {concerns.map((c) => (
         <li key={c.slug}>
           <Link
-            href={`/concerns/${c.slug}`}
+            href={concernPath(c.slug)}
             className="group grid min-h-16 grid-cols-[1fr_auto] items-center gap-x-6 gap-y-1 rounded-sm py-5 md:grid-cols-[minmax(0,4fr)_minmax(0,7fr)_auto]"
           >
             <span className="text-lg font-semibold text-ink group-hover:text-brand">{c.title}</span>

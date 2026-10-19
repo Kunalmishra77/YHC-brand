@@ -1,6 +1,5 @@
 import { ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
 import { t } from '@/i18n/en';
 import type { GuaranteePolicy, Plan } from '@/lib/domain/types';
 import { formatINR } from '@/lib/money';
@@ -47,7 +46,6 @@ export function GuaranteeLine({
         <Link href="/legal/guarantee" className="underline underline-offset-2">
           Full terms
         </Link>
-        {policy.isDraft ? <span className="text-warning"> · {t('common.draftTerms')}</span> : null}
       </span>
     </p>
   );
@@ -59,11 +57,6 @@ export function GuaranteeTerms({ policy }: { policy: GuaranteePolicy }) {
       <div className="flex flex-wrap items-center gap-2">
         <ShieldCheck className="size-5 text-brand" aria-hidden />
         <p className="font-semibold text-ink">{policy.name}</p>
-        {policy.isDraft ? (
-          <Badge variant="outline" className="border-warning text-warning">
-            {t('common.draftTerms')}
-          </Badge>
-        ) : null}
       </div>
       <p className="mt-3 text-body">{policy.termsMd}</p>
       <ul className="mt-4 grid gap-2 text-sm sm:grid-cols-2">

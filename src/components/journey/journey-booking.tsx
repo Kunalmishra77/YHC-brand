@@ -1,5 +1,6 @@
 'use client';
 
+import { track } from '@/lib/analytics';
 import { ArrowLeft, CheckCircle2, Loader2, Lock, RotateCcw, Video } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useState, useTransition } from 'react';
@@ -21,6 +22,7 @@ export function JourneyBooking({
   holdMinutes,
   creditDays,
   initialConfirmed,
+  initialHold = null,
 }: {
   initialDays: SlotDayView[];
   doctor: { name: string; qualifications: string };
@@ -29,13 +31,19 @@ export function JourneyBooking({
   holdMinutes: number;
   creditDays: number;
   initialConfirmed: ConfirmedView | null;
+  /** A still-valid hold from the server, so a refresh keeps the chosen time (audit FUN-04). */
+  initialHold?: HoldView | null;
 }) {
   const fee = formatINR(feePaise);
   const [days, setDays] = useState(initialDays);
   const [day, setDay] = useState(() => initialDays.find((d) => d.slots.length > 0)?.date ?? '');
-  const [slot, setSlot] = useState<{ startsAt: string; label: string } | null>(null);
-  const [hold, setHold] = useState<HoldView | null>(null);
-  const [deadline, setDeadline] = useState<number | null>(null);
+  const [slot, setSlot] = useState<{ startsAt: string; label: string } | null>(() =>
+    initialHold ? { startsAt: initialHold.startsAt, label: initialHold.when } : null,
+  );
+  const [hold, setHold] = useState<HoldView | null>(initialHold);
+  const [deadline, setDeadline] = useState<number | null>(() =>
+    initialHold ? Date.now() + initialHold.holdSecondsLeft * 1000 : null,
+  );
   const [holdOver, setHoldOver] = useState(false);
   const [payOpen, setPayOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -88,6 +96,7 @@ export function JourneyBooking({
       return res.error.message;
     }
     setPayOpen(false);
+    track('consult_paid', { valuePaise: feePaise });
     setConfirmed(res.data);
     window.scrollTo({ top: 0 });
     return null;
@@ -140,8 +149,7 @@ export function JourneyBooking({
               />
             </dl>
             <p className="mt-3 text-sm text-muted-foreground">
-              {fee} is credited against your first plan if bought within {creditDays} days (pending
-              confirmation).
+              {fee} is credited against your first plan if bought within {creditDays} days.
             </p>
             <ContinueBar
               summary={
@@ -237,7 +245,7 @@ export function JourneyBooking({
           Hold time &amp; pay {fee}
         </Button>
         <p className="mt-3 text-[13px] leading-snug text-muted-foreground">
-          {fee} is credited against your first plan if bought within {creditDays} days (pending confirmation).
+          {fee} is credited against your first plan if bought within {creditDays} days.
         </p>
       </aside>
 

@@ -19,8 +19,9 @@ import { getDoctor, getProducts } from '@/server/catalog';
 export const metadata: Metadata = pageMetadata({
   title: 'The science',
   description:
-    'How hair roots and the growth cycle work, what a prescribed plan aims to support, and an honest account of what is known and what is not.',
+    'How hair roots and the hair growth cycle work, what a prescribed plan aims to support, and an honest account of what is known and what is not.',
   path: '/science',
+  ownImage: true,
 });
 
 const CAUSES = [
@@ -133,7 +134,7 @@ export default function SciencePage() {
               sizes="(min-width: 1024px) 40vw, 100vw"
               className="object-cover"
             />
-            <span className="absolute bottom-3 left-3 rounded-full bg-black/50 px-2.5 py-1 text-[11px] text-on-dark backdrop-blur">
+            <span className="absolute bottom-3 left-3 rounded-full bg-black/50 px-2.5 py-1 text-xs text-on-dark backdrop-blur">
               Illustrative photo · scalp parting under magnification
             </span>
           </div>
@@ -178,7 +179,10 @@ export default function SciencePage() {
                 {p.requiresConsultation ? 'Prescribed after consultation' : 'Available directly'}
               </p>
               <h3 className="mt-2 text-lg font-semibold text-ink">
-                <Link href={`/products/${p.slug}`} className="hover:text-brand">
+                <Link
+                  href={`/products/${p.slug}`}
+                  className="inline-flex min-h-11 items-center hover:text-brand"
+                >
                   {p.name}
                 </Link>
               </h3>

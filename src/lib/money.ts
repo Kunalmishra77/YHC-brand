@@ -29,3 +29,11 @@ export function formatINR(amount: Paise): string {
   const formatter = amount % 100 === 0 ? wholeFormatter : fractionFormatter;
   return formatter.format(amount / 100);
 }
+
+/**
+ * Rounded to the nearest whole rupee — for KPIs and averages, never for prices or invoices.
+ * `formatINRWhole(1083233)` → `₹10,832`; `formatINRWhole(1083250)` → `₹10,833`.
+ */
+export function formatINRWhole(amount: Paise): string {
+  return wholeFormatter.format(Math.round(amount / 100));
+}

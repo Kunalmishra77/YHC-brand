@@ -293,7 +293,7 @@ function LeadCard({
           title={lead.ownerName}
           aria-label={`Owner ${lead.ownerName}`}
           className={cn(
-            'relative z-10 inline-flex size-7 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold',
+            'relative z-10 inline-flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold',
             mine ? 'bg-obsidian text-on-dark' : 'bg-mist text-ink',
           )}
         >

@@ -8,7 +8,7 @@ import { getLegalSummary, isLegalSlug, LEGAL_ENTITY } from '@/server/content/leg
 export const metadata: Metadata = pageMetadata({
   title: 'Legal',
   description:
-    'Privacy Policy, Terms & Conditions, Refund Policy, shipping, guarantee terms, medical disclaimer and grievance officer.',
+    'Privacy Policy, Terms & Conditions, Refund Policy, shipping, guarantee terms, medical disclaimer and grievance officer for Your Hair Company.',
   path: '/legal',
 });
 

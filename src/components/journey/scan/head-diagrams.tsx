@@ -90,7 +90,7 @@ export function HeadDiagrams({ zone, className }: { zone: CaptureZone; className
             {v.node}
           </svg>
           <span
-            className="mt-1 text-[11px] font-medium tracking-wide text-muted-foreground uppercase"
+            className="mt-1 text-xs font-medium tracking-wide text-muted-foreground uppercase"
             aria-hidden
           >
             {v.label}

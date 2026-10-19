@@ -577,8 +577,32 @@ export function getWorkspace(appointmentId: string, now = new Date()) {
 
 const monthKey = (d: Date) => formatInTimeZone(d, IST, 'yyyy-MM');
 
+/*
+ * KPI definitions (FUN-08) — one place, mirrored in the tile tooltips on /doctor/revenue:
+ * - Consultation fees (month): fee of every paid consultation (booked, completed or no-show), by
+ *   consultation date (IST).
+ * - Plan revenue (month): amount paid for every paid plan order (not pending, cancelled or refunded),
+ *   after consultation credit, incl. GST, by payment date (IST).
+ * - Plans paid (month): count of those same plan orders — whether bought from a plan link or not, so
+ *   it always matches the plan-revenue tile. Average = plan revenue ÷ plans paid, shown in whole ₹.
+ * - Plan links paid (all time): recommendations sent (status sent / paid / expired / declined) that
+ *   have a paid plan order (or status `paid`) ÷ recommendations sent. Plan orders placed without a
+ *   plan link (e.g. reorders, staff-created) are counted in "plans paid" but not here.
+ */
+export interface RevenueSource {
+  appointments: Appointment[];
+  orders: Order[];
+  recommendations: Recommendation[];
+}
+
 export function getRevenue(now = new Date()) {
-  const s = db();
+  return computeRevenue(db(), now);
+}
+
+const UNPAID_ORDER = ['pending_payment', 'cancelled', 'refunded'];
+const SENT_REC: Recommendation['status'][] = ['sent', 'paid', 'expired', 'declined'];
+
+export function computeRevenue(s: RevenueSource, now = new Date()) {
   const months = Array.from({ length: 6 }, (_, i) => {
     const d = subDays(new Date(`${formatInTimeZone(now, IST, 'yyyy-MM')}-15T06:00:00Z`), i * 30);
     return monthKey(d);
@@ -592,13 +616,7 @@ export function getRevenue(now = new Date()) {
       a.feePaise > 0 &&
       (a.status === 'booked' || a.status === 'completed' || a.status === 'no_show'),
   );
-  const planOrders = s.orders.filter(
-    (o) =>
-      o.source === 'recommendation' &&
-      o.planId &&
-      o.paidAt &&
-      !['pending_payment', 'cancelled', 'refunded'].includes(o.status),
-  );
+  const planOrders = s.orders.filter((o) => o.planId && o.paidAt && !UNPAID_ORDER.includes(o.status));
 
   const series = months.map((m) => {
     const fees = consultFees.filter((a) => monthKey(new Date(a.startsAt)) === m);
@@ -627,16 +645,23 @@ export function getRevenue(now = new Date()) {
     return { plan, count: list.length, paise: list.reduce((sum, o) => sum + o.totalPaise, 0) };
   });
 
-  const recsSent = s.recommendations.length;
-  const recsPaid = s.recommendations.filter((r) => r.status === 'paid').length;
+  const sentRecs = s.recommendations.filter((r) => SENT_REC.includes(r.status));
+  const paidRecIds = new Set(planOrders.map((o) => o.recommendationId).filter(Boolean));
+  const recsSent = sentRecs.length;
+  const recsPaid = sentRecs.filter((r) => r.status === 'paid' || paidRecIds.has(r.id)).length;
+  const current = pick(thisMonth);
 
   return {
     series,
-    current: pick(thisMonth),
+    current,
     previous: pick(lastMonth),
+    /** whole paise; formatted with formatINRWhole at the edge */
+    avgPlanPaise: current.planCount ? Math.round(current.planPaise / current.planCount) : 0,
     byPlan,
     recsSent,
     recsPaid,
+    planOrdersAllTime: planOrders.length,
+    planOrdersWithoutLink: planOrders.filter((o) => !o.recommendationId).length,
   };
 }
 

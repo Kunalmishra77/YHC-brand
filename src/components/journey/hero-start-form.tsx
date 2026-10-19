@@ -8,14 +8,16 @@ import { Controller, useForm } from 'react-hook-form';
 import { startJourneyAction } from '@/app/(site)/start/actions';
 import { OtpInput } from '@/components/booking/otp-input';
 import { Checkbox } from '@/components/ui/checkbox';
+import { track } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 import { startJourneySchema, type StartJourney, type StartJourneyInput } from '@/lib/validation/journey';
 
 /**
  * Glass "Start your assessment" form shown in the homepage hero (ADR-26, step 1: basic details).
  * CONTRACT shared by two workstreams — keep the export name and props stable:
- *   <HeroStartForm className? />  — collects name, mobile, address and starts the journey.
- * Flow: details → demo OTP (123456) inside the panel → server action signs in + redirects to /start/scan.
+ *   <HeroStartForm className? />  — collects name + mobile and starts the journey.
+ * Flow: details → OTP inside the panel → server action signs in + redirects to /start/scan. The address
+ * is asked only at plan checkout (ADR-33, audit UX-04).
  */
 export function HeroStartForm({ className }: { className?: string }) {
   const uid = useId();
@@ -32,7 +34,7 @@ export function HeroStartForm({ className }: { className?: string }) {
     formState: { errors },
   } = useForm<StartJourneyInput, unknown, StartJourney>({
     resolver: zodResolver(startJourneySchema),
-    defaultValues: { name: '', mobile: '', address: '', pincode: '', consent: false },
+    defaultValues: { name: '', mobile: '', consent: false },
   });
 
   const sendCode = (values: StartJourney) => {
@@ -43,6 +45,7 @@ export function HeroStartForm({ className }: { className?: string }) {
         setServerError(res.error.message);
         return;
       }
+      track('details_submitted');
       setOtpFor({ values, sentTo: res.data.sentTo, demoCode: res.data.demoCode });
     });
   };
@@ -108,32 +111,6 @@ export function HeroStartForm({ className }: { className?: string }) {
                 />
               </div>
             </GlassField>
-
-            <div className="grid grid-cols-[minmax(0,1fr)_112px] gap-3">
-              <GlassField id={`${uid}-address`} label="Address" error={errors.address?.message}>
-                <input
-                  id={`${uid}-address`}
-                  autoComplete="street-address"
-                  placeholder="House, street, city"
-                  className={inputClass(Boolean(errors.address))}
-                  aria-invalid={errors.address ? true : undefined}
-                  aria-describedby={`${uid}-address-err`}
-                  {...register('address')}
-                />
-              </GlassField>
-              <GlassField id={`${uid}-pin`} label="PIN code" error={errors.pincode?.message}>
-                <input
-                  id={`${uid}-pin`}
-                  inputMode="numeric"
-                  autoComplete="postal-code"
-                  maxLength={6}
-                  className={cn(inputClass(Boolean(errors.pincode)), 'price')}
-                  aria-invalid={errors.pincode ? true : undefined}
-                  aria-describedby={`${uid}-pin-err`}
-                  {...register('pincode')}
-                />
-              </GlassField>
-            </div>
 
             <Controller
               control={control}

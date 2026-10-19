@@ -1,6 +1,7 @@
 import { ArrowDown, BadgeCheck, ShieldCheck, Stethoscope } from 'lucide-react';
 import { HeroStartForm } from '@/components/journey/hero-start-form';
-import { doctorClaimLabel } from '@/lib/claims';
+import { CLAIMS, doctorClaimLabel, verifiedPatent } from '@/lib/claims';
+import { publicCredential } from '@/lib/credentials';
 import { VIDEOS } from '@/lib/images';
 import { cn } from '@/lib/utils';
 import { BackgroundVideo } from './background-video';
@@ -65,6 +66,15 @@ export function HomeHero({
             is prescribed.
           </p>
 
+          {/* Mobile: a primary action above the fold (audit UX-05); the form sits below the trust list. */}
+          <a
+            href="#start-form"
+            className="bg-silver mt-7 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[15px] font-semibold text-obsidian shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] transition-opacity hover:opacity-95 sm:w-auto sm:px-8 lg:hidden"
+          >
+            Begin my free 3D scan
+            <ArrowDown className="size-4" aria-hidden />
+          </a>
+
           <ul
             className={cn(
               'mt-9 grid grid-cols-1 gap-x-6 gap-y-3 border-t border-white/10 pt-6 text-[13px] leading-snug text-on-dark-muted delay-500 sm:grid-cols-2',
@@ -82,12 +92,16 @@ export function HomeHero({
                 Money-back guarantee · conditions apply
               </li>
             ) : null}
-            <li>
-              <PatentSlot tone="dark" compact />
-            </li>
+            {verifiedPatent(CLAIMS) ? (
+              <li>
+                <PatentSlot tone="dark" compact />
+              </li>
+            ) : null}
             <li className="flex items-start gap-2">
               <BadgeCheck className="mt-0.5 size-3.5 shrink-0 text-brand-on-dark" aria-hidden />
-              {doctorName} · Reg. No. {registrationNo}
+              {publicCredential(registrationNo)
+                ? `${doctorName} · Reg. No. ${registrationNo}`
+                : `Video consultations with ${doctorName}`}
             </li>
           </ul>
         </div>
@@ -98,7 +112,9 @@ export function HomeHero({
             ENTER,
           )}
         >
-          <HeroStartForm className="w-full" />
+          <div id="start-form" className="scroll-mt-20">
+            <HeroStartForm className="w-full" />
+          </div>
         </div>
       </div>
 

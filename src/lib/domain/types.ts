@@ -178,6 +178,8 @@ export interface Recommendation {
   items: PrescriptionItem[];
   createdAt: string;
   expiresAt: string;
+  /** FUN-07: why the plan was sent with no 3D scan on file (clinical — doctor portal only). */
+  scanOverrideReason?: string | null;
 }
 
 export interface OrderLine {

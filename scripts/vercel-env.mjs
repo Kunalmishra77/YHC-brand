@@ -23,6 +23,8 @@ const VARS = {
   NEXT_PUBLIC_SUPABASE_URL: fromLocal('NEXT_PUBLIC_SUPABASE_URL'),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: fromLocal('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
   SUPABASE_SERVICE_ROLE_KEY: fromLocal('SUPABASE_SERVICE_ROLE_KEY'),
+  DEMO_SESSION_SECRET: fromLocal('DEMO_SESSION_SECRET'),
+  DEMO_ACCESS_CODE: fromLocal('DEMO_ACCESS_CODE'),
 };
 const only = process.argv.slice(3);
 const run = (args, input) =>

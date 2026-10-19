@@ -107,7 +107,7 @@ export function TreatmentIndex({
                 >
                   <div
                     className={cn(
-                      'max-w-[56ch] pb-6 pl-11 text-[15px] leading-relaxed sm:pl-[3.25rem]',
+                      'max-w-[56ch] pb-6 pl-11 text-base leading-relaxed sm:pl-[3.25rem] md:text-[15px]',
                       c.body,
                     )}
                   >

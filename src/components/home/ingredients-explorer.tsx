@@ -1,6 +1,6 @@
 import { Reveal } from '@/components/site/reveal';
 import { SECTION_Y } from '@/components/site/section';
-import { ingredientImage } from '@/lib/brand-media';
+import { PRODUCT_MEDIA, ingredientImage } from '@/lib/brand-media';
 import { DARK_PRODUCT_IMAGES, PRODUCT_IMAGES } from '@/lib/images';
 import { getProducts } from '@/server/catalog';
 import { ingredientNote } from './ingredients/ingredient-notes';
@@ -16,11 +16,13 @@ export function IngredientsExplorer() {
     .filter((p) => p.ingredients.length > 0)
     .map((p) => {
       const image = PRODUCT_IMAGES[p.slug];
+      const pack = PRODUCT_MEDIA[p.slug]?.pack;
       return {
         slug: p.slug,
         name: p.name,
         tagline: p.tagline,
-        image: image ? { src: image.src, alt: image.alt } : null,
+        // Tile alt names the product and its pack size, e.g. "YHC Hair Regrowth Solution, 60 ml pack".
+        image: image ? { src: image.src, alt: `YHC ${p.name}${pack ? `, ${pack} pack` : ''}` } : null,
         dark: DARK_PRODUCT_IMAGES.has(p.slug),
         ingredients: p.ingredients.map((ing) => {
           const photo = ingredientImage(ing.name);
@@ -43,12 +45,12 @@ export function IngredientsExplorer() {
       className={`relative scroll-mt-20 overflow-x-clip bg-card ${SECTION_Y}`}
     >
       <div className="container-yhc">
-        <Reveal className="mb-10 grid gap-5 md:mb-14 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end md:gap-12">
+        <Reveal className="mb-8 grid gap-5 md:mb-10 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end md:gap-12">
           <div>
             <p className="eyebrow">What’s inside</p>
             <h2
               id="ingredients-heading"
-              className="display mt-5 text-[clamp(3.5rem,2rem+6.5vw,7.5rem)] leading-[0.9] tracking-[-0.015em]"
+              className="display mt-5 text-[clamp(3rem,1.8rem+5vw,6rem)] leading-[0.9] tracking-[-0.015em]"
             >
               Ingredients
             </h2>

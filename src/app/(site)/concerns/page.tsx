@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Hair concerns',
   description:
-    'Hair fall, thinning, a receding hairline, crown thinning or scalp problems — what each can mean and how a consultation helps.',
+    'Hair fall, thinning, a receding hairline, crown thinning or scalp problems: what each can mean, its common causes and how a consultation helps.',
   path: '/concerns',
 });
 
@@ -29,7 +29,7 @@ export default function ConcernsPage() {
         lede={
           <p>
             Choose what sounds most like you. Not sure? The{' '}
-            <Link href="/assessment" className="text-brand underline underline-offset-4">
+            <Link href="/start" className="text-brand underline underline-offset-4">
               free hair assessment
             </Link>{' '}
             suggests a next step in about 2 minutes.

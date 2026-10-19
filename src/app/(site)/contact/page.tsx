@@ -9,16 +9,16 @@ import { SITE } from '@/lib/site';
 export const metadata: Metadata = pageMetadata({
   title: 'Contact us',
   description:
-    'Reach Your Hair Company on WhatsApp or email for help with bookings, orders and delivery, or write to our grievance officer.',
+    'Reach Your Hair Company on WhatsApp or email for help with bookings, orders and delivery, or write to our grievance officer if an issue is unresolved.',
   path: '/contact',
 });
 
 const ROUTES = [
   {
     need: 'A booking, an order or delivery',
-    where: 'WhatsApp or email our support team',
-    href: SITE.whatsappUrl,
-    label: 'Message on WhatsApp',
+    where: SITE.whatsappAvailable ? 'WhatsApp or email our support team' : 'Email our support team',
+    href: SITE.whatsappAvailable ? SITE.whatsappUrl : `mailto:${SITE.supportEmail}`,
+    label: SITE.whatsappAvailable ? 'Message on WhatsApp' : 'Email support',
     external: true,
   },
   {
@@ -60,9 +60,13 @@ export default function ContactPage() {
         <div className="min-w-0 md:grid md:grid-cols-2 md:items-start md:gap-8 lg:block">
           {/* Fastest channel */}
           <div className="rounded-2xl bg-obsidian p-7 text-on-dark md:p-8">
-            <MessageCircle className="size-6 text-brand-on-dark" aria-hidden />
+            {SITE.whatsappAvailable ? (
+              <MessageCircle className="size-6 text-brand-on-dark" aria-hidden />
+            ) : (
+              <Mail className="size-6 text-brand-on-dark" aria-hidden />
+            )}
             <h2 className="display mt-6 text-[clamp(1.75rem,1.45rem+1vw,2.25rem)] text-balance text-on-dark">
-              WhatsApp is fastest
+              {SITE.whatsappAvailable ? 'WhatsApp is fastest' : 'Write to the care team'}
             </h2>
             <p className="mt-3 leading-relaxed text-on-dark-muted">
               Bookings, orders, delivery and tracking. Please don&apos;t send photos or medical details here —
@@ -72,10 +76,17 @@ export default function ContactPage() {
               asChild
               className="mt-7 h-12 w-full bg-[image:var(--yhc-silver)] px-6 text-base font-semibold text-obsidian hover:opacity-95 sm:w-auto"
             >
-              <a href={SITE.whatsappUrl}>
-                <MessageCircle className="size-4" aria-hidden />
-                Message us on WhatsApp
-              </a>
+              {SITE.whatsappAvailable ? (
+                <a href={SITE.whatsappUrl}>
+                  <MessageCircle className="size-4" aria-hidden />
+                  Message us on WhatsApp
+                </a>
+              ) : (
+                <a href={`mailto:${SITE.supportEmail}`}>
+                  <Mail className="size-4" aria-hidden />
+                  Email the care team
+                </a>
+              )}
             </Button>
           </div>
 
@@ -91,21 +102,18 @@ export default function ContactPage() {
                   >
                     {SITE.supportEmail}
                   </a>
-                  <p className="mt-1 text-sm text-body">We reply within one working day.</p>
                 </dd>
               </div>
             </div>
-            <div className="flex gap-4 py-5">
-              <Clock className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
-              <div>
-                <dt className="text-[13px] text-muted-foreground">Support hours</dt>
-                {/* TODO(client): support hours and reply SLA — see docs/12 C */}
-                <dd className="mt-0.5 font-medium text-ink">To be confirmed</dd>
-                <dd className="mt-1 text-sm text-body">
-                  Messages outside hours are answered the next working day.
-                </dd>
+            {SITE.supportHours ? (
+              <div className="flex gap-4 py-5">
+                <Clock className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
+                <div>
+                  <dt className="text-[13px] text-muted-foreground">Support hours</dt>
+                  <dd className="mt-0.5 font-medium text-ink">{SITE.supportHours}</dd>
+                </div>
               </div>
-            </div>
+            ) : null}
             <div className="flex gap-4 py-5">
               <Scale className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
               <div>

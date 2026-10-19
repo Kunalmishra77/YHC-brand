@@ -8,6 +8,7 @@ import { submitScanAction } from '@/app/(site)/start/actions';
 import { DURATION_ANSWERS, FAMILY_ANSWERS, LONG_BALD_ANSWERS, PATTERN_ANSWERS } from '@/lib/journey/labels';
 import { CAPTURE_ZONES, type CaptureZone, type ScanAnswers } from '@/lib/journey/types';
 import { orderZones } from '@/lib/journey/zones';
+import { track } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 import { AngleGuide } from './angle-guide';
 import styles from './journey.module.css';
@@ -115,7 +116,10 @@ export function ScanStudio({ firstName, hasScan }: { firstName: string; hasScan:
           firstName={firstName}
           hasScan={hasScan}
           headingRef={headingRef}
-          onStart={() => setPhase('questions')}
+          onStart={() => {
+            track('scan_started');
+            setPhase('questions');
+          }}
         />
       ) : null}
 
@@ -356,6 +360,7 @@ function Analysing({
     void submitScanAction({ answers, capturedZones, skippedZones })
       .then((res) => {
         if (cancelled) return;
+        if (res.ok) track('scan_completed');
         setResult(res.ok ? 'ok' : { error: res.error.message });
       })
       .catch(() => {

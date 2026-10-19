@@ -102,7 +102,7 @@ export function FollicleVisual({ play, reduced }: VisualProps) {
       <rect x="0" y="104" width="400" height="296" fill={`url(#${id}-derm)`} />
       <rect x="0" y="98" width="400" height="14" fill={C.skin} />
       <line x1="0" y1="98" x2="400" y2="98" stroke="rgba(242,242,240,0.35)" />
-      <Label x={16} y={88} size={11} fill="#8e939a">
+      <Label x={16} y={88} size={12} fill="#8e939a">
         SKIN SURFACE
       </Label>
 
@@ -377,7 +377,7 @@ export function CycleVisual({ play, reduced }: VisualProps) {
                 : 'border-line-dark text-on-dark-muted hover:border-steel hover:text-on-dark',
             )}
           >
-            <span className="block text-[11px] tracking-[0.12em] uppercase">{p.role}</span>
+            <span className="block text-xs tracking-[0.12em] uppercase">{p.role}</span>
             <span className="mt-0.5 block text-[15px] font-medium">{p.name}</span>
           </button>
         ))}
@@ -492,7 +492,7 @@ export function MiniaturisationVisual({ play, reduced }: VisualProps) {
         strokeWidth="1"
         markerEnd={`url(#${id}-arrow)`}
       />
-      <Label x={200} y={24} anchor="middle" size={11} fill="#8e939a">
+      <Label x={200} y={24} anchor="middle" size={12} fill="#8e939a">
         SHORTER GROWTH PHASES · FINER HAIRS
       </Label>
     </svg>
@@ -564,7 +564,7 @@ export function ScanFieldVisual({ play, reduced }: VisualProps) {
         <Label x={SCAR.cx} y={SCAR.cy - 4} anchor="middle" size={12} fill="#f2f2f0">
           Scarred area
         </Label>
-        <Label x={SCAR.cx} y={SCAR.cy + 13} anchor="middle" size={11}>
+        <Label x={SCAR.cx} y={SCAR.cy + 13} anchor="middle" size={12}>
           no follicle openings
         </Label>
 
@@ -611,7 +611,7 @@ export function ScanFieldVisual({ play, reduced }: VisualProps) {
                 fill="#121315"
                 stroke={C.line}
               />
-              <Label x={roots[0].x + 65} y={roots[0].y + 4} anchor="middle" size={11} fill="#f2f2f0">
+              <Label x={roots[0].x + 65} y={roots[0].y + 4} anchor="middle" size={12} fill="#f2f2f0">
                 Living root
               </Label>
             </g>
@@ -633,7 +633,7 @@ export function ScanFieldVisual({ play, reduced }: VisualProps) {
         </motion.g>
       </g>
       <rect x="20" y="20" width="360" height="360" rx="20" fill="none" stroke={C.line} />
-      <Label x={36} y={44} size={11} fill="#8e939a">
+      <Label x={36} y={44} size={12} fill="#8e939a">
         TOP-DOWN VIEW · ILLUSTRATIVE
       </Label>
     </svg>
@@ -708,7 +708,7 @@ export function PlanTargetsVisual({ play, reduced, targets }: VisualProps & { ta
       <path d="M200 166 L200 206" stroke={C.shaft} strokeWidth="3.5" strokeLinecap="round" />
       <ellipse cx="200" cy="211" rx="10" ry="8" fill={C.skin} stroke={C.line} />
       <ellipse cx="200" cy="214" rx="4" ry="4.5" fill="#dfe5ec" />
-      <Label x={200} y={238} anchor="middle" size={11}>
+      <Label x={200} y={238} anchor="middle" size={12}>
         Your follicle
       </Label>
 

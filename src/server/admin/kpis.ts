@@ -35,7 +35,8 @@ export const METRIC_DEFINITIONS = {
   newLeads: 'Leads created in period (by leads.created_at, IST)',
   leadToPaid:
     'Leads created in period that have a captured consultation payment within 14 days ÷ leads created in period',
-  bookingConversion: 'Captured consult payments ÷ holds created (same period)',
+  bookingConversion:
+    'Leads created in period who paid for a consultation ÷ leads created in period who booked a slot (same cohort as the funnel)',
   showUp: 'Completed ÷ (completed + no_show) consultations',
   consultToPlan:
     'Plans paid within 7 days of a completed consult ÷ completed consults, cohorted by consult week',
@@ -277,7 +278,7 @@ export function computePeriod(src: KpiSource, opts: KpiOptions, w: KpiWindow): P
     });
   }).length;
 
-  // Bookings: holds created in the period (paid first consults go through a hold)
+  // Consultation fees captured in the period (revenue only — conversion comes from the funnel below)
   const holds = src.appointments.filter((a) => a.feePaise > 0 && inWindow(heldAt(a), w));
   const captured = holds.filter(isCaptured);
 
@@ -352,7 +353,14 @@ export function computePeriod(src: KpiSource, opts: KpiOptions, w: KpiWindow): P
     .reduce((s, a) => s + (new Date(a.endsAt).getTime() - new Date(a.startsAt).getTime()) / 60_000, 0);
   const availableMinutes = availableSlotMinutes(w, src.availability, opts.slotMinutes, opts.bufferMinutes);
 
-  // Funnel: cohort of leads created in the period; each step requires the previous one
+  /*
+   * Funnel (FUN-09) — the single source for stage counts and the booking-conversion KPI.
+   * COHORT logic: the population is the leads created in the period; each lead is followed to the
+   * furthest stage it has reached so far (whenever that happened), and every step requires the
+   * previous one, so counts are monotonic: leads ≥ booked ≥ paid ≥ attended ≥ plan ≥ reordered.
+   * PERIOD logic (everything else above — revenue, show-up, AOV …) counts events that happened
+   * inside the window regardless of when the lead arrived; those numbers are not funnel stages.
+   */
   const reached = leads.map((l) => {
     const appts = apptsOf(l.customerId);
     const orders = paidOrdersOf(l.customerId);
@@ -383,7 +391,7 @@ export function computePeriod(src: KpiSource, opts: KpiOptions, w: KpiWindow): P
   return {
     newLeads: leads.length,
     leadToPaid: ratio(leadPaid, leads.length),
-    bookingConversion: ratio(captured.length, holds.length),
+    bookingConversion: ratio(funnel[2]?.count ?? 0, funnel[1]?.count ?? 0),
     showUp: ratio(completed.length, completed.length + noShows.length),
     noShow: ratio(noShows.length, completed.length + noShows.length),
     consultToPlan: ratio(converted, firstCompleted.length),

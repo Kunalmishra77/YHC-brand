@@ -1,6 +1,7 @@
 import 'server-only';
 
-import type { Appointment } from '@/lib/domain/types';
+import { subDays } from 'date-fns';
+import type { Appointment, HairConcern } from '@/lib/domain/types';
 import { AppError } from '@/lib/errors';
 import type {
   CaptureZone,
@@ -31,7 +32,8 @@ export interface JourneyAddress {
 export interface Journey {
   id: string;
   customerId: string;
-  address: JourneyAddress;
+  /** Collected at plan checkout (ADR-33); null for journeys started without it. */
+  address: JourneyAddress | null;
   step: JourneyStep;
   scan?: ScanResult;
   /** the detailed health form, kept until a booking exists (then also saved as the intake) */
@@ -65,14 +67,86 @@ function nextId(prefix: string): string {
 const nowIso = () => new Date().toISOString();
 
 // ---------------------------------------------------------------------------------------------
+// demo seed (FUN-07): every seeded customer who has a consultation or a plan has a completed scan,
+// because in the real flow the scan comes before booking (ADR-26). Seeded on first read so it also
+// covers persisted demo snapshots taken before this seed existed. Only seeded ids (`cus-s<n>`) —
+// customers created during a demo keep the real "no scan yet" behaviour.
+
+const SEEDED_CUSTOMER_ID = /^cus-s\d+$/;
+
+const SEED_PATTERN: Record<HairConcern, ScanAnswers['pattern']> = {
+  hair_fall: 'diffuse',
+  thinning: 'diffuse',
+  receding_hairline: 'hairline',
+  crown_thinning: 'crown',
+  dandruff_scalp: 'not_sure',
+  other: 'not_sure',
+};
+
+const SEED_ZONES: CaptureZone[] = ['forehead_left', 'forehead_centre', 'forehead_right', 'top', 'crown', 'parting', 'back'];
+
+/** The scan a seeded customer would have taken before their first consultation, or null. */
+export function seededScanFor(customerId: string): ScanResult | null {
+  if (!SEEDED_CUSTOMER_ID.test(customerId)) return null;
+  const s = db();
+  const consults = s.appointments
+    .filter((a) => a.customerId === customerId && ['booked', 'completed', 'no_show'].includes(a.status))
+    .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+  const planOrder = s.orders.find((o) => o.customerId === customerId && o.planId && o.paidAt);
+  const first = consults[0];
+  if (!first && !planOrder) return null;
+  const n = Number(customerId.slice('cus-s'.length)) || 0;
+  const answers: ScanAnswers = {
+    duration: (['lt_1y', '1_3y', '3_5y'] as const)[n % 3] ?? '1_3y',
+    pattern: SEED_PATTERN[first?.concern ?? 'hair_fall'],
+    longBald: 'no',
+    familyHistory: n % 2 === 0 ? 'yes' : 'not_sure',
+  };
+  const before = first ? new Date(first.startsAt) : new Date(planOrder?.createdAt ?? Date.now());
+  return {
+    id: `scan-seed-${customerId}`,
+    capturedAt: subDays(before, 1).toISOString(),
+    angles: [...SEED_ZONES],
+    skippedZones: [],
+    answers,
+    ...assessScan(answers),
+  };
+}
+
+function ensureSeededScan(customerId: string): void {
+  const s = state();
+  const journey = s.journeys.get(customerId);
+  if (journey?.scan) return;
+  const scan = seededScanFor(customerId);
+  if (!scan) return;
+  if (journey) {
+    journey.scan = scan;
+    return;
+  }
+  const customer = db().customers.find((c) => c.id === customerId);
+  s.journeys.set(customerId, {
+    id: `jrn-seed-${customerId}`,
+    customerId,
+    address: { line: customer?.city ?? '', pincode: '' },
+    step: 'consultation',
+    scan,
+    intakeDone: true,
+    createdAt: scan.capturedAt,
+    updatedAt: scan.capturedAt,
+  });
+}
+
+// ---------------------------------------------------------------------------------------------
 // getters (used by /start, /account and the doctor portal)
 
 export function getJourneyForCustomer(customerId: string): Journey | null {
+  ensureSeededScan(customerId);
   return state().journeys.get(customerId) ?? null;
 }
 
 /** Clinical data — callers in staff portals must `recordAudit(..., 'clinical.view', ...)`. */
 export function getScanForCustomer(customerId: string): ScanResult | null {
+  ensureSeededScan(customerId);
   return state().journeys.get(customerId)?.scan ?? null;
 }
 
@@ -86,18 +160,18 @@ export function journeyAppointment(journey: Journey): Appointment | null {
 // mutations
 
 /** Step 1. Restarting keeps earlier progress (scan, form) so a returning patient is not sent back. */
-export function startJourney(input: { customerId: string; address: JourneyAddress }): Journey {
+export function startJourney(input: { customerId: string; address?: JourneyAddress | null }): Journey {
   const s = state();
   const existing = s.journeys.get(input.customerId);
   if (existing) {
-    existing.address = input.address;
+    if (input.address) existing.address = input.address;
     existing.updatedAt = nowIso();
     return existing;
   }
   const journey: Journey = {
     id: nextId('jrn'),
     customerId: input.customerId,
-    address: input.address,
+    address: input.address ?? null,
     step: 'scan',
     intakeDone: false,
     createdAt: nowIso(),
@@ -199,7 +273,7 @@ export function journeyTracker(journey: Journey, now = new Date()): JourneyTrack
   };
   const live = appt && appt.status === 'booked' && new Date(appt.endsAt) > now;
   const note: Record<JourneyStep, string | null> = {
-    details: 'Name, mobile and address',
+    details: 'Name and mobile',
     scan: journey.scan
       ? `${journey.scan.angles.length} ${journey.scan.skippedZones ? 'zones' : 'angles'} captured`
       : 'Guided phone-camera scan',

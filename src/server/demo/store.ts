@@ -421,6 +421,8 @@ export function createRecommendation(input: {
   items: PrescriptionItem[];
   note: string;
   actor: string;
+  /** FUN-07: set when the doctor recommends with no 3D scan on file */
+  scanOverrideReason?: string | null;
 }): Recommendation {
   const s = db();
   const appt = s.appointments.find((a) => a.id === input.appointmentId);
@@ -438,6 +440,7 @@ export function createRecommendation(input: {
     items: input.items,
     createdAt: iso(new Date()),
     expiresAt: iso(addMinutes(new Date(), getSettingNumber('recommendation.link_ttl_hours') * 60)),
+    scanOverrideReason: input.scanOverrideReason ?? null,
   };
   s.recommendations.push(rec);
   emit('recommendation.sent', rec.id);
@@ -450,6 +453,11 @@ export function createRecommendation(input: {
   );
   scheduleJob('recommendation.nudge', `rec:${rec.id}:nudge`, addMinutes(new Date(), 24 * 60));
   audit(input.actor, 'recommendation.create', rec.id);
+  // Audit target names the record only — the reason itself stays on the recommendation (clinical).
+  if (rec.scanOverrideReason) {
+    emit('recommendation.scan_override', rec.id);
+    audit(input.actor, 'recommendation.scan_override', rec.id);
+  }
   return rec;
 }
 

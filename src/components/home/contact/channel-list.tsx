@@ -24,6 +24,7 @@ function Badge({ children, strong = false }: { children: React.ReactNode; strong
 export function ChannelList() {
   return (
     <ul className="-mx-3 divide-y divide-line">
+      {SITE.whatsappAvailable ? (
       <li>
         <a href={SITE.whatsappUrl} target="_blank" rel="noopener noreferrer" className={ROW}>
           <Badge strong>
@@ -40,6 +41,7 @@ export function ChannelList() {
           <span className="sr-only">(opens WhatsApp in a new tab)</span>
         </a>
       </li>
+      ) : null}
       <li>
         <a href={`mailto:${SITE.supportEmail}`} className={ROW}>
           <Badge>
@@ -59,23 +61,22 @@ export function ChannelList() {
           </Badge>
           <span className="min-w-0 flex-1">
             <span className="block font-semibold text-ink">Send a message</span>
-            <span className="block text-sm text-muted-foreground">
-              A short form; we reply on WhatsApp or by phone
-            </span>
+            <span className="block text-sm text-muted-foreground">A short form; the care team will get back to you</span>
           </span>
           <ArrowRight className="size-4 shrink-0 text-steel" aria-hidden />
         </Link>
       </li>
-      <li className="flex min-h-16 items-center gap-4 px-3 py-3">
-        <Badge>
-          <Clock className="size-5" />
-        </Badge>
-        <span className="min-w-0 flex-1">
-          <span className="block font-semibold text-ink">Consultation hours</span>
-          {/* TODO(client): consultation and support hours — see docs/12 C */}
-          <span className="block text-sm text-muted-foreground">To be confirmed</span>
-        </span>
-      </li>
+      {SITE.supportHours ? (
+        <li className="flex min-h-16 items-center gap-4 px-3 py-3">
+          <Badge>
+            <Clock className="size-5" />
+          </Badge>
+          <span className="min-w-0 flex-1">
+            <span className="block font-semibold text-ink">Consultation hours</span>
+            <span className="block text-sm text-muted-foreground">{SITE.supportHours}</span>
+          </span>
+        </li>
+      ) : null}
     </ul>
   );
 }

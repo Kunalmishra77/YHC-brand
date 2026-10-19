@@ -27,7 +27,7 @@ export function AngleGuide({ angle, className }: { angle: GuideVariant; classNam
           <path d="M58 92c8-34 76-38 84 0" />
           <path d="M66 80c-5 9-7 16-7 24M134 80c5 9 7 16 7 24" opacity="0.7" />
           <path d="M72 70c18-10 38-10 56 0" strokeDasharray="2 4" opacity="0.8" />
-          <text x="100" y="40" fill="rgba(230,232,236,0.75)" fontSize="9" textAnchor="middle" stroke="none">
+          <text x="100" y="40" fill="rgba(230,232,236,0.75)" fontSize="12" textAnchor="middle" stroke="none">
             Hairline inside the band
           </text>
         </g>
@@ -38,7 +38,7 @@ export function AngleGuide({ angle, className }: { angle: GuideVariant; classNam
           <ellipse cx="100" cy="104" rx="58" ry="68" strokeDasharray="5 5" />
           <path d="M100 104c7-2 9-9 4-14s-16-3-18 6 5 20 16 20 23-9 23-23-12-27-29-27" />
           <circle cx="100" cy="104" r="3" fill="rgba(230,232,236,0.9)" stroke="none" />
-          <text x="100" y="196" fill="rgba(230,232,236,0.75)" fontSize="9" textAnchor="middle" stroke="none">
+          <text x="100" y="196" fill="rgba(230,232,236,0.75)" fontSize="12" textAnchor="middle" stroke="none">
             Crown centred, from above
           </text>
         </g>
@@ -51,8 +51,11 @@ export function AngleGuide({ angle, className }: { angle: GuideVariant; classNam
             d="M100 52l-14 6M100 74l-16 6M100 96l-16 6M100 118l-14 6M100 52l14 6M100 74l16 6M100 96l16 6M100 118l14 6"
             opacity="0.7"
           />
-          <text x="100" y="194" fill="rgba(230,232,236,0.75)" fontSize="9" textAnchor="middle" stroke="none">
-            Parting line straight down the middle
+          <text x="100" y="182" fill="rgba(230,232,236,0.75)" fontSize="12" textAnchor="middle" stroke="none">
+            <tspan x="100">Parting line straight</tspan>
+            <tspan x="100" dy="14">
+              down the middle
+            </tspan>
           </text>
         </g>
       ) : null}
@@ -76,8 +79,11 @@ export function AngleGuide({ angle, className }: { angle: GuideVariant; classNam
               <path d={`M${x} ${y}l4 -9`} opacity="0.75" />
             </g>
           ))}
-          <text x="100" y="186" fill="rgba(230,232,236,0.75)" fontSize="9" textAnchor="middle" stroke="none">
-            Hold 10 cm from the thinnest area
+          <text x="100" y="178" fill="rgba(230,232,236,0.75)" fontSize="12" textAnchor="middle" stroke="none">
+            <tspan x="100">Hold 10 cm from the</tspan>
+            <tspan x="100" dy="14">
+              thinnest area
+            </tspan>
           </text>
         </g>
       ) : null}

@@ -8,6 +8,7 @@ import { ContinueBar } from '@/components/booking/continue-bar';
 import { DemoPaymentSheet } from '@/components/booking/demo-payment-sheet';
 import { Button } from '@/components/ui/button';
 import { formatINR } from '@/lib/money';
+import { track } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 import type { AddressInput } from '@/lib/validation/checkout';
 import { AddressForm } from './address-form';
@@ -58,6 +59,7 @@ export function PlanCheckout({
       }
       return res.error.message;
     }
+    track('plan_paid', { valuePaise: plan.pricePaise });
     router.push(`/order/${res.data.code}?t=${encodeURIComponent(token)}&paid=1`);
     return null;
   };

@@ -25,7 +25,7 @@ export interface ResultCardData {
   view: string;
   before: SliderPhoto;
   after: SliderPhoto;
-  /** "Duration: to be confirmed" until the clinic confirms the months between photos. */
+  /** Empty until the clinic confirms the months between photos (then nothing is shown — ADR-33). */
   duration: string;
   note: string;
 }
@@ -37,35 +37,34 @@ const SECONDS_PER_CARD = 8;
 
 /**
  * Section 8 carousel: a seamless, slowly drifting gallery wall. Each card is a white mat holding the
- * two photos with a hairline seam and a thin caption; tapping opens the drag-to-compare slider. Repeats
- * (added only to fill wide screens) stay out of the tab order and the accessibility tree.
+ * two photos with a hairline seam and a thin caption; tapping opens the drag-to-compare slider. The
+ * Marquee repeats short lists to fill wide screens; every repeat is aria-hidden + inert, so each case
+ * is exposed to assistive tech (and the tab order) exactly once.
  */
 export function ResultsCarousel({ results }: { results: ResultCardData[] }) {
-  const reps = Math.max(1, Math.ceil(MIN_CARDS / results.length));
-  const cards = Array.from({ length: reps }, (_, rep) =>
-    results.map((r) => <ResultCard key={`${rep}-${r.id}`} result={r} decorative={rep > 0} />),
-  ).flat();
-
+  /** Cards per half-track after the Marquee repeats the list (keeps the per-card speed constant). */
+  const perHalf = results.length * Math.max(1, Math.ceil(MIN_CARDS / Math.max(1, results.length)));
   return (
     <Marquee
       label="Patient results, before and after"
-      durationSec={cards.length * SECONDS_PER_CARD}
+      durationSec={perHalf * SECONDS_PER_CARD}
+      minItems={MIN_CARDS}
       className="text-center"
       itemClassName="w-[17.5rem] min-[400px]:w-[19rem] sm:w-[22rem] lg:w-[25rem]"
     >
-      {cards}
+      {results.map((r) => (
+        <ResultCard key={r.id} result={r} />
+      ))}
     </Marquee>
   );
 }
 
-function ResultCard({ result, decorative }: { result: ResultCardData; decorative: boolean }) {
+function ResultCard({ result }: { result: ResultCardData }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
         <button
           type="button"
-          tabIndex={decorative ? -1 : undefined}
-          aria-hidden={decorative ? true : undefined}
           aria-label={`Compare before and after: ${result.patientLabel}, ${result.concern.toLowerCase()}, ${result.view.toLowerCase()} view`}
           className="group/card block w-full rounded-sm text-left focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-4 focus-visible:ring-offset-pearl focus-visible:outline-none"
         >
@@ -85,7 +84,7 @@ function ResultCard({ result, decorative }: { result: ResultCardData; decorative
             </span>
             <span
               aria-hidden
-              className="grid grid-cols-2 pt-2.5 text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase"
+              className="grid grid-cols-2 pt-2.5 text-xs font-semibold tracking-[0.18em] text-muted-foreground uppercase"
             >
               <span>Before</span>
               <span className="pl-2">After</span>
@@ -94,12 +93,13 @@ function ResultCard({ result, decorative }: { result: ResultCardData; decorative
 
           {/* Thin caption */}
           <span className="block px-0.5 pt-4">
-            <span className="block text-[11px] font-semibold tracking-[0.18em] text-ink uppercase">
+            <span className="block text-xs font-semibold tracking-[0.16em] text-ink uppercase">
               {result.patientLabel} — {result.concern}
             </span>
             <span className="mt-1.5 flex items-baseline justify-between gap-3 text-[13px] text-muted-foreground">
               <span>
-                {result.view} · {result.duration}
+                {result.view}
+                {result.duration ? ` · ${result.duration}` : null}
               </span>
               <span className="shrink-0 text-ink underline decoration-steel underline-offset-4 transition-colors group-hover/card:decoration-current">
                 Compare
@@ -115,7 +115,8 @@ function ResultCard({ result, decorative }: { result: ResultCardData; decorative
             {result.patientLabel} · {result.concern}
           </DialogTitle>
           <DialogDescription className="text-body">
-            {result.view} view · {result.duration}. Drag the handle, or use the arrow keys, to compare.
+            {result.view} view{result.duration ? ` · ${result.duration}` : ''}. Drag the handle, or use the arrow
+            keys, to compare.
           </DialogDescription>
         </DialogHeader>
         <BeforeAfterSlider

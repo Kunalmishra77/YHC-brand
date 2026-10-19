@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google';
+import { AnalyticsConsent } from '@/components/shared/analytics-consent';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { clientEnv } from '@/lib/env';
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(clientEnv.NEXT_PUBLIC_SITE_URL),
   title: { default: 'Your Hair Company — Doctor-led hair care', template: '%s · Your Hair Company' },
   description:
-    'Video consultation with Dr. Tyagi, a personalised hair plan, delivery to your door and follow-up care.',
+    'Video consultation with Dr. Tyagi, a personalised hair plan, delivery to your door and follow-up care: doctor-led hair care from Your Hair Company.',
 };
 
 export const viewport: Viewport = {
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       <body className="flex min-h-dvh flex-col">
         <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
         <Toaster position="top-center" />
+        <AnalyticsConsent />
       </body>
     </html>
   );

@@ -76,7 +76,7 @@ export function ScanVisual({ className }: { className?: string }) {
       />
       <style>{`@keyframes yhc-scan { from { top: 18%; } to { top: 70%; } }`}</style>
 
-      <div className="absolute top-4 left-4 rounded-full bg-black/45 px-3 py-1 text-[11px] font-medium text-on-dark backdrop-blur">
+      <div className="absolute top-4 left-4 rounded-full bg-black/45 px-3 py-1 text-xs font-medium text-on-dark backdrop-blur">
         Illustration · not a scan result
       </div>
       <figcaption className="absolute inset-x-4 bottom-4 grid grid-cols-2 gap-2 text-[12px] text-on-dark sm:inset-x-6 sm:bottom-6">

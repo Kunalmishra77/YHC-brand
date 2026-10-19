@@ -82,7 +82,7 @@ export function RevenueChart({ points, weekly }: { points: RevenuePoint[]; weekl
             className="pointer-events-none absolute right-0 left-12 border-t border-line"
             style={{ bottom: `${(v / max) * 100}%` }}
           >
-            <span className="price absolute -top-2 -left-12 w-10 text-right text-[11px] text-muted-foreground">
+            <span className="price absolute -top-2 -left-12 w-10 text-right text-xs text-muted-foreground">
               {formatINRCompact(v)}
             </span>
           </div>
@@ -139,7 +139,7 @@ export function RevenueChart({ points, weekly }: { points: RevenuePoint[]; weekl
       </div>
       <div className="mt-1.5 flex gap-[2px] pl-12" aria-hidden>
         {points.map((p, i) => (
-          <span key={p.firstDate} className="min-w-0 flex-1 text-center text-[11px] text-muted-foreground">
+          <span key={p.firstDate} className="min-w-0 flex-1 text-center text-xs text-muted-foreground">
             {i % every === 0 || i === points.length - 1 ? dateLabel(p.firstDate) : ''}
           </span>
         ))}

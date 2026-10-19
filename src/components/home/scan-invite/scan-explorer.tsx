@@ -306,7 +306,7 @@ export function ScanExplorer() {
               ) : null}
             </AnimatePresence>
 
-            <span className="absolute top-3 left-3 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-on-dark backdrop-blur">
+            <span className="absolute top-3 left-3 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-on-dark backdrop-blur">
               Illustration · not a scan result
             </span>
           </div>

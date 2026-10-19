@@ -65,14 +65,16 @@ export function SiteFooter({ doctor }: { doctor: Doctor }) {
             ) : null}
           </p>{' '}
           <ul className="mt-5 flex flex-wrap gap-x-5 text-sm">
-            <li>
-              <a
-                href={SITE.whatsappUrl}
-                className="inline-flex min-h-11 items-center text-on-dark underline decoration-on-dark-muted/40 underline-offset-4 transition-colors hover:decoration-on-dark"
-              >
-                {t('common.whatsapp')}
-              </a>
-            </li>
+            {SITE.whatsappAvailable ? (
+              <li>
+                <a
+                  href={SITE.whatsappUrl}
+                  className="inline-flex min-h-11 items-center text-on-dark underline decoration-on-dark-muted/40 underline-offset-4 transition-colors hover:decoration-on-dark"
+                >
+                  {t('common.whatsapp')}
+                </a>
+              </li>
+            ) : null}
             <li>
               <a
                 href={`mailto:${SITE.supportEmail}`}
@@ -109,6 +111,7 @@ export function SiteFooter({ doctor }: { doctor: Doctor }) {
                 <li key={p.slug}>
                   <Link
                     href={`/legal/${p.slug}`}
+                    prefetch={false}
                     className="inline-flex min-h-11 items-center text-on-dark-muted transition-colors hover:text-on-dark md:min-h-8"
                   >
                     {p.title}
@@ -140,7 +143,8 @@ function FooterColumn({
       <ul className={cn('mt-3 md:mt-4', listClassName)}>
         {links.map((l) => (
           <li key={l.href}>
-            <Link href={l.href} className={LINK}>
+            {/* PERF-04: ~25 footer links would otherwise each prefetch on load. */}
+            <Link href={l.href} prefetch={false} className={LINK}>
               {l.label}
             </Link>
           </li>

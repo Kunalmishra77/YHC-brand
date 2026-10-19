@@ -9,8 +9,10 @@ import type { Paise } from '@/lib/money';
  * Dates are IST business dates (`YYYY-MM-DD`); instants are UTC ISO strings converted by the caller.
  *
  * Interpretation notes (see final report / docs/15):
- * - Rules that are measured over the coverage period report `pending` while the plan is still running
- *   and the customer is on track. Only `met` counts as passed.
+ * - Rules that are measured over the coverage period cannot be `met` until the plan finishes. While the
+ *   plan is still running they report `on_track` when the customer is currently on target (e.g. 3 of 4
+ *   check-ins answered = 75% against "at least 75%"), and `pending` when there is nothing to measure yet.
+ *   Only `met` counts as passed (claims need every rule met); `on_track` is presentation only (FUN-02).
  * - `claim_window` opens on the coverage end date (terms: "within N days of finishing the plan").
  * - Month windows are counted from the first delivery: month 1 = delivery day … day 30, month 2 =
  *   day 31 … 60, and so on.
@@ -18,7 +20,8 @@ import type { Paise } from '@/lib/money';
 
 export type RuleId =
   'min_plan_months' | 'checkin_response' | 'monthly_photos' | 'followup_consult' | 'claim_window';
-export type RuleState = 'met' | 'pending' | 'not_met';
+/** `on_track` = not finished yet, but currently on target — shown as "On track", never counts as passed. */
+export type RuleState = 'met' | 'on_track' | 'pending' | 'not_met';
 
 export interface EligibilityRule {
   id: RuleId;
@@ -170,7 +173,7 @@ export function evaluateEligibility(policy: GuaranteePolicy, input: EligibilityI
       rule(
         'min_plan_months',
         minPlanLabel(policy),
-        'pending',
+        'on_track',
         `${plural(coverageMonths, 'month')} of continuous plan coverage, ${readable(coverageStart)} to ${readable(coverageEnd)}. You are on day ${dayOf} of ${totalDays}.`,
       ),
     );
@@ -199,7 +202,7 @@ export function evaluateEligibility(policy: GuaranteePolicy, input: EligibilityI
     rule(
       'checkin_response',
       checkinLabel(policy),
-      finished ? (onTarget ? 'met' : 'not_met') : sent.length === 0 || onTarget ? 'pending' : 'not_met',
+      finished ? (onTarget ? 'met' : 'not_met') : sent.length === 0 ? 'pending' : onTarget ? 'on_track' : 'not_met',
       !finished && sent.length > 0 && !onTarget
         ? `${replyDetail} Reply to the next check-ins to get back on track.`
         : replyDetail,
@@ -245,7 +248,9 @@ export function evaluateEligibility(policy: GuaranteePolicy, input: EligibilityI
         rule(
           'monthly_photos',
           'Progress photos every month',
-          'pending',
+          // No elapsed month was missed: on track once at least one month window is behind us or the
+          // current month is already covered; before that there is nothing to measure yet.
+          elapsed > 0 || covered.has(currentWindow) ? 'on_track' : 'pending',
           covered.has(currentWindow)
             ? `Photos shared for month ${currentWindow + 1} of ${windows}. On track.`
             : `Photos shared in ${done} of ${plural(windows, 'month')} so far. Month ${currentWindow + 1} photos are due by ${dueBy}.`,
@@ -259,6 +264,9 @@ export function evaluateEligibility(policy: GuaranteePolicy, input: EligibilityI
     const followUp = input.consults.find(
       (c) => c.kind === 'follow_up' && c.status === 'completed' && inCoverage(c.on),
     );
+    const booked = input.consults.find(
+      (c) => c.kind === 'follow_up' && c.status === 'booked' && c.on >= today && c.on <= coverageEnd,
+    );
     rules.push(
       followUp
         ? rule(
@@ -267,7 +275,14 @@ export function evaluateEligibility(policy: GuaranteePolicy, input: EligibilityI
             'met',
             `You attended your follow-up consultation on ${readable(followUp.on)}.`,
           )
-        : rule(
+        : !finished && booked
+          ? rule(
+              'followup_consult',
+              'Follow-up consultation',
+              'on_track',
+              `Booked for ${readable(booked.on)}. Attend it to meet this condition.`,
+            )
+          : rule(
             'followup_consult',
             'Follow-up consultation',
             finished ? 'not_met' : 'pending',

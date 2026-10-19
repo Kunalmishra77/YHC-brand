@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'FAQs',
   description:
-    'Answers about consultations, treatment plans, the money-back guarantee conditions and delivery at Your Hair Company.',
+    'Answers about scans, consultations, treatment plans, delivery and the money-back guarantee conditions at Your Hair Company, all in plain words.',
   path: '/faqs',
 });
 
@@ -71,7 +71,7 @@ export default function FaqsPage() {
               href={SITE.whatsappUrl}
               className="font-medium text-ink underline decoration-steel underline-offset-4 hover:decoration-current"
             >
-              Message us on WhatsApp
+              {SITE.whatsappAvailable ? 'Message us on WhatsApp' : 'Send us a message'}
             </a>{' '}
             or{' '}
             <Link

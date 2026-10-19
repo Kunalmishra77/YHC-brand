@@ -2,7 +2,7 @@ import { AlertTriangle, MessageSquareText } from 'lucide-react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { getConsultTerms } from '@/components/site/consult-fee';
 import { CtaBand } from '@/components/site/cta-band';
 import { JsonLd } from '@/components/site/json-ld';
@@ -10,35 +10,55 @@ import { ProductTile } from '@/components/site/product-tile';
 import { pageMetadata } from '@/components/site/seo';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
+import { concernKeyFromParam, concernPath, concernUrlSlug } from '@/lib/concern-path';
+import type { Concern } from '@/lib/domain/types';
 import { clientEnv } from '@/lib/env';
 import { IMAGES } from '@/lib/images';
 import { getConcern, getConcerns, getProducts } from '@/server/catalog';
+import { CONCERN_SEO_DESCRIPTION, clampDescription } from '@/server/content/seo-copy';
 
 export const dynamic = 'force-dynamic';
 
 export function generateStaticParams() {
-  return getConcerns().map((c) => ({ slug: c.slug }));
+  return getConcerns().map((c) => ({ slug: concernUrlSlug(c.slug) }));
+}
+
+/** Route param (hyphenated, SEO-05) → concern. Underscore params are legacy URLs and resolve to null. */
+function concernFromParam(param: string) {
+  const key = concernKeyFromParam(param);
+  return key ? getConcern(key) : null;
+}
+
+function concernDescription(concern: Concern): string {
+  return (
+    CONCERN_SEO_DESCRIPTION[concern.slug] ??
+    clampDescription(`${concern.summary} What it can mean, and how a consultation with Dr. Tyagi helps.`)
+  );
 }
 
 export async function generateMetadata({ params }: PageProps<'/concerns/[slug]'>): Promise<Metadata> {
   const { slug } = await params;
-  const concern = getConcern(slug);
+  const concern = concernFromParam(slug);
   if (!concern) return { title: 'Concern not found' };
   return pageMetadata({
     title: concern.title,
-    description: `${concern.summary} What it can mean, and how a consultation with Dr. Tyagi helps.`,
-    path: `/concerns/${concern.slug}`,
+    description: concernDescription(concern),
+    path: concernPath(concern.slug),
+    ownImage: true,
   });
 }
 
 export default async function ConcernPage({ params }: PageProps<'/concerns/[slug]'>) {
   const { slug } = await params;
-  const concern = getConcern(slug);
+  // Old /concerns/hair_fall links are 301'd in next.config.ts; this catches any that slip through.
+  if (slug.includes('_') && getConcern(slug)) permanentRedirect(concernPath(slug));
+  const concern = concernFromParam(slug);
   if (!concern) notFound();
   const others = getConcerns().filter((c) => c.slug !== concern.slug);
   const products = getProducts().filter((p) => concern.relatedProducts.includes(p.slug));
   const terms = getConsultTerms();
-  const base = clientEnv.NEXT_PUBLIC_SITE_URL;
+  const base = clientEnv.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '');
+  const url = `${base}${concernPath(concern.slug)}`;
 
   return (
     <>
@@ -49,13 +69,24 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
           itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'Home', item: base },
             { '@type': 'ListItem', position: 2, name: 'Hair concerns', item: `${base}/concerns` },
-            {
-              '@type': 'ListItem',
-              position: 3,
-              name: concern.title,
-              item: `${base}/concerns/${concern.slug}`,
-            },
+            { '@type': 'ListItem', position: 3, name: concern.title, item: url },
           ],
+        }}
+      />
+      {/* SEO-06. TODO(client): reviewedBy Physician once registration is confirmed — docs/16 C1 */}
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'MedicalWebPage',
+          name: concern.title,
+          headline: concern.title,
+          description: concernDescription(concern),
+          url,
+          inLanguage: 'en-IN',
+          audience: { '@type': 'PeopleAudience', audienceType: 'Patient' },
+          about: { '@type': 'MedicalCondition', name: concern.title },
+          isPartOf: { '@type': 'WebSite', name: 'Your Hair Company', url: base },
+          publisher: { '@type': 'Organization', name: 'Your Hair Company', url: base },
         }}
       />
       <article>
@@ -91,7 +122,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
                 variant="outline"
                 className="h-12 border-line-dark bg-transparent px-6 text-base text-on-dark hover:bg-graphite hover:text-on-dark"
               >
-                <Link href="/assessment">{t('common.freeAssessment')}</Link>
+                <Link href="/start">{t('common.freeAssessment')}</Link>
               </Button>
             </div>
           </div>
@@ -184,7 +215,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
           <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl bg-line sm:grid-cols-2 lg:grid-cols-4">
             {others.map((c) => (
               <li key={c.slug} className="bg-pearl">
-                <Link href={`/concerns/${c.slug}`} className="group block h-full p-6 hover:bg-card">
+                <Link href={concernPath(c.slug)} className="group block h-full p-6 hover:bg-card">
                   <p className="font-semibold text-ink group-hover:text-brand">{c.title}</p>
                   <p className="mt-2 text-sm text-body">{c.summary}</p>
                 </Link>

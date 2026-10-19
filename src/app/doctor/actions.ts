@@ -17,7 +17,6 @@ import { err, ok, type Result } from '@/lib/result';
 import { PLANS, PRODUCTS } from '@/server/demo/fixtures';
 import {
   completeConsultation,
-  createRecommendation,
   db,
   getAvailabilityConfig,
   markNoShow,
@@ -26,6 +25,7 @@ import {
 } from '@/server/demo/store';
 import { requireDoctorAction } from '@/server/doctor/auth';
 import { decideClaim } from '@/server/doctor/claims';
+import { sendRecommendation } from '@/server/doctor/recommend';
 
 /*
  * Doctor-portal server actions. Every action re-checks the role (aal2) — never trust the proxy.
@@ -121,13 +121,15 @@ export async function createRecommendationAction(
 
     saveNotes({ ...data.notes, followUpInWeeks: data.followUpInWeeks });
     // Price is recomputed on the server (quotePlan / pricePlan) — nothing here comes from the client.
-    const rec = createRecommendation({
+    // FUN-07: no 3D scan on file → a written override reason is required (checked in sendRecommendation).
+    const rec = sendRecommendation({
       appointmentId: appt.id,
       planId: data.planId,
       productIds: [...new Set(data.productIds)],
       items: data.items,
       note: data.note,
       actor: user.name,
+      scanOverrideReason: data.scanOverrideReason ?? null,
     });
     refreshConsult(appt.id);
     revalidatePath('/doctor/follow-ups');

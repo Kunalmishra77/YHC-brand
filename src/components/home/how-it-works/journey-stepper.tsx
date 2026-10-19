@@ -1,214 +1,205 @@
 'use client';
 
-import { motion, useInView, useMotionValueEvent, useScroll } from 'motion/react';
-import { useRef, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
+import { AnimatePresence, motion, useInView } from 'motion/react';
+import Link from 'next/link';
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
 import { usePrefersReducedMotion } from '@/components/site/background-video';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { StepVisual } from './step-visuals';
 import type { HowStep, SlotTerms } from './types';
 
 const EASE = [0.2, 0.7, 0.2, 1] as const;
+const AUTO_MS = 5200;
 const pad = (n: number) => String(n).padStart(2, '0');
 
 /**
- * Desktop (lg+, motion allowed): a sticky scroll-driven stepper. Below lg — and at every size when the
- * visitor prefers reduced motion — a plain vertical timeline that is fully readable without animation.
+ * One-viewport journey stepper (audit UX-02): the steps are tabs (click, arrow keys), the visual panel
+ * shows the selected step. While in view it advances gently on its own until the visitor interacts —
+ * never with reduced motion. Replaces the earlier 4,700 px sticky scroll section.
  */
 export function JourneyStepper({ steps, terms }: { steps: HowStep[]; terms: SlotTerms }) {
+  const uid = useId();
   const reduced = usePrefersReducedMotion();
-  return (
-    <>
-      {reduced ? null : <ScrollStepper steps={steps} terms={terms} />}
-      <Timeline steps={steps} terms={terms} reduced={reduced} className={reduced ? undefined : 'lg:hidden'} />
-    </>
-  );
-}
-
-function ScrollStepper({ steps, terms }: { steps: HowStep[]; terms: SlotTerms }) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const n = steps.length;
-  const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] });
+  const rootRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const inView = useInView(rootRef, { amount: 0.45 });
   const [active, setActive] = useState(0);
+  const [interacted, setInteracted] = useState(false);
+  const n = steps.length;
 
-  useMotionValueEvent(scrollYProgress, 'change', (p) => {
-    const i = Math.min(n - 1, Math.max(0, Math.floor(p * n)));
-    setActive((prev) => (prev === i ? prev : i));
-  });
+  useEffect(() => {
+    if (reduced || interacted || !inView) return;
+    const t = window.setInterval(() => setActive((i) => (i + 1) % n), AUTO_MS);
+    return () => window.clearInterval(t);
+  }, [reduced, interacted, inView, n]);
 
-  /** Keyboard/click: scroll to the middle of that step's band so the stepper lands on it. */
-  const goTo = (i: number) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY;
-    const range = el.offsetHeight - window.innerHeight;
-    window.scrollTo({ top: top + range * ((i + 0.5) / n), behavior: 'smooth' });
+  const select = (i: number, focus = false) => {
+    setInteracted(true);
+    setActive(i);
+    if (focus) tabRefs.current[i]?.focus();
+  };
+
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    const moves: Record<string, number> = {
+      ArrowDown: (active + 1) % n,
+      ArrowRight: (active + 1) % n,
+      ArrowUp: (active - 1 + n) % n,
+      ArrowLeft: (active - 1 + n) % n,
+      Home: 0,
+      End: n - 1,
+    };
+    const next = moves[e.key];
+    if (next === undefined) return;
+    e.preventDefault();
+    select(next, true);
   };
 
   const current = steps[active] ?? steps[0];
+  if (!current) return null;
+  const panelId = `${uid}-panel`;
 
   return (
-    <div ref={trackRef} className="relative hidden lg:block" style={{ height: `${n * 62}svh` }}>
-      <div className="sticky top-16 flex h-[calc(100svh-4rem)] items-center">
-        <div className="grid w-full grid-cols-[minmax(0,5fr)_minmax(0,7fr)] items-center gap-14 xl:gap-20">
-          {/* Step list + progress rail */}
-          <div className="relative">
-            <span aria-hidden className="absolute top-5 bottom-5 left-5 w-px bg-line" />
-            <motion.span
-              aria-hidden
-              style={{ scaleY: scrollYProgress }}
-              className="absolute top-5 bottom-5 left-5 w-px origin-top bg-obsidian"
-            />
-            <ol aria-label="Your journey, step by step" className="relative space-y-1">
-              {steps.map((s, i) => {
-                const on = i === active;
-                const done = i < active;
-                return (
-                  <li key={s.id}>
-                    <button
-                      type="button"
-                      onClick={() => goTo(i)}
-                      aria-current={on ? 'step' : undefined}
-                      className="group flex min-h-12 w-full gap-5 rounded-xl py-2 pr-2 text-left"
-                    >
-                      <span
-                        className={cn(
-                          'price relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full text-[13px] ring-4 ring-card transition-colors duration-500',
-                          on
-                            ? 'bg-[image:var(--yhc-silver)] text-obsidian shadow-[0_0_0_1px_var(--yhc-obsidian)]'
-                            : done
-                              ? 'bg-obsidian text-on-dark'
-                              : 'bg-card text-muted-foreground shadow-[0_0_0_1px_var(--yhc-line-light)] group-hover:text-ink',
-                        )}
-                      >
-                        {pad(i + 1)}
-                      </span>
-                      <span className="min-w-0 pt-2">
-                        <span
-                          className={cn(
-                            'block text-[17px] leading-snug font-semibold transition-colors duration-500 xl:text-lg',
-                            on ? 'text-ink' : 'text-muted-foreground group-hover:text-ink',
-                          )}
-                        >
-                          {s.title}
-                        </span>
-                        <span
-                          className={cn(
-                            'grid transition-[grid-template-rows,opacity] duration-500 ease-out',
-                            on ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
-                          )}
-                        >
-                          <span className="overflow-hidden">
-                            <span className="block max-w-[44ch] pt-1.5 text-[15px] leading-relaxed text-pretty text-body">
-                              {s.body}
-                            </span>
-                            {s.meta ? (
-                              <span className="mt-2 block pb-1 text-[13px] font-medium text-brand">
-                                {s.meta}
-                              </span>
-                            ) : null}
-                          </span>
-                        </span>
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
-
-          {/* Visual panel — decorative; the step text lives in the list */}
-          <div
+    <div ref={rootRef} className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-stretch lg:gap-14 xl:gap-20">
+      {/* Steps = tabs. Phones: a swipeable numbered row; desktop: the full list with a progress rail. */}
+      <div className="flex min-w-0 flex-col">
+        <div
+          role="tablist"
+          aria-label="Your journey, step by step"
+          aria-orientation="vertical"
+          onKeyDown={onKeyDown}
+          className="relative -mx-[var(--yhc-gutter)] flex snap-x gap-2 overflow-x-auto px-[var(--yhc-gutter)] [scrollbar-width:none] lg:mx-0 lg:flex-col lg:gap-0 lg:overflow-visible lg:px-0 [&::-webkit-scrollbar]:hidden"
+        >
+          <span aria-hidden className="absolute top-6 bottom-6 left-6 hidden w-px bg-line lg:block" />
+          <span
             aria-hidden
-            className="relative h-[min(36rem,calc(100svh-9rem))] w-full overflow-hidden rounded-[2rem] bg-obsidian shadow-raised ring-1 ring-line-dark"
-          >
-            <PanelBackdrop />
-            <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-4 px-7 pt-6">
-              <p className="price text-[12px] tracking-[0.16em] text-on-dark-muted uppercase">
-                Step {pad(active + 1)} <span className="text-steel">/ {pad(n)}</span>
-              </p>
-              <p className="truncate text-[13px] text-on-dark-muted">{current?.title}</p>
-            </div>
-            <div className="absolute inset-x-7 top-14 z-10 h-px bg-line-dark">
-              <motion.div
-                style={{ scaleX: scrollYProgress }}
-                className="h-px origin-left bg-[image:var(--yhc-silver)]"
-              />
-            </div>
-            {steps.map((s, i) => {
-              const on = i === active;
-              return (
-                <motion.div
-                  key={s.id}
-                  initial={false}
-                  animate={{ opacity: on ? 1 : 0, y: on ? 0 : i < active ? -28 : 28, scale: on ? 1 : 0.97 }}
-                  transition={{ duration: 0.6, ease: EASE }}
-                  className="absolute inset-0 flex items-center justify-center px-8 pt-20 pb-8"
+            className="absolute top-6 left-6 hidden w-px origin-top bg-obsidian transition-[height] duration-700 ease-out lg:block"
+            style={{ height: `calc((100% - 3rem) * ${active / Math.max(1, n - 1)})` }}
+          />
+          {steps.map((s, i) => {
+            const on = i === active;
+            const done = i < active;
+            return (
+              <button
+                key={s.id}
+                ref={(el) => {
+                  tabRefs.current[i] = el;
+                }}
+                type="button"
+                role="tab"
+                id={`${uid}-tab-${s.id}`}
+                aria-selected={on}
+                aria-controls={panelId}
+                tabIndex={on ? 0 : -1}
+                onClick={() => select(i)}
+                className={cn(
+                  'group relative flex min-h-12 shrink-0 snap-start items-center gap-3 rounded-full px-4 text-left ring-1 transition-colors focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none',
+                  'lg:min-h-14 lg:gap-5 lg:rounded-xl lg:px-1 lg:ring-0',
+                  on ? 'bg-obsidian text-on-dark ring-obsidian lg:bg-transparent lg:text-ink' : 'text-body ring-line',
+                )}
+              >
+                <span
+                  className={cn(
+                    'price relative z-10 hidden size-10 shrink-0 items-center justify-center rounded-full text-[13px] ring-4 ring-card transition-colors duration-500 lg:flex',
+                    on
+                      ? 'bg-[image:var(--yhc-silver)] text-obsidian shadow-[0_0_0_1px_var(--yhc-obsidian)]'
+                      : done
+                        ? 'bg-obsidian text-on-dark'
+                        : 'bg-card text-muted-foreground shadow-[0_0_0_1px_var(--yhc-line-light)] group-hover:text-ink',
+                  )}
                 >
-                  <StepVisual id={s.id} active={on} terms={terms} />
-                </motion.div>
-              );
-            })}
-          </div>
+                  {pad(i + 1)}
+                </span>
+                <span className="price text-[13px] lg:hidden">{pad(i + 1)}</span>
+                <span
+                  className={cn(
+                    'text-[15px] leading-snug font-semibold whitespace-nowrap transition-colors lg:text-[17px] lg:whitespace-normal',
+                    on ? 'lg:text-ink' : 'lg:text-muted-foreground lg:group-hover:text-ink',
+                  )}
+                >
+                  {s.title}
+                </span>
+                {s.after ? (
+                  <span className="hidden rounded-full px-2 py-0.5 text-[12px] font-medium text-muted-foreground ring-1 ring-line lg:inline">
+                    After
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* CTA with the fee note, beside the steps (audit UX-02). */}
+        <div className="mt-8 hidden border-t border-line pt-6 lg:mt-auto lg:block">
+          <p className="max-w-md text-sm leading-relaxed text-body">
+            Starting is free. You pay the {terms.fee} consultation fee only when you book a doctor slot.
+          </p>
+          <Button asChild className="mt-4 h-12 px-7 text-base">
+            <Link href="/start">
+              Start with your details <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          </Button>
         </div>
       </div>
-    </div>
-  );
-}
 
-function Timeline({
-  steps,
-  terms,
-  reduced,
-  className,
-}: {
-  steps: HowStep[];
-  terms: SlotTerms;
-  reduced: boolean;
-  className?: string;
-}) {
-  const listRef = useRef<HTMLOListElement>(null);
-  const { scrollYProgress } = useScroll({ target: listRef, offset: ['start 75%', 'end 60%'] });
-
-  return (
-    <ol ref={listRef} aria-label="Your journey, step by step" className={cn('relative max-w-3xl', className)}>
-      <span aria-hidden className="absolute top-5 bottom-5 left-5 w-px bg-line" />
-      {reduced ? null : (
-        <motion.span
-          aria-hidden
-          style={{ scaleY: scrollYProgress }}
-          className="absolute top-5 bottom-5 left-5 w-px origin-top bg-obsidian"
-        />
-      )}
-      {steps.map((s, i) => (
-        <li key={s.id} className="relative flex gap-5 pb-12 last:pb-0">
-          <span className="price relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full bg-obsidian text-[13px] text-on-dark ring-4 ring-card">
-            {pad(i + 1)}
-          </span>
-          <div className="min-w-0 flex-1 pt-1.5">
-            <h3 className="text-lg leading-snug font-semibold text-balance text-ink">{s.title}</h3>
-            <p className="mt-1.5 max-w-[52ch] text-[15px] leading-relaxed text-pretty text-body">{s.body}</p>
-            {s.meta ? <p className="mt-2 text-[13px] font-medium text-brand">{s.meta}</p> : null}
-            <InViewVisual id={s.id} terms={terms} reduced={reduced} />
+      {/* Selected step: text + visual in one panel */}
+      <div
+        role="tabpanel"
+        id={panelId}
+        aria-labelledby={`${uid}-tab-${current.id}`}
+        className="relative min-h-[26rem] overflow-hidden rounded-[2rem] bg-obsidian text-on-dark shadow-raised ring-1 ring-line-dark sm:min-h-[30rem] lg:min-h-[34rem]"
+      >
+        <PanelBackdrop />
+        <div className="absolute inset-x-6 top-6 z-10 flex items-center justify-between gap-4 sm:inset-x-8">
+          <p className="price text-[12px] tracking-[0.16em] text-on-dark-muted uppercase">
+            Step {pad(active + 1)} <span className="text-steel">/ {pad(n)}</span>
+          </p>
+          <div className="flex gap-1" aria-hidden>
+            {steps.map((s, i) => (
+              <span
+                key={s.id}
+                className={cn('h-1 w-5 rounded-full transition-colors duration-500', i <= active ? 'bg-platinum' : 'bg-line-dark')}
+              />
+            ))}
           </div>
-        </li>
-      ))}
-    </ol>
-  );
-}
+        </div>
 
-/** Compact visual card for the timeline; its small animation plays once the card is in view. */
-function InViewVisual({ id, terms, reduced }: { id: HowStep['id']; terms: SlotTerms; reduced: boolean }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { amount: 0.5, once: true });
-  return (
-    <div
-      ref={ref}
-      aria-hidden
-      className="relative mt-5 -mr-[var(--yhc-gutter)] h-56 max-w-md overflow-hidden rounded-l-2xl bg-obsidian ring-1 ring-line-dark sm:mr-0 sm:h-60 sm:rounded-2xl"
-    >
-      <PanelBackdrop />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-[0.58] sm:scale-[0.68]">
-        <StepVisual id={id} active={reduced || inView} terms={terms} still={reduced} />
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={current.id}
+            initial={reduced ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduced ? { opacity: 0 } : { opacity: 0, y: -12 }}
+            transition={{ duration: reduced ? 0 : 0.5, ease: EASE }}
+            className="relative z-10 flex h-full flex-col px-6 pt-16 pb-7 sm:px-8 sm:pt-20"
+          >
+            <div aria-hidden className="flex flex-1 items-center justify-center py-2">
+              <div className="origin-center scale-[0.72] sm:scale-[0.85] lg:scale-100">
+                <StepVisual id={current.id} active terms={terms} still={reduced} />
+              </div>
+            </div>
+            <div className="mt-2">
+              <h3 className="font-display text-[clamp(1.75rem,1.4rem+1vw,2.25rem)] leading-tight text-on-dark">
+                {current.title}
+              </h3>
+              <p className="mt-2 max-w-[52ch] text-base leading-relaxed text-pretty text-on-dark-muted">{current.body}</p>
+              {current.meta ? <p className="mt-2 text-[13px] font-medium text-brand-on-dark">{current.meta}</p> : null}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Phones: CTA under the panel */}
+      <div className="border-t border-line pt-6 lg:hidden">
+        <p className="text-sm leading-relaxed text-body">
+          Starting is free. You pay the {terms.fee} consultation fee only when you book a doctor slot.
+        </p>
+        <Button asChild className="mt-4 h-12 w-full px-7 text-base sm:w-auto">
+          <Link href="/start">
+            Start with your details <ArrowRight className="size-4" aria-hidden />
+          </Link>
+        </Button>
       </div>
     </div>
   );
@@ -219,6 +210,7 @@ function PanelBackdrop() {
   return (
     <>
       <div
+        aria-hidden
         className="absolute inset-0 opacity-60"
         style={{
           backgroundImage:
@@ -226,7 +218,7 @@ function PanelBackdrop() {
           backgroundSize: '32px 32px',
         }}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_35%,rgba(174,187,200,0.16),transparent_60%)]" />
+      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_35%,rgba(174,187,200,0.16),transparent_60%)]" />
     </>
   );
 }

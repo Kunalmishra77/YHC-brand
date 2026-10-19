@@ -37,12 +37,14 @@ export function StickyMobileBar() {
       )}
     >
       <div className="flex gap-2">
-        <Button asChild variant="outline" className="h-12 flex-1 border-steel" tabIndex={visible ? 0 : -1}>
-          <a href={SITE.whatsappUrl}>
-            <MessageCircle className="size-4" aria-hidden />
-            {t('common.whatsapp')}
-          </a>
-        </Button>
+        {SITE.whatsappAvailable ? (
+          <Button asChild variant="outline" className="h-12 flex-1 border-steel" tabIndex={visible ? 0 : -1}>
+            <a href={SITE.whatsappUrl}>
+              <MessageCircle className="size-4" aria-hidden />
+              {t('common.whatsapp')}
+            </a>
+          </Button>
+        ) : null}
         <Button asChild className="h-12 flex-[1.6]" tabIndex={visible ? 0 : -1}>
           <Link href="/start">{t('nav.beginScan')}</Link>
         </Button>

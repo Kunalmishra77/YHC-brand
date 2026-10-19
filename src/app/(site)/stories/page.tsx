@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Real stories',
   description:
-    'Experiences shared by Your Hair Company patients — published only with their written consent, unretouched, with a note that results vary.',
+    'Experiences shared by Your Hair Company patients, published only with their written consent and unretouched, with a clear note that results vary.',
   path: '/stories',
 });
 

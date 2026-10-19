@@ -103,7 +103,7 @@ function FullEvidence() {
                   <a
                     href={ref.url}
                     {...EXTERNAL}
-                    className="font-medium text-ink underline decoration-steel underline-offset-4 hover:decoration-ink"
+                    className="inline-block min-h-6 py-0.5 font-medium text-ink underline decoration-steel underline-offset-4 hover:decoration-ink"
                   >
                     {ref.name}
                     {ref.year ? ` (${ref.year})` : ''}
@@ -179,7 +179,7 @@ function FigureBody({ fact, cite, compact }: { fact: EvidenceFact; cite?: number
         <a
           href={fact.source.url}
           {...EXTERNAL}
-          className="mt-auto inline-flex items-center gap-1 pt-5 text-[13px] text-muted-foreground underline decoration-line underline-offset-4 hover:text-ink"
+          className="mt-auto inline-flex min-h-11 items-center gap-1 pt-5 text-[13px] text-muted-foreground underline decoration-line underline-offset-4 hover:text-ink"
         >
           {fact.source.name}
           {fact.source.year ? `, ${fact.source.year}` : ''}
@@ -207,11 +207,12 @@ function FigureBody({ fact, cite, compact }: { fact: EvidenceFact; cite?: number
 function Cite({ n }: { n: number }) {
   if (!n) return null;
   return (
-    <sup className="ml-0.5">
+    <sup className="ml-0.5 leading-none">
+      {/* 24×24 tap target (WCAG 2.5.8); negative margins keep it from stretching the line box. */}
       <a
         href={`#ref-${n}`}
         aria-label={`Source ${n}`}
-        className="price rounded-sm px-0.5 text-[11px] text-brand no-underline hover:underline"
+        className="price -my-1.5 inline-flex min-h-6 min-w-6 items-center justify-center rounded-sm px-0.5 text-xs text-brand no-underline hover:underline"
       >
         [{n}]
       </a>
