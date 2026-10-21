@@ -40,7 +40,7 @@ export default async function JourneyBookPage() {
       current={confirmed ? 'consultation' : 'book'}
       eyebrow={confirmed ? 'Booked' : 'Book your consultation'}
       title={`A ${slotMinutes}-minute video consultation with ${doctor.name}`}
-      lede={`${doctor.qualifications} · Your scan and health form are shared with the doctor before the call.`}
+      lede={`${doctor.qualifications} · The doctor sees your scan and health form before the call.`}
     >
       <JourneyCard>
         <JourneyBooking

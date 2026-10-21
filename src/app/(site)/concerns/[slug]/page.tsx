@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { getConsultTerms } from '@/components/site/consult-fee';
+import { concernImage } from '@/components/site/concern-list';
 import { CtaBand } from '@/components/site/cta-band';
 import { JsonLd } from '@/components/site/json-ld';
 import { ProductTile } from '@/components/site/product-tile';
@@ -32,7 +33,7 @@ function concernFromParam(param: string) {
 function concernDescription(concern: Concern): string {
   return (
     CONCERN_SEO_DESCRIPTION[concern.slug] ??
-    clampDescription(`${concern.summary} What it can mean, and how a consultation with Dr. Tyagi helps.`)
+    clampDescription(`${concern.summary} What it can mean, and how a talk with Dr. Tyagi helps.`)
   );
 }
 
@@ -59,6 +60,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
   const terms = getConsultTerms();
   const base = clientEnv.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '');
   const url = `${base}${concernPath(concern.slug)}`;
+  const hero = concernImage(concern.slug) ?? IMAGES.heroStage;
 
   return (
     <>
@@ -92,9 +94,17 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
       <article>
         {/* Header */}
         <header className="relative isolate overflow-hidden bg-obsidian text-on-dark">
-          <div className="absolute inset-y-0 right-0 -z-10 hidden w-1/2 md:block" aria-hidden>
-            <Image src={IMAGES.heroStage.src} alt="" fill priority sizes="50vw" className="object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-obsidian to-transparent" />
+          {/* C01–C05: landscape, calm on the left where the title sits (YHC_IMAGE_PROMPTS.md). */}
+          <div className="absolute inset-0 -z-10" aria-hidden>
+            <Image
+              src={hero.src}
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-[70%_50%] md:object-right"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/80 to-obsidian/35 md:bg-gradient-to-r md:from-obsidian md:via-obsidian/75 md:to-obsidian/5" />
           </div>
           <div className="container-yhc py-16 md:py-28">
             <nav aria-label="Breadcrumb" className="text-sm text-on-dark-muted">
@@ -133,7 +143,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
           <div>
             <p className="text-xl leading-relaxed text-ink">{concern.body}</p>
             <h2 className="display mt-14 text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
-              What can be behind it
+              What can cause it
             </h2>
             <ul className="mt-6 divide-y divide-line border-y border-line">
               {concern.causes.map((cause) => (
@@ -144,7 +154,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
               ))}
             </ul>
             <p className="mt-5 text-sm text-muted-foreground">
-              General information, not a diagnosis. Only a consultation can say which applies to you.
+              General information, not a diagnosis. Only a consultation can tell which one is yours.
             </p>
           </div>
 
@@ -161,8 +171,8 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
                 ))}
               </ul>
               <p className="mt-5 border-t border-line pt-4 text-sm text-muted-foreground">
-                You&apos;ll answer most of these in a short form before the call, so the {terms.slotMinutes}{' '}
-                minutes are spent on you.
+                You answer most of these in a short form before the call. So all {terms.slotMinutes} minutes
+                are about you.
               </p>
             </div>
             <div className="rounded-2xl bg-warning-bg p-7">
@@ -179,7 +189,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
                 ))}
               </ul>
               <p className="mt-4 text-sm text-body">
-                Some of these are better seen in person. Dr. Tyagi will tell you if that is the case.
+                Some of these are best checked in person. Dr. Tyagi will tell you if so.
               </p>
             </div>
           </aside>
@@ -191,11 +201,11 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
             <div className="container-yhc py-20 md:py-28">
               <div className="grid gap-6 md:grid-cols-2 md:items-end">
                 <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
-                  What a plan may draw on
+                  What your plan may include
                 </h2>
                 <p className="max-w-md text-body md:justify-self-end">
-                  If treatment is right for you, Dr. Tyagi chooses the products, strength and routine. These
-                  are the ones often considered for {concern.title.toLowerCase()}. {t('common.resultsVary')}
+                  If treatment can help, Dr. Tyagi picks the products, strength and routine. These are often
+                  used for {concern.title.toLowerCase()}. {t('common.resultsVary')}
                 </p>
               </div>
               <div className="mt-12 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
@@ -212,15 +222,34 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
       {others.length ? (
         <section className="container-yhc py-20 md:py-24">
           <h2 className="display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)] text-balance">Other concerns</h2>
-          <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl bg-line sm:grid-cols-2 lg:grid-cols-4">
-            {others.map((c) => (
-              <li key={c.slug} className="bg-pearl">
-                <Link href={concernPath(c.slug)} className="group block h-full p-6 hover:bg-card">
-                  <p className="font-semibold text-ink group-hover:text-brand">{c.title}</p>
-                  <p className="mt-2 text-sm text-body">{c.summary}</p>
-                </Link>
-              </li>
-            ))}
+          <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {others.map((c) => {
+              const img = concernImage(c.slug);
+              return (
+                <li key={c.slug}>
+                  <Link
+                    href={concernPath(c.slug)}
+                    className="group flex h-full items-center gap-4 rounded-2xl bg-card p-3 ring-1 ring-line transition-shadow hover:shadow-card motion-reduce:transition-none"
+                  >
+                    {img ? (
+                      <span className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-obsidian">
+                        <Image
+                          src={img.src}
+                          alt=""
+                          fill
+                          sizes="80px"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                        />
+                      </span>
+                    ) : null}
+                    <span className="min-w-0 pr-2">
+                      <span className="block font-semibold text-ink group-hover:text-brand">{c.title}</span>
+                      <span className="mt-1 block text-sm text-body">{c.summary}</span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
           <p className="mt-8 text-sm text-muted-foreground">{t('legal.disclaimer')}</p>
         </section>
@@ -228,7 +257,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
 
       <CtaBand
         bookLabel={terms.bookLabel}
-        body={`${concern.title} has more than one possible cause. A consultation is how you find out which applies to you.`}
+        body={`${concern.title} can have more than one cause. A consultation tells you which one is yours.`}
       />
     </>
   );

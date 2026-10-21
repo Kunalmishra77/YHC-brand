@@ -26,7 +26,7 @@ export default async function AssessmentPage() {
       <div className="space-y-4">
         <p className="max-w-2xl text-sm text-body">
           We would rather be honest than sell you a plan that is unlikely to work. Here is what you can do
-          next:
+          now:
         </p>
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <Button asChild className="h-auto min-h-12 px-6 py-3 text-base whitespace-normal">
@@ -43,17 +43,17 @@ export default async function AssessmentPage() {
           ) : null}
         </div>
         <p className="text-[13px] text-muted-foreground">
-          A consultation can still help you understand the cause and talk through other options with the
-          doctor. The {fee} consultation fee applies.
+          A consultation can still help you learn the cause and talk about other options with the doctor. The{' '}
+          {fee} consultation fee applies.
         </p>
       </div>
     ) : (
       <div className="space-y-4">
         {scan.suitability === 'doctor_review' ? (
           <p className="max-w-2xl rounded-2xl bg-mist/70 px-4 py-3 text-sm text-body">
-            Why a doctor first? Some signs — like long-standing bald areas, round patches or low root density
-            — can have more than one cause. The doctor will look at your scan and history together before
-            suggesting anything.
+            Why a doctor first? Some signs — like areas bald for a long time, round patches or few roots — can
+            have more than one cause. The doctor looks at your scan and your health together before suggesting
+            anything.
           </p>
         ) : null}
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -71,9 +71,9 @@ export default async function AssessmentPage() {
   return (
     <JourneyShell
       current="assessment"
-      eyebrow="Your personalised assessment"
+      eyebrow="Your scan report"
       title="What your scan shows"
-      lede="A first look at your roots, in plain language. The doctor confirms everything at your consultation."
+      lede="A first look at your roots, in plain words. The doctor checks everything at your consultation."
     >
       <AssessmentReport scan={scan} actions={actions} />
       <p className="mt-6 print:hidden">

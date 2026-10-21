@@ -141,17 +141,17 @@ export default async function ArticlePage({ params }: PageProps<'/blog/[slug]'>)
             <div className="mt-8 border-t border-line pt-5">
               <ArticleMeta article={article} />
               <p className="mt-1.5 text-[13px] text-muted-foreground">
-                Medical review:{' '}
+                Doctor check:{' '}
                 {article.reviewStatus === 'medically_reviewed'
-                  ? `reviewed by ${doctor.name}`
-                  : `pending — to be reviewed by ${doctor.name} before publishing`}
+                  ? `checked by ${doctor.name}`
+                  : `not yet — ${doctor.name} will check it before it goes live`}
               </p>
             </div>
           </div>
         </header>
 
         <div className="container-yhc mt-10 md:mt-14">
-          <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-[#efeeeb] md:aspect-[21/8]">
+          <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] bg-[#efeeeb] md:aspect-[21/8]">
             <Image
               src={image.src}
               alt={image.alt}
@@ -162,7 +162,7 @@ export default async function ArticlePage({ params }: PageProps<'/blog/[slug]'>)
             />
           </div>
           <p className="mt-3 text-[12px] text-muted-foreground">
-            Concept still life — not a treatment result.
+            Illustrative image — not a treatment result.
           </p>
         </div>
 
@@ -221,8 +221,8 @@ export default async function ArticlePage({ params }: PageProps<'/blog/[slug]'>)
                 Questions about your own hair?
               </p>
               <p className="mt-3 leading-relaxed text-on-dark-muted">
-                A one-to-one video consultation with {doctor.name} looks at your history and scalp photos and
-                explains what is likely going on. There is no obligation to buy anything afterwards.
+                On a one-to-one video call, {doctor.name} looks at your health details and scalp photos and
+                tells you what is likely going on. You do not have to buy anything after.
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Button
@@ -236,7 +236,7 @@ export default async function ArticlePage({ params }: PageProps<'/blog/[slug]'>)
                   variant="outline"
                   className="h-12 border-line-dark bg-transparent px-6 text-base text-on-dark hover:bg-graphite hover:text-on-dark"
                 >
-                  <Link href="/start">Start with the free 3D scan</Link>
+                  <Link href="/start">Begin my free 3D scan</Link>
                 </Button>
               </div>
             </div>

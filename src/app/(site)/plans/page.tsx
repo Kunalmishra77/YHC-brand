@@ -8,7 +8,7 @@ import { PageIntro } from '@/components/site/page-intro';
 import { PlanLadder } from '@/components/site/plan-ladder';
 import { H2, SECTION_Y } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
-import { IMAGES } from '@/lib/images';
+import { SLOTS } from '@/lib/slots';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
 import { formatINR } from '@/lib/money';
@@ -19,7 +19,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Treatment plans',
   description:
-    'Compare 1, 2 and 3-month treatment plans by total price, price per month and savings. Plans are prescribed after a consultation with Dr. Tyagi.',
+    'Compare 1, 2 and 3-month plans: total price, price per month and what you save. Dr. Tyagi decides your plan after a consultation.',
   path: '/plans',
 });
 
@@ -34,11 +34,11 @@ export default function PlansPage() {
       <PageIntro
         title="Treatment plans"
         tone="dark"
-        image={IMAGES.heroStage}
+        image={SLOTS.S04}
         lede={
           <p>
-            Plans are prescribed after your consultation. What goes into your plan depends on what Dr. Tyagi
-            recommends for you; the duration you choose sets the price. {t('common.inclGst')}.
+            Dr. Tyagi decides what goes in your plan, after your consultation. You choose how many months.
+            That sets the price. {t('common.inclGst')}.
           </p>
         }
       />
@@ -48,8 +48,8 @@ export default function PlansPage() {
           <PlanLadder plans={plans} guarantee={guarantee} creditLine={terms.creditLine} headingLevel="h2" />
         ) : (
           <EmptyState
-            title="Plan prices are being finalised"
-            body="Book a consultation and Dr. Tyagi will explain your options."
+            title="Plan prices are coming soon"
+            body="Book a consultation. Dr. Tyagi will explain your options."
           />
         )}
         <div className="mt-12 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
@@ -57,7 +57,7 @@ export default function PlansPage() {
             <Link href="/book">Book consultation first · {terms.fee}</Link>
           </Button>
           <p className="text-center text-sm text-pretty text-muted-foreground sm:text-left">
-            Plans are prescribed after your consultation — there is no obligation to buy.
+            Your doctor decides your plan after the consultation. You do not have to buy.
           </p>
         </div>
       </section>
@@ -65,7 +65,7 @@ export default function PlansPage() {
       {plans.length ? (
         <section className="border-y border-line bg-card">
           <div className={`container-yhc ${SECTION_Y}`}>
-            <h2 className={H2}>Side by side</h2>
+            <h2 className={H2}>Compare the plans</h2>
             <div className="mt-8 hidden overflow-x-auto sm:block">
               <table className="w-full min-w-[520px] text-left text-sm">
                 <caption className="sr-only">Plan comparison</caption>
@@ -99,9 +99,7 @@ export default function PlansPage() {
                         <th scope="row" className="py-4 pr-4 font-semibold text-ink">
                           {p.name}
                           {p.isRecommended ? (
-                            <span className="block text-[13px] font-normal text-brand">
-                              Doctor-recommended duration
-                            </span>
+                            <span className="block text-[13px] font-normal text-brand">Doctor’s pick</span>
                           ) : null}
                         </th>
                         <td className="price py-4 pr-4 text-ink">{formatINR(p.pricePaise)}</td>
@@ -112,8 +110,8 @@ export default function PlansPage() {
                         {guarantee ? (
                           <td className="py-4 text-body">
                             {p.months >= guarantee.minPlanMonths
-                              ? 'Eligible, conditions apply'
-                              : 'Not covered'}
+                              ? 'Yes, if you meet the conditions'
+                              : 'Not included'}
                           </td>
                         ) : null}
                       </tr>
@@ -137,9 +135,7 @@ export default function PlansPage() {
                     }
                   >
                     <p className="font-semibold text-ink">{p.name}</p>
-                    {p.isRecommended ? (
-                      <p className="text-[13px] text-brand">Doctor-recommended duration</p>
-                    ) : null}
+                    {p.isRecommended ? <p className="text-[13px] text-brand">Doctor’s pick</p> : null}
                     <dl className="mt-3 grid grid-cols-3 gap-2 text-sm">
                       <div>
                         <dt className="text-[13px] text-muted-foreground">Total</dt>
@@ -157,7 +153,9 @@ export default function PlansPage() {
                     {guarantee ? (
                       <p className="mt-3 border-t border-line pt-3 text-[13px] text-body">
                         Guarantee:{' '}
-                        {p.months >= guarantee.minPlanMonths ? 'eligible, conditions apply' : 'not covered'}
+                        {p.months >= guarantee.minPlanMonths
+                          ? 'yes, if you meet the conditions'
+                          : 'not included'}
                       </p>
                     ) : null}
                   </li>
@@ -165,7 +163,7 @@ export default function PlansPage() {
               })}
             </ul>
             <p className="mt-4 text-sm text-muted-foreground">
-              Savings are compared with buying the 1-month plan each month.
+              Savings are compared with buying the 1-month plan every month.
               {terms.creditLine ? ` ${terms.creditLine}.` : null}
             </p>
           </div>
@@ -176,7 +174,7 @@ export default function PlansPage() {
         <section className={`container-yhc ${SECTION_Y}`}>
           <h2 className={H2}>Money-back guarantee terms</h2>
           <p className="mt-3 max-w-2xl text-body">
-            The guarantee applies only when every condition below is met. Read the{' '}
+            You get your money back only if you meet every condition below. Read the{' '}
             <Link href="/legal/guarantee" className="text-brand underline underline-offset-4">
               full terms
             </Link>
@@ -191,7 +189,7 @@ export default function PlansPage() {
       <CtaBand
         title="Your plan starts with a consultation."
         bookLabel={terms.bookLabel}
-        body="Dr. Tyagi will recommend what to include and how long to use it. You decide whether to go ahead."
+        body="Dr. Tyagi tells you what to use and for how long. You decide if you want to go ahead."
       />
     </>
   );

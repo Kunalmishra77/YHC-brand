@@ -1,8 +1,11 @@
 import { ArrowDown, BadgeCheck, ShieldCheck, Stethoscope } from 'lucide-react';
+import { getImageProps } from 'next/image';
 import { HeroStartForm } from '@/components/journey/hero-start-form';
+import { illustrativeNote } from '@/components/site/slot-note';
 import { CLAIMS, doctorClaimLabel, verifiedPatent } from '@/lib/claims';
 import { publicCredential } from '@/lib/credentials';
 import { VIDEOS } from '@/lib/images';
+import { SLOTS } from '@/lib/slots';
 import { cn } from '@/lib/utils';
 import { BackgroundVideo } from './background-video';
 import { PatentSlot } from './patent-slot';
@@ -11,9 +14,10 @@ const ENTER =
   'animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both motion-reduce:animate-none';
 
 /**
- * Trust-first hero (ADR-27): full-bleed laboratory b-roll, the client's headline on the left and the
- * glass "start" form (journey workstream) on the right — below the headline on mobile. It sits under the
- * translucent header, which stays dark until the hero scrolls away.
+ * Trust-first hero (ADR-27, docs/20): a full-bleed picture of someone checking their scalp with a phone
+ * (slot H01 on wide screens, H02 on phones) once the client's images are in; until then the laboratory
+ * b-roll. The client-approved headline sits on the left, the glass "start" form on the right — below
+ * the headline on mobile, with a primary action above the fold.
  */
 export function HomeHero({
   doctorName,
@@ -24,16 +28,29 @@ export function HomeHero({
   registrationNo: string;
   guaranteeOn: boolean;
 }) {
+  const photo = SLOTS.H01.ready;
+  const note = photo ? illustrativeNote(SLOTS.H01) : undefined;
+
   return (
     <section
       aria-labelledby="hero-heading"
       className="relative isolate -mt-16 overflow-hidden bg-obsidian text-on-dark"
     >
-      <BackgroundVideo video={VIDEOS.hero} priority objectPosition="60% 50%" className="-z-20" />
-      {/* Overlays for text contrast: an even veil, a left-to-right fade and a bottom fade */}
-      <div className="absolute inset-0 -z-10 bg-obsidian/45" aria-hidden />
+      {photo ? (
+        <HeroPhoto />
+      ) : (
+        <BackgroundVideo video={VIDEOS.hero} priority objectPosition="60% 50%" className="-z-20" />
+      )}
+      {/* Overlays for text contrast: an even veil, a directional fade and a bottom fade. The photo is
+          composed dark on the left (desktop) and at the bottom (phone), so it needs a lighter veil. */}
+      <div className={cn('absolute inset-0 -z-10', photo ? 'bg-obsidian/20' : 'bg-obsidian/45')} aria-hidden />
       <div
-        className="absolute inset-0 -z-10 bg-gradient-to-b from-obsidian/70 via-obsidian/50 to-obsidian lg:bg-gradient-to-r lg:from-obsidian/95 lg:via-obsidian/55 lg:to-obsidian/30"
+        className={cn(
+          'absolute inset-0 -z-10 bg-gradient-to-b lg:bg-gradient-to-r',
+          photo
+            ? 'from-obsidian/30 via-obsidian/45 to-obsidian lg:from-obsidian/90 lg:via-obsidian/35 lg:to-obsidian/10'
+            : 'from-obsidian/70 via-obsidian/50 to-obsidian lg:from-obsidian/95 lg:via-obsidian/55 lg:to-obsidian/30',
+        )}
         aria-hidden
       />
       <div
@@ -45,7 +62,7 @@ export function HomeHero({
         <div className="max-w-[38rem]">
           <p className={cn('flex items-center gap-3 text-sm text-on-dark-muted delay-100', ENTER)}>
             <span className="h-px w-8 bg-platinum/60" aria-hidden />
-            Dermatologist-led · Science-first hair care
+            Doctor-led hair care
           </p>
           <h1
             id="hero-heading"
@@ -62,8 +79,7 @@ export function HomeHero({
               ENTER,
             )}
           >
-            We scan your roots first. Then a doctor decides whether treatment can help you — before anything
-            is prescribed.
+            First we scan your scalp. Then a doctor tells you if treatment will help.
           </p>
 
           {/* Mobile: a primary action above the fold (audit UX-05); the form sits below the trust list. */}
@@ -89,7 +105,7 @@ export function HomeHero({
             {guaranteeOn ? (
               <li className="flex items-start gap-2">
                 <ShieldCheck className="mt-0.5 size-3.5 shrink-0 text-brand-on-dark" aria-hidden />
-                Money-back guarantee · conditions apply
+                Money-back guarantee (conditions apply)
               </li>
             ) : null}
             {verifiedPatent(CLAIMS) ? (
@@ -101,7 +117,7 @@ export function HomeHero({
               <BadgeCheck className="mt-0.5 size-3.5 shrink-0 text-brand-on-dark" aria-hidden />
               {publicCredential(registrationNo)
                 ? `${doctorName} · Reg. No. ${registrationNo}`
-                : `Video consultations with ${doctorName}`}
+                : `Video call with ${doctorName}`}
             </li>
           </ul>
         </div>
@@ -118,6 +134,12 @@ export function HomeHero({
         </div>
       </div>
 
+      {note ? (
+        <span className="absolute bottom-3 left-3 rounded-full bg-black/55 px-2.5 py-1 text-[12px] text-on-dark backdrop-blur sm:bottom-5 sm:left-5">
+          {note}
+        </span>
+      ) : null}
+
       <a
         href="#scan"
         className="absolute bottom-8 left-1/2 hidden size-11 -translate-x-1/2 items-center justify-center rounded-full border border-white/15 text-on-dark-muted transition-colors hover:text-on-dark lg:flex"
@@ -126,5 +148,39 @@ export function HomeHero({
         <ArrowDown className="size-4" />
       </a>
     </section>
+  );
+}
+
+/**
+ * Art-directed hero photo: H01 (landscape, subject centre-right) from 640 px up, H02 (portrait, subject
+ * in the top half) on phones — or H01 for both until H02 is ready. One <img>, so only one file loads.
+ */
+function HeroPhoto() {
+  const wide = SLOTS.H01;
+  const tall = SLOTS.H02.ready ? SLOTS.H02 : SLOTS.H01;
+  const common = {
+    alt: 'Someone holds a phone just above their hair to check their scalp, in a dark bathroom',
+    fill: true,
+    priority: true,
+    sizes: '100vw',
+  } as const;
+  const {
+    props: { srcSet: wideSet },
+  } = getImageProps({ ...common, src: wide.src });
+  const {
+    props: { srcSet: tallSet, ...img },
+  } = getImageProps({ ...common, src: tall.src });
+
+  return (
+    <picture className="absolute inset-0 -z-20">
+      <source media="(min-width: 640px)" srcSet={wideSet} />
+      <source srcSet={tallSet} />
+      {/* Art-directed via getImageProps (next/image): same optimised srcsets, one download. */}
+      <img
+        {...img}
+        alt={common.alt}
+        className="object-cover object-[50%_20%] sm:object-[65%_50%]"
+      />
+    </picture>
   );
 }

@@ -33,6 +33,7 @@ export const en = {
     skipToContent: 'Skip to content',
     pauseVideo: 'Pause video',
     playVideo: 'Play video',
+    illustrativeImage: 'Illustrative image',
   },
   nav: {
     concerns: 'Hair concerns',

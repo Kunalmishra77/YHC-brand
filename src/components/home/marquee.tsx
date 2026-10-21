@@ -103,7 +103,8 @@ export function Marquee({
             : 'text-body ring-line hover:text-ink',
         )}
       >
-        {paused ? 'Play' : 'Pause'} carousel
+        {paused ? 'Play' : 'Pause'}
+        <span className="sr-only">: {label}</span>
       </button>
     </div>
   );

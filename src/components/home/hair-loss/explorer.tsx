@@ -2,6 +2,7 @@
 
 import { ArrowRight, ArrowUpRight, Plus, TriangleAlert } from 'lucide-react';
 import { AnimatePresence, MotionConfig, motion, useReducedMotion } from 'motion/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useId, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -11,10 +12,10 @@ import type { HairLossTypeView } from './types';
 const EASE = [0.2, 0.7, 0.2, 1] as const;
 
 /**
- * Editorial atlas of hair-loss types: an index of six patterns (48 px chips on phones, a numbered list
- * from `lg`) driving line-art head diagrams with the affected zone marked, and accordions for the detail.
- * WAI-ARIA tabs with roving focus (arrow keys, Home, End). Motion is slow and calm; under
- * prefers-reduced-motion MotionConfig removes movement and the content simply swaps.
+ * Picture-led atlas of hair-loss types. The selector is a list of picture tabs (a swipe rail of tiles on
+ * phones, a list with thumbnails from `lg`); the selected type shows its illustration large — or the
+ * line-art head diagrams until the illustration is ready — with one short line, and the detail behind a
+ * tap. WAI-ARIA tabs with roving focus (arrow keys, Home, End). Under reduced motion content just swaps.
  */
 export function HairLossExplorer({ types }: { types: HairLossTypeView[] }) {
   const [index, setIndex] = useState(0);
@@ -52,13 +53,13 @@ export function HairLossExplorer({ types }: { types: HairLossTypeView[] }) {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-16">
-        {/* Index */}
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-12">
+        {/* Picture tabs */}
         <div
           role="tablist"
           aria-label="Types of hair loss"
           onKeyDown={onKeyDown}
-          className="-mx-[var(--yhc-gutter)] flex scroll-px-[var(--yhc-gutter)] [scrollbar-width:none] gap-2 overflow-x-auto overscroll-x-contain px-[var(--yhc-gutter)] pb-1 lg:mx-0 lg:flex-col lg:gap-0 lg:self-start lg:overflow-visible lg:border-b lg:border-line lg:px-0 lg:pb-0 [&::-webkit-scrollbar]:hidden"
+          className="relative -mx-[var(--yhc-gutter)] flex snap-x scroll-px-[var(--yhc-gutter)] [scrollbar-width:none] gap-2.5 overflow-x-auto overscroll-x-contain px-[var(--yhc-gutter)] pb-1 lg:mx-0 lg:flex-col lg:gap-1.5 lg:self-start lg:overflow-visible lg:px-0 lg:pb-0 [&::-webkit-scrollbar]:hidden"
         >
           {types.map((type, i) => {
             const selected = i === index;
@@ -76,49 +77,29 @@ export function HairLossExplorer({ types }: { types: HairLossTypeView[] }) {
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setIndex(i)}
                 className={cn(
-                  'relative flex min-h-12 shrink-0 items-center gap-3 rounded-full px-5 text-left text-[15px] ring-1 transition-colors duration-300',
-                  'lg:min-h-[4.5rem] lg:rounded-none lg:border-t lg:border-line lg:px-0 lg:py-3 lg:pl-5 lg:ring-0',
-                  selected
-                    ? 'bg-obsidian text-on-dark ring-obsidian lg:bg-transparent lg:text-ink'
-                    : 'text-body ring-line hover:text-ink lg:text-muted-foreground',
+                  'group/tab relative flex w-[7.5rem] shrink-0 snap-start flex-col gap-2 rounded-[1.25rem] p-1.5 pb-2.5 text-left ring-1 transition-[background-color,box-shadow] duration-300',
+                  'lg:w-auto lg:flex-row lg:items-center lg:gap-4 lg:p-2 lg:pr-4',
+                  selected ? 'bg-card shadow-card ring-obsidian' : 'ring-line hover:bg-card',
                 )}
               >
-                {selected ? (
-                  <motion.span
-                    layoutId={`${baseId}-bar`}
-                    className="absolute top-3 bottom-3 left-0 hidden w-0.5 bg-obsidian lg:block"
-                    transition={{ duration: 0.45, ease: EASE }}
-                    aria-hidden
-                  />
-                ) : null}
-                <span
-                  className={cn(
-                    'hidden w-7 shrink-0 font-sans text-[13px] tabular-nums lg:block',
-                    selected ? 'text-ink' : 'text-steel',
-                  )}
-                >
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <span className="flex min-w-0 flex-1 flex-col">
-                  <span className="font-medium whitespace-nowrap lg:text-base lg:whitespace-normal">
-                    {type.name}
+                <Thumb type={type} selected={selected} />
+                <span className="flex min-w-0 flex-col px-1 lg:px-0">
+                  <span className="text-sm leading-snug font-medium text-ink lg:text-base">{type.name}</span>
+                  <span
+                    className={cn(
+                      'hidden text-[13px] lg:block',
+                      type.urgent ? 'font-medium text-warning' : 'text-muted-foreground',
+                    )}
+                  >
+                    {type.cue}
                   </span>
-                  <span className="hidden text-[13px] text-muted-foreground lg:block">{type.cue}</span>
-                </span>
-                <span
-                  className={cn(
-                    'hidden w-10 shrink-0 transition-opacity duration-300 lg:block',
-                    selected ? 'opacity-100' : 'opacity-40',
-                  )}
-                >
-                  <HeadDiagram pattern={type.pattern} view="top" showZones={selected} />
                 </span>
               </button>
             );
           })}
         </div>
 
-        {/* Diagrams + detail */}
+        {/* Picture + short text */}
         <div id={panelId} role="tabpanel" aria-labelledby={tabId(index)} tabIndex={0} className="min-w-0">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
@@ -126,64 +107,40 @@ export function HairLossExplorer({ types }: { types: HairLossTypeView[] }) {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.4, ease: EASE }}
-              className="grid gap-8 xl:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] xl:items-start xl:gap-10"
+              transition={{ duration: 0.35, ease: EASE }}
+              className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-start md:gap-8"
             >
-              <figure className="rounded-[var(--radius-xl)] bg-card p-4 ring-1 ring-line sm:p-6 xl:sticky xl:top-24">
-                <div
-                  role="img"
-                  aria-label={active.illustrationAlt}
-                  className="grid grid-cols-2 gap-3 sm:gap-6"
-                >
-                  {(['side', 'top'] as const).map((view) => (
-                    <div key={view} className="flex flex-col items-center">
-                      <HeadDiagram pattern={active.pattern} view={view} className="max-w-[11rem]" />
-                      <span
-                        className="mt-2 text-[13px] tracking-[0.12em] text-muted-foreground uppercase"
-                        aria-hidden
-                      >
-                        {view === 'side' ? 'Side' : 'Top · front ↑'}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <figcaption className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-line pt-3 text-[13px] text-muted-foreground">
-                  <span className="inline-flex items-center gap-2">
-                    <span className="size-2.5 rounded-full bg-brand" aria-hidden />
-                    Where it usually shows
-                  </span>
-                  <span>Illustration, not a diagnosis</span>
-                </figcaption>
-              </figure>
+              <Figure type={active} />
 
               <div className="min-w-0">
-              <div>
-                <p className="eyebrow">{active.aka}</p>
-                <h3 className="display mt-3 text-[clamp(2rem,1.6rem+1.6vw,2.75rem)]">{active.name}</h3>
+                <p className="text-sm text-muted-foreground">{active.aka}</p>
+                <h3 className="display mt-1 text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-[1.05] text-balance">
+                  {active.name}
+                </h3>
+                <p className="mt-3 text-lg leading-relaxed text-pretty text-ink">{active.short}</p>
                 {active.urgent ? (
-                  <p className="mt-4 flex items-start gap-2.5 rounded-lg bg-warning-bg px-4 py-3 text-sm font-medium text-warning">
+                  <p className="mt-4 flex items-start gap-2.5 rounded-2xl bg-warning-bg px-4 py-3 text-sm font-medium text-warning">
                     <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
-                    Needs prompt in-person care from a dermatologist. An online plan is not a substitute.
+                    See a skin doctor in person soon. An online plan is not enough for this.
                   </p>
                 ) : null}
-              </div>
 
-              <DetailAccordion type={active} baseId={baseId} />
+                <Details type={active} baseId={baseId} />
 
-              {active.links.length > 0 ? (
-                <div className="mt-5 flex flex-wrap gap-x-6 gap-y-1">
-                  {active.links.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className="inline-flex min-h-12 items-center gap-1.5 text-sm font-medium text-ink underline decoration-steel underline-offset-[6px] hover:decoration-current"
-                    >
-                      {link.label}
-                      <ArrowRight className="size-3.5" aria-hidden />
-                    </Link>
-                  ))}
-                </div>
-              ) : null}
+                {active.links.length > 0 ? (
+                  <div className="mt-3 flex flex-wrap gap-x-6">
+                    {active.links.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink underline decoration-steel underline-offset-[6px] hover:decoration-current"
+                      >
+                        {link.label}
+                        <ArrowRight className="size-3.5" aria-hidden />
+                      </Link>
+                    ))}
+                  </div>
+                ) : null}
               </div>
             </motion.div>
           </AnimatePresence>
@@ -193,111 +150,148 @@ export function HairLossExplorer({ types }: { types: HairLossTypeView[] }) {
   );
 }
 
-/** Editorial accordion (one open at a time): looks like · causes · what helps · research. */
-function DetailAccordion({ type, baseId }: { type: HairLossTypeView; baseId: string }) {
-  const [open, setOpen] = useState<string | null>('look');
-  // height is not a transform, so MotionConfig would still animate it: drop the duration explicitly
+/** Tab picture: the illustration when ready, else the top-view head diagram on a soft tile. */
+function Thumb({ type, selected }: { type: HairLossTypeView; selected: boolean }) {
+  return (
+    <span className="relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden rounded-[0.875rem] bg-mist lg:size-14 lg:w-14">
+      {type.image ? (
+        <Image
+          src={type.image.src}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 56px, 112px"
+          className="object-cover transition-transform duration-700 ease-yhc group-hover/tab:scale-105 motion-reduce:transition-none"
+        />
+      ) : (
+        <HeadDiagram
+          pattern={type.pattern}
+          view="top"
+          showZones={selected}
+          className={cn('w-[62%] transition-opacity duration-300', !selected && 'opacity-60')}
+        />
+      )}
+    </span>
+  );
+}
+
+/** The big picture with its "Illustration, not a diagnosis" chip. */
+function Figure({ type }: { type: HairLossTypeView }) {
+  return (
+    <figure className="relative">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] bg-card ring-1 ring-line md:aspect-square">
+        {type.image ? (
+          <>
+            <Image
+              src={type.image.src}
+              alt={type.image.alt}
+              fill
+              sizes="(min-width: 1024px) 26rem, (min-width: 768px) 45vw, 100vw"
+              className="object-cover"
+            />
+            {/* The line diagram stays as a small key to where it shows. */}
+            <span className="absolute right-3 bottom-3 w-16 rounded-xl bg-white/90 p-1.5 shadow-card backdrop-blur-sm">
+              <HeadDiagram pattern={type.pattern} view="top" />
+            </span>
+          </>
+        ) : (
+          <div
+            role="img"
+            aria-label={type.illustrationAlt}
+            className="grid h-full grid-cols-2 items-center gap-3 px-5 sm:gap-6 sm:px-8"
+          >
+            <HeadDiagram pattern={type.pattern} view="side" />
+            <HeadDiagram pattern={type.pattern} view="top" />
+          </div>
+        )}
+      </div>
+      <figcaption className="absolute top-3 left-3 flex items-center gap-2 rounded-full bg-white/90 px-3 py-1 text-xs text-ink shadow-card backdrop-blur-sm">
+        <span className="size-2 rounded-full bg-brand" aria-hidden />
+        Illustration, not a diagnosis
+      </figcaption>
+    </figure>
+  );
+}
+
+/** Detail behind one tap: what it looks like, causes, what helps, the research. */
+function Details({ type, baseId }: { type: HairLossTypeView; baseId: string }) {
+  const [open, setOpen] = useState(false);
   const reduce = useReducedMotion();
-  const items: { id: string; label: string; body: React.ReactNode }[] = [
-    {
-      id: 'look',
-      label: 'What it looks like',
-      body: <p className="leading-relaxed text-pretty">{type.looksLike}</p>,
-    },
-    {
-      id: 'causes',
-      label: 'Common causes and triggers',
-      body: (
-        <ul className="space-y-2">
-          {type.triggers.map((line) => (
-            <li key={line} className="flex gap-3">
-              <span className="mt-[0.7em] h-px w-3 shrink-0 bg-steel" aria-hidden />
-              {line}
-            </li>
-          ))}
-        </ul>
-      ),
-    },
-    {
-      id: 'helps',
-      label: 'What helps — see a doctor',
-      body: <p className="leading-relaxed text-pretty">{type.helps}</p>,
-    },
-    ...(type.fact
-      ? [
-          {
-            id: 'research',
-            label: 'What the research says',
-            body: (
-              <div>
-                <p className="text-ink">
-                  {type.fact.stat ? <span className="price mr-1.5 text-lg">{type.fact.stat}</span> : null}
-                  {type.fact.label}
-                </p>
-                <p className="mt-2 leading-relaxed text-pretty">{type.fact.detail}</p>
-                <a
-                  href={type.fact.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-1 inline-flex min-h-12 items-center gap-1 text-[13px] text-muted-foreground underline underline-offset-4 hover:text-ink"
-                >
-                  Source: {type.fact.sourceName}
-                  <ArrowUpRight className="size-3.5" aria-hidden />
-                  <span className="sr-only">(opens in a new tab)</span>
-                </a>
-              </div>
-            ),
-          },
-        ]
-      : []),
-  ];
+  const btnId = `${baseId}-more`;
+  const regionId = `${btnId}-region`;
 
   return (
-    <div className="mt-6 border-b border-line">
-      {items.map((item) => {
-        const expanded = open === item.id;
-        const btnId = `${baseId}-acc-${item.id}`;
-        const regionId = `${btnId}-region`;
-        return (
-          <div key={item.id} className="border-t border-line">
-            <h4 className="m-0">
-              <button
-                id={btnId}
-                type="button"
-                aria-expanded={expanded}
-                aria-controls={regionId}
-                onClick={() => setOpen(expanded ? null : item.id)}
-                className="flex min-h-14 w-full items-center justify-between gap-4 py-3 text-left text-[13px] font-semibold tracking-[0.12em] text-ink uppercase"
-              >
-                {item.label}
-                <Plus
-                  className={cn(
-                    'size-4 shrink-0 text-steel transition-transform duration-300 ease-[var(--yhc-ease)]',
-                    expanded && 'rotate-45',
-                  )}
-                  aria-hidden
-                />
-              </button>
-            </h4>
-            <AnimatePresence initial={false}>
-              {expanded ? (
-                <motion.div
-                  id={regionId}
-                  role="region"
-                  aria-labelledby={btnId}
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: reduce ? 0 : 0.4, ease: EASE }}
-                  className="overflow-hidden"
-                >
-                  <div className="max-w-[62ch] pb-5 text-base text-body md:text-[15px]">{item.body}</div>
-                </motion.div>
+    <div className="mt-5 border-y border-line">
+      <h4 className="m-0">
+        <button
+          id={btnId}
+          type="button"
+          aria-expanded={open}
+          aria-controls={regionId}
+          onClick={() => setOpen((o) => !o)}
+          className="flex min-h-12 w-full items-center justify-between gap-4 text-left text-[15px] font-medium text-ink"
+        >
+          Causes and what helps
+          <Plus
+            className={cn(
+              'size-4 shrink-0 text-steel transition-transform duration-300 ease-yhc motion-reduce:transition-none',
+              open && 'rotate-45',
+            )}
+            aria-hidden
+          />
+        </button>
+      </h4>
+      <AnimatePresence initial={false}>
+        {open ? (
+          <motion.div
+            id={regionId}
+            role="region"
+            aria-labelledby={btnId}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            // height is not a transform, so MotionConfig would still animate it: drop the duration explicitly
+            transition={{ duration: reduce ? 0 : 0.4, ease: EASE }}
+            className="overflow-hidden"
+          >
+            <div className="max-w-[60ch] space-y-4 pb-5 text-[15px] leading-relaxed text-pretty text-body">
+              <p>{type.looksLike}</p>
+              <div>
+                <p className="font-medium text-ink">Common causes</p>
+                <ul className="mt-1.5 space-y-1">
+                  {type.triggers.map((line) => (
+                    <li key={line} className="flex gap-3">
+                      <span className="mt-[0.7em] h-px w-3 shrink-0 bg-steel" aria-hidden />
+                      {line}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-ink">What helps</p>
+                <p className="mt-1.5">{type.helps}</p>
+              </div>
+              {type.fact ? (
+                <div>
+                  <p className="text-ink">
+                    {type.fact.stat ? <span className="price mr-1.5">{type.fact.stat}</span> : null}
+                    {type.fact.label}
+                  </p>
+                  <a
+                    href={type.fact.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center gap-1 text-[13px] text-muted-foreground underline underline-offset-4 hover:text-ink"
+                  >
+                    Source: {type.fact.sourceName}
+                    <ArrowUpRight className="size-3.5" aria-hidden />
+                    <span className="sr-only">(opens in a new tab)</span>
+                  </a>
+                </div>
               ) : null}
-            </AnimatePresence>
-          </div>
-        );
-      })}
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }

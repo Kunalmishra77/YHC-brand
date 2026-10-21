@@ -10,23 +10,23 @@ export function buildJourney({ fee, slotMinutes }: { fee: string; slotMinutes: n
   return [
     {
       title: 'Book',
-      body: `Pick a time that suits you and pay the ${fee} consultation fee. Then share your hair history and a few scalp photos.`,
+      body: `Pick a time and pay the ${fee} consultation fee. Then tell us about your hair and add a few scalp photos.`,
     },
     {
       title: 'Consult',
-      body: `Meet Dr. Tyagi on a ${slotMinutes}-minute video call. Your history, photos and questions are reviewed one to one.`,
+      body: `Talk to Dr. Tyagi on a ${slotMinutes}-minute video call. Just you and the doctor, going through your photos and questions.`,
     },
     {
       title: 'Plan',
-      body: 'If treatment is right for you, Dr. Tyagi prescribes a plan and it is sent to you on WhatsApp. You decide whether to go ahead.',
+      body: 'If treatment can help, Dr. Tyagi writes your plan. We send it on WhatsApp. You decide if you want it.',
     },
     {
       title: 'Delivered',
-      body: 'Your plan is packed and shipped across India, with tracking on WhatsApp and clear instructions to start.',
+      body: 'We ship your plan anywhere in India. Track it on WhatsApp. Simple steps to start come with it.',
     },
     {
       title: 'Follow-up',
-      body: 'Regular check-ins, monthly progress photos and a follow-up review so your plan can be adjusted.',
+      body: 'We check in often. You take monthly photos. Your doctor reviews them and adjusts your plan.',
     },
   ];
 }

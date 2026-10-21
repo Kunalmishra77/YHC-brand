@@ -1,16 +1,19 @@
 import { ArrowRight, ScanFace, Stethoscope, UserRound } from 'lucide-react';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { HeroStartForm } from '@/components/journey/hero-start-form';
 import { JourneyStepper } from '@/components/journey/journey-stepper';
 import { pageMetadata } from '@/components/site/seo';
+import { illustrativeNote } from '@/components/site/slot-note';
+import { SLOTS } from '@/lib/slots';
 import { getJourneyForCustomer, resumeHref } from '@/server/journey/store';
 import { getCurrentCustomer } from '@/server/session';
 
 export const metadata: Metadata = pageMetadata({
   title: 'Start your free hair assessment',
   description:
-    'Start your free hair assessment: basic details, a guided 3D scalp scan and a personalised assessment reviewed by a doctor before any treatment.',
+    'Start your free hair check: a few details, a guided 3D scalp scan and your own report. A doctor checks it before any treatment.',
   path: '/start',
 });
 
@@ -20,6 +23,8 @@ export const dynamic = 'force-dynamic';
 export default async function StartPage() {
   const customer = await getCurrentCustomer();
   const journey = customer ? getJourneyForCustomer(customer.id) : null;
+  const welcome = SLOTS.J08;
+  const welcomeNote = illustrativeNote(welcome);
 
   return (
     <div className="bg-hero-dark relative overflow-hidden text-on-dark">
@@ -31,7 +36,7 @@ export default async function StartPage() {
         <JourneyStepper current="details" tone="dark" className="mb-10 md:mb-14" />
         {journey ? (
           <div className="mb-8 flex flex-col gap-3 rounded-2xl bg-white/5 p-4 ring-1 ring-white/15 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-on-dark">You have already started your assessment.</p>
+            <p className="text-sm text-on-dark">You have already started your scan.</p>
             <Link
               href={resumeHref(journey)}
               className="bg-silver inline-flex h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold text-obsidian"
@@ -43,35 +48,50 @@ export default async function StartPage() {
         ) : null}
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-16">
           <div className="min-w-0">
-            <p className="eyebrow text-brand-on-dark">Doctor-led hair assessment</p>
+            <p className="eyebrow text-brand-on-dark">Free · doctor-led</p>
             <h1 className="mt-4 font-display text-[clamp(2.375rem,1.7rem+2.8vw,3.75rem)] leading-[1.05] font-medium text-balance text-on-dark">
-              Understand your hair roots before you choose a treatment
+              See your hair roots before you pick a treatment
             </h1>
             <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-pretty text-on-dark-muted">
-              We start with science: a guided scan of your scalp, an honest assessment of whether treatment
-              can help, and a video consultation with a doctor at a time that suits you.
+              Scan your scalp with your phone. Get an honest report. Then talk to a doctor on video, when it
+              suits you.
             </p>
-            <ul className="mt-8 space-y-4">
+            <div className="group relative mt-7 aspect-[16/9] max-w-xl overflow-hidden rounded-[28px] bg-ink-2 ring-1 ring-white/10">
+              <Image
+                src={welcome.src}
+                alt={welcome.alt}
+                fill
+                priority
+                sizes="(min-width: 1024px) 36rem, 100vw"
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+              />
+              {welcomeNote ? (
+                <span className="absolute top-3 left-3 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-on-dark backdrop-blur">
+                  {welcomeNote}
+                </span>
+              ) : null}
+            </div>
+            <ul className="mt-7 grid grid-cols-3 gap-3 sm:grid-cols-1 sm:gap-4">
               {[
-                { icon: UserRound, t: 'Basic details', d: 'Name, mobile and address — about 30 seconds.' },
+                { icon: UserRound, t: 'Your details', d: 'Name, mobile and address. About 30 seconds.' },
                 {
                   icon: ScanFace,
-                  t: 'Guided 3D scan',
-                  d: 'Your phone camera, seven guided scalp zones, a few minutes.',
+                  t: '3D scan',
+                  d: 'Your phone camera guides you through 7 areas. A few minutes.',
                 },
                 {
                   icon: Stethoscope,
-                  t: 'Doctor review',
-                  d: 'A personalised assessment, then a consultation.',
+                  t: 'Doctor check',
+                  d: 'Your own report, then a video consultation.',
                 },
               ].map(({ icon: Icon, t, d }) => (
-                <li key={t} className="flex gap-3">
+                <li key={t} className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                   <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/15">
                     <Icon className="size-5 text-platinum" aria-hidden />
                   </span>
                   <span>
-                    <span className="block font-medium text-on-dark">{t}</span>
-                    <span className="block text-sm text-on-dark-muted">{d}</span>
+                    <span className="block text-sm font-medium text-on-dark sm:text-base">{t}</span>
+                    <span className="hidden text-sm text-on-dark-muted sm:block">{d}</span>
                   </span>
                 </li>
               ))}

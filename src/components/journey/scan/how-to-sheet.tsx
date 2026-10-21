@@ -61,7 +61,7 @@ export function HowToScanSheet({
         <SheetHeader className="px-5 pt-1">
           <SheetTitle className="text-xl font-semibold text-ink">How to scan</SheetTitle>
           <SheetDescription className="text-body">
-            Four habits that make each close-up useful to your doctor.
+            4 simple habits that make each photo useful to your doctor.
           </SheetDescription>
         </SheetHeader>
         <div className="px-5">

@@ -15,9 +15,9 @@ import type {
 
 /** Capture zones (current scan) plus the legacy angle ids of older stored scans. */
 export const ANGLE_LABEL: Record<ScanAngle, string> = {
-  forehead_left: 'Forehead – Left',
-  forehead_centre: 'Forehead – Centre',
-  forehead_right: 'Forehead – Right',
+  forehead_left: 'Hairline – left',
+  forehead_centre: 'Hairline – centre',
+  forehead_right: 'Hairline – right',
   top: 'Top of head',
   crown: 'Crown',
   parting: 'Parting',
@@ -28,19 +28,19 @@ export const ANGLE_LABEL: Record<ScanAngle, string> = {
 
 /** Short helper text under each zone title. */
 export const ZONE_HINT: Record<CaptureZone, string> = {
-  forehead_left: 'Left temple and the left side of your hairline',
+  forehead_left: 'Your left temple and the left side of your hairline',
   forehead_centre: 'The middle of your front hairline',
-  forehead_right: 'Right temple and the right side of your hairline',
-  top: 'Mid-scalp, between the hairline and the crown',
-  crown: 'The swirl at the top-back of your head',
-  parting: 'Along your usual parting line',
-  back: 'Lower back of the head, above the neck',
+  forehead_right: 'Your right temple and the right side of your hairline',
+  top: 'The top of your head, between hairline and crown',
+  crown: 'The swirl on the top-back of your head',
+  parting: 'Along the line where you part your hair',
+  back: 'The lower back of your head, above the neck',
 };
 
 export const ZONE_LABEL: Record<ScalpZone, string> = {
   hairline: 'Front hairline',
   temples: 'Temples',
-  mid_scalp: 'Mid-scalp',
+  mid_scalp: 'Top of head',
   crown: 'Crown',
   parting: 'Parting line',
 };
@@ -53,13 +53,13 @@ export const MINIATURISATION_LABEL: Record<Miniaturisation, string> = {
 
 export const SCALP_HEALTH_LABEL: Record<ScalpHealth, string> = {
   healthy: 'Healthy',
-  mild_irritation: 'Mild irritation',
-  needs_attention: 'Needs attention',
+  mild_irritation: 'A little irritated',
+  needs_attention: 'Needs a doctor’s look',
 };
 
 export const SUITABILITY_LABEL: Record<Suitability, string> = {
-  suitable: 'Suitable for a doctor-led plan',
-  doctor_review: 'Doctor review needed',
+  suitable: 'A doctor-led plan looks suitable',
+  doctor_review: 'A doctor should look first',
   not_suitable: 'Treatment unlikely to help',
 };
 
@@ -78,12 +78,12 @@ export const DURATION_ANSWERS: { value: ThinningDuration; label: string }[] = [
 ];
 
 export const PATTERN_ANSWERS: { value: ThinningPattern; label: string; hint: string }[] = [
-  { value: 'hairline', label: 'Front hairline / temples', hint: 'Forehead looks taller, temples receding' },
-  { value: 'crown', label: 'Crown', hint: 'Scalp more visible at the top-back' },
-  { value: 'diffuse', label: 'All over', hint: 'Hair looks less dense everywhere' },
-  { value: 'parting', label: 'Widening parting', hint: 'The parting line looks wider' },
-  { value: 'patches', label: 'Round patches', hint: 'Smooth, coin-sized bald spots' },
-  { value: 'not_sure', label: 'Not sure', hint: 'The scan will help map it' },
+  { value: 'hairline', label: 'Front hairline / temples', hint: 'Forehead looks taller, temples going back' },
+  { value: 'crown', label: 'Crown', hint: 'More scalp shows at the top-back' },
+  { value: 'diffuse', label: 'All over', hint: 'Hair looks thinner everywhere' },
+  { value: 'parting', label: 'Wider parting', hint: 'The parting line looks wider' },
+  { value: 'patches', label: 'Round patches', hint: 'Smooth bald spots, about the size of a coin' },
+  { value: 'not_sure', label: 'Not sure', hint: 'The scan will help find it' },
 ];
 
 export const LONG_BALD_ANSWERS: { value: LongBaldAreas; label: string; hint: string }[] = [

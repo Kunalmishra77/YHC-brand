@@ -77,7 +77,7 @@ export function CartView({ catalog, add }: { catalog: CatalogItemView[]; add: Ad
             <EmptyState
               icon={ShoppingBag}
               title="Your cart is empty"
-              body="YHC products are supplied after a consultation with Dr. Tyagi, as part of your plan."
+              body="You get YHC products after a consultation with Dr. Tyagi, as part of your plan."
               action={
                 <div className="flex flex-wrap justify-center gap-2">
                   <Button asChild variant="outline" className="h-12 border-steel px-6">

@@ -17,7 +17,8 @@ import {
  * 'compact' (homepage): four key figures, each with its source, plus a link to the full section.
  */
 
-const NOTE = 'Facts are general information from published sources; they are not claims about our product.';
+const NOTE =
+  'These facts are general information from published sources. They are not claims about our products.';
 
 const H2 = 'display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)]';
 
@@ -44,9 +45,8 @@ function FullEvidence() {
             Hair follows biology, not marketing.
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-body">
-            A few well-established facts explain why we look at your roots first, why a doctor decides on
-            treatment, and why any honest plan is judged over months rather than weeks. Each one is cited to
-            the dermatology source it comes from.
+            A few proven facts explain why we check your roots first, why a doctor decides your treatment, and
+            why change is judged over months, not weeks. Each fact links to its source.
           </p>
         </div>
 
@@ -65,9 +65,9 @@ function FullEvidence() {
           <div>
             <h3 className="display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)]">What this means in practice</h3>
             <p className="mt-4 leading-relaxed text-body">
-              Shedding, thinning and scarring hair loss look alike in a mirror but behave very differently.
-              Treatment can only support follicles that are still alive — so an assessment of the roots, and a
-              doctor&apos;s judgement, come before any plan.
+              Shedding, thinning and scarring can look the same in a mirror. They are very different.
+              Treatment can only help roots that are still alive. So we check your roots, and a doctor
+              decides, before any plan.
             </p>
           </div>
           <ul className="divide-y divide-line border-y border-line">
@@ -116,8 +116,8 @@ function FullEvidence() {
             ))}
           </ol>
           <p className="mt-8 max-w-3xl text-[13px] text-muted-foreground">
-            {NOTE} Figures vary between studies and populations. This is not medical advice; only a doctor who
-            has assessed you can say what applies to your hair.
+            {NOTE} Figures vary between studies and groups of people. This is not medical advice. Only a
+            doctor who has checked you can say what applies to your hair.
           </p>
         </div>
       </div>

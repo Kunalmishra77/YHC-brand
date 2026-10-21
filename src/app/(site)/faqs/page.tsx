@@ -17,14 +17,14 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'FAQs',
   description:
-    'Answers about scans, consultations, treatment plans, delivery and the money-back guarantee conditions at Your Hair Company, all in plain words.',
+    'Simple answers about the scan, the consultation, plans, delivery and the money-back guarantee conditions at Your Hair Company.',
   path: '/faqs',
 });
 
 const CATEGORY_LABEL: Record<string, string> = {
-  scan: 'Scan and assessment',
+  scan: 'The scan and your report',
   consultation: 'Consultation',
-  results: 'Treatment and results',
+  results: 'Treatment and what to expect',
   plans: 'Plans and prices',
   guarantee: 'Money-back guarantee',
   delivery: 'Delivery',
@@ -63,7 +63,7 @@ export default function FaqsPage() {
         />
       ) : null}
       <PageIntro
-        title="Frequently asked questions"
+        title="Your questions, answered"
         lede={
           <p>
             Can&apos;t find your answer?{' '}
@@ -87,8 +87,8 @@ export default function FaqsPage() {
       <div className={`container-yhc space-y-12 md:space-y-16 ${SECTION_Y}`}>
         {faqs.length === 0 ? (
           <EmptyState
-            title="FAQs are being updated"
-            body="Message us on WhatsApp and we'll answer directly."
+            title="We are updating our answers"
+            body="Message us on WhatsApp and we will answer you directly."
           />
         ) : (
           [...groups]
@@ -112,7 +112,7 @@ export default function FaqsPage() {
       </div>
       <CtaBand
         bookLabel={terms.bookLabel}
-        body="The best answers are about your own hair. Ask Dr. Tyagi directly at your consultation."
+        body="The best answers are about your own hair. Ask Dr. Tyagi at your consultation."
       />
     </>
   );

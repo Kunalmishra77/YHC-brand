@@ -86,11 +86,11 @@ export function assessScan(answers: ScanAnswers): SimulatedAssessment {
       suitability: 'not_suitable',
       headline: 'Treatment is unlikely to help the scanned areas',
       explanation:
-        'The scan found very few visible, active hair roots in the areas that have been bald for a long time. Hair-care treatments work through existing roots, so a plan is unlikely to help there. You can still speak with a doctor about other options.',
+        'The scan found very few active hair roots in the areas that have been bald for a long time. Hair treatments work through roots that are still there, so a plan is unlikely to help those areas. You can still talk to a doctor about other options.',
       reasons: [
-        'An area has been completely bald for more than 5 years.',
-        `Viable follicles in the scanned areas look very low (${viableFollicles} out of 100).`,
-        'Without visible active roots, a treatment plan is unlikely to change these areas.',
+        'An area has been fully bald for more than 5 years.',
+        `Living roots in the scanned areas look very low (${viableFollicles} out of 100).`,
+        'Without active roots, a treatment plan is unlikely to change these areas.',
       ],
     };
   }
@@ -98,11 +98,11 @@ export function assessScan(answers: ScanAnswers): SimulatedAssessment {
   const reviewReasons: string[] = [];
   if (answers.longBald === 'small')
     reviewReasons.push(
-      'A small area has been bald for more than 5 years — the doctor should check those roots.',
+      'A small area has been bald for more than 5 years. The doctor should check those roots.',
     );
   if (answers.pattern === 'patches')
-    reviewReasons.push('Round patches can have different causes that a doctor needs to identify first.');
-  if (rootDensity < 40) reviewReasons.push(`Root density looks low (${rootDensity} out of 100).`);
+    reviewReasons.push('Round patches can have different causes. A doctor needs to find the cause first.');
+  if (rootDensity < 40) reviewReasons.push(`Your roots look far apart (density ${rootDensity} out of 100).`);
 
   if (reviewReasons.length > 0) {
     return {
@@ -110,24 +110,24 @@ export function assessScan(answers: ScanAnswers): SimulatedAssessment {
       suitability: 'doctor_review',
       headline: 'A doctor should look at this first',
       explanation:
-        'Some signs in your scan need a doctor’s eye before any plan is suggested. This is common and does not mean treatment will not help — it means the doctor will confirm what is going on during your consultation.',
+        'Some signs in your scan need a doctor to look before any plan. This is common. It does not mean treatment will not help. It means the doctor will check what is going on at your consultation.',
       reasons: reviewReasons,
     };
   }
 
   const reasons = [
-    `Root density is ${rootDensity >= 60 ? 'in a good range' : 'reduced but present'} (${rootDensity} out of 100).`,
-    `Many follicles still look active (${viableFollicles} out of 100).`,
-    `Miniaturisation looks ${miniaturisation} — thinner hairs can often be supported while roots are active.`,
+    `Root density is ${rootDensity >= 60 ? 'in a good range' : 'lower, but your roots are there'} (${rootDensity} out of 100).`,
+    `Many roots still look active (${viableFollicles} out of 100).`,
+    `Hairs getting finer: ${miniaturisation}. Thinner hairs can often be helped while the roots are active.`,
   ];
   if (scalpHealth === 'mild_irritation')
-    reasons.push('Mild scalp irritation — the doctor may suggest scalp care too.');
+    reasons.push('Your scalp looks a little irritated. The doctor may suggest scalp care too.');
   return {
     metrics,
     suitability: 'suitable',
     headline: 'Your hair roots show potential',
     explanation:
-      'Your hair roots show potential: with a doctor-prescribed plan, root concentration and hair condition can potentially be improved. Individual results vary.',
+      'Your hair roots look active. With a plan from your doctor, your roots and hair may get better. Individual results vary.',
     reasons,
   };
 }

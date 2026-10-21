@@ -5,11 +5,13 @@ import type { CaptureZone } from '@/lib/journey/types';
 export const ZONE_TIP: Record<CaptureZone, string> = {
   forehead_left:
     'Push your hair back and hold the phone 10–15 cm from your left temple, camera facing the hairline.',
-  forehead_centre: 'Push your hair off your forehead and centre the middle of your hairline in the frame.',
+  forehead_centre:
+    'Push your hair off your forehead. Keep the middle of your hairline in the centre of the photo.',
   forehead_right:
     'Push your hair back and hold the phone 10–15 cm from your right temple, camera facing the hairline.',
-  top: 'Part the hair on top of your head and hold the phone straight above the mid-scalp.',
-  crown: 'Hold the phone above the top-back of your head and centre the swirl — a helper makes it easier.',
+  top: 'Part the hair on top of your head. Hold the phone straight above it.',
+  crown:
+    'Hold the phone above the top-back of your head, with the swirl in the middle. A helper makes it easier.',
   parting: 'Part your hair along your usual line and point the camera straight down at it.',
   back: 'Lift the hair at the back and hold the phone 10–15 cm away. A mirror or a helper helps here.',
 };

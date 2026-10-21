@@ -1,15 +1,14 @@
 import type { Metadata } from 'next';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { BackgroundVideo } from '@/components/site/background-video';
 import { FaqList } from '@/components/site/faq-list';
 import { GuaranteeConditionList, guaranteeStory, refundLine } from '@/components/site/guarantee-panel';
 import { PageIntro } from '@/components/site/page-intro';
-import { H1, H2, LEDE, SECTION_Y, SectionHeader } from '@/components/site/section';
+import { H2, LEDE, SECTION_Y, SectionHeader } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { VideoLibrary } from '@/components/site/video-library';
 import { Button } from '@/components/ui/button';
-import { VIDEOS } from '@/lib/images';
+import { SLOTS } from '@/lib/slots';
 import { getFaqs, getGuarantee } from '@/server/catalog';
 
 // Visibility follows the live `guarantee.enabled` setting.
@@ -18,7 +17,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Money-back guarantee',
   description:
-    'How the Your Hair Company money-back guarantee works: the conditions that apply, how to make a claim, and how a doctor personally reviews every claim.',
+    'How the Your Hair Company money-back guarantee works: the conditions, how to make a claim, and how a doctor checks every claim personally.',
   path: '/guarantee',
 });
 
@@ -29,11 +28,11 @@ export default function GuaranteePage() {
     return (
       <PageIntro
         eyebrow="Guarantee"
-        title="The guarantee is not being offered right now"
-        lede="When it is available, its full conditions will be published here before anyone is asked to pay. You can still start with a free 3D scan and a doctor consultation."
+        title="No guarantee is on offer right now"
+        lede="When it comes back, we will show its full conditions here before anyone pays. You can still start with a free 3D scan and a doctor consultation."
       >
         <Button asChild className="h-12 px-6">
-          <Link href="/start">Begin my 3D scan</Link>
+          <Link href="/start">Begin my free 3D scan</Link>
         </Button>
       </PageIntro>
     );
@@ -43,43 +42,36 @@ export default function GuaranteePage() {
   const steps = [
     {
       title: 'Follow your plan',
-      body: `Use your prescribed plan continuously for at least ${guarantee.minPlanMonths} months, as the doctor set it.`,
+      body: `Use your plan every day, as your doctor set it, for at least ${guarantee.minPlanMonths} months in a row.`,
     },
     {
       title: 'Stay in touch',
-      body: `Reply to at least ${guarantee.minCheckinResponsePct}% of weekly check-ins${guarantee.requireMonthlyPhotos ? ' and share monthly progress photos' : ''}.`,
+      body: `Reply to at least ${guarantee.minCheckinResponsePct}% of weekly check-ins${guarantee.requireMonthlyPhotos ? ' and send monthly progress photos' : ''}.`,
     },
     {
       title: 'Make a claim',
-      body: `If you see no visible improvement, claim from your account within ${guarantee.claimWindowDays} days of finishing the plan.`,
+      body: `No visible improvement? Claim from your account within ${guarantee.claimWindowDays} days of finishing the plan.`,
     },
     {
-      title: 'Doctor review',
-      body: 'A doctor reviews your photos and check-ins against the published conditions and explains the decision.',
+      title: 'Doctor check',
+      body: 'A doctor checks your photos and check-ins against the written conditions, and explains the answer.',
     },
   ];
 
   return (
     <>
-      <section className="relative isolate overflow-hidden bg-obsidian text-on-dark">
-        <BackgroundVideo video={VIDEOS.guarantee} priority className="-z-20" />
-        <div className="absolute inset-0 -z-10 bg-obsidian/60" aria-hidden />
-        <div
-          className="absolute inset-0 -z-10 bg-gradient-to-r from-obsidian via-obsidian/70 to-transparent"
-          aria-hidden
-        />
-        <div className="container-yhc pt-20 pb-16 md:py-28 lg:py-32">
-          <p className="eyebrow text-brand-on-dark">Money-back guarantee</p>
-          <h1 className={`${H1} mt-4 max-w-3xl text-on-dark`}>
-            A guarantee with its conditions in plain sight.
-          </h1>
-          <p className={`${LEDE} mt-6 text-on-dark-muted`}>
-            Hair responds slowly and differently for everyone. {refundLine(guarantee)} if you follow your plan
-            as prescribed, meet every condition below and a doctor confirms there has been no visible
-            improvement.
+      <PageIntro
+        eyebrow="Money-back guarantee"
+        title="A guarantee with nothing hidden."
+        tone="dark"
+        image={SLOTS.H26}
+        lede={
+          <p>
+            Hair changes slowly, and differently for everyone. {refundLine(guarantee)} if you use your plan as
+            prescribed, meet every condition below, and a doctor confirms no visible improvement.
           </p>
-        </div>
-      </section>
+        }
+      />
 
       <section
         className={`container-yhc grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 ${SECTION_Y}`}
@@ -90,7 +82,7 @@ export default function GuaranteePage() {
             The conditions
           </h2>
           <p className={`mt-5 text-body ${LEDE}`}>
-            All of them apply. They exist so a claim can be judged fairly on how a plan was actually followed.
+            You must meet all of them. They let us judge every claim fairly, on how the plan was really used.
           </p>
           <Link
             href="/legal/guarantee"
@@ -129,7 +121,7 @@ export default function GuaranteePage() {
               The guarantee in under a minute
             </h2>
             <p className="mt-4 max-w-md leading-relaxed text-pretty text-on-dark-muted">
-              A silent explainer with captions over illustrative footage — not a testimonial.
+              A short silent video with captions, over illustrative footage. Not a customer review.
             </p>
           </div>
           <VideoLibrary className="max-w-2xl lg:max-w-none" videos={[guaranteeStory(guarantee)]} />
@@ -151,10 +143,11 @@ export default function GuaranteePage() {
       <section className="border-t border-line bg-card">
         <div className="container-yhc flex flex-col items-start gap-6 py-12 md:flex-row md:items-center md:justify-between md:gap-12 md:py-16">
           <p className="max-w-xl text-lg leading-relaxed text-pretty text-body">
-            The guarantee applies to plans prescribed after a consultation. It starts with a free 3D scan.
+            The guarantee covers plans your doctor prescribes after a consultation. It all starts with a free
+            3D scan.
           </p>
           <Button asChild className="h-12 px-6">
-            <Link href="/start">Begin my 3D scan</Link>
+            <Link href="/start">Begin my free 3D scan</Link>
           </Button>
         </div>
       </section>

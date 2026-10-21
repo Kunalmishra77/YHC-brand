@@ -26,9 +26,9 @@ import { type ZoneShots, ZoneCapture } from './scan/zone-capture';
 type Phase = 'intro' | 'questions' | 'capture' | 'analysing';
 
 const STAGES = [
-  'Mapping scalp surface',
-  'Detecting follicles',
-  'Measuring root density',
+  'Mapping your scalp',
+  'Finding hair roots',
+  'Counting how close the roots are',
   'Checking roots and scalp health',
 ] as const;
 const ANALYSIS_MS = 6000;
@@ -190,18 +190,18 @@ function Intro({
           className="mt-3 font-display text-[36px] leading-[1.05] font-medium text-balance text-on-dark outline-none md:text-[52px]"
         >
           {firstName
-            ? `${firstName}, let's map your scalp and hair roots`
-            : "Let's map your scalp and hair roots"}
+            ? `${firstName}, let's look at your scalp and hair roots`
+            : "Let's look at your scalp and hair roots"}
         </h1>
         <p className="mt-4 max-w-xl text-on-dark-muted">
-          Four quick questions, then your phone camera guides you through seven scalp zones, one close-up at a
-          time. The scan builds a picture of root density and scalp health for your doctor to review.
+          4 quick questions. Then your phone camera guides you through 7 areas of your scalp, one close-up at
+          a time. Your doctor uses the scan to see your roots and scalp health.
         </p>
         <ol className="mt-7 grid gap-3 sm:grid-cols-3">
           {[
-            ['4 questions', 'About your hair history'],
-            ['7 zones', 'Hairline, top, crown, parting and back'],
-            ['Analysis', 'Roots, density and scalp health'],
+            ['4 questions', 'About your hair'],
+            ['7 areas', 'Hairline, top, crown, parting and back'],
+            ['Your report', 'Roots, thickness and scalp health'],
           ].map(([t, d], i) => (
             <li key={t} className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
               <p className="price text-[13px] text-platinum">0{i + 1}</p>
@@ -224,13 +224,13 @@ function Intro({
               href="/start/assessment"
               className="inline-flex min-h-11 items-center justify-center px-2 text-sm text-on-dark-muted underline underline-offset-4 hover:text-on-dark"
             >
-              View your existing assessment
+              See your earlier report
             </Link>
           ) : null}
         </div>
         <p className="mt-5 max-w-xl text-[13px] text-on-dark-muted">
-          Demo: your photos stay on this device and are never uploaded. Only which zones you scanned is sent,
-          and the analysis is simulated — your doctor makes the final assessment.
+          Demo: your photos stay on this device and are never uploaded. We only send which areas you scanned.
+          The report is simulated — your doctor makes the final call.
         </p>
       </div>
       <div className="relative mx-auto aspect-square w-full max-w-[380px]">
@@ -422,7 +422,7 @@ function Analysing({
         tabIndex={-1}
         className="mt-2 font-display text-[30px] leading-[1.1] font-medium text-balance text-on-dark outline-none md:text-[40px]"
       >
-        Analysing scalp &amp; hair roots
+        Checking your scalp &amp; hair roots
       </h1>
       <ol className="mt-6 w-full max-w-sm space-y-2.5 text-left">
         {STAGES.map((s, i) => {
@@ -457,7 +457,7 @@ function Analysing({
       {progress >= 100 && result === 'pending' ? (
         <p className="mt-5 flex items-center gap-2 text-sm text-on-dark-muted">
           <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
-          Preparing your assessment…
+          Getting your report ready…
         </p>
       ) : null}
       {failed ? (
@@ -491,9 +491,7 @@ function Analysing({
           </div>
         </div>
       ) : null}
-      <p className="mt-8 text-[13px] text-on-dark-muted">
-        Demo analysis — your doctor makes the final assessment.
-      </p>
+      <p className="mt-8 text-[13px] text-on-dark-muted">Demo report — your doctor makes the final call.</p>
     </section>
   );
 }

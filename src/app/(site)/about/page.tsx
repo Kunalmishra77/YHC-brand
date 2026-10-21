@@ -8,7 +8,7 @@ import { buildJourney } from '@/components/site/journey-steps';
 import { H1, H2, SECTION_Y, TEXT_LINK } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { t } from '@/i18n/en';
-import { CLINICAL, IMAGES } from '@/lib/images';
+import { SLOTS } from '@/lib/slots';
 import { getDoctor } from '@/server/catalog';
 
 export const dynamic = 'force-dynamic';
@@ -16,53 +16,53 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'About Your Hair Company',
   description:
-    'Why Your Hair Company starts every plan with a doctor: consultation first, honest expectations, a prescription that is yours, and follow-up care.',
+    'Why Your Hair Company starts every plan with a doctor: talk first, honest expectations, a prescription that is yours, and care that continues.',
   path: '/about',
 });
 
 const NEVER = [
   {
-    title: 'Sell you a kit before anyone has asked a question',
-    body: 'Prescription products are only supplied after a consultation. The doctor decides whether treatment is right for you — and sometimes the answer is no.',
+    title: 'Sell you a kit before asking a single question',
+    body: 'You get prescription products only after a consultation. The doctor decides if treatment can help you — and sometimes the answer is no.',
   },
   {
     title: 'Pressure you to buy',
-    body: 'A plan is a recommendation, not a sales pitch. No invented discounts or “today only” offers, and no one will push you to decide on the call.',
+    body: 'A plan is advice, not a sales pitch. No fake discounts, no “today only” offers, and no one pushes you to decide on the call.',
   },
   {
     title: 'Keep your prescription from you',
-    body: 'Your prescription is yours. You are free to use it wherever you prefer, and you get it whether or not you buy from us.',
+    body: 'Your prescription is yours. Use it anywhere you like. You get it whether or not you buy from us.',
   },
   {
-    title: 'Invent reviews or borrow before-and-after photos',
-    body: 'Stories appear only with a patient’s written consent, unretouched, with how long they used their plan and a note that results vary.',
+    title: 'Make up reviews or borrow before-and-after photos',
+    body: 'We share a story only with the patient’s written consent. Photos are not edited. We say how long they used their plan, and that results vary.',
   },
   {
     title: 'Promise results or timelines',
-    body: 'Hair responds slowly and differently for everyone. We say so plainly, and we judge progress with consistent photos over months.',
+    body: 'Hair changes slowly, and differently for everyone. We say so clearly. We judge progress with photos taken the same way, over months.',
   },
   {
     title: 'Use your health details for marketing',
-    body: 'Your history, photos and consultation notes are kept for your doctor. Our sales and support team cannot see them.',
+    body: 'Your health details, photos and consultation notes are only for your doctor. Our sales and support team cannot see them.',
   },
 ];
 
 const VALUES = [
   {
-    title: 'Clinical before commercial',
-    body: 'The consultation comes first, and the doctor’s judgement is never overruled by a sales target.',
+    title: 'Health before sales',
+    body: 'The consultation comes first. A sales target never overrules the doctor.',
   },
   {
     title: 'Plain words',
-    body: 'We explain what is likely going on, what a product is for, and what it will not do — without jargon or hype.',
+    body: 'We tell you what is likely going on, what a product is for, and what it will not do. No jargon, no hype.',
   },
   {
     title: 'Care that continues',
-    body: 'Check-ins, progress photos and follow-up reviews are part of every plan, not an upsell.',
+    body: 'Check-ins, progress photos and follow-up reviews come with every plan. They are not extras.',
   },
   {
-    title: 'Privacy as a default',
-    body: 'Clinical data is separated from everything else, access to it is logged, and it never appears in messages or marketing.',
+    title: 'Private by default',
+    body: 'Your health details are kept apart from everything else. Every look at them is logged. They never appear in messages or ads.',
   },
 ];
 
@@ -79,9 +79,8 @@ export default function AboutPage() {
           <div className="min-w-0">
             <h1 className={H1}>Hair care that starts with a conversation.</h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-body">
-              Most hair products are sold before anyone asks a single question. Your Hair Company works the
-              other way round: every plan begins with a one-to-one video consultation with {doctor.name}, and
-              is reviewed as you go.
+              Most hair products are sold before anyone asks you a single question. We do the opposite. Every
+              plan starts with a one-to-one video call with {doctor.name}, and we check on it as you go.
             </p>
             <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
               <Link href="/how-it-works" className={`text-ink ${TEXT_LINK}`}>
@@ -93,18 +92,18 @@ export default function AboutPage() {
             </div>
           </div>
           <figure>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-obsidian lg:aspect-[5/4]">
+            <div className="group relative aspect-[4/3] overflow-hidden rounded-[28px] bg-obsidian shadow-card lg:aspect-[5/4]">
               <Image
-                src={CLINICAL.consultRoom.src}
-                alt={CLINICAL.consultRoom.alt}
+                src={SLOTS.S05.src}
+                alt={SLOTS.S05.alt}
                 fill
                 priority
                 sizes="(min-width: 768px) 42vw, 100vw"
-                className="object-cover object-[55%_50%]"
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
               />
             </div>
             <figcaption className="mt-3 text-[12px] text-muted-foreground">
-              Illustrative image — not our clinic, staff or Dr. Tyagi.
+              Illustrative image — not our lab, clinic, staff or Dr. Tyagi.
             </figcaption>
           </figure>
         </div>
@@ -117,18 +116,17 @@ export default function AboutPage() {
           <div className="max-w-[62ch] space-y-5 text-lg leading-relaxed text-body">
             {/* TODO(client): founding story in the client's own words — see docs/12 C */}
             <p>
-              Thinning hair has many possible causes — genetics, hormones, illness, nutrition, stress,
-              medicines — and often more than one at once. Two people with the same-looking change can need
-              quite different things.
+              Thin hair has many causes — family genes, hormones, illness, food, stress, medicines. Often more
+              than one at once. Two people who look the same may need very different care.
             </p>
             <p>
-              Yet most people spend months on products chosen by advertising rather than by their own history.
-              They stop and start, cannot tell what is helping, and lose confidence along with their money.
+              Yet most people spend months on products picked by ads, not by their own health. They stop and
+              start. They cannot tell what helps. They lose hope, and money.
             </p>
             <p>
-              We wanted the opposite: a doctor who listens first, a routine chosen for one person, and someone
-              checking in while you follow it. YHC handles everything around the consultation — booking,
-              delivery, reminders and support — so {doctor.name} can spend the time on you.
+              We wanted the opposite: a doctor who listens first, a routine picked just for you, and someone
+              checking in while you use it. YHC does everything around the consultation — booking, delivery,
+              reminders and support — so {doctor.name} can spend the time on you.
             </p>
             <p className="text-base text-muted-foreground">{t('common.resultsVary')}</p>
           </div>
@@ -164,8 +162,8 @@ export default function AboutPage() {
         <div className="grid gap-6 md:grid-cols-2 md:items-end">
           <h2 className={H2}>What we will never do</h2>
           <p className="max-w-md text-body md:justify-self-end">
-            Trust in hair care is hard to earn and easy to lose. These are the lines we hold, in the product
-            itself — not only in our copy.
+            Trust is hard to earn and easy to lose. These are the lines we never cross — in how we work, not
+            just in what we say.
           </p>
         </div>
         <ol className="mt-12 grid border-t border-line md:grid-cols-2 md:gap-x-16">
@@ -190,14 +188,17 @@ export default function AboutPage() {
         >
           <div>
             <h2 className={H2}>What we hold ourselves to</h2>
-            <div className="relative mt-10 aspect-[16/10] overflow-hidden rounded-2xl">
+            <div className="group relative mt-10 aspect-[16/10] overflow-hidden rounded-[28px] shadow-card">
               <Image
-                src={IMAGES.textureDrop.src}
-                alt={IMAGES.textureDrop.alt}
+                src={SLOTS.S06.src}
+                alt={SLOTS.S06.alt}
                 fill
                 sizes="(min-width: 768px) 40vw, 100vw"
-                className="object-cover"
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
               />
+              <span className="absolute top-4 left-4 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-on-dark backdrop-blur">
+                {t('common.illustrativeImage')}
+              </span>
             </div>
           </div>
           <dl className="divide-y divide-line border-y border-line md:self-end">
@@ -219,15 +220,16 @@ export default function AboutPage() {
           <div>
             <h2 className={H2}>The people behind it</h2>
             <p className="mt-5 max-w-sm leading-relaxed text-body">
-              A small team built around one doctor’s consultations: care coordination, packing and delivery,
-              and support.
+              A small team around one doctor: care, packing and delivery, and support.
             </p>
           </div>
           <div className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
             <div className="bg-card p-7">
               <p className="text-[13px] text-muted-foreground">Lead doctor</p>
               <p className="mt-3 font-display text-[2rem] leading-tight text-ink">{doctor.name}</p>
-              <p className="mt-1.5 text-sm text-body">{publicCredential(doctor.qualifications) ?? 'Dermatologist'}</p>
+              <p className="mt-1.5 text-sm text-body">
+                {publicCredential(doctor.qualifications) ?? 'Dermatologist'}
+              </p>
               {publicCredential(doctor.registrationNo) ? (
                 <p className="mt-1 text-sm text-muted-foreground">Registration {doctor.registrationNo}</p>
               ) : null}
@@ -243,8 +245,8 @@ export default function AboutPage() {
                   Introductions coming soon
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-body">
-                  The team who answer your WhatsApp messages and pack your orders will be introduced here.
-                  They help with bookings, orders and delivery — they cannot see your clinical information.
+                  Soon you will meet the team who answer your WhatsApp messages and pack your orders. They
+                  help with bookings, orders and delivery. They cannot see your health details.
                 </p>
               </div>
             </div>
@@ -254,7 +256,7 @@ export default function AboutPage() {
 
       <CtaBand
         bookLabel={terms.bookLabel}
-        body={`The first step is a consultation. If treatment isn't right for you, ${doctor.name} will say so.`}
+        body={`The first step is a consultation. If treatment cannot help you, ${doctor.name} will tell you.`}
       />
     </>
   );

@@ -22,7 +22,7 @@ export function ProductTile({
     <Link href={`/products/${product.slug}`} className={cn('group block rounded-xl', className)}>
       <div
         className={cn(
-          'relative aspect-[4/5] overflow-hidden rounded-xl',
+          'relative aspect-[4/5] overflow-hidden rounded-[28px]',
           dark ? 'bg-obsidian' : 'bg-[#efeeeb]',
         )}
       >
@@ -41,7 +41,7 @@ export function ProductTile({
             dark ? 'bg-white/10 text-on-dark' : 'bg-white/70 text-ink',
           )}
         >
-          {product.requiresConsultation ? 'Prescribed after consultation' : 'Buy directly'}
+          {product.requiresConsultation ? 'Your doctor decides' : 'Buy directly'}
         </span>
       </div>
       <div className="mt-4 flex items-start justify-between gap-4">
@@ -55,7 +55,7 @@ export function ProductTile({
         {product.pricePaise !== null && !product.requiresConsultation ? (
           <span className="price shrink-0 text-ink">{formatINR(product.pricePaise)}</span>
         ) : (
-          <span className="shrink-0 text-[13px] text-muted-foreground">In plans</span>
+          <span className="shrink-0 text-[13px] text-muted-foreground">In your plan</span>
         )}
       </div>
     </Link>

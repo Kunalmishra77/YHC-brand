@@ -1,13 +1,23 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { IMAGES } from '@/lib/images';
+import { IMAGES, type SiteImage } from '@/lib/images';
+import { SLOTS } from '@/lib/slots';
 import { cn } from '@/lib/utils';
 import type { Article } from '@/server/content/types';
 import { formatContentDate } from './content-blocks';
 import { ReviewBadge } from './review-badge';
 
-export function articleImage(article: Pick<Article, 'image'>) {
-  return IMAGES[article.image];
+/** Article image slots B01–B05 by slug (YHC_IMAGE_PROMPTS.md); other articles keep their own image. */
+const ARTICLE_SLOT: Record<string, SiteImage> = {
+  'hair-shedding-vs-hair-loss': SLOTS.B01,
+  'hair-growth-cycle-explained': SLOTS.B02,
+  'what-happens-in-a-video-consultation': SLOTS.B03,
+  'how-to-take-scalp-photos': SLOTS.B04,
+  'nutrition-and-hair': SLOTS.B05,
+};
+
+export function articleImage(article: Pick<Article, 'image' | 'slug'>): SiteImage {
+  return ARTICLE_SLOT[article.slug] ?? IMAGES[article.image];
 }
 
 /** Category · reading time · date — one quiet line. */
@@ -55,7 +65,7 @@ export function ArticleRow({
         <p className="mt-3 max-w-[60ch] leading-relaxed text-body">{article.dek}</p>
         <ReviewBadge status={article.reviewStatus} className="mt-4" />
       </div>
-      <div className="relative order-first aspect-[16/9] overflow-hidden rounded-xl bg-[#efeeeb] sm:order-none sm:aspect-square">
+      <div className="relative order-first aspect-[16/9] overflow-hidden rounded-2xl bg-[#efeeeb] sm:order-none sm:aspect-square">
         <Image
           src={image.src}
           alt=""

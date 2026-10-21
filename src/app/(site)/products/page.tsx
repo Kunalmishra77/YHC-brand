@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Products',
   description:
-    'The YHC range of solution, tablets, capsules and powder, for men and for women, with every ingredient listed. Supplied after a doctor consultation.',
+    'The YHC range: solution, tablets, capsules and powder, for men and for women, with every ingredient listed. Your doctor decides what you need.',
   path: '/products',
 });
 
@@ -35,16 +35,16 @@ export default function ProductsPage() {
         tone="dark"
         lede={
           <p>
-            Four products, each in a men’s and a women’s pack. They are supplied after your consultation, so
-            the choice and routine fit you. {t('common.inclGst')}.
+            4 products, each in a men’s and a women’s pack. Your doctor picks the right ones for you at your
+            consultation. {t('common.inclGst')}.
           </p>
         }
       />
       {products.length === 0 ? (
         <div className={`container-yhc ${SECTION_Y}`}>
           <EmptyState
-            title="Products are being added"
-            body="Our range is listed here once each product's details are confirmed. You can still book a consultation."
+            title="Products coming soon"
+            body="We add each product once its details are confirmed. You can still book a consultation."
           />
         </div>
       ) : null}
@@ -53,8 +53,8 @@ export default function ProductsPage() {
           <SectionHeader
             id="prescribed-heading"
             eyebrow="The YHC range"
-            title="Chosen at your consultation"
-            lede="The doctor decides which products belong in your plan and how to use them. The solution contains a prescription medicine and is supplied only with a prescription."
+            title="Picked for you by your doctor"
+            lede="Your doctor decides which products you need and how to use them. The solution has a prescription medicine, so you need a prescription for it."
             action={
               <Link href="/book" className={`text-ink ${TEXT_LINK}`}>
                 {terms.bookLabel} <ArrowRight className="size-4" aria-hidden />
@@ -75,7 +75,7 @@ export default function ProductsPage() {
               id="everyday-heading"
               eyebrow="No consultation needed"
               title="Everyday hair care"
-              lede="Gentle on a scalp under treatment. Order directly, on their own or alongside a plan."
+              lede="Gentle on a scalp under treatment. Buy them on their own or with a plan."
             />
             <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
               {open.map((p) => (
@@ -87,7 +87,7 @@ export default function ProductsPage() {
       ) : null}
       <CtaBand
         bookLabel={terms.bookLabel}
-        body="Not sure which products you need? That's what the consultation decides — based on your history, not a quiz score."
+        body="Not sure what you need? The consultation decides — based on your health, not a quiz score."
       />
     </>
   );

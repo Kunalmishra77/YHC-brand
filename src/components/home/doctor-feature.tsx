@@ -4,45 +4,44 @@ import { getConsultTerms } from '@/components/site/consult-fee';
 import { Reveal } from '@/components/site/reveal';
 import { CTA_GHOST_DARK, CTA_SILVER } from '@/components/site/section';
 import { Button } from '@/components/ui/button';
-import { doctorClaimLabel } from '@/lib/claims';
 import { publicCredential } from '@/lib/credentials';
 import { DOCTOR_PORTRAIT } from '@/lib/images';
 import { getDoctor } from '@/server/catalog';
 import { PortraitParallax } from './doctor-feature/portrait-parallax';
-import { TreatmentIndex, type TreatmentArea } from './doctor-feature/treatment-index';
+import { TreatmentChips, type TreatmentChip } from './doctor-feature/treatment-chips';
 
 /**
  * Homepage section 5 · Dr. Anil Tyagi and his treatment approach — credibility and trust.
- * Full-bleed editorial split on obsidian: the portrait fills one half edge to edge (slow parallax,
- * pearl "in your consultation" card resting on it), the other half carries the name at display scale,
- * the approach in one line and an accordion of what he assesses and treats. Only confirmed credentials
- * are shown (publicCredential); nothing is guessed.
+ * Full-bleed editorial split on obsidian: the real portrait fills one half edge to edge (slow parallax,
+ * pearl consultation card resting on it); the other half has the name, one plain promise and tappable
+ * pills for what he treats (docs/20: short and warm). Only confirmed credentials are shown
+ * (publicCredential); the registration line is hidden when it is missing.
  */
 
-const TREATMENTS: TreatmentArea[] = [
+const TREATMENTS: TreatmentChip[] = [
   {
-    title: 'Pattern hair loss',
-    body: 'Gradual thinning at the hairline, parting or crown, in men and in women. He looks at the pattern, your family history and your scan before deciding whether a prescribed plan can help.',
+    title: 'Thinning hair',
+    body: 'Slow thinning at the hairline, parting or crown, in men and women (pattern hair loss).',
   },
   {
-    title: 'Telogen effluvium',
-    body: 'Sudden, diffuse shedding that can follow an illness, fever, childbirth, a crash diet, stress or some medicines. He looks for the trigger first — treatment is not always needed.',
+    title: 'Sudden shedding',
+    body: 'Hair fall after illness, fever, childbirth, stress or a crash diet (telogen effluvium). He finds the cause first.',
   },
   {
-    title: 'Scalp conditions',
-    body: 'Flaking, itching, redness or oiliness. The scalp is assessed as carefully as the hair, because the two are linked.',
+    title: 'Scalp problems',
+    body: 'Flakes, itching, redness or oily scalp. He checks your scalp as carefully as your hair.',
   },
   {
-    title: 'Follow-up and review',
-    body: 'Your check-ins and progress photos are reviewed at follow-up, and the plan is adjusted — or stopped — when that is the right call.',
+    title: 'Follow-up',
+    body: 'He looks at your check-ins and photos, then changes or stops your plan if needed.',
   },
 ];
 
 const CONSULT_COVERS = [
-  'Your history and scan, read before the call',
-  'What is likely going on, in plain words',
-  'A plan only if treatment is right for you',
-  'When and how progress will be reviewed',
+  'He reads your scan and history first',
+  'He explains what is going on, simply',
+  'A plan only if treatment will help',
+  'When you will check progress together',
 ];
 
 export function DoctorFeature() {
@@ -76,12 +75,12 @@ export function DoctorFeature() {
           <div className="relative z-10 mx-[var(--yhc-gutter)] -mt-24 sm:mx-auto sm:max-w-md lg:absolute lg:bottom-10 lg:left-10 lg:mx-0 lg:mt-0 lg:w-[20rem] xl:left-14">
             <Reveal>
               <div className="rounded-2xl bg-pearl/95 p-5 text-ink shadow-raised ring-1 ring-white/60 backdrop-blur sm:p-6">
-                <p className="flex items-center gap-2 text-[12px] font-semibold tracking-[0.12em] text-brand uppercase">
+                <p className="flex items-center gap-2 text-[13px] font-semibold text-brand">
                   <Video className="size-4" aria-hidden />
-                  {slotMinutes} min · one to one · video
+                  {slotMinutes}-minute video call
                 </p>
                 <h3 className="mt-3 font-display text-[1.75rem] leading-tight font-medium">
-                  In your consultation
+                  Just you and him
                 </h3>
                 <ul className="mt-4 space-y-2.5">
                   {CONSULT_COVERS.map((line) => (
@@ -99,9 +98,7 @@ export function DoctorFeature() {
         {/* Text block */}
         <div className="flex items-center px-[var(--yhc-gutter)] pt-12 pb-14 sm:pt-14 lg:px-16 lg:py-16 xl:px-20">
           <Reveal className="w-full max-w-xl">
-            <p className="eyebrow text-brand-on-dark">
-              {doctorClaimLabel()} · <span className="whitespace-nowrap">Dermatologist-led</span>
-            </p>
+            <p className="eyebrow text-brand-on-dark">Meet your doctor</p>
             <h2
               id="doctor-feature-heading"
               className="display mt-4 text-[clamp(2.75rem,1.8rem+3.8vw,4.75rem)] leading-[0.95] text-balance text-on-dark"
@@ -116,19 +113,17 @@ export function DoctorFeature() {
               </p>
             ) : null}
 
-            <div className="mt-7 border-l border-platinum/60 pl-5 sm:pl-6">
+            <blockquote className="mt-7 border-l border-platinum/60 pl-5 sm:pl-6">
               <p className="font-display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)] leading-snug font-medium text-balance text-on-dark">
-                Assessment first. Treatment only when it can help.
+                We check first. We treat only if it will help.
               </p>
-              <p className="mt-3 text-[13px] text-on-dark-muted">How every YHC plan begins</p>
-            </div>
+              <p className="mt-3 text-[15px] leading-relaxed text-on-dark-muted">
+                He looks at your scalp and your story first, then explains it in simple words.
+              </p>
+            </blockquote>
 
-            <p className="mt-6 text-base leading-relaxed text-pretty text-on-dark-muted lg:text-[17px]">{doctor.bio}</p>
-
-            <h3 className="mt-8 mb-1 text-[13px] font-semibold tracking-[0.12em] text-brand-on-dark uppercase">
-              What he assesses and treats
-            </h3>
-            <TreatmentIndex items={TREATMENTS} />
+            <h3 className="mt-8 mb-3 text-[15px] font-semibold text-on-dark">What he treats</h3>
+            <TreatmentChips items={TREATMENTS} label="What he treats" />
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button asChild className={`group w-full rounded-full sm:w-auto ${CTA_SILVER}`}>
@@ -141,7 +136,7 @@ export function DoctorFeature() {
                 </Link>
               </Button>
               <Button asChild variant="outline" className={`w-full rounded-full sm:w-auto ${CTA_GHOST_DARK}`}>
-                <Link href="/start">Begin my 3D scan</Link>
+                <Link href="/start">Begin my free 3D scan</Link>
               </Button>
             </div>
           </Reveal>

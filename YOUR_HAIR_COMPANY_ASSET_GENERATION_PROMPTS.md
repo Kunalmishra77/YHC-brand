@@ -1,3 +1,5 @@
+> **Images: use [YHC_IMAGE_PROMPTS.md](YHC_IMAGE_PROMPTS.md)** (21 Oct 2026) — the complete, simpler list of all 58 website images with copy-paste prompts and file names. This file stays the reference for **videos** (Google Flow), real-shoot briefs and the audit asset IDs (E-01…E-22).
+
 # Your Hair Company — Asset Generation Prompts & Shoot Briefs
 
 For: the project owner (generating images in **ChatGPT** and videos in **Google Flow / Veo**) and the developers who integrate them.

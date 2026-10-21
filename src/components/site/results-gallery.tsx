@@ -8,7 +8,7 @@ import { RAIL, RAIL_ITEM, TEXT_LINK } from './section';
 
 /** Shown under every result (copy rules: PRD §15). */
 const RESULT_DISCLAIMER =
-  'Individual results vary. Photos shared with the patient’s written consent; faces hidden for privacy. Unretouched.';
+  'Individual results vary. Shared with the patient’s written consent. Faces hidden for privacy. Photos not edited.';
 
 /** Null until the clinic confirms the months between photos — then nothing is shown (ADR-33). */
 export function resultDurationLabel(months: number | null): string | null {
@@ -193,8 +193,8 @@ function PlaceholderFrame({ index }: { index: number }) {
         ))}
       </div>
       <figcaption className="space-y-1 p-5">
-        <p className="font-medium text-ink">Consented patient result — to be added</p>
-        <p className="text-sm text-body">Duration on plan: shown with each result</p>
+        <p className="font-medium text-ink">Real patient result — coming soon</p>
+        <p className="text-sm text-body">Time on plan: shown with each result</p>
         <p className="text-[13px] text-muted-foreground">Result {index + 1} · Individual results vary</p>
       </figcaption>
     </figure>
@@ -206,8 +206,8 @@ function ConsentNote() {
     <p className="mt-10 flex max-w-3xl items-start gap-2.5 text-sm leading-relaxed text-pretty text-body">
       <ShieldCheck className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
       <span>
-        Only real patients who gave written consent appear here. Photos are cropped so faces are not shown and
-        are otherwise unretouched — we never use stock or AI images as results. Individual results vary.
+        Only real patients who said yes in writing appear here. We crop photos to hide faces and do not edit
+        them in any other way. We never use stock or AI images as results. Individual results vary.
       </span>
     </p>
   );

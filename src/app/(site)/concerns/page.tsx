@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Hair concerns',
   description:
-    'Hair fall, thinning, a receding hairline, crown thinning or scalp problems: what each can mean, its common causes and how a consultation helps.',
+    'Hair fall, thinning, a receding hairline, crown thinning or scalp problems: what each one can mean, common causes, and how a consultation helps.',
   path: '/concerns',
 });
 
@@ -28,11 +28,11 @@ export default function ConcernsPage() {
         image={IMAGES.serum}
         lede={
           <p>
-            Choose what sounds most like you. Not sure? The{' '}
+            Tap the one that looks most like you. Not sure? The{' '}
             <Link href="/start" className="text-brand underline underline-offset-4">
-              free hair assessment
+              free 3D scan
             </Link>{' '}
-            suggests a next step in about 2 minutes.
+            shows you a next step.
           </p>
         }
       />
@@ -41,14 +41,14 @@ export default function ConcernsPage() {
           <ConcernList concerns={concerns} />
         ) : (
           <EmptyState
-            title="Concern guides are being written"
-            body="Each guide is reviewed by Dr. Tyagi before it is published. In the meantime, a consultation covers every concern."
+            title="Guides coming soon"
+            body="Dr. Tyagi checks every guide before we publish it. Until then, a consultation covers every concern."
           />
         )}
       </section>
       <CtaBand
         bookLabel={terms.bookLabel}
-        body="Whatever you are noticing, a consultation is the quickest way to understand it."
+        body="Whatever you are noticing, a consultation is the fastest way to understand it."
       />
     </>
   );

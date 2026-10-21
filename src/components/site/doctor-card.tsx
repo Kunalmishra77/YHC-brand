@@ -41,10 +41,10 @@ export function DoctorCard({
         <p className="mt-6 max-w-prose text-lg leading-relaxed text-pretty text-body">{doctor.bio}</p>
         <ul className="mt-8 grid max-w-prose gap-3 text-body sm:grid-cols-2">
           {[
-            'Reads your history and scalp photos before the call',
-            'Explains what is likely going on, in plain words',
-            'Prescribes only if treatment is right for you',
-            'Reviews your progress at follow-up',
+            'Looks at your health details and scalp photos before the call',
+            'Tells you what is likely going on, in plain words',
+            'Prescribes only if treatment can help you',
+            'Checks your progress at follow-up',
           ].map((line) => (
             <li key={line} className="flex gap-2.5 text-[15px]">
               <span className="mt-2.5 h-px w-4 shrink-0 bg-steel" aria-hidden />

@@ -41,7 +41,7 @@ export function PlanLadder({
             {plan.isRecommended ? (
               <div className="bg-silver flex items-center gap-2 rounded-t-xl px-5 py-2.5 text-sm font-semibold text-obsidian">
                 <Stethoscope className="size-4" aria-hidden />
-                Doctor-recommended duration
+                Doctor’s pick
               </div>
             ) : null}
             <div className={cn('flex flex-1 flex-col p-5 md:p-6', plan.isRecommended && 'md:py-8')}>
@@ -53,12 +53,12 @@ export function PlanLadder({
               <ul className="mt-5 space-y-2.5 border-t border-line pt-5 text-sm text-body">
                 <li className="flex gap-2">
                   <Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden />
-                  {plan.months === 1 ? 'One month' : `${plan.months} months`} of the routine Dr. Tyagi
-                  prescribes for you
+                  {plan.months === 1 ? '1 month' : `${plan.months} months`} of the routine Dr. Tyagi picks for
+                  you
                 </li>
                 <li className="flex gap-2">
                   <Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden />
-                  Delivered across India, with check-ins while you use it
+                  Delivered anywhere in India. We check in while you use it.
                 </li>
                 {creditLine ? (
                   <li className="flex gap-2">
@@ -74,8 +74,8 @@ export function PlanLadder({
                       <Minus className="mt-0.5 size-4 shrink-0 text-steel" aria-hidden />
                     )}
                     {eligible
-                      ? 'Eligible for the money-back guarantee, if its conditions are met'
-                      : `Not covered by the guarantee (needs ${guarantee.minPlanMonths}+ months)`}
+                      ? 'Money-back guarantee, if you meet its conditions'
+                      : `No guarantee (needs ${guarantee.minPlanMonths}+ months)`}
                   </li>
                 ) : null}
               </ul>

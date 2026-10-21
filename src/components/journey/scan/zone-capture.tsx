@@ -13,10 +13,11 @@ import {
 import { motion, useReducedMotion } from 'motion/react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { CLINICAL } from '@/lib/images';
 import { ANGLE_LABEL, ZONE_HINT } from '@/lib/journey/labels';
 import { CAPTURE_ZONES, type CaptureZone, MIN_CAPTURED_ZONES } from '@/lib/journey/types';
 import { isRequiredZone, nextZoneToFix, orderZones, zoneSelectionIssue } from '@/lib/journey/zones';
+import { SLOTS } from '@/lib/slots';
+import type { VisualSlot } from '@/lib/visual-slots';
 import { cn } from '@/lib/utils';
 import { CameraSheet } from './camera-sheet';
 import { HeadDiagrams } from './head-diagrams';
@@ -38,14 +39,26 @@ export type ZoneShots = Partial<Record<CaptureZone, ScanShot>>;
 
 const TOTAL = CAPTURE_ZONES.length;
 
+/** Example close-up per zone (J01–J07, in CAPTURE_ZONES order). Until each image is in, the shared
+ *  scalp close-up stands in, framed per zone by ZONE_REFERENCE_POSITION. */
+const ZONE_EXAMPLE: Record<CaptureZone, VisualSlot> = {
+  forehead_left: SLOTS.J01,
+  forehead_centre: SLOTS.J02,
+  forehead_right: SLOTS.J03,
+  top: SLOTS.J04,
+  crown: SLOTS.J05,
+  parting: SLOTS.J06,
+  back: SLOTS.J07,
+};
+
 function issueText(captured: CaptureZone[], skipped: CaptureZone[]): string | null {
   const issue = zoneSelectionIssue(captured, skipped);
   if (!issue) return null;
   if (issue.code === 'required_missing')
-    return `Please scan ${issue.zones.map((z) => ANGLE_LABEL[z]).join(' and ')} — your doctor needs ${issue.zones.length > 1 ? 'these' : 'this'}.`;
+    return `Please scan ${issue.zones.map((z) => ANGLE_LABEL[z]).join(' and ')}. Your doctor needs ${issue.zones.length > 1 ? 'these' : 'this'}.`;
   if (issue.code === 'too_few')
-    return `Please scan at least ${MIN_CAPTURED_ZONES} zones — ${issue.missing} more to go.`;
-  return 'Something went wrong with the zone list. Please retake one zone.';
+    return `Please scan at least ${MIN_CAPTURED_ZONES} areas. ${issue.missing} more to go.`;
+  return 'Something went wrong. Please take one photo again.';
 }
 
 export function ZoneCapture({
@@ -78,6 +91,7 @@ export function ZoneCapture({
   const required = isRequiredZone(zone);
   const captured = orderZones(CAPTURE_ZONES.filter((z) => shots[z]));
   const isLast = index === TOTAL - 1;
+  const example = ZONE_EXAMPLE[zone];
 
   // Phones: the capture screen covers the page, so stop the page behind it from scrolling.
   useEffect(() => {
@@ -145,12 +159,12 @@ export function ZoneCapture({
           Guided 3D scalp scan
         </p>
         <h2 className="mt-3 font-display text-[44px] leading-[1.05] font-medium text-balance text-on-dark">
-          Seven zones, one close-up at a time
+          7 areas, one close-up at a time
         </h2>
         <p className="mt-4 max-w-lg text-on-dark-muted">
-          Follow the dot on the head drawings, scan each zone from 10–15 cm and press Next. You can skip zones
-          that are hard to reach — Forehead – Centre and Crown are needed, plus at least {MIN_CAPTURED_ZONES}{' '}
-          zones in total.
+          Follow the dot on the head drawing. Hold your phone 10–15 cm away, take the photo, then press Next.
+          You can skip hard-to-reach areas. We need {ANGLE_LABEL.forehead_centre} and {ANGLE_LABEL.crown}, and
+          at least {MIN_CAPTURED_ZONES} areas in total.
         </p>
         <ol className="mt-7 grid max-w-lg grid-cols-2 gap-2">
           {CAPTURE_ZONES.map((z, i) => {
@@ -179,7 +193,7 @@ export function ZoneCapture({
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-medium text-on-dark">{ANGLE_LABEL[z]}</span>
                     <span className="block text-[12px] text-on-dark-muted">
-                      {s ? 'Captured' : sk ? 'Skipped' : isRequiredZone(z) ? 'Required' : 'Optional'}
+                      {s ? 'Done' : sk ? 'Skipped' : isRequiredZone(z) ? 'Needed' : 'Optional'}
                     </span>
                   </span>
                 </button>
@@ -192,7 +206,8 @@ export function ZoneCapture({
           <HowToScanList />
         </div>
         <p className="mt-5 max-w-lg text-[13px] text-on-dark-muted">
-          Demo: photos stay on this device and are never uploaded. Only which zones you scanned is sent.
+          Demo: your photos stay on this phone or computer and are never uploaded. We only send which areas
+          you scanned.
         </p>
       </aside>
 
@@ -263,11 +278,11 @@ export function ZoneCapture({
                 {shot ? (
                   <span className="inline-flex items-center gap-1 rounded-full bg-success-bg px-3 py-1 text-[12px] font-medium text-success">
                     <Check className="size-3.5" aria-hidden />
-                    Captured
+                    Done
                   </span>
                 ) : required ? (
                   <span className="rounded-full bg-mist px-3 py-1 text-[12px] font-medium text-ink">
-                    Required
+                    Needed
                   </span>
                 ) : (
                   <button
@@ -300,7 +315,7 @@ export function ZoneCapture({
             </div>
 
             {/* reference close-up or the captured photo */}
-            <div className="relative mt-4 aspect-[16/11] w-full overflow-hidden bg-obsidian">
+            <div className="relative mx-5 mt-4 aspect-[16/11] overflow-hidden rounded-[28px] bg-obsidian">
               {shot ? (
                 // eslint-disable-next-line @next/next/no-img-element -- local blob preview, never uploaded
                 <img
@@ -310,22 +325,27 @@ export function ZoneCapture({
                 />
               ) : (
                 <Image
-                  src={CLINICAL.scalpParting.src}
-                  alt="Example of a sharp scalp close-up showing individual hair roots"
+                  key={example.src}
+                  src={example.src}
+                  alt={
+                    example.ready
+                      ? example.alt
+                      : 'Example of a sharp scalp close-up showing single hair roots'
+                  }
                   fill
-                  sizes="(min-width: 1024px) 400px, 100vw"
+                  sizes="(min-width: 1024px) 360px, 100vw"
                   className="object-cover"
-                  style={{ objectPosition: ZONE_REFERENCE_POSITION[zone] }}
+                  style={{ objectPosition: example.ready ? 'center' : ZONE_REFERENCE_POSITION[zone] }}
                 />
               )}
               <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-[12px] font-medium text-white backdrop-blur-sm">
                 {shot ? (
                   <>
                     <Check className="size-3.5" aria-hidden />
-                    Captured · stays on this device
+                    Done · stays on this device
                   </>
                 ) : (
-                  'Example of a good close-up'
+                  'Example of a good photo'
                 )}
               </span>
             </div>
@@ -334,7 +354,7 @@ export function ZoneCapture({
               <p className="text-[15px] leading-relaxed text-body">{ZONE_TIP[zone]}</p>
               {isSkipped && !shot ? (
                 <p className="mt-3 rounded-2xl bg-mist px-4 py-3 text-sm text-ink">
-                  Skipped for now — you can still scan it.
+                  Skipped for now. You can still scan it.
                 </p>
               ) : null}
             </div>
@@ -397,7 +417,7 @@ export function ZoneCapture({
           </button>
           {!canNext ? (
             <p className="mt-2 text-center text-[12px] text-muted-foreground">
-              {required ? 'Scan this zone to continue.' : 'Scan this zone, or skip it for now.'}
+              {required ? 'Scan this area to go on.' : 'Scan this area, or skip it for now.'}
             </p>
           ) : null}
         </div>

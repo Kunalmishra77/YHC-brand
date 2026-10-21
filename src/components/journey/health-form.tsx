@@ -37,7 +37,7 @@ const TEXT_FIELDS: { name: TextKey; label: string; hint: string }[] = [
   },
   {
     name: 'medicalHistory',
-    label: 'Relevant health history',
+    label: 'Your health history',
     hint: 'Thyroid, anaemia, PCOS, recent illness or surgery, major stress.',
   },
   { name: 'medications', label: 'Medicines you take', hint: 'Include supplements. Write "None" if none.' },
@@ -163,7 +163,7 @@ export function HealthForm({
 
         <Section
           n={3}
-          title="Health and history"
+          title="Your health"
           note={`Private — only ${doctorName} and the clinical team see this.`}
         >
           <div className="grid gap-x-6 gap-y-4 md:grid-cols-2">

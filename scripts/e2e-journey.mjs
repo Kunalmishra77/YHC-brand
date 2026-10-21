@@ -11,7 +11,7 @@ const log = (...a) => console.log(...a);
 const shot = async (n) => { await page.waitForTimeout(700); await page.screenshot({ path: `${out}/e-${n}.png`, fullPage: true }); log('shot', n, page.url()); };
 await page.goto(base + '/', { waitUntil: 'load', timeout: 120000 });
 const form = page.locator('form').filter({ hasText: 'Begin my 3D scan' }).first();
-await form.getByLabel('Full name').fill('Test Patient');
+await form.getByLabel(/^(Your name|Full name)$/).fill('Test Patient');
 await form.getByLabel('Mobile number').fill('97' + String(Math.floor(Math.random() * 1e8)).padStart(8, '0'));
 await form.getByRole('checkbox').click();
 await form.getByRole('button', { name: /Begin my 3D scan/ }).click();

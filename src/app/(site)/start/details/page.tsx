@@ -68,7 +68,7 @@ export default async function DetailsPage() {
       current="health_form"
       eyebrow="Health form · about 3 minutes"
       title={`A few details for ${doctor.name}`}
-      lede="We have filled in what we learned from your scan — please check it. Your answers and scan go to the doctor before your consultation."
+      lede="We filled in what we learned from your scan. Please check it. The doctor sees your answers and scan before your consultation."
     >
       <JourneyCard>
         <HealthForm defaults={defaults} doctorName={doctor.name} />

@@ -37,7 +37,7 @@ export const CTA_GHOST_DARK =
  * so cards scroll edge to edge on phones; use with RAIL_ITEM on each child.
  */
 export const RAIL =
-  '-mx-[var(--yhc-gutter)] flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-[var(--yhc-gutter)] py-1 scroll-px-[var(--yhc-gutter)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:px-0 lg:py-0';
+  'relative -mx-[var(--yhc-gutter)] flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-[var(--yhc-gutter)] py-1 scroll-px-[var(--yhc-gutter)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:px-0 lg:py-0';
 export const RAIL_ITEM = 'w-[82%] max-w-[22rem] shrink-0 snap-start sm:w-[46%] sm:max-w-none lg:w-auto';
 
 /**

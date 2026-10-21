@@ -15,7 +15,7 @@ const shot = async (name) => {
 
 await page.goto(base + '/', { waitUntil: process.env.WAIT ?? 'networkidle', timeout: 120000 });
 const form = page.locator('form').filter({ hasText: 'Begin my 3D scan' }).first();
-await form.getByLabel('Full name').fill('Asha Verma');
+await form.getByLabel(/^(Your name|Full name)$/).fill('Asha Verma');
 await form.getByLabel('Mobile number').fill('98' + String(Math.floor(Math.random() * 1e8)).padStart(8, '0'));
 await form.getByRole('checkbox').click();
 await form.getByRole('button', { name: /Begin my 3D scan/ }).click();

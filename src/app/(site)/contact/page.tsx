@@ -2,20 +2,22 @@ import { Clock, Mail, MessageCircle, Scale } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ContactForm } from '@/components/site/contact-form';
+import { PageIntro } from '@/components/site/page-intro';
 import { pageMetadata } from '@/components/site/seo';
 import { Button } from '@/components/ui/button';
 import { SITE } from '@/lib/site';
+import { SLOTS } from '@/lib/slots';
 
 export const metadata: Metadata = pageMetadata({
   title: 'Contact us',
   description:
-    'Reach Your Hair Company on WhatsApp or email for help with bookings, orders and delivery, or write to our grievance officer if an issue is unresolved.',
+    'Reach Your Hair Company on WhatsApp or email for help with bookings, orders and delivery. Or write to our grievance officer if a problem is not solved.',
   path: '/contact',
 });
 
 const ROUTES = [
   {
-    need: 'A booking, an order or delivery',
+    need: 'A booking, an order or a delivery',
     where: SITE.whatsappAvailable ? 'WhatsApp or email our support team' : 'Email our support team',
     href: SITE.whatsappAvailable ? SITE.whatsappUrl : `mailto:${SITE.supportEmail}`,
     label: SITE.whatsappAvailable ? 'Message on WhatsApp' : 'Email support',
@@ -23,21 +25,21 @@ const ROUTES = [
   },
   {
     need: 'A question about your hair or treatment',
-    where: 'A consultation — the support team cannot give medical advice',
+    where: 'Book a consultation. Our support team cannot give medical advice.',
     href: '/book',
     label: 'Book a consultation',
     external: false,
   },
   {
-    need: 'A complaint that has not been resolved',
+    need: 'A complaint that is still not solved',
     where: 'Our grievance officer',
     href: '/legal/grievance',
     label: 'How grievances work',
     external: false,
   },
   {
-    need: 'A copy, correction or deletion of your data',
-    where: 'Our grievance officer, under the privacy policy',
+    need: 'A copy of your data, or to fix or delete it',
+    where: 'Our grievance officer, as the privacy policy explains',
     href: '/legal/privacy#your-rights',
     label: 'Your data rights',
     external: false,
@@ -47,14 +49,16 @@ const ROUTES = [
 export default function ContactPage() {
   return (
     <>
-      <section className="border-b border-line">
-        <div className="container-yhc grid gap-8 py-16 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end md:py-24">
-          <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-balance">Talk to a person</h1>
-          <p className="max-w-xl text-lg leading-relaxed text-pretty text-body">
-            Questions about a booking, an order or delivery? Message us — a member of the YHC team will reply.
+      <PageIntro
+        title="Talk to a real person"
+        image={SLOTS.H27}
+        lede={
+          <p>
+            Questions about a booking, an order or a delivery? Message us. Someone from the YHC team will
+            reply.
           </p>
-        </div>
-      </section>
+        }
+      />
 
       <section className="container-yhc grid gap-14 py-16 md:py-24 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
         <div className="min-w-0 md:grid md:grid-cols-2 md:items-start md:gap-8 lg:block">
@@ -69,8 +73,8 @@ export default function ContactPage() {
               {SITE.whatsappAvailable ? 'WhatsApp is fastest' : 'Write to the care team'}
             </h2>
             <p className="mt-3 leading-relaxed text-on-dark-muted">
-              Bookings, orders, delivery and tracking. Please don&apos;t send photos or medical details here —
-              those belong in your consultation.
+              Bookings, orders, delivery and tracking. Please don&apos;t send photos or health details here.
+              Keep those for your consultation.
             </p>
             <Button
               asChild
@@ -128,7 +132,7 @@ export default function ContactPage() {
                   </a>
                 </dd>
                 <dd className="mt-1 text-sm text-body">
-                  Acknowledged within 48 hours, resolved within one month.
+                  We reply within 48 hours and solve it within 1 month.
                 </dd>
               </div>
             </div>
@@ -138,7 +142,7 @@ export default function ContactPage() {
         <div className="min-w-0">
           <h2 className="display text-[clamp(2rem,1.5rem+2vw,2.75rem)] text-balance">Or send us a message</h2>
           <p className="mt-3 max-w-lg leading-relaxed text-body">
-            Leave your number and we&apos;ll get back to you on WhatsApp or by phone.
+            Leave your number. We will get back to you on WhatsApp or by phone.
           </p>
           <div className="mt-8 rounded-2xl border border-line bg-card p-5 shadow-card sm:p-6 md:p-8">
             <ContactForm />

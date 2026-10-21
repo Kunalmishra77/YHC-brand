@@ -1,36 +1,38 @@
-import { Reveal } from '@/components/site/reveal';
 import { SECTION_Y } from '@/components/site/section';
-import { PRODUCT_MEDIA, ingredientImage } from '@/lib/brand-media';
-import { DARK_PRODUCT_IMAGES, PRODUCT_IMAGES } from '@/lib/images';
+import { LINE_LABEL, PRODUCT_MEDIA, ingredientImage, type ProductLine } from '@/lib/brand-media';
 import { getProducts } from '@/server/catalog';
 import { ingredientNote } from './ingredients/ingredient-notes';
 import { IngredientsSpread, type SpreadProduct } from './ingredients/ingredients-spread';
 
+const LINES: ProductLine[] = ['men', 'women'];
+
 /**
- * Homepage section 10 · Ingredients — editorial product spread. The product photographs are the anchors
- * (and the tabs); the selected product's ingredients open as a quiet accordion with their catalog role
- * and a plain-language note. Only ingredients from catalog products, only their stated roles.
+ * Homepage section 10 · Ingredients — the real pack is the stage (men's mint or women's blush label),
+ * the selected ingredient's photo floats over it, and one plain line explains it. Only ingredients from
+ * catalog products, only their stated roles.
  */
 export function IngredientsExplorer() {
   const products: SpreadProduct[] = getProducts()
     .filter((p) => p.ingredients.length > 0)
     .map((p) => {
-      const image = PRODUCT_IMAGES[p.slug];
-      const pack = PRODUCT_MEDIA[p.slug]?.pack;
+      const media = PRODUCT_MEDIA[p.slug];
       return {
         slug: p.slug,
         name: p.name,
-        tagline: p.tagline,
-        // Tile alt names the product and its pack size, e.g. "YHC Hair Regrowth Solution, 60 ml pack".
-        image: image ? { src: image.src, alt: `YHC ${p.name}${pack ? `, ${pack} pack` : ''}` } : null,
-        dark: DARK_PRODUCT_IMAGES.has(p.slug),
+        rx: /prescription/i.test(p.tagline),
+        packs: LINES.flatMap((line) => {
+          const img = media?.lines[line][0];
+          return img ? [{ line, label: LINE_LABEL[line], src: img.src, alt: img.alt }] : [];
+        }),
         ingredients: p.ingredients.map((ing) => {
           const photo = ingredientImage(ing.name);
+          const botanical = /\(([^)]+)\)/.exec(ing.name)?.[1] ?? null;
           return {
-            name: ing.name,
+            name: ing.name.replace(/\s*\(.*\)/, '').trim(),
+            botanical,
             role: ing.role,
             note: ingredientNote(ing.name, ing.role),
-            image: photo ? photo.src : null,
+            image: photo ? { src: photo.src, alt: photo.alt } : null,
           };
         }),
       };
@@ -45,22 +47,7 @@ export function IngredientsExplorer() {
       className={`relative scroll-mt-20 overflow-x-clip bg-card ${SECTION_Y}`}
     >
       <div className="container-yhc">
-        <Reveal className="mb-8 grid gap-5 md:mb-10 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end md:gap-12">
-          <div>
-            <p className="eyebrow">What’s inside</p>
-            <h2
-              id="ingredients-heading"
-              className="display mt-5 text-[clamp(3rem,1.8rem+5vw,6rem)] leading-[0.9] tracking-[-0.015em]"
-            >
-              Ingredients
-            </h2>
-          </div>
-          <p className="max-w-sm leading-relaxed text-pretty text-body md:justify-self-end md:pb-2">
-            Choose a product to see what is in it and the role each ingredient plays. Nothing here replaces
-            your consultation.
-          </p>
-        </Reveal>
-        <IngredientsSpread products={products} />
+        <IngredientsSpread products={products} headingId="ingredients-heading" />
       </div>
     </section>
   );

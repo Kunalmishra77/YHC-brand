@@ -30,43 +30,43 @@ interface ZoneArt {
 
 const ART: Record<CaptureZone, ZoneArt> = {
   forehead_left: {
-    why: 'Temples can recede differently on each side, so each side is captured.',
+    why: 'Each side can thin in its own way, so we look at both.',
     image: MEDIA.hairMacroWide,
     zoom: 1.2,
     dots: { left: [17, 14], top: [21, 15] },
   },
   forehead_centre: {
-    why: 'The doctor needs the front hairline, so this one cannot be skipped.',
+    why: 'The doctor needs your front hairline. You can’t skip this one.',
     image: MEDIA.hairMacroWide,
     zoom: 1.05,
     dots: { left: [13, 19], top: [30, 11], right: [47, 19] },
   },
   forehead_right: {
-    why: 'Compared with the left side to see whether any change is even.',
+    why: 'We compare it with the left side.',
     image: MEDIA.hairMacroWide,
     zoom: 1.35,
     dots: { right: [43, 14], top: [39, 15] },
   },
   top: {
-    why: 'Shows overall density between the hairline and the crown.',
+    why: 'Shows how thick your hair is on top.',
     image: CLINICAL.scalpPartingPortrait,
     zoom: 1.2,
     dots: { left: [30, 6], top: [30, 27], right: [30, 6] },
   },
   crown: {
-    why: 'Hard to see in a mirror and needed by the doctor, so it cannot be skipped.',
+    why: 'Hard to see in a mirror. The doctor needs it, so you can’t skip it.',
     image: CLINICAL.scalpExam,
     zoom: 1.1,
     dots: { left: [45, 12], top: [30, 45], right: [15, 12] },
   },
   parting: {
-    why: 'A widening parting is often where thinning shows first, especially in women.',
+    why: 'Thinning often shows here first, mainly in women.',
     image: CLINICAL.scalpParting,
     zoom: 1.05,
     dots: { top: [30, 21] },
   },
   back: {
-    why: 'A useful comparison for the rest of your scalp.',
+    why: 'Helps us compare with the rest of your head.',
     image: MEDIA.hairMacro,
     zoom: 1.15,
     dots: { left: [51, 27], top: [30, 55], right: [9, 27] },
@@ -145,16 +145,16 @@ export function ScanExplorer() {
             </span>
           </div>
 
-          {/* Progress dashes — one per zone, each 48 px tall and the full dash width */}
-          <div className="flex gap-1.5 px-5" role="group" aria-label="Scan zones">
+          {/* Progress dashes — one per zone, each 44 px tall and the full dash width */}
+          <div className="flex gap-1.5 px-5" role="group" aria-label="Scan areas">
             {ZONES.map((z, i) => (
               <button
                 key={z.id}
                 type="button"
                 onClick={() => setIndex(i)}
                 aria-pressed={i === index}
-                aria-label={`Zone ${i + 1} of ${ZONES.length}: ${z.label}`}
-                className="group flex h-12 flex-1 items-center rounded-md"
+                aria-label={`Photo ${i + 1} of ${ZONES.length}: ${z.label}`}
+                className="group flex h-11 flex-1 items-center rounded-md"
               >
                 <span
                   className={cn(
@@ -170,13 +170,13 @@ export function ScanExplorer() {
           <div className="px-5">
             <div className="flex items-center justify-between text-[13px]">
               <span className="text-muted-foreground" aria-live="polite">
-                Scan {index + 1} of {ZONES.length}
+                Photo {index + 1} of {ZONES.length}
                 <span className="sr-only">: {zone.label}</span>
               </span>
               <button
                 type="button"
                 onClick={next}
-                className="-mr-2 inline-flex min-h-12 items-center gap-1 rounded-md px-2 font-medium text-brand hover:text-ink"
+                className="-mr-2 inline-flex min-h-11 items-center gap-1 rounded-md px-2 font-medium text-brand hover:text-ink"
               >
                 Next <ArrowRight className="size-3.5" aria-hidden />
               </button>
@@ -197,7 +197,7 @@ export function ScanExplorer() {
           </div>
 
           {/* Head diagrams with the zone dot */}
-          <div className="grid grid-cols-3 gap-2 px-5 pt-3 pb-3" aria-hidden>
+          <div className="grid grid-cols-3 gap-2 px-5 pt-2 pb-2.5" aria-hidden>
             {(['left', 'top', 'right'] as const).map((view) => {
               const dot = zone.dots[view];
               return (
@@ -205,7 +205,7 @@ export function ScanExplorer() {
                   key={view}
                   viewBox="0 0 60 64"
                   className={cn(
-                    'h-16 w-full transition-opacity duration-300',
+                    'h-12 w-full transition-opacity duration-300',
                     dot ? 'opacity-100' : 'opacity-35',
                   )}
                 >
@@ -252,7 +252,7 @@ export function ScanExplorer() {
           </div>
 
           {/* Magnified viewfinder — edge to edge inside the screen */}
-          <div ref={screenRef} className="relative aspect-[5/4] overflow-hidden bg-obsidian">
+          <div ref={screenRef} className="relative aspect-[16/11] overflow-hidden bg-obsidian">
             <AnimatePresence initial={false}>
               <motion.div
                 key={zone.id}
@@ -307,27 +307,27 @@ export function ScanExplorer() {
             </AnimatePresence>
 
             <span className="absolute top-3 left-3 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-on-dark backdrop-blur">
-              Illustration · not a scan result
+              Example only, not your result
             </span>
           </div>
 
           {/* Shutter row */}
-          <div className="relative flex items-center justify-center px-5 pt-4 pb-2">
+          <div className="relative flex items-center justify-center px-5 pt-3 pb-1">
             <button
               type="button"
               onClick={capture}
-              aria-label={`Preview the ${zone.label.toLowerCase()} capture and go to the next zone (demo, nothing is recorded)`}
-              className="group relative flex size-16 items-center justify-center rounded-full ring-2 ring-ink transition-transform active:scale-95"
+              aria-label={`Try the ${zone.label.toLowerCase()} photo and go to the next one (example only, nothing is saved)`}
+              className="group relative flex size-14 items-center justify-center rounded-full ring-2 ring-ink transition-transform active:scale-95"
             >
-              <span className="size-12 rounded-full bg-ink transition-transform duration-200 group-hover:scale-90" />
+              <span className="size-10 rounded-full bg-ink transition-transform duration-200 group-hover:scale-90" />
             </button>
             <span className="price absolute right-5 text-[12px] text-muted-foreground">
-              {allDone ? `All ${ZONES.length} seen` : `${captured.size}/${ZONES.length}`}
+              {allDone ? `All ${ZONES.length} done` : `${captured.size}/${ZONES.length}`}
             </span>
           </div>
 
           {/* What this angle captures */}
-          <div className="min-h-[8rem] px-5 pt-2 pb-7">
+          <div className="min-h-[6.25rem] px-5 pt-2 pb-6">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={zone.id}
@@ -347,8 +347,8 @@ export function ScanExplorer() {
           />
         </div>
       </div>
-      <p className="mt-7 text-center text-[13px] text-muted-foreground">
-        Tap the shutter to step through the zones.
+      <p className="mt-5 text-center text-[13px] text-muted-foreground lg:hidden">
+        Try it: tap the round button.
       </p>
     </div>
   );

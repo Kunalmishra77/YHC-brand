@@ -10,10 +10,10 @@ import type { StoryVideo } from './video-library';
 /** The guarantee's conditions in plain words, straight from the active policy row. */
 export function guaranteeConditions(g: GuaranteePolicy): string[] {
   return [
-    `Follow your prescribed plan continuously for at least ${g.minPlanMonths} months`,
+    `Use your prescribed plan without a break for at least ${g.minPlanMonths} months`,
     `Reply to at least ${g.minCheckinResponsePct}% of your weekly check-ins`,
-    ...(g.requireMonthlyPhotos ? ['Share progress photos every month'] : []),
-    ...(g.requireFollowupConsult ? ['Attend your follow-up consultation'] : []),
+    ...(g.requireMonthlyPhotos ? ['Send progress photos every month'] : []),
+    ...(g.requireFollowupConsult ? ['Join your follow-up consultation'] : []),
     `Claim within ${g.claimWindowDays} days of finishing the plan`,
   ];
 }
@@ -24,13 +24,13 @@ export function guaranteeStory(g: GuaranteePolicy): StoryVideo {
     id: 'guarantee',
     kicker: 'The guarantee',
     title: 'How the guarantee works',
-    summary: 'The conditions, the claim and the doctor review — nothing hidden.',
+    summary: 'The conditions, the claim and the doctor’s check — nothing hidden.',
     video: VIDEOS.guarantee,
     captions: [
       { at: 0, text: `Follow your plan for at least ${g.minPlanMonths} months.` },
-      { at: 4, text: 'Reply to your weekly check-ins and share progress photos.' },
+      { at: 4, text: 'Reply to your weekly check-ins and send progress photos.' },
       { at: 8, text: 'No visible improvement? Make a claim.' },
-      { at: 12, text: 'A doctor reviews every claim against the published conditions.' },
+      { at: 12, text: 'A doctor checks every claim against the written conditions.' },
     ],
   };
 }

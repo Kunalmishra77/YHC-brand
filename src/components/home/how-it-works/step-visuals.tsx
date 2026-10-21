@@ -97,12 +97,12 @@ function DetailsVisual({ active, still }: VisualProps) {
   const fields = [
     { label: 'Name', w: '70%' },
     { label: 'Mobile', w: '58%' },
-    { label: 'One-time code', w: '46%' },
+    { label: 'Code', w: '46%' },
   ];
   return (
     <Phone>
       <div className="flex h-full flex-col px-4 pt-9 pb-4">
-        <Kicker>Step 1 of 6</Kicker>
+        <Kicker>Step 1 of 7</Kicker>
         <p className="mt-1.5 text-[18px] leading-tight font-semibold text-on-dark">Your details</p>
         <div className="mt-5 space-y-3.5">
           {fields.map((f, i) => (
@@ -274,7 +274,7 @@ function ScanStepVisual({ active, still }: VisualProps) {
   );
 }
 
-/* 3 · Personalised assessment -------------------------------------------------------------------- */
+/* 3 · Your result (assessment) -------------------------------------------------------------------- */
 function AssessmentVisual({ active, still }: VisualProps) {
   const rings = [
     { r: 52, to: 0.78, label: 'Roots' },
@@ -284,11 +284,11 @@ function AssessmentVisual({ active, still }: VisualProps) {
   const outcomes = [
     { icon: Check, word: 'Suitable' },
     { icon: Stethoscope, word: 'Needs a doctor’s review' },
-    { icon: X, word: 'Not suitable — we tell you why' },
+    { icon: X, word: 'Not suitable, and why' },
   ];
   return (
     <Card>
-      <Kicker>Personalised assessment</Kicker>
+      <Kicker>Your result</Kicker>
       <div className="mt-3 flex items-center gap-5">
         <svg viewBox="0 0 128 128" className="size-[118px] shrink-0 -rotate-90">
           {rings.map((ring, i) => (
@@ -323,7 +323,7 @@ function AssessmentVisual({ active, still }: VisualProps) {
           ))}
         </ul>
       </div>
-      <p className="mt-4 text-xs tracking-[0.12em] text-on-dark-muted uppercase">Possible outcomes</p>
+      <p className="mt-4 text-xs tracking-[0.12em] text-on-dark-muted uppercase">What you may see</p>
       <ul className="mt-2 space-y-1.5">
         {outcomes.map((o, i) => {
           const Icon = o.icon;
@@ -341,14 +341,14 @@ function AssessmentVisual({ active, still }: VisualProps) {
           );
         })}
       </ul>
-      <p className="mt-3 text-xs text-steel">Demo · final assessment by the doctor</p>
+      <p className="mt-3 text-xs text-steel">Example. The doctor decides.</p>
     </Card>
   );
 }
 
 /* 4 · Health form -------------------------------------------------------------------------------- */
 function HealthVisual({ active, still }: VisualProps) {
-  const items = ['Medical history', 'Current medicines', 'Lifestyle & diet', 'Family history'];
+  const items = ['Your health', 'Your medicines', 'Food and daily life', 'Family hair loss'];
   return (
     <Card>
       <Kicker>Health form</Kicker>
@@ -381,7 +381,7 @@ function HealthVisual({ active, still }: VisualProps) {
           transition={tr(still, 0.3, 1.6)}
         />
       </div>
-      <p className="mt-2 text-xs text-steel">Read by your doctor before you meet</p>
+      <p className="mt-2 text-xs text-steel">Your doctor reads it before the call</p>
     </Card>
   );
 }
@@ -396,8 +396,8 @@ function SlotVisual({ active, still, terms }: VisualProps & { terms: SlotTerms }
   return (
     <Card>
       <div className="flex items-baseline justify-between">
-        <Kicker>Choose a slot</Kicker>
-        <span className="text-xs text-steel">Illustrative times</span>
+        <Kicker>Pick a time</Kicker>
+        <span className="text-xs text-steel">Example times</span>
       </div>
       <div className="mt-3 grid grid-cols-7 gap-1 text-center text-xs text-steel">
         {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
@@ -450,7 +450,7 @@ function SlotVisual({ active, still, terms }: VisualProps & { terms: SlotTerms }
       <div className="mt-4 flex items-center justify-between border-t border-line-dark pt-3 text-[12px]">
         <span className="flex items-center gap-1.5 text-on-dark-muted">
           <CalendarCheck className="size-3.5" />
-          {terms.slotMinutes}-min video consultation
+          {terms.slotMinutes}-min video call
         </span>
         <span className="price text-on-dark">{terms.fee}</span>
       </div>
@@ -470,7 +470,7 @@ function ConsultVisual({ active, still }: VisualProps) {
             animate={active && !still ? { opacity: [1, 0.3, 1] } : { opacity: 1 }}
             transition={active && !still ? { duration: 1.6, repeat: Infinity } : { duration: 0 }}
           />
-          Video consultation
+          Video call
         </div>
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
           <span className="flex size-16 items-center justify-center rounded-full border border-platinum/40 bg-graphite">
@@ -502,13 +502,13 @@ function ConsultVisual({ active, still }: VisualProps) {
         transition={tr(still, 0.6, 0.6)}
       >
         <Kicker>Your plan</Kicker>
-        <p className="mt-1 text-[12px] text-on-dark">Prescribed by your doctor</p>
+        <p className="mt-1 text-[12px] text-on-dark">From your doctor</p>
         <div className="mt-3 space-y-1.5">
           {['82%', '64%', '74%'].map((w) => (
             <span key={w} className="block h-1.5 rounded-full bg-graphite" style={{ width: w }} />
           ))}
         </div>
-        <p className="mt-3 text-xs text-steel">Only if treatment is right for you</p>
+        <p className="mt-3 text-xs text-steel">Only if it will help</p>
       </motion.div>
     </div>
   );
@@ -517,9 +517,9 @@ function ConsultVisual({ active, still }: VisualProps) {
 /* 7 · Follow-up ---------------------------------------------------------------------------------- */
 function FollowUpVisual({ active, still }: VisualProps) {
   const items = [
-    { icon: MessageSquareText, title: 'Check-in', body: 'How is your routine going?' },
-    { icon: Camera, title: 'Photo update', body: 'Same light, same angles' },
-    { icon: CalendarCheck, title: 'Follow-up review', body: 'Your plan adjusted with the doctor' },
+    { icon: MessageSquareText, title: 'Check-in', body: 'How is it going?' },
+    { icon: Camera, title: 'Photo update', body: 'Same light, same spots' },
+    { icon: CalendarCheck, title: 'Review call', body: 'The doctor updates your plan' },
   ];
   return (
     <div className="relative w-[300px]">

@@ -9,6 +9,7 @@ import { PageIntro } from '@/components/site/page-intro';
 import { H2, LEDE, SECTION_Y, SectionHeader, TEXT_LINK } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { CLINICAL } from '@/lib/images';
+import { SLOTS } from '@/lib/slots';
 import { getDoctor, getGuarantee } from '@/server/catalog';
 import { getSetting } from '@/server/demo/store';
 
@@ -17,7 +18,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'How it works',
   description:
-    'Book, consult, receive your plan, get it delivered and keep in touch at follow-up. Every step of the Your Hair Company journey, with the fees.',
+    'Book, talk to the doctor, get your plan, get it delivered and stay in touch. Every step, with the fees.',
   path: '/how-it-works',
 });
 
@@ -32,42 +33,42 @@ export default function HowItWorksPage() {
     {
       title: 'Book',
       points: [
-        `Choose an open slot. We hold it for ${holdMinutes} minutes while you pay the ${terms.fee} fee.`,
-        'Your booking is confirmed only when the payment reaches us — you get the confirmation on WhatsApp.',
-        'Then complete your hair profile and upload three scalp photos: front hairline, crown and parting.',
+        `Pick a free time. We keep it for you for ${holdMinutes} minutes while you pay the ${terms.fee} fee.`,
+        'Your booking is confirmed once your payment reaches us. We confirm it on WhatsApp.',
+        'Then fill in your hair details and add 3 scalp photos: front hairline, crown and parting.',
       ],
     },
     {
       title: 'Consult',
       points: [
-        `A ${terms.slotMinutes}-minute video call with ${doctor.name}, from your phone or laptop.`,
-        'Join from a quiet, well-lit place. Have your current products or medicines nearby.',
-        'Ask anything. You will get a plain explanation, not a sales pitch.',
+        `A ${terms.slotMinutes}-minute video call with ${doctor.name}, on your phone or laptop.`,
+        'Sit somewhere quiet and bright. Keep your current products or medicines close by.',
+        'Ask anything. You get a clear answer, not a sales pitch.',
       ],
     },
     {
       title: 'Plan',
       points: [
-        'If treatment is right for you, your plan and prescription are shared on WhatsApp after the call.',
-        `The payment link stays valid for ${linkHours} hours. You choose 1, 2 or 3 months.`,
+        'If treatment can help you, we send your plan and prescription on WhatsApp after the call.',
+        `The payment link works for ${linkHours} hours. You choose 1, 2 or 3 months.`,
         terms.creditEnabled
-          ? `${terms.fee} consultation fee is credited against your first plan if you buy within ${terms.creditWindowDays} days of your consultation.`
-          : 'There is no obligation to buy. Your prescription is yours either way.',
+          ? `Buy your plan within ${terms.creditWindowDays} days of your consultation and the ${terms.fee} fee comes off your first plan.`
+          : 'You do not have to buy anything. Your prescription is yours either way.',
       ],
     },
     {
       title: 'Delivered',
       points: [
-        'Your plan is packed and shipped across India, with tracking on WhatsApp.',
-        'Once it arrives, you get a short guide to starting your routine.',
+        'We pack your plan and ship it anywhere in India. You can track it on WhatsApp.',
+        'When it arrives, you get a short guide to start your routine.',
       ],
     },
     {
       title: 'Follow-up',
       points: [
-        'Regular check-ins on WhatsApp — reply "going well", "I have a question" or report a side effect.',
-        'Monthly progress photos, so changes can be seen over time rather than guessed.',
-        `A follow-up review with ${doctor.name} to adjust your plan, and a reminder before it runs out.`,
+        'We check in on WhatsApp. Reply "going well", "I have a question", or tell us about a side effect.',
+        'You take progress photos each month, so you can see change instead of guessing.',
+        `${doctor.name} reviews your progress and adjusts your plan. We remind you before it runs out.`,
       ],
     },
   ];
@@ -76,12 +77,11 @@ export default function HowItWorksPage() {
     <>
       <PageIntro
         title="How it works"
-        image={CLINICAL.consultNotes}
-        imageNote="Illustrative image"
+        image={SLOTS.S02}
         lede={
           <p>
-            Five steps, from booking to follow-up. You only pay {terms.fee} to start; a plan is prescribed
-            only if it is right for you.
+            5 simple steps, from booking to follow-up. You pay just {terms.fee} to start. You get a plan only
+            if it can help you.
           </p>
         }
       >
@@ -93,7 +93,7 @@ export default function HowItWorksPage() {
         <div
           className={`container-yhc grid items-center gap-10 lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)] lg:gap-20 ${SECTION_Y}`}
         >
-          <figure className="relative aspect-[3/2] overflow-hidden rounded-3xl bg-ink-2 ring-1 ring-line-dark">
+          <figure className="relative aspect-[3/2] overflow-hidden rounded-[28px] bg-ink-2 ring-1 ring-line-dark">
             <Image
               src={CLINICAL.scalpParting.src}
               alt={CLINICAL.scalpParting.alt}
@@ -108,17 +108,17 @@ export default function HowItWorksPage() {
           <div>
             <p className="eyebrow text-brand-on-dark">Before your call</p>
             <h2 id="photos-heading" className={`${H2} mt-4 text-on-dark`}>
-              Three photos, taken the same way each time
+              3 photos, taken the same way each time
             </h2>
             <p className={`${LEDE} mt-6 text-on-dark-muted`}>
-              Thinning is judged at the scalp. Clear photos let {doctor.name} look at your roots before the
-              call — and give you a fair baseline to compare against at follow-up.
+              Clear photos let {doctor.name} see your roots before the call. Later, you compare new photos
+              with them to see the change.
             </p>
             <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl bg-line-dark ring-1 ring-line-dark sm:grid-cols-3">
               {[
-                ['Front hairline', 'Hair pushed back, soft daylight'],
-                ['Crown', 'From above — ask someone to help'],
-                ['Parting', 'Centre parting, camera straight above'],
+                ['Front hairline', 'Push your hair back. Use soft daylight.'],
+                ['Crown', 'Shoot from above. Ask someone to help.'],
+                ['Parting', 'Part your hair in the middle. Hold the camera straight above.'],
               ].map(([title, body]) => (
                 <li key={title} className="bg-obsidian p-5">
                   <p className="font-semibold text-on-dark">{title}</p>
@@ -135,7 +135,7 @@ export default function HowItWorksPage() {
           id="detail-heading"
           eyebrow="Step by step"
           title="Each step in detail"
-          lede="What happens, what you need to do and what it costs — before you commit to anything."
+          lede="What happens, what you do and what it costs. Know it all before you pay for anything."
         />
         <ol className="divide-y divide-line border-y border-line">
           {detail.map((step, i) => (
@@ -174,7 +174,7 @@ export default function HowItWorksPage() {
       <CtaBand
         title="Ready for step one?"
         bookLabel={terms.bookLabel}
-        body="Booking takes a few minutes. Next, you'll complete your hair profile and upload your scalp photos."
+        body="Booking takes a few minutes. Then you fill in your hair details and add your scalp photos."
       />
     </>
   );

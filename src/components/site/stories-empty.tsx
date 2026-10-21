@@ -19,9 +19,9 @@ export function StoriesEmpty({ className }: { className?: string }) {
           Stories appear here only with each patient&apos;s written consent.
         </p>
         <p className="mt-1.5 max-w-2xl text-body">
-          We don&apos;t publish invented reviews or borrowed before-and-after photos. When patients choose to
-          share their experience, it will appear here unretouched, with the duration they used their plan and
-          a clear note that individual results vary.
+          We never post made-up reviews or borrowed before-and-after photos. When patients choose to share,
+          their story appears here unedited, with how long they used their plan and a clear note that
+          individual results vary.
         </p>
       </div>
     </div>

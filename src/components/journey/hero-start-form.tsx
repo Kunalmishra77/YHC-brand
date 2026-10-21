@@ -69,20 +69,19 @@ export function HeroStartForm({ className }: { className?: string }) {
         />
       ) : (
         <form noValidate onSubmit={handleSubmit(sendCode)}>
-          <div className="flex items-center gap-2 text-[12px] font-semibold tracking-[0.14em] text-white/70 uppercase">
+          <div className="flex items-center gap-2 text-[13px] font-medium text-white/75">
             <ScanFace className="size-4" aria-hidden />
-            Free · 3D scalp scan
+            Free 3D scalp scan
           </div>
           <h2 className="mt-3 font-display text-[28px] leading-[1.1] font-medium text-balance text-white sm:text-[32px]">
-            Start your free hair assessment
+            Check your hair for free
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-pretty text-white/75">
-            A guided 3D scan of your scalp and hair roots, reviewed by a doctor — then a plan only if it can
-            help you.
+            Scan your scalp with your phone. A doctor checks it. You get a plan only if it will help.
           </p>
 
           <fieldset disabled={pending} className="mt-5 space-y-3.5">
-            <GlassField id={`${uid}-name`} label="Full name" error={errors.name?.message}>
+            <GlassField id={`${uid}-name`} label="Your name" error={errors.name?.message}>
               <input
                 id={`${uid}-name`}
                 autoComplete="name"
@@ -166,7 +165,7 @@ export function HeroStartForm({ className }: { className?: string }) {
           </button>
           <p className="mt-3.5 flex items-center justify-center gap-1.5 text-center text-[12px] leading-snug text-white/60">
             <ShieldCheck className="size-3.5" aria-hidden />
-            Reviewed by a dermatologist · Takes about 4 minutes
+            Checked by a doctor. Takes about 4 minutes.
           </p>
         </form>
       )}
@@ -216,14 +215,14 @@ function OtpStep({
         className="-ml-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-sm text-white/75 hover:text-white"
       >
         <ArrowLeft className="size-4" aria-hidden />
-        Edit details
+        Change details
       </button>
       <h2
         id={`${hintId}-title`}
         tabIndex={-1}
         className="mt-1 font-display text-[28px] leading-[1.1] font-medium text-white outline-none"
       >
-        Verify your mobile
+        Enter your code
       </h2>
       <p id={hintId} className="mt-2 text-sm text-white/75">
         We sent a 6-digit code on WhatsApp to <span className="price text-white">{sentTo}</span>.
@@ -254,7 +253,7 @@ function OtpStep({
         className="bg-silver mt-2 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[15px] font-semibold text-obsidian transition-opacity hover:opacity-95 disabled:opacity-70"
       >
         {pending ? <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden /> : null}
-        Verify and start scan
+        Confirm and start my scan
       </button>
     </div>
   );

@@ -12,49 +12,49 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Real stories',
   description:
-    'Experiences shared by Your Hair Company patients, published only with their written consent and unretouched, with a clear note that results vary.',
+    'Stories from Your Hair Company patients, shared only with their written consent, with unedited photos and a clear note that results vary.',
   path: '/stories',
 });
 
 const INCLUDES = [
   {
     icon: Quote,
-    title: 'Their words, unedited for effect',
-    body: 'What they noticed, why they booked and what following the plan was like — trimmed for length only, never rewritten to sound better.',
+    title: 'Their own words',
+    body: 'What they noticed, why they booked and what the plan was like. We only shorten it. We never rewrite it to sound better.',
   },
   {
     icon: Clock,
     title: 'How long they used their plan',
-    body: 'Stated plainly, so you can see the time involved rather than a headline result.',
+    body: 'Shown clearly, so you see how much time it took — not just a headline.',
   },
   {
     icon: Camera,
-    title: 'Unretouched photos, only with photo consent',
-    body: 'Taken the same way each month — same angles, same light. No filters, no editing, and only with a separate consent to use photos.',
+    title: 'Unedited photos, only with a yes for photos',
+    body: 'Taken the same way each month — same angle, same light. No filters, no editing. Photos need a separate yes.',
   },
   {
     icon: FileCheck2,
     title: 'A clear note that results vary',
-    body: 'Every story says that individual results vary. One person’s experience is not a promise about yours.',
+    body: 'Every story says that individual results vary. One person’s result is not a promise of yours.',
   },
 ];
 
 const STEPS = [
   {
-    title: 'You are asked, never expected',
-    body: 'Some patients may be invited to share their experience after a follow-up review. Saying no changes nothing about your care.',
+    title: 'We ask. You never have to.',
+    body: 'After a follow-up, we may ask if you want to share your story. Saying no changes nothing about your care.',
   },
   {
     title: 'You choose what to share',
-    body: 'Words only, or words with photos. Your first name, your initials, or neither. Each is a separate choice, recorded with your consent.',
+    body: 'Words only, or words with photos. Your first name, your initials, or neither. You choose each one, and we record your yes.',
   },
   {
     title: 'You see it before anyone else',
-    body: 'Nothing is published until you have read the final version and agreed to it in writing.',
+    body: 'Nothing goes live until you read the final version and agree in writing.',
   },
   {
     title: 'You can take it down',
-    body: 'Withdraw your consent at any time from your account or by message, and the story and photos are removed from the site.',
+    body: 'Change your mind any time, from your account or by message. We remove your story and photos from the site.',
   },
 ];
 
@@ -66,12 +66,11 @@ export default function StoriesPage() {
       <section className="border-b border-line">
         <div className="container-yhc grid gap-8 py-16 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end md:py-24">
           <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-balance">
-            Real stories, only when patients choose to share them
+            Real stories, only when patients want to share
           </h1>
           <p className="text-lg leading-relaxed text-body">
-            Hair changes are personal. We publish a story only when the patient has agreed in writing, and
-            photos only with a separate photo consent. We would rather show nothing than show something
-            invented.
+            Hair is personal. We share a story only when the patient agrees in writing. Photos need a separate
+            yes. We would rather show nothing than show something made up.
           </p>
         </div>
       </section>
@@ -88,7 +87,7 @@ export default function StoriesPage() {
               What every story will include
             </h2>
             <p className="mt-5 max-w-md text-lg leading-relaxed text-body">
-              When stories appear here, each one will follow the same format — so you can judge them fairly.
+              Every story will look the same way, so you can judge them fairly.
             </p>
 
             {/* Specimen layout, clearly labelled as such */}
@@ -105,7 +104,7 @@ export default function StoriesPage() {
                     key={label}
                     className="flex aspect-square items-end rounded-lg bg-[#efeeeb] p-3 text-[12px] text-muted-foreground"
                   >
-                    {label} · unretouched
+                    {label} · unedited
                   </div>
                 ))}
               </div>
@@ -165,10 +164,10 @@ export default function StoriesPage() {
           <div>
             <ul className="space-y-4 text-lg leading-relaxed text-body">
               {[
-                'Your scalp photos are for your doctor. Using them in a story needs a separate, written consent.',
-                'We never publish your diagnosis, prescription or consultation notes.',
-                'A story never shows your phone number, address or anything that could be used to contact you.',
-                'Withdrawing consent removes your story from the site.',
+                'Your scalp photos are for your doctor. Using them in a story needs a separate yes, in writing.',
+                'We never share your diagnosis, prescription or consultation notes.',
+                'A story never shows your phone number, address or anything that could help someone contact you.',
+                'If you change your mind, we take your story off the site.',
               ].map((line) => (
                 <li key={line} className="flex gap-4">
                   <span className="mt-[0.8em] h-px w-5 shrink-0 bg-steel" aria-hidden />
@@ -190,7 +189,7 @@ export default function StoriesPage() {
       <CtaBand
         bookLabel={terms.bookLabel}
         title="Every story starts with a consultation."
-        body="Talk to Dr. Tyagi about what you are noticing. If a plan is right for you, it is sent on WhatsApp after the call — with no obligation to buy it."
+        body="Tell Dr. Tyagi what you are noticing. If a plan can help, we send it on WhatsApp after the call. You do not have to buy it."
       />
     </>
   );

@@ -316,7 +316,7 @@ function Confirmed({
         {confirmed.paymentId ? (
           <Row label="Payment reference" value={<code className="text-sm">{confirmed.paymentId}</code>} />
         ) : null}
-        <Row label="Shared with the doctor" value="Your 3D scan assessment and health form" />
+        <Row label="Shared with the doctor" value="Your 3D scan report and health form" />
       </dl>
       <div className="bg-hero-dark mt-8 rounded-2xl p-6 text-on-dark">
         <div className="flex items-start gap-3">
@@ -324,7 +324,7 @@ function Confirmed({
           <div>
             <p className="font-medium">What happens next</p>
             <ul className="mt-2 space-y-1.5 text-sm text-on-dark-muted">
-              <li>Your patient portal shows your journey, scan and appointment.</li>
+              <li>Your account shows your steps, your scan and your booking.</li>
               <li>
                 The &quot;Join consultation&quot; button opens 15 minutes before your {minutes}-minute slot.
               </li>

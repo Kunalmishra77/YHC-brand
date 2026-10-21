@@ -1,20 +1,23 @@
 import { ScanLine } from 'lucide-react';
 import Link from 'next/link';
-import { SECTION_Y, SectionHeader, TEXT_LINK } from '@/components/site/section';
+import { SECTION_Y, TEXT_LINK } from '@/components/site/section';
 import { Button } from '@/components/ui/button';
 import { concernPath } from '@/lib/concern-path';
 import type { HairConcern } from '@/lib/domain/types';
+import { SLOTS } from '@/lib/slots';
+import type { VisualSlot } from '@/lib/visual-slots';
 import { getConcerns } from '@/server/catalog';
 import { EVIDENCE } from '@/server/content/evidence';
 import { HairLossExplorer } from './hair-loss/explorer';
 import type { HairLossTypeView } from './hair-loss/types';
 
 /*
- * General education only, worded conservatively to match AAD / NHS / DermNet / StatPearls (sources in
- * src/server/content/evidence.ts). Never a diagnosis, never a claim about YHC products.
+ * General education only, in plain English, kept in line with AAD / NHS / DermNet / StatPearls (sources
+ * in src/server/content/evidence.ts). Never a diagnosis, never a claim about YHC products.
  * TODO(client): Dr. Tyagi to review this copy before launch — see docs/12 (content).
  */
-type TypeSeed = Omit<HairLossTypeView, 'fact' | 'links'> & {
+type TypeSeed = Omit<HairLossTypeView, 'fact' | 'links' | 'image'> & {
+  slot: VisualSlot;
   factId?: string;
   concernSlugs: HairConcern[];
 };
@@ -23,139 +26,152 @@ const TYPES: TypeSeed[] = [
   {
     id: 'male-pattern',
     pattern: 'male',
+    slot: SLOTS.H20,
     name: 'Male pattern hair loss',
     aka: 'Androgenetic alopecia',
     cue: 'Temples and crown',
+    short: 'The hairline moves back at the sides. The top of the head gets thin.',
     looksLike:
-      'The hairline moves back at the temples and the crown thins, usually in a recognisable pattern. Hairs become gradually finer and shorter before they are lost, so it is often noticed late.',
+      'Hairs slowly get finer and shorter before they fall, so many men notice it late. It usually follows a clear pattern.',
     triggers: [
-      'Genes — it often runs in families',
-      'Hormones (androgens) acting on sensitive follicles',
-      'Becomes more common with age',
+      'Genes. It often runs in families',
+      'Male hormones acting on the hair roots',
+      'It gets more common with age',
     ],
     helps:
-      'Medical treatments exist, and dermatologists note they tend to work best when started at the first signs. Results are judged over months of consistent use and vary from person to person. A doctor should confirm the pattern first.',
+      'Medical treatments exist and tend to work best when started early. Change is judged over months and varies from person to person. A doctor should confirm the pattern first.',
     urgent: false,
     illustrationAlt:
-      'Top view of a head: hair thinned at both temples and at the crown, the typical male pattern.',
+      'Head diagrams: hair thinned at both temples and at the crown, the typical male pattern.',
     factId: 'india-aga',
     concernSlugs: ['receding_hairline', 'crown_thinning'],
   },
   {
     id: 'female-pattern',
     pattern: 'female',
+    slot: SLOTS.H21,
     name: 'Female pattern hair loss',
     aka: 'Pattern hair loss in women',
-    cue: 'Widening parting',
+    cue: 'Wider parting',
+    short: 'The parting slowly gets wider. The front hairline usually stays.',
     looksLike:
-      'A parting that slowly widens, with more scalp showing over the top of the head. The front hairline usually stays where it was, which is why it can go unnoticed for a long time.',
+      'More scalp shows on top of the head. Because the hairline stays, it can go unnoticed for a long time.',
     triggers: [
       'Genes and hormones',
-      'Changes around pregnancy or menopause can make it more noticeable',
-      'Low iron stores or thyroid changes can add to it',
+      'Pregnancy or menopause can make it show more',
+      'Low iron or thyroid problems can add to it',
     ],
     helps:
-      'A doctor first looks for contributing causes such as low iron or thyroid problems, testing before any supplement. Treatment, when suitable, is used continuously and judged over many months.',
+      'A doctor first looks for things that add to it, like low iron or thyroid problems, and tests before any supplement. Treatment, if it suits you, is used every day and judged over many months.',
     urgent: false,
     illustrationAlt:
-      'Top view of a head: a widening central parting with thinner hair on either side, the front hairline kept.',
+      'Head diagrams: a wider centre parting with thinner hair on both sides, the front hairline kept.',
     factId: 'women-by-age',
     concernSlugs: ['thinning'],
   },
   {
     id: 'telogen-effluvium',
     pattern: 'diffuse',
-    name: 'Telogen effluvium',
-    aka: 'Shedding after a trigger',
-    cue: 'Shedding all over',
+    slot: SLOTS.H22,
+    name: 'Sudden shedding',
+    aka: 'Telogen effluvium',
+    cue: 'Hair fall all over',
+    short: 'Much more hair falls than usual, from all over the head. No bald patches.',
     looksLike:
-      'More hair than usual on the pillow, comb or shower drain, coming out evenly from all over the scalp rather than from one area. There are no bald patches.',
+      'You see more hair on the pillow, comb or shower drain. It comes from all over the scalp, not one area.',
     triggers: [
       'An illness or high fever',
       'Childbirth or surgery',
-      'A crash diet or rapid weight loss',
-      'A very stressful period',
+      'A crash diet or fast weight loss',
+      'A very stressful time',
     ],
     helps:
-      'This kind of shedding often settles once the trigger has passed. A doctor checks for causes that are still active, such as low iron or thyroid changes, and whether the shedding is unmasking an early pattern.',
+      'This hair fall often settles once the cause has passed. A doctor checks for causes that are still there, like low iron or thyroid problems, and whether an early pattern is showing too.',
     urgent: false,
-    illustrationAlt: 'Top view of a head: hair evenly thinner across the whole scalp, with no patches.',
+    illustrationAlt: 'Head diagrams: hair evenly thinner across the whole scalp, with no patches.',
     factId: 'shedding-trigger',
     concernSlugs: ['hair_fall'],
   },
   {
     id: 'alopecia-areata',
     pattern: 'patches',
-    name: 'Alopecia areata',
-    aka: 'Patchy hair loss',
+    slot: SLOTS.H23,
+    name: 'Patchy hair loss',
+    aka: 'Alopecia areata',
     cue: 'Round, smooth patches',
-    looksLike:
-      'One or more smooth, round patches with no hair, often around the size of a coin, which can appear quite suddenly. It can also affect the beard or eyebrows.',
+    short: 'Round, smooth bald patches, often coin-sized. They can appear suddenly.',
+    looksLike: 'One or more smooth, round patches with no hair. It can also affect the beard or eyebrows.',
     triggers: [
-      'The immune system mistakenly targets hair follicles',
+      'The body’s defence system attacks the hair roots by mistake',
       'It sometimes runs in families',
-      'It is not contagious',
+      'It does not spread to others',
     ],
     helps:
-      'Patches like these should be examined by a dermatologist, who can confirm what they are and discuss whether and how to treat them. Hair products alone are not the answer here.',
+      'A skin doctor should look at patches like these, confirm what they are and talk about treatment. Hair products alone are not the answer here.',
     urgent: false,
-    illustrationAlt: 'Top view of a head: two round, completely bare patches with sharp edges.',
+    illustrationAlt: 'Head diagrams: two round, completely bare patches with sharp edges.',
     concernSlugs: [],
   },
   {
     id: 'traction',
     pattern: 'traction',
-    name: 'Traction alopecia',
-    aka: 'Hair loss from pulling',
+    slot: SLOTS.H24,
+    name: 'Hair loss from pulling',
+    aka: 'Traction alopecia',
     cue: 'Along the hairline',
+    short: 'Thinning at the hairline from tight hairstyles worn for a long time.',
     looksLike:
-      'Thinning along the front hairline and temples, or wherever the hair is pulled hardest. It builds up slowly over months or years of the same styles.',
+      'Thinning along the front and sides, or wherever hair is pulled hardest. It builds up slowly over months or years.',
     triggers: [
-      'Tight ponytails, buns or braids worn for long periods',
+      'Tight ponytails, buns or braids',
       'Hair extensions or weaves',
       'Headwear tied tightly for long hours',
     ],
     helps:
-      'Loosening the styles that pull is the first step, and an early check matters: long-standing tension can scar follicles, and a scarred follicle can no longer grow hair.',
+      'Loosen the styles that pull, and get checked early. Pulling for years can scar the hair roots, and a scarred root cannot grow hair again.',
     urgent: false,
-    illustrationAlt: 'Top view of a head: hair thinned in a band along the front hairline and temples.',
+    illustrationAlt: 'Head diagrams: hair thinned in a band along the front hairline and temples.',
     concernSlugs: ['receding_hairline'],
   },
   {
     id: 'scarring',
     pattern: 'scarring',
-    name: 'Scarring alopecia',
-    aka: 'Cicatricial alopecia',
-    cue: 'Needs prompt in-person care',
+    slot: SLOTS.H25,
+    name: 'Scarring hair loss',
+    aka: 'Scarring alopecia',
+    cue: 'See a doctor soon',
+    short: 'Smooth, shiny or red patches. The skin may itch, burn or feel sore.',
     looksLike:
-      'Patches where the skin can look smooth, shiny or red, sometimes with itching, burning, tenderness or scaling. The small openings where hairs grow fade away in the affected area.',
+      'The small openings that hairs grow from fade away in the patch. There may be flaking or tenderness.',
     triggers: [
-      'A group of inflammatory conditions that damage hair follicles',
+      'A group of conditions that inflame and damage the hair roots',
       'The exact cause is often not known',
     ],
     helps:
-      'Please see a dermatologist in person promptly. Once a follicle scars it can no longer grow hair, so early diagnosis and treatment matter.',
+      'Please see a skin doctor in person soon. Once a hair root scars it cannot grow hair again, so early care matters.',
     urgent: true,
-    illustrationAlt: 'Top view of a head: an irregular bare patch with smooth skin and no hair openings.',
+    illustrationAlt: 'Head diagrams: an uneven bare patch with smooth skin and no hair openings.',
     factId: 'scarred-follicles',
     concernSlugs: [],
   },
 ];
 
 /**
- * Homepage section 11 · Types of hair loss — an illustrated, selectable atlas of six common patterns.
- * Server component: builds the content (cited facts, links only to concern pages that exist) and hands it
- * to the client explorer.
+ * Homepage section 11 · Types of hair loss — a picture-led selector of six common patterns. Each type
+ * shows its illustration (SLOTS.H20…H25) once it is ready; until then the line-art head diagrams stand in
+ * (the temporary slot photos do not show these patterns, so they are never used here). Server component:
+ * builds the content (cited facts, links only to concern pages that exist) for the client explorer.
  */
 export function HairLossTypes() {
   const concerns = getConcerns();
   const concernBySlug = new Map(concerns.map((c) => [c.slug, c]));
   const scalpConcern = concernBySlug.get('dandruff_scalp');
 
-  const types: HairLossTypeView[] = TYPES.map(({ factId, concernSlugs, ...rest }) => {
+  const types: HairLossTypeView[] = TYPES.map(({ factId, concernSlugs, slot, ...rest }) => {
     const fact = factId ? EVIDENCE.find((f) => f.id === factId) : undefined;
     return {
       ...rest,
+      image: slot.ready ? { src: slot.src, alt: slot.alt } : null,
       fact: fact
         ? {
             ...(fact.stat ? { stat: fact.stat } : {}),
@@ -175,29 +191,34 @@ export function HairLossTypes() {
   return (
     <section className="bg-pearl" aria-labelledby="hair-loss-types-heading">
       <div className={`container-yhc ${SECTION_Y}`}>
-        <SectionHeader
-          id="hair-loss-types-heading"
-          eyebrow="Types of hair loss"
-          title="Not all hair loss is the same"
-          lede="Six common patterns, in plain words. A guide, not a diagnosis: only a doctor who examines your scalp can say which one you have."
-        />
+        <div className="mb-8 grid gap-4 md:mb-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-12">
+          <h2
+            id="hair-loss-types-heading"
+            className="display text-[clamp(2.5rem,1.5rem+3.8vw,4.5rem)] leading-[0.98] tracking-[-0.01em] text-balance"
+          >
+            Not all hair loss is the same
+          </h2>
+          <p className="max-w-xs text-lg leading-snug text-pretty text-body md:pb-2 md:text-right">
+            Six common types. Only a doctor can tell which one you have.
+          </p>
+        </div>
 
         <HairLossExplorer types={types} />
 
-        <div className="mt-10 flex flex-col gap-6 border-t border-line pt-8 md:mt-12 md:flex-row md:items-center md:justify-between">
-          <div className="max-w-xl">
-            <p className="display text-[clamp(1.75rem,1.5rem+1vw,2.25rem)]">Not sure which? Take the scan.</p>
-            <p className="mt-2 text-pretty text-body">
-              Start with the guided scalp scan. A dermatologist reviews it before anything is recommended.
+        <div className="mt-10 flex flex-col gap-5 border-t border-line pt-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="display text-[clamp(1.5rem,1.3rem+0.8vw,2rem)]">Not sure which? Take the scan.</p>
+            <p className="mt-1 text-[13px] text-muted-foreground">
+              General information, checked against published sources. Causes and results vary.
               {scalpConcern ? (
                 <>
                   {' '}
-                  Flaking or an itchy scalp is a scalp condition rather than hair loss —{' '}
+                  Itchy or flaky scalp?{' '}
                   <Link
                     href={concernPath(scalpConcern.slug)}
                     className="text-ink underline decoration-steel underline-offset-4 hover:decoration-current"
                   >
-                    read about {scalpConcern.title.toLowerCase()}
+                    Read about {scalpConcern.title.toLowerCase()}
                   </Link>
                   .
                 </>
@@ -208,17 +229,14 @@ export function HairLossTypes() {
             <Button asChild className="h-12 w-full px-7 text-base sm:w-auto">
               <Link href="/start">
                 <ScanLine className="size-4" aria-hidden />
-                Take the scan
+                Begin my free 3D scan
               </Link>
             </Button>
             <Link href="/science" className={`text-ink ${TEXT_LINK}`}>
-              The science
+              How hair grows
             </Link>
           </div>
         </div>
-        <p className="mt-6 text-[13px] text-muted-foreground">
-          General information checked against published sources. Individual causes and results vary.
-        </p>
       </div>
     </section>
   );

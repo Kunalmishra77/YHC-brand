@@ -14,10 +14,20 @@ import { t } from '@/i18n/en';
 import { clientEnv } from '@/lib/env';
 import { LABEL_PARTIES, PRODUCT_MEDIA, ingredientImage, productHero } from '@/lib/brand-media';
 import { formatINR } from '@/lib/money';
+import { SLOTS } from '@/lib/slots';
+import type { VisualSlot } from '@/lib/visual-slots';
 import { getProduct, getProducts } from '@/server/catalog';
 import { PRODUCT_SEO_DESCRIPTION, clampDescription } from '@/server/content/seo-copy';
 
 export const dynamic = 'force-dynamic';
+
+/** Lifestyle photo per product (P01–P04); it leads the gallery only once the generated image is in. */
+const LIFESTYLE: Record<string, VisualSlot> = {
+  'hair-regrowth-solution': SLOTS.P01,
+  'hair-nourishing-tablets': SLOTS.P02,
+  'hair-regrowth-capsules': SLOTS.P03,
+  'hair-regrowth-powder': SLOTS.P04,
+};
 
 export function generateStaticParams() {
   return getProducts().map((p) => ({ slug: p.slug }));
@@ -46,6 +56,8 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
   const buyable = !product.requiresConsultation && product.pricePaise !== null;
   const media = PRODUCT_MEDIA[product.slug];
   const hasFinasteride = product.ingredients.some((i) => /finasteride/i.test(i.name));
+  const lifestyle = LIFESTYLE[product.slug];
+  const lead = lifestyle?.ready ? lifestyle : undefined;
 
   return (
     <>
@@ -90,7 +102,7 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
 
       <section className="container-yhc grid grid-cols-1 gap-10 py-10 md:grid-cols-2 md:gap-12 md:py-16 lg:gap-16">
         <div className="min-w-0 md:sticky md:top-24 md:self-start">
-          <ProductGallery lines={media?.lines ?? {}} name={product.name} />
+          <ProductGallery lines={media?.lines ?? {}} name={product.name} lead={lead} />
         </div>
 
         <div className="min-w-0">
@@ -114,8 +126,8 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
             <p className="mt-6 flex max-w-prose items-start gap-2.5 rounded-xl bg-mist p-4 text-sm leading-relaxed text-ink">
               <ShieldAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
               <span>
-                Contains finasteride, a prescription medicine. It is not suitable during pregnancy or
-                breastfeeding — tell the doctor if either applies, or if you are planning a pregnancy.
+                Contains finasteride, a prescription medicine. Do not use it if you are pregnant or
+                breastfeeding. Tell the doctor if either applies, or if you are planning a pregnancy.
               </span>
             </p>
           ) : null}
@@ -134,15 +146,15 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
                 <p className="flex items-start gap-2 text-body">
                   <Stethoscope className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
                   <span>
-                    This product is prescribed after a consultation, so its use is matched to your history. It
-                    is included in your plan if Dr. Tyagi recommends it.
+                    Your doctor decides if you need it, at your consultation. If Dr. Tyagi recommends it, it
+                    comes in your plan.
                   </span>
                 </p>
                 <Button
                   asChild
                   className="mt-4 h-auto min-h-12 w-full py-3 text-base whitespace-normal lg:w-auto lg:px-8"
                 >
-                  <Link href="/book">Book consultation to get this prescribed</Link>
+                  <Link href="/book">Book a consultation to get this</Link>
                 </Button>
                 <p className="mt-2 text-sm text-muted-foreground">Consultation fee {terms.fee}</p>
               </>
@@ -154,12 +166,15 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
       <section className="border-t border-line bg-card">
         <div className="container-yhc grid gap-12 py-16 md:grid-cols-2 md:gap-16 md:py-24">
           <div>
-            <h2 className="text-xl font-semibold text-ink">Ingredients and their roles</h2>
+            <h2 className="text-xl font-semibold text-ink">What is inside</h2>
             <dl className="mt-5 divide-y divide-line border-y border-line">
               {product.ingredients.map((ing) => {
                 const photo = ingredientImage(ing.name);
                 return (
-                  <div key={ing.name} className="grid grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-4 py-3.5">
+                  <div
+                    key={ing.name}
+                    className="grid grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-4 py-3.5"
+                  >
                     <div className="relative flex size-14 items-center justify-center overflow-hidden rounded-full bg-mist ring-1 ring-line">
                       {photo ? (
                         <Image src={photo.src} alt="" fill sizes="56px" className="object-cover" />
@@ -176,8 +191,8 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
               })}
             </dl>
             <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">
-              Ingredient photos are illustrative. Amounts are shown on the pack; your doctor explains them at
-              the consultation.
+              Ingredient photos are illustrative. Amounts are on the pack. Your doctor explains them at the
+              consultation.
             </p>
           </div>
           <div className="space-y-10">

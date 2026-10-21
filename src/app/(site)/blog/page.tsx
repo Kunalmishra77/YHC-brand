@@ -19,7 +19,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Hair health articles',
   description:
-    'Plain-English guides to hair and scalp health: shedding, the growth cycle, scalp photos, nutrition and what happens in a video consultation.',
+    'Simple guides to hair and scalp health: hair fall, how hair grows, scalp photos, food and hair, and what happens on a video consultation.',
   path: '/blog',
 });
 
@@ -48,16 +48,15 @@ export default function BlogPage() {
       <section className="border-b border-line">
         <div className="container-yhc grid gap-8 py-16 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end md:py-24">
           <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-balance">
-            Notes on hair, written plainly
+            Hair guides, in simple words
           </h1>
           <div className="space-y-4">
             <p className="text-lg leading-relaxed text-body">
-              Short guides to what is happening with your hair and scalp, and what a doctor looks for. General
-              education — not a diagnosis.
+              Short reads on what is happening with your hair and scalp, and what a doctor looks for. General
+              information, not a diagnosis.
             </p>
             <p className="text-sm text-muted-foreground">
-              Every article is reviewed by Dr. Tyagi before it is published. Until then, it is marked as a
-              draft.
+              Dr. Tyagi checks every article. Until he has, it is marked as a draft.
             </p>
           </div>
         </div>
@@ -68,7 +67,7 @@ export default function BlogPage() {
           {/* Featured article */}
           <section className="container-yhc py-16 md:py-24">
             <article className="group relative grid gap-8 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-center md:gap-14">
-              <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-[#efeeeb]">
+              <div className="relative aspect-[16/10] overflow-hidden rounded-[28px] bg-[#efeeeb] shadow-card">
                 <Image
                   src={articleImage(featured).src}
                   alt={articleImage(featured).alt}
@@ -104,7 +103,7 @@ export default function BlogPage() {
                 <div className="md:sticky md:top-28 md:self-start">
                   <h2 className="display text-[clamp(2rem,1.5rem+2vw,2.75rem)] text-balance">More to read</h2>
                   <p className="mt-4 max-w-xs leading-relaxed text-body">
-                    Not sure where to start? The hair concern pages cover the most common patterns.
+                    Not sure where to start? The hair concern pages cover the most common problems.
                   </p>
                   <Link
                     href="/concerns"
@@ -127,7 +126,7 @@ export default function BlogPage() {
         <section className="container-yhc py-16">
           <EmptyState
             title="No articles yet"
-            body="Articles are published only after Dr. Tyagi's medical review. The hair concern pages cover the basics."
+            body="We publish articles only after Dr. Tyagi checks them. The hair concern pages cover the basics."
             action={
               <Button asChild variant="outline" className="h-11 border-steel px-5">
                 <Link href="/concerns">Read about hair concerns</Link>
@@ -140,7 +139,7 @@ export default function BlogPage() {
       <CtaBand
         bookLabel={terms.bookLabel}
         title="Reading helps. A consultation answers."
-        body="Articles explain the general picture. Dr. Tyagi can look at your history and scalp and tell you what is likely going on for you."
+        body="Articles explain the big picture. Dr. Tyagi can look at your health and your scalp and tell you what is likely going on."
       />
     </>
   );

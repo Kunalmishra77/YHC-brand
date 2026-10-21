@@ -8,14 +8,14 @@ import { cn } from '@/lib/utils';
 const PHASES = [
   {
     name: 'Anagen',
-    role: 'Growth',
-    detail: 'The root is deep and active. Most hairs are here, often for years.',
+    role: 'Growing',
+    detail: 'The root is deep and busy. Most hairs are here, often for years.',
   },
-  { name: 'Catagen', role: 'Transition', detail: 'Growth stops and the follicle shrinks over a few weeks.' },
+  { name: 'Catagen', role: 'Slowing', detail: 'Growth stops. The root shrinks over a few weeks.' },
   {
     name: 'Telogen',
-    role: 'Rest',
-    detail: 'The hair rests, then sheds — and a living root can start again.',
+    role: 'Resting',
+    detail: 'The hair rests, then falls. A living root can start a new one.',
   },
 ] as const;
 
@@ -37,9 +37,9 @@ export function HairCycleDiagram({
       >
         <title id="hair-cycle-title">The hair growth cycle</title>
         <desc id="hair-cycle-desc">
-          Three hair follicles in cross-section. In anagen the root reaches deep into the skin with a large
-          bulb around the dermal papilla. In catagen the follicle shrinks upward. In telogen a short club hair
-          rests near the surface while the papilla waits below, ready to start a new growth phase.
+          Three hair roots under the skin. While growing (anagen), the root reaches deep with a large bulb.
+          While slowing (catagen), the root shrinks upward. While resting (telogen), a short hair sits near
+          the surface and the root waits below, ready to grow a new hair.
         </desc>
 
         {/* Skin layers */}
@@ -188,7 +188,7 @@ export function HairCycleDiagram({
               )}
             >
               <span className="hidden sm:inline">{i + 1} · </span>
-              {p.role}
+              {p.name}
             </p>
             <p
               className={cn(
@@ -196,7 +196,7 @@ export function HairCycleDiagram({
                 dark ? 'text-on-dark' : 'text-ink',
               )}
             >
-              {p.name}
+              {p.role}
             </p>
             <p
               className={cn(
@@ -219,7 +219,7 @@ export function HairCycleDiagram({
       >
         {PHASES.map((p) => (
           <div key={p.name} className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3 py-3">
-            <dt className={cn('font-medium', dark ? 'text-on-dark' : 'text-ink')}>{p.name}</dt>
+            <dt className={cn('font-medium', dark ? 'text-on-dark' : 'text-ink')}>{p.role}</dt>
             <dd className={cn('leading-relaxed', dark ? 'text-on-dark-muted' : 'text-body')}>{p.detail}</dd>
           </div>
         ))}
@@ -233,7 +233,7 @@ export function HairCycleDiagram({
       >
         <Legend swatch={dark ? 'bg-platinum' : 'bg-obsidian'} label="Hair shaft" />
         <Legend swatch="bg-[#cfc7bb]" label="Hair bulb (root)" />
-        <Legend swatch="bg-brand" label="Dermal papilla — feeds the root" />
+        <Legend swatch="bg-brand" label="Root base — feeds the hair" />
         <span className="flex items-center gap-2">
           <span className="h-0 w-5 border-t-2 border-dashed border-brand" aria-hidden />A new cycle needs a
           living root

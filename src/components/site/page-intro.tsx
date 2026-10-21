@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import type { SiteImage } from '@/lib/images';
 import { cn } from '@/lib/utils';
+import { illustrativeNote } from './slot-note';
 
 /**
  * Opening block for inner marketing pages — editorial, one idea. With an `image` it becomes a split
@@ -20,13 +21,15 @@ export function PageIntro({
   title: string;
   lede?: React.ReactNode;
   children?: React.ReactNode;
-  image?: SiteImage;
+  /** A slot from `SLOTS` (or any SiteImage). Illustrative slots get their chip automatically. */
+  image?: SiteImage & { illustrative?: boolean; ready?: boolean };
   /** Small chip on the image, e.g. "Illustrative image" for editorial stock. */
   imageNote?: string;
   tone?: 'light' | 'dark';
   className?: string;
 }) {
   const dark = tone === 'dark';
+  const note = imageNote ?? (image ? illustrativeNote(image) : undefined);
   return (
     <section
       className={cn(
@@ -67,7 +70,7 @@ export function PageIntro({
         {image ? (
           <div
             className={cn(
-              'relative aspect-[4/3] overflow-hidden rounded-2xl md:aspect-[4/5]',
+              'group relative aspect-[4/3] overflow-hidden rounded-[28px] shadow-card md:aspect-[4/5]',
               dark ? 'bg-ink-2' : 'bg-[#efeeeb]',
             )}
           >
@@ -77,11 +80,11 @@ export function PageIntro({
               fill
               priority
               sizes="(min-width: 768px) 40vw, 100vw"
-              className="object-cover"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
             />
-            {imageNote ? (
+            {note ? (
               <span className="absolute top-4 left-4 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-on-dark backdrop-blur">
-                {imageNote}
+                {note}
               </span>
             ) : null}
           </div>

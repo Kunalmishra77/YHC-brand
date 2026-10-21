@@ -45,7 +45,7 @@ export function AssessmentReport({
           </StatusChip>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-mist px-2.5 py-1 text-[12px] font-medium text-body">
             <FlaskConical className="size-3.5" aria-hidden />
-            Demo analysis
+            Demo report
           </span>
         </div>
         <h2 className="display mt-4 text-[clamp(1.875rem,1.5rem+1.4vw,2.5rem)] text-balance">
@@ -64,27 +64,29 @@ export function AssessmentReport({
       >
         <div className="rounded-3xl bg-card p-5 shadow-card ring-1 ring-line/80 md:col-span-2 md:p-7 lg:col-span-1">
           <h3 id="metrics-heading" className="text-base font-semibold text-ink">
-            What the scan measured
+            What the scan looked at
           </h3>
           <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-6">
             <Metric
               title="Root density"
               value={m.rootDensity}
-              hint="How closely hair roots are packed in the scanned areas."
+              hint="How close together your hair roots are in the scanned areas."
             />
             <Metric
-              title="Viable follicles"
+              title="Living roots"
               value={m.viableFollicles}
-              hint="Follicles that still look active and able to grow hair."
+              hint="Roots that still look active and able to grow hair."
             />
           </div>
           <div className="mt-6 grid gap-5 sm:grid-cols-2">
             <div>
               <p className="text-sm font-medium text-ink">
-                Miniaturisation ·{' '}
+                Hairs getting finer ·{' '}
                 <span className="text-body">{MINIATURISATION_LABEL[m.miniaturisation]}</span>
               </p>
-              <p className="mt-0.5 text-[13px] text-muted-foreground">How much hairs have become finer.</p>
+              <p className="mt-0.5 text-[13px] text-muted-foreground">
+                How much your hairs have become thinner (miniaturisation).
+              </p>
               <div className="mt-2.5">
                 <LevelMeter
                   levels={MINI_LEVELS.map((l) => MINIATURISATION_LABEL[l])}
@@ -98,11 +100,11 @@ export function AssessmentReport({
                 Scalp health · <span className="text-body">{SCALP_HEALTH_LABEL[m.scalpHealth]}</span>
               </p>
               <p className="mt-0.5 text-[13px] text-muted-foreground">
-                Surface signs like redness or flaking.
+                Signs on the skin, like redness or flakes.
               </p>
               <div className="mt-2.5">
                 <LevelMeter
-                  levels={['Healthy', 'Mild', 'Attention']}
+                  levels={['Healthy', 'Mild', 'See doctor']}
                   active={HEALTH_LEVELS.indexOf(m.scalpHealth)}
                   invert
                 />
@@ -139,9 +141,9 @@ export function AssessmentReport({
       <p className="flex gap-2.5 rounded-2xl bg-info-bg px-4 py-3.5 text-sm text-info">
         <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
         <span>
-          <strong className="font-semibold">Demo analysis — your doctor makes the final assessment.</strong>{' '}
-          These numbers are simulated from your answers for this demo; they are not a diagnosis. Individual
-          results vary.
+          <strong className="font-semibold">Demo report — your doctor makes the final call.</strong> These
+          numbers are simulated from your answers for this demo. They are not a diagnosis. Individual results
+          vary.
         </span>
       </p>
     </div>
