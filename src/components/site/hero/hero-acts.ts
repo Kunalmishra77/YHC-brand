@@ -29,6 +29,12 @@ export const HERO_ACTS: readonly HeroAct[] = [
   },
 ];
 
+/** The client's bottle film (V01), watermark cropped, encoded as a seamless forward/back loop. */
+export const HERO_FILM = {
+  src: '/media/video/hero-bottle.mp4',
+  poster: '/media/video/hero-bottle-poster.webp',
+} as const;
+
 export const HERO_HEADLINE = 'Hair care begins with science, not with products.';
 export const HERO_LINE = 'First we scan your scalp. Then a doctor tells you if treatment will help.';
 

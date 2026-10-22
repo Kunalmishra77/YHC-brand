@@ -1,82 +1,30 @@
 'use client';
 
 import { ArrowRight } from 'lucide-react';
-import {
-  type MotionValue,
-  motion,
-  useMotionValue,
-  useMotionValueEvent,
-  useScroll,
-  useSpring,
-  useTransform,
-} from 'motion/react';
+import { type MotionValue, motion, useMotionValueEvent, useScroll, useTransform } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { HeroStartForm } from '@/components/journey/hero-start-form';
-import { ScrollSequence } from '@/components/site/scroll-sequence';
 import { useRamp } from '@/lib/use-ramp';
 import { cn } from '@/lib/utils';
-import { CausticLight } from './caustic-light';
-import { GRAIN_URL, HERO_ACTS, HERO_HEADLINE, HERO_LINE } from './hero-acts';
+import { HERO_ACTS, HERO_FILM, HERO_HEADLINE, HERO_LINE } from './hero-acts';
 
 /*
- * Desktop scroll-story hero (lg+, motion allowed — docs/21, after the dewlab template). A 300vh section
- * with a sticky one-screen stage:
- *   0 – 0.2   headline + trust chips left, the start form right, a rounded "window" on H01 between them;
- *   → 0.26    the window opens to full bleed, the form fades out, a compact start button appears;
- *   0.25 – 1  three pinned acts: a giant serif word per act, a small 01/02/03 index, the picture
- *             cross-fading H01 → H13 → P01; in act 3 the window closes again around the product.
- * Warm caustic light (WebGL) lives behind the window and shows wherever the window is not.
+ * Desktop scroll-story hero (lg+, motion allowed — docs/21, ADR-35). A 260svh section with a sticky
+ * one-screen stage. The client's bottle film (V01, seamless forward/back loop) fills the screen:
+ *   0 – 0.14   headline left, start form right, the bottle between them;
+ *   0.14 – 1   three pinned acts — a giant serif word each, a 01/02/03 index — with H01 and H13 fading in
+ *              over the film for acts 1 and 2, and the bottle returning for act 3.
+ * Only opacity/transform animate (compositor-only) so scrolling stays smooth; the film pauses while it
+ * is covered or off screen.
  */
-
-type Rect = { t: number; r: number; b: number; l: number; radius: number };
-
-const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
-const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
-/** Ease-in-out so the window opens and closes like a camera move, not linearly. */
-const ease = (k: number) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
-const span = (v: number, a: number, b: number) => ease(clamp01((v - a) / (b - a)));
-
-/** Window and product-card rectangles (insets from each stage edge, px) for a stage size. */
-function layout(w: number, h: number) {
-  const wide = w >= 1280;
-  const gutter = wide ? 48 : 32;
-  const formW = wide ? 400 : 360;
-  const frame: Rect = {
-    t: 92,
-    b: 36,
-    l: Math.round(w * (wide ? 0.36 : 0.34)),
-    r: gutter + Math.round(formW * 0.45),
-    radius: 36,
-  };
-  const cardH = Math.round(h * 0.64);
-  const cardW = Math.round(cardH * 0.68);
-  const cardT = Math.round(h * 0.15);
-  const cardR = Math.round(w * 0.09);
-  const card: Rect = { t: cardT, b: h - cardT - cardH, r: cardR, l: w - cardR - cardW, radius: 32 };
-  return {
-    frame,
-    card,
-    cardBox: { top: cardT, right: cardR, width: cardW, height: cardH },
-    chip: { left: frame.l + 18, bottom: frame.b + 18 },
-  };
-}
-
-const ZERO: Rect = { t: 0, r: 0, b: 0, l: 0, radius: 0 };
-const mix = (a: Rect, b: Rect, k: number): Rect => ({
-  t: lerp(a.t, b.t, k),
-  r: lerp(a.r, b.r, k),
-  b: lerp(a.b, b.b, k),
-  l: lerp(a.l, b.l, k),
-  radius: lerp(a.radius, b.radius, k),
-});
 
 /** Opacity for act i's giant word (in, hold, out — the last act stays). */
 const ACT_RANGES: Array<[number, number, number, number]> = [
-  [0.22, 0.3, 0.45, 0.5],
-  [0.5, 0.56, 0.7, 0.75],
-  [0.75, 0.81, 2, 2],
+  [0.15, 0.21, 0.38, 0.43],
+  [0.45, 0.5, 0.64, 0.69],
+  [0.71, 0.77, 2, 2],
 ];
 
 function useActOpacity(p: MotionValue<number>, i: number) {
@@ -101,184 +49,147 @@ export function HeroCinema({
   note?: string;
 }) {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const { scrollYProgress: p } = useScroll({ target: sectionRef, offset: ['start start', 'end end'] });
 
-  // Stage geometry, kept in a motion value so the clip path updates on resize without re-rendering.
-  const geo = useMotionValue(layout(1440, 900));
-  const [boxes, setBoxes] = useState(() => {
-    const g = geo.get();
-    return { card: g.cardBox, chip: g.chip };
-  });
-  useEffect(() => {
-    const el = stageRef.current;
-    if (!el) return;
-    const measure = () => {
-      const next = layout(el.clientWidth, el.clientHeight);
-      geo.set(next);
-      setBoxes({ card: next.cardBox, chip: next.chip });
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [geo]);
+  // Screen 1 lifts away.
+  const introOpacity = useRamp(p, [0.03, 0.12], [1, 0]);
+  const introY = useRamp(p, [0, 0.14], [0, -56]);
+  const formOpacity = useRamp(p, [0.03, 0.11], [1, 0]);
+  const formY = useRamp(p, [0, 0.12], [0, -32]);
+  const ctaOpacity = useRamp(p, [0.12, 0.18], [0, 1]);
+  const indexOpacity = useRamp(p, [0.13, 0.19], [0, 1]);
 
-  // The window: framed → full bleed (0.06–0.26) → product card (0.7–0.82).
-  const clip = useTransform(() => {
-    const v = p.get();
-    const { frame, card } = geo.get();
-    const close = span(v, 0.7, 0.82);
-    const r = close > 0 ? mix(ZERO, card, close) : mix(frame, ZERO, span(v, 0.06, 0.26));
-    return `inset(${r.t}px ${r.r}px ${r.b}px ${r.l}px round ${r.radius}px)`;
-  });
+  // The film eases back a touch as the story starts, then forward again for act 3.
+  const filmScale = useRamp(p, [0, 0.14, 0.7, 1], [1, 1.08, 1.08, 1]);
 
-  // Screen 1 fades away as the window opens.
-  const introOpacity = useRamp(p, [0.08, 0.2], [1, 0]);
-  const introY = useRamp(p, [0.04, 0.22], [0, -48]);
-  const formOpacity = useRamp(p, [0.05, 0.15], [1, 0]);
-  const formY = useRamp(p, [0.05, 0.15], [0, 24]);
-  const ctaOpacity = useRamp(p, [0.18, 0.26], [0, 1]);
-  const indexOpacity = useRamp(p, [0.2, 0.28], [0, 1]);
-  const scrim = useRamp(p, [0.12, 0.3], [0.15, 0.55]);
-
-  // Pictures.
-  const h01Opacity = useRamp(p, [0.46, 0.54], [1, 0]);
-  const h01Scale = useRamp(p, [0, 0.5], [1.16, 1.02]);
-  const h13Opacity = useRamp(p, [0.46, 0.54, 0.7, 0.78], [0, 1, 1, 0]);
-  const h13Scale = useRamp(p, [0.44, 0.8], [1.14, 1]);
-  const p01Opacity = useRamp(p, [0.7, 0.78], [0, 1]);
-  const p01Scale = useRamp(p, [0.7, 1], [1.12, 1]);
-  const filmProgress = useRamp(p, [0.75, 1], [0, 1]);
+  // Pictures over the film.
+  const h01Opacity = useRamp(p, [0.12, 0.2, 0.42, 0.48], [0, 1, 1, 0]);
+  const h01Scale = useRamp(p, [0.12, 0.48], [1.08, 1]);
+  const h13Opacity = useRamp(p, [0.42, 0.48, 0.66, 0.72], [0, 1, 1, 0]);
+  const h13Scale = useRamp(p, [0.42, 0.72], [1.08, 1]);
 
   const wordOpacity = [useActOpacity(p, 0), useActOpacity(p, 1), useActOpacity(p, 2)] as const;
   const wordY = [
-    useRamp(wordOpacity[0], [0, 1], [36, 0]),
-    useRamp(wordOpacity[1], [0, 1], [36, 0]),
-    useRamp(wordOpacity[2], [0, 1], [36, 0]),
+    useRamp(wordOpacity[0], [0, 1], [40, 0]),
+    useRamp(wordOpacity[1], [0, 1], [40, 0]),
+    useRamp(wordOpacity[2], [0, 1], [40, 0]),
   ] as const;
 
   // Which part of the story is on screen: 0 = intro (form), 1–3 = acts.
   const [stage, setStage] = useState(0);
   const [formLive, setFormLive] = useState(true);
-  useMotionValueEvent(p, 'change', (v) => {
-    setStage(v < 0.24 ? 0 : v < 0.5 ? 1 : v < 0.75 ? 2 : 3);
-    setFormLive(v < 0.1);
-  });
+  const [onScreen, setOnScreen] = useState(true);
+  const covered = useRef(false);
 
-  // Subtle mouse parallax on the picture.
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const px = useSpring(useTransform(mx, [-1, 1], [16, -16]), { stiffness: 60, damping: 20 });
-  const py = useSpring(useTransform(my, [-1, 1], [10, -10]), { stiffness: 60, damping: 20 });
-  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType !== 'mouse') return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    mx.set(((e.clientX - rect.left) / rect.width) * 2 - 1);
-    my.set(((e.clientY - rect.top) / rect.height) * 2 - 1);
+  const syncVideo = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (onScreen && !covered.current) void v.play().catch(() => undefined);
+    else v.pause();
   };
 
-  const [act1, act2, act3] = HERO_ACTS;
-  if (!act1 || !act2 || !act3) return null;
+  useMotionValueEvent(p, 'change', (v) => {
+    setStage(v < 0.15 ? 0 : v < 0.45 ? 1 : v < 0.71 ? 2 : 3);
+    setFormLive(v < 0.06);
+    const next = v > 0.2 && v < 0.66; // fully hidden behind H01/H13
+    if (next !== covered.current) {
+      covered.current = next;
+      syncVideo();
+    }
+  });
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setOnScreen(Boolean(e?.isIntersecting)));
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  useEffect(syncVideo, [onScreen]);
+
+  const [act1, act2] = HERO_ACTS;
+  if (!act1 || !act2) return null;
 
   return (
-    <div ref={sectionRef} className="relative h-[300svh]">
-      <div
-        ref={stageRef}
-        onPointerMove={onPointerMove}
-        className="sticky top-0 h-svh overflow-hidden bg-obsidian text-on-dark"
-      >
-        <CausticLight />
-
-        {/* The window. Pictures are laid out full-bleed and revealed by the clip path. */}
-        <motion.div aria-hidden className="absolute inset-0 will-change-[clip-path]" style={{ clipPath: clip }}>
-          <motion.div className="absolute -inset-6" style={{ x: px, y: py }}>
-            <motion.div className="absolute inset-0" style={{ opacity: h01Opacity, scale: h01Scale }}>
-              <div className="yhc-kenburns absolute inset-0">
-                <Image
-                  src={act1.image.src}
-                  alt=""
-                  fill
-                  priority
-                  sizes="100vw"
-                  className="object-cover object-[60%_35%]"
-                />
-              </div>
-            </motion.div>
-            <motion.div className="absolute inset-0" style={{ opacity: h13Opacity, scale: h13Scale }}>
-              <div className="yhc-kenburns absolute inset-0">
-                <Image src={act2.image.src} alt="" fill sizes="100vw" className="object-cover object-[70%_50%]" />
-              </div>
-            </motion.div>
-          </motion.div>
-          {/* Product card (act 3): its own box, so the portrait pack is never cropped to a strip. */}
-          <motion.div
-            className="absolute overflow-hidden"
-            style={{ ...boxes.card, opacity: p01Opacity, scale: p01Scale }}
-          >
-            <ScrollSequence
-              name="hero"
-              progress={filmProgress}
-              poster={{ src: act3.image.src, alt: '' }}
-              className="size-full"
-            />
-          </motion.div>
-          {/* Darken towards the words. */}
-          <motion.div
-            className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,19,21,0.92)_0%,rgba(18,19,21,0.55)_40%,rgba(18,19,21,0)_75%)]"
-            style={{ opacity: scrim }}
+    <div ref={sectionRef} className="relative h-[260svh]">
+      <div className="sticky top-0 h-svh overflow-hidden bg-obsidian text-on-dark">
+        {/* The film */}
+        <motion.div aria-hidden className="absolute inset-0" style={{ scale: filmScale }}>
+          <video
+            ref={videoRef}
+            className="size-full object-cover"
+            src={HERO_FILM.src}
+            poster={HERO_FILM.poster}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
           />
-          {note ? (
-            <motion.span
-              className="absolute rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-on-dark backdrop-blur"
-              style={{ ...boxes.chip, opacity: h01Opacity }}
-            >
-              {note}
-            </motion.span>
-          ) : null}
         </motion.div>
 
-        {/* Film grain over everything visual. */}
+        {/* Act pictures */}
+        <motion.div aria-hidden className="absolute inset-0" style={{ opacity: h01Opacity, scale: h01Scale }}>
+          <Image src={act1.image.src} alt="" fill sizes="100vw" className="object-cover object-[60%_35%]" />
+        </motion.div>
+        <motion.div aria-hidden className="absolute inset-0" style={{ opacity: h13Opacity, scale: h13Scale }}>
+          <Image src={act2.image.src} alt="" fill sizes="100vw" className="object-cover object-[70%_50%]" />
+        </motion.div>
+
+        {/* Static shading: words sit on the dark left, the form on the dark right, the bottle stays lit. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.09] mix-blend-overlay"
-          style={{ backgroundImage: GRAIN_URL }}
+          className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,19,21,0.9)_0%,rgba(18,19,21,0.55)_30%,rgba(18,19,21,0)_52%,rgba(18,19,21,0)_62%,rgba(18,19,21,0.6)_85%,rgba(18,19,21,0.8)_100%)]"
         />
+        <div aria-hidden className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-obsidian/80 to-transparent" />
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-obsidian via-obsidian/60 to-transparent" />
+
+        {note ? (
+          <motion.span
+            aria-hidden
+            className="absolute right-8 bottom-28 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-on-dark xl:right-12"
+            style={{ opacity: h01Opacity }}
+          >
+            {note}
+          </motion.span>
+        ) : null}
 
         {/* Screen 1: headline + trust chips (left) */}
         <motion.div
-          className="absolute inset-y-0 left-0 z-10 flex w-[46%] flex-col justify-center pt-16 pl-8 xl:w-[44%] xl:pl-12"
+          className="absolute inset-y-0 left-8 z-10 flex w-[min(38%,34rem)] flex-col justify-center pt-16 xl:left-12"
           style={{ opacity: introOpacity, y: introY }}
         >
           <div className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both duration-1000">
+            <p className="eyebrow text-brand-on-dark">Doctor-led hair care</p>
             <h1
               id="hero-heading"
-              className="font-display text-[clamp(3rem,1.2rem+3.4vw,5.25rem)] leading-[1.02] font-medium text-balance text-on-dark [text-shadow:0_2px_30px_rgba(0,0,0,0.45)]"
+              className="mt-5 font-display text-[clamp(3rem,1.4rem+3vw,4.75rem)] leading-[1.02] font-medium text-balance text-on-dark"
             >
               {HERO_HEADLINE}
             </h1>
             <p className="mt-6 max-w-md text-lg leading-relaxed text-pretty text-on-dark-muted">{HERO_LINE}</p>
-            <div className="mt-9">{trust}</div>
+            <div className="mt-8">{trust}</div>
           </div>
         </motion.div>
 
         {/* Screen 1: the start form (right). Fades out and leaves the tab order as act 1 begins. */}
         <motion.div
           inert={!formLive}
-          className="absolute inset-y-0 right-8 z-20 flex w-[360px] items-center pt-16 xl:right-12 xl:w-[400px]"
+          className="absolute inset-y-0 right-8 z-20 flex w-[360px] items-center pt-16 xl:right-12 xl:w-[392px]"
           style={{ opacity: formOpacity, y: formY }}
         >
           <div className="animate-in fade-in slide-in-from-bottom-6 fill-mode-both w-full delay-300 duration-1000">
-            <HeroStartForm className="w-full max-w-none bg-obsidian/55 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.14)]" />
+            <HeroStartForm className="w-full max-w-none bg-obsidian/75 backdrop-blur-none shadow-[0_40px_120px_-30px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,255,255,0.14)]" />
           </div>
         </motion.div>
 
         {/* Acts: giant words (decorative — the index below carries the meaning once). */}
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-[22%] z-10">
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-[24%] z-10">
           {HERO_ACTS.map((act, i) => (
             <motion.p
               key={act.word}
-              className="absolute top-0 left-8 max-w-[54vw] font-display text-[clamp(4.5rem,1rem+7vw,9.5rem)] leading-[0.92] font-medium tracking-[-0.02em] text-balance text-on-dark xl:left-12"
+              className="absolute top-0 left-8 max-w-[46vw] font-display text-[clamp(4.5rem,1rem+6.4vw,8.5rem)] leading-[0.92] font-medium tracking-[-0.02em] text-balance text-on-dark xl:left-12"
               style={{ opacity: wordOpacity[i], y: wordY[i] }}
             >
               {act.word}
@@ -326,6 +237,18 @@ export function HeroCinema({
             Begin my free 3D scan
             <ArrowRight className="size-4" aria-hidden />
           </Link>
+        </motion.div>
+
+        {/* Scroll cue */}
+        <motion.div
+          aria-hidden
+          className="absolute bottom-10 left-8 z-10 flex items-center gap-3 text-[11px] font-medium tracking-[0.2em] text-on-dark-muted uppercase xl:left-12"
+          style={{ opacity: introOpacity }}
+        >
+          <span className="block h-10 w-px overflow-hidden bg-white/15">
+            <span className="yhc-scroll-cue block h-1/2 w-px bg-on-dark" />
+          </span>
+          Scroll to see how it works
         </motion.div>
       </div>
     </div>

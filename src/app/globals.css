@@ -238,3 +238,15 @@ html.lenis, html.lenis body { height: auto; }
     animation: none;
   }
 }
+
+/* Hero scroll cue: a short line sliding down a thin track. */
+@keyframes yhc-scroll-cue {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(200%); }
+}
+.yhc-scroll-cue {
+  animation: yhc-scroll-cue 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .yhc-scroll-cue { animation: none; }
+}
