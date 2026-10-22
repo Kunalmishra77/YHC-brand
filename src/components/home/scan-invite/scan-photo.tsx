@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
+import { useReducedMotion } from '@/lib/use-reduced-motion';
 import { ParallaxImage } from '@/components/home/fx/parallax-image';
 import { ANGLE_LABEL } from '@/lib/journey/labels';
 import { cn } from '@/lib/utils';

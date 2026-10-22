@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
+import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
+import { useReducedMotion } from '@/lib/use-reduced-motion';
 import type { PointerEvent } from 'react';
 import { cn } from '@/lib/utils';
 

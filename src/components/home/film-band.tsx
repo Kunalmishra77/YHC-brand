@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, useReducedMotion, useScroll, type MotionValue } from 'motion/react';
+import { motion, useScroll, type MotionValue } from 'motion/react';
+import { useReducedMotion } from '@/lib/use-reduced-motion';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { ScrollSequence } from '@/components/site/scroll-sequence';

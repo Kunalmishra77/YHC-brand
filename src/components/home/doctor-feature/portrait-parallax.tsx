@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
+import { motion, useScroll, useTransform } from 'motion/react';
+import { useReducedMotion } from '@/lib/use-reduced-motion';
 import Image from 'next/image';
 import { useRef } from 'react';
 import type { SiteImage } from '@/lib/images';

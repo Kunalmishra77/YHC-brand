@@ -1,7 +1,8 @@
 'use client';
 
 import { ArrowLeft, ArrowRight, Leaf, Stethoscope } from 'lucide-react';
-import { AnimatePresence, MotionConfig, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, MotionConfig, motion } from 'motion/react';
+import { useReducedMotion } from '@/lib/use-reduced-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useId, useRef, useState, type KeyboardEvent } from 'react';

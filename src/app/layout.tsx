@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google';
 import { AnalyticsConsent } from '@/components/shared/analytics-consent';
+import { ZodConfig } from '@/components/shared/zod-config';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { clientEnv } from '@/lib/env';
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
         <Toaster position="top-center" />
         <AnalyticsConsent />
+        <ZodConfig />
       </body>
     </html>
   );

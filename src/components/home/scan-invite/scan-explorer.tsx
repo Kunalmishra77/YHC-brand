@@ -1,6 +1,7 @@
 'use client';
 
-import { AnimatePresence, motion, useInView, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion, useInView } from 'motion/react';
+import { useReducedMotion } from '@/lib/use-reduced-motion';
 import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';

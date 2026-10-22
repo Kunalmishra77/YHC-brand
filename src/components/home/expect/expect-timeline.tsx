@@ -1,7 +1,8 @@
 'use client';
 
 import { Plus } from 'lucide-react';
-import { AnimatePresence, MotionConfig, motion, useReducedMotion, useScroll, useSpring } from 'motion/react';
+import { AnimatePresence, MotionConfig, motion, useScroll, useSpring } from 'motion/react';
+import { useReducedMotion } from '@/lib/use-reduced-motion';
 import Image from 'next/image';
 import { useId, useRef, useState } from 'react';
 import type { SiteImage } from '@/lib/images';
