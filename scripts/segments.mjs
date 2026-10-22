@@ -16,7 +16,7 @@ console.log('page height', total);
 let i = 0;
 for (let y = 0; y < total; y += height) {
   await page.evaluate((top) => window.scrollTo(0, top), y);
-  await page.waitForTimeout(900);
+  await page.waitForTimeout(Number(process.env.SEG_WAIT ?? 900));
   const name = `${outDir}/seg-${width}-${String(i).padStart(2, '0')}.png`;
   await page.screenshot({ path: name });
   i++;

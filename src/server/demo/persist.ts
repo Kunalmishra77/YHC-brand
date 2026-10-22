@@ -20,7 +20,7 @@ const ROW_ID = 'default';
  * Bump when the catalog fixtures change shape or content (e.g. the real YHC range, 2026-10-18): a stored
  * snapshot from an older revision keeps its orders and journeys but not its catalog.
  */
-const CATALOG_REVISION = 2;
+const CATALOG_REVISION = 3; // 3: powder removed from the range (2026-10-21)
 
 interface Globals {
   __yhcDemo?: unknown;

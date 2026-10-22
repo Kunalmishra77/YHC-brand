@@ -34,8 +34,6 @@ export const PRODUCT_SEO_DESCRIPTION: Record<string, string> = {
     'YHC Hair Nourishing Tablets: a once-a-day tablet of three botanicals with vitamins and minerals, included when Dr. Tyagi finds a nutritional gap.',
   'hair-regrowth-capsules':
     'YHC Hair Regrowth Capsules: an Ayurvedic blend of six plant ingredients led by amla and bhringraj. Dr. Tyagi decides if they belong in your plan.',
-  'hair-regrowth-powder':
-    'YHC Hair Regrowth Powder: the six-ingredient Ayurvedic blend of the capsules as a powder mixed with water. The doctor recommends one or the other.',
 };
 
 export const LEGAL_SEO_DESCRIPTION: Record<LegalSlug, string> = {

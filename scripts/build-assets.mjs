@@ -99,8 +99,6 @@ const PRODUCTS = {
     P('YHC_Mockup_Capsules_Women.png'),
     T('grid-a-06.png'),
   ],
-  'powder-men': [P('YHC_3D_Powder_Men.png')],
-  'powder-women': [P('YHC_3D_Powder_Women.png')],
 };
 for (const [key, files] of Object.entries(PRODUCTS)) {
   for (const [i, file] of files.entries()) {

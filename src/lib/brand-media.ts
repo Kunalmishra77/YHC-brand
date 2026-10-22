@@ -88,13 +88,6 @@ export const PRODUCT_MEDIA: Record<string, ProductMedia> = {
       ],
     },
   },
-  'hair-regrowth-powder': {
-    pack: '30 servings',
-    lines: {
-      men: [pack('powder-men-0', 1000, 1250, 'YHC Hair Regrowth Powder for men, black jar with a mint label, with amla and herbal powder on stone')],
-      women: [pack('powder-women-0', 1000, 1250, 'YHC Hair Regrowth Powder for women, black jar with a blush label, with herbal powder and blossom')],
-    },
-  },
 };
 
 /** Hero image of a product for one line (men by default). */
@@ -141,7 +134,6 @@ export function ingredientImage(name: string): SiteImage | null {
 /** Full flat-lay boards per product, for editorial spreads. */
 export const INGREDIENT_BOARDS: Record<string, SiteImage> = {
   'hair-regrowth-capsules': ing('board-capsule', 1200, 1200, 'Flat-lay of amla, arjun bark, bhringraj, shatavari, lac resin and ashwagandha'),
-  'hair-regrowth-powder': ing('board-bowls', 1200, 1200, 'Bowls of amla, arjun bark, bhringraj, shatavari, ashwagandha and lac resin'),
   'hair-nourishing-tablets': ing('board-tablet', 1200, 1200, 'Flat-lay of green tea, bhringraj, pumpkin seeds, minerals and vitamin-rich foods'),
   'hair-regrowth-solution': ing('board-solution', 1200, 1200, 'Flat-lay of pea sprouts, turmeric, amber drops, glass vials and a molecule model'),
 };

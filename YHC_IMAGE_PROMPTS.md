@@ -1,5 +1,7 @@
 # YHC — every image the website needs (copy-paste prompts)
 
+> **Status 22 Oct 2026:** all 57 images received and live on the site. P04 (powder) was dropped — the range is now Solution, Tablets and Capsules.
+
 **For:** the person generating images (ChatGPT image generation). **Updated:** 21 Oct 2026.
 This list covers **every image slot on yourhaircompany.com** — 58 images. Each one already has a
 place in the website waiting for it; until your image arrives, the site shows a temporary picture.
@@ -56,7 +58,7 @@ These keep the site legal and trustworthy (ASCI, Drugs & Magic Remedies Act, tel
 | H20–H25 | Home · Types of hair loss · head illustrations (6) | Square | ⭐ |
 | H26 | Home + /guarantee · money-back guarantee | Landscape | |
 | H27 | Home + /contact · talk to us | Square | |
-| P01–P04 | Product pages · lifestyle with the real pack (4) | Portrait | ⭐ |
+| P01–P03 | Product pages · lifestyle with the real pack (3) | Portrait | ⭐ |
 | S01–S08 | Page tops: science, how it works, results, plans, about ×2, guarantee, contact | Landscape | |
 | C01–C05 | Hair concern pages (5) | Landscape | ⭐ |
 | B01–B05 | Journal articles (5) | Landscape | |
@@ -250,10 +252,8 @@ Use the uploaded jar exactly as it is — same label, logo and colours, unchange
 ```
 Use the uploaded jar exactly as it is — same label, logo and colours, unchanged. Premium vertical photograph: the jar on a dark stone surface with fresh amla (Indian gooseberries), a few bhringraj leaves and dried ashwagandha roots arranged naturally around it, warm side light, deep shadows. Earthy, Ayurvedic, premium. Photorealistic. No extra text, no other brands, no people.
 ```
-**P04 — Hair Regrowth Powder** *(UPLOAD: `YHC-assets/YHC_3D_Powder_Men.png`)*
-```
-Use the uploaded jar exactly as it is — same label, logo and colours, unchanged. Premium vertical photograph: the jar on a pale stone kitchen counter next to a glass of water with a small amount of herbal powder being stirred in with a spoon, a small dish of the powder beside it, soft daylight. Calm daily routine. Photorealistic. No extra text, no other brands, no people.
-```
+**P04 — removed** (the powder is no longer in the range).
+
 **Avoid:** any change to the label, extra logos, hands with wrong fingers, models with perfect hair.
 
 ---
@@ -396,13 +396,13 @@ E03 — Page not found (`E03.png`): Minimal thin line illustration on off-white:
 
 | ID | File | Goes to | Status | On site |
 |---|---|---|---|---|
-| H01–H27 | `H01.png`…`H27.png` | Home sections (see above) | Waiting | Temporary image |
-| P01–P04 | `P01.png`…`P04.png` (+ `P0Nw.png`) | Product pages + ingredients | Waiting | Pack render |
-| S01–S06 | `S01.png`…`S06.png` | Page tops | Waiting | Temporary image |
-| C01–C05 | `C01.png`…`C05.png` | Hair concern pages | Waiting | Pack render |
-| B01–B05 | `B01.png`…`B05.png` | Journal articles | Waiting | Pack render |
-| J01–J08 | `J01.png`…`J08.png` | 3D scan screens, /start | Waiting | One reused photo |
-| E01–E03 | `E01.png`…`E03.png` | Empty cart, checkout, 404 | Waiting | Icon |
+| H01–H27 | `H01.png`…`H27.png` | Home sections (see above) | Received | Live |
+| P01–P03 | `P01.png`…`P03.png` | Product pages (first image) | Received | Live · P04 powder dropped |
+| S01–S06 | `S01.png`…`S06.png` | Page tops | Received | Live |
+| C01–C05 | `C01.png`…`C05.png` | Hair concern pages | Received | Live |
+| B01–B05 | `B01.png`…`B05.png` | Journal articles | Received | Live |
+| J01–J08 | `J01.png`…`J08.png` | 3D scan screens, /start | Received | Live |
+| E01–E03 | `E01.png`…`E03.png` | Empty cart, checkout, 404 | Received | Live |
 
 **Developer note:** `node scripts/add-generated-images.mjs` converts everything in
 `YHC-assets/generated/` to WebP in `public/media/gen/` and updates `src/lib/generated-images.ts`;

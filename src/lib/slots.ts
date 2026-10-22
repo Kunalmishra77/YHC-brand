@@ -45,7 +45,6 @@ const F = {
 const SOL = 'hair-regrowth-solution';
 const TAB = 'hair-nourishing-tablets';
 const CAP = 'hair-regrowth-capsules';
-const POW = 'hair-regrowth-powder';
 
 export const SLOTS = {
   // Home. How-it-works steps (H06–H12) fall back to neutral textures: a UI mock sits in front of them
@@ -56,9 +55,9 @@ export const SLOTS = {
   H04: slot('H04', 'A person on a video call with a doctor from home', F.consultNotes, { illustrative: true }),
   H05: slot('H05', 'Black-and-white close-up of a scalp parting showing hair roots', F.scalpParting),
   H06: slot('H06', 'Hands typing name and mobile number into a phone', F.formulation),
-  H07: slot('H07', 'A phone held above parted hair to scan the scalp', F.scalpExam),
+  H07: slot('H07', 'A phone held above parted hair to scan the scalp', F.scalpExam, { illustrative: true }),
   H08: slot('H08', 'A phone showing a simple scan report', F.scalpParting),
-  H09: slot('H09', 'Someone filling a short health form on their phone', F.consultNotes),
+  H09: slot('H09', 'Someone filling a short health form on their phone', F.consultNotes, { illustrative: true }),
   H10: slot('H10', 'A phone showing a booked time and a payment tick', F.lab),
   H11: slot('H11', 'A laptop video call with a doctor, seen over the patient’s shoulder', F.consultRoom, { illustrative: true }),
   H12: slot('H12', 'The YHC solution on a bathroom shelf next to a phone with a check-in chat', F.hairMacro),
@@ -66,8 +65,8 @@ export const SLOTS = {
   H14: slot('H14', 'Illustration of three hair roots getting smaller, left to right', F.hairMacro),
   H15: slot('H15', 'Illustration of living hair roots next to scarred skin with no roots', F.dna),
   H16: slot('H16', 'YHC tablets on a kitchen counter with a glass of water', pack(TAB, 'men', 2)),
-  H17: slot('H17', 'A few drops of solution being applied to a parting', pack(SOL, 'women', 1)),
-  H18: slot('H18', 'Someone photographing the top of their head in a mirror', F.scalpPartingTall),
+  H17: slot('H17', 'A few drops of solution being applied to a parting', pack(SOL, 'women', 1), { illustrative: true }),
+  H18: slot('H18', 'Someone photographing the top of their head in a mirror', F.scalpPartingTall, { illustrative: true }),
   H19: slot('H19', 'A follow-up video call with the doctor', F.consultRoom, { illustrative: true }),
   H20: slot('H20', 'Illustration: male pattern hair loss at the temples and crown', F.scalpExam),
   H21: slot('H21', 'Illustration: female pattern hair loss with a wider parting', F.partingThinning),
@@ -81,25 +80,24 @@ export const SLOTS = {
   P01: slot('P01', 'YHC Hair Regrowth Solution on a bathroom shelf', pack(SOL, 'men', 1)),
   P02: slot('P02', 'YHC Hair Nourishing Tablets on a breakfast table', pack(TAB, 'men', 2)),
   P03: slot('P03', 'YHC Hair Regrowth Capsules with amla and herbs', pack(CAP, 'men', 0)),
-  P04: slot('P04', 'YHC Hair Regrowth Powder with a glass of water', pack(POW, 'men', 0)),
   // Page tops
   S01: slot('S01', 'Hair strands in soft blue light', F.hairMacro),
   S02: slot('S02', 'A phone, laptop and notebook on a stone desk', F.formulation),
   S03: slot('S03', 'A phone on a tripod facing a plain wall in even light', F.scalpParting),
   S04: slot('S04', 'YHC solution and tablets on a dark stone plinth', pack(SOL, 'men', 0)),
-  S05: slot('S05', 'A small formulation lab with herbs and glassware', F.lab),
-  S06: slot('S06', 'Two people at a table, one writing notes, one on a laptop', F.consultNotes),
+  S05: slot('S05', 'A small formulation lab with herbs and glassware', F.lab, { illustrative: true }),
+  S06: slot('S06', 'Two people at a table, one writing notes, one on a laptop', F.consultNotes, { illustrative: true }),
   // Hair concerns
   C01: slot('C01', 'A hairbrush with a few loose hairs on a bathroom counter', board(CAP)),
-  C02: slot('C02', 'Looking down on a centre parting that looks slightly wide', F.partingThinning),
-  C03: slot('C03', 'Side view of a hairline slightly receding at the temple', F.scalpExam),
-  C04: slot('C04', 'Looking down on slightly thinner hair at the crown', F.scalpParting),
+  C02: slot('C02', 'Looking down on a centre parting that looks slightly wide', F.partingThinning, { illustrative: true }),
+  C03: slot('C03', 'Side view of a hairline slightly receding at the temple', F.scalpExam, { illustrative: true }),
+  C04: slot('C04', 'Looking down on slightly thinner hair at the crown', F.scalpParting, { illustrative: true }),
   C05: slot('C05', 'A wooden comb and a dropper bottle on stone', board(SOL)),
   // Journal
   B01: slot('B01', 'A few loose hairs on a white pillowcase', F.hairMacro),
   B02: slot('B02', 'Illustration of hair roots at different stages of growth', F.cellular),
   B03: slot('B03', 'A phone, laptop and notebook laid out like a journey', F.formulation),
-  B04: slot('B04', 'A phone held above parted hair in daylight', F.scalpExam),
+  B04: slot('B04', 'A phone held above parted hair in daylight', F.scalpExam, { illustrative: true }),
   B05: slot('B05', 'Eggs, almonds, spinach, seeds and vegetables on stone', board(TAB)),
   // 3D scan guide
   J01: slot('J01', 'Close-up example: left side of the front hairline', F.scalpParting),
@@ -109,6 +107,10 @@ export const SLOTS = {
   J05: slot('J05', 'Close-up example: the crown', F.scalpParting),
   J06: slot('J06', 'Close-up example: a hair parting', F.scalpParting),
   J07: slot('J07', 'Close-up example: back of the head', F.scalpParting),
+  // Empty states
+  E01: slot('E01', 'Line drawing of an empty shopping bag', F.scalpParting),
+  E02: slot('E02', 'Line drawing of a phone with a tick and a calendar', F.scalpParting),
+  E03: slot('E03', 'Line drawing of a magnifying glass looking at a hair', F.scalpParting),
   J08: slot('J08', 'Someone relaxing on a sofa with their phone', F.scalpPartingTall, { illustrative: true }),
 };
 

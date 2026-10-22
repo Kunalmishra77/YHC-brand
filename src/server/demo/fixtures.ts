@@ -149,23 +149,6 @@ export const PRODUCTS: Product[] = [
     hsn: '3004',
     gstRate: 12,
   },
-  {
-    id: 'prod-shampoo',
-    slug: 'hair-regrowth-powder',
-    name: 'Hair Regrowth Powder',
-    tagline: 'Ayurvedic powder · 30 servings · mix with water',
-    description:
-      'The same 6-plant Ayurvedic mix as the capsules, as a powder you mix with water. Some people find powder easier than capsules. Your doctor picks one or the other.',
-    ingredients: AYURVEDIC_BLEND,
-    howToUse: 'The label says: one-third of a spoon in water, twice a day — or as your doctor tells you.',
-    whatToExpect: EXPECT,
-    regulatoryCategory: 'ayurvedic',
-    requiresConsultation: true,
-    pricePaise: null,
-    daysOfSupply: 30,
-    hsn: '3004',
-    gstRate: 12,
-  },
 ];
 /*
  * Concern pages and FAQs: general education, worded to match published sources (AAD, NHS, DermNet,
@@ -199,7 +182,7 @@ export const CONCERNS: Concern[] = [
       'Pain, burning, redness or sores on the scalp',
       'Hair fall along with tiredness, feeling cold, weight change or irregular periods',
     ],
-    relatedProducts: ['hair-nourishing-tablets', 'hair-regrowth-capsules', 'hair-regrowth-powder'],
+    relatedProducts: ['hair-nourishing-tablets', 'hair-regrowth-capsules'],
   },
   {
     slug: 'thinning',
@@ -249,7 +232,7 @@ export const CONCERNS: Concern[] = [
       'Losing eyebrow hair as well as hairline',
       'Very fast change over a few months',
     ],
-    relatedProducts: ['hair-regrowth-solution', 'hair-regrowth-capsules', 'hair-regrowth-powder'],
+    relatedProducts: ['hair-regrowth-solution', 'hair-regrowth-capsules'],
   },
   {
     slug: 'crown_thinning',

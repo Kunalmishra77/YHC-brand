@@ -86,8 +86,8 @@ export const PROTOCOLS: ProtocolTemplate[] = [
   {
     id: 'shedding-nutrition',
     name: 'Shedding — nutrition support',
-    summary: 'Nourishing tablets and the Ayurvedic powder. 2-month plan, review at 6 weeks.',
-    productIds: ['prod-tablets', 'prod-shampoo'],
+    summary: 'Nourishing tablets and the Ayurvedic capsules. 2-month plan, review at 6 weeks.',
+    productIds: ['prod-tablets', 'prod-serum'],
     planId: 'plan-2',
     followUpInWeeks: 6,
     items: [
@@ -100,12 +100,12 @@ export const PROTOCOLS: ProtocolTemplate[] = [
         instructions: 'Take with water; tell us if you start any new medicine',
       },
       {
-        genericName: 'YHC Hair Regrowth Powder',
+        genericName: 'YHC Hair Regrowth Capsules',
         strength: '—',
-        dosage: 'One-third spoon in water',
-        frequency: 'Twice daily',
+        dosage: 'As directed',
+        frequency: 'As directed',
         duration: '8 weeks',
-        instructions: 'Mix in water; take after meals',
+        instructions: 'Take with water after a meal',
       },
     ],
     note: 'Shedding often settles once the cause is addressed. Eat regular, balanced meals, follow the routine daily and reply to our weekly check-ins.',

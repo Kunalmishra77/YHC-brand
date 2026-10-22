@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatINR } from '@/lib/money';
+import { SLOTS } from '@/lib/slots';
 import { cn } from '@/lib/utils';
 import type { AddressInput } from '@/lib/validation/checkout';
 import { AddressForm } from './address-form';
@@ -65,6 +66,7 @@ export function CheckoutFlow({ signedIn: initialSignedIn }: { signedIn: Checkout
       <Shell>
         <EmptyState
           icon={ShoppingBag}
+          illustration={SLOTS.E02.ready ? SLOTS.E02 : undefined}
           title="Nothing to check out yet"
           body="Your cart is empty. You get YHC products after a consultation. Book one to get your own plan."
           action={

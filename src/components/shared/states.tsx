@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { AlertCircle, Inbox, type LucideIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { t } from '@/i18n/en';
@@ -9,12 +10,15 @@ export function EmptyState({
   body,
   action,
   icon: Icon = Inbox,
+  illustration,
   className,
 }: {
   title?: string;
   body?: string;
   action?: React.ReactNode;
   icon?: LucideIcon;
+  /** Optional line illustration (slots E01–E03) shown instead of the icon. */
+  illustration?: { src: string; width: number; height: number };
   className?: string;
 }) {
   return (
@@ -24,7 +28,11 @@ export function EmptyState({
         className,
       )}
     >
-      <Icon className="size-6 text-steel" aria-hidden />
+      {illustration ? (
+        <Image src={illustration.src} width={illustration.width} height={illustration.height} alt="" sizes="160px" className="size-36 object-contain" />
+      ) : (
+        <Icon className="size-6 text-steel" aria-hidden />
+      )}
       <p className="font-medium text-ink">{title}</p>
       {body ? <p className="max-w-sm text-sm text-muted-foreground">{body}</p> : null}
       {action ? <div className="mt-2">{action}</div> : null}

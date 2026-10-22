@@ -12,7 +12,6 @@ const productKey = (slug: string) =>
     'hair-regrowth-solution': 'solution-men',
     'hair-nourishing-tablets': 'tablets-men',
     'hair-regrowth-capsules': 'capsules-men',
-    'hair-regrowth-powder': 'powder-men',
   })[slug] ?? 'solution-men';
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {

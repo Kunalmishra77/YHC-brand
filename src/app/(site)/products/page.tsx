@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Products',
   description:
-    'The YHC range: solution, tablets, capsules and powder, for men and for women, with every ingredient listed. Your doctor decides what you need.',
+    'The YHC range: hair regrowth solution, nourishing tablets and Ayurvedic capsules, for men and women, every ingredient listed. Your doctor decides.',
   path: '/products',
 });
 
@@ -35,7 +35,7 @@ export default function ProductsPage() {
         tone="dark"
         lede={
           <p>
-            4 products, each in a men’s and a women’s pack. Your doctor picks the right ones for you at your
+            3 products, each in a men’s and a women’s pack. Your doctor picks the right ones for you at your
             consultation. {t('common.inclGst')}.
           </p>
         }
@@ -61,7 +61,7 @@ export default function ProductsPage() {
               </Link>
             }
           />
-          <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
             {prescribed.map((p) => (
               <ProductTile key={p.id} product={p} />
             ))}

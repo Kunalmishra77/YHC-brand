@@ -45,6 +45,8 @@ const nextConfig: NextConfig = {
       ...legacyConcernRedirects(),
       // FUN-03: the standalone quiz was a second entry funnel; its questions live inside /start now.
       { source: '/assessment', destination: '/start', permanent: true },
+      // ADR-34: the powder is no longer sold; its old page moves to the range.
+      { source: '/products/hair-regrowth-powder', destination: '/products', permanent: true },
     ];
   },
 };

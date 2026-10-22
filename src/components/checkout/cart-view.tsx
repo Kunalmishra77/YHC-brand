@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { formatINR } from '@/lib/money';
 import { MAX_QTY } from '@/lib/validation/checkout';
 import { cart, useCart } from './cart-store';
+import { SLOTS } from '@/lib/slots';
 import type { CatalogItemView } from './types';
 
 export type AddState =
@@ -76,6 +77,7 @@ export function CartView({ catalog, add }: { catalog: CatalogItemView[]; add: Ad
           ) : rows.length === 0 ? (
             <EmptyState
               icon={ShoppingBag}
+              illustration={SLOTS.E01.ready ? SLOTS.E01 : undefined}
               title="Your cart is empty"
               body="You get YHC products after a consultation with Dr. Tyagi, as part of your plan."
               action={

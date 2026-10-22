@@ -26,7 +26,6 @@ const LIFESTYLE: Record<string, VisualSlot> = {
   'hair-regrowth-solution': SLOTS.P01,
   'hair-nourishing-tablets': SLOTS.P02,
   'hair-regrowth-capsules': SLOTS.P03,
-  'hair-regrowth-powder': SLOTS.P04,
 };
 
 export function generateStaticParams() {

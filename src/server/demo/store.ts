@@ -1390,7 +1390,7 @@ function seed(now: Date): DemoState {
         ? [{ label: plan.name, qty: 1, amountPaise: plan.pricePaise }]
         : [
             { label: 'Hair Nourishing Tablets (reorder)', qty: 1, amountPaise: 69900 },
-            { label: 'Hair Regrowth Powder (reorder)', qty: 1, amountPaise: 59900 },
+            { label: 'Hair Regrowth Capsules (reorder)', qty: 1, amountPaise: 59900 },
           ],
       subtotalPaise: plan?.pricePaise ?? total,
       creditPaise: k === 0 ? 50000 : 0,
