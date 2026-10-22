@@ -8,6 +8,8 @@ import { JsonLd } from '@/components/site/json-ld';
 import { ProductGallery } from '@/components/site/product-gallery';
 import { ProductTile } from '@/components/site/product-tile';
 import { REGULATORY_LABEL } from '@/components/site/product-meta';
+import { Reveal } from '@/components/site/reveal';
+import { SECTION_Y } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
@@ -163,14 +165,14 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
       </section>
 
       <section className="border-t border-line bg-card">
-        <div className="container-yhc grid gap-12 py-16 md:grid-cols-2 md:gap-16 md:py-24">
+        <div className={`container-yhc grid gap-12 md:grid-cols-2 md:gap-16 ${SECTION_Y}`}>
           <div>
             <h2 className="text-xl font-semibold text-ink">What is inside</h2>
             <dl className="mt-5 divide-y divide-line border-y border-line">
               {product.ingredients.map((ing) => {
                 const photo = ingredientImage(ing.name);
                 return (
-                  <div
+                  <Reveal
                     key={ing.name}
                     className="grid grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-4 py-3.5"
                   >
@@ -185,7 +187,7 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
                       <dt className="font-medium text-ink">{ing.name}</dt>
                       <dd className="text-sm text-body">{ing.role}</dd>
                     </div>
-                  </div>
+                  </Reveal>
                 );
               })}
             </dl>
@@ -222,18 +224,22 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
       </section>
 
       {/* Heading in the first column, the other products beside it — a full row with no gaps. */}
-      <section className="container-yhc grid gap-x-6 gap-y-10 py-14 sm:grid-cols-2 lg:grid-cols-3 lg:py-20">
+      <section className={`container-yhc grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 ${SECTION_Y}`}>
         <div className="sm:col-span-2 lg:col-span-1 lg:pr-6">
           <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
             {product.requiresConsultation ? 'Often prescribed together' : 'Also in everyday care'}
           </h2>
-          <p className="mt-4 max-w-sm text-body">Your doctor decides which of these you need, and how to use them.</p>
+          <p className="mt-4 max-w-sm text-body">
+            Your doctor decides which of these you need, and how to use them.
+          </p>
         </div>
         {getProducts()
           .filter((p) => p.slug !== product.slug && p.requiresConsultation === product.requiresConsultation)
           .slice(0, 2)
-          .map((p) => (
-            <ProductTile key={p.id} product={p} />
+          .map((p, i) => (
+            <Reveal key={p.id} delayMs={i * 100}>
+              <ProductTile product={p} />
+            </Reveal>
           ))}
       </section>
     </>

@@ -44,7 +44,7 @@ export function IngredientsExplorer() {
     <section
       id="ingredients"
       aria-labelledby="ingredients-heading"
-      className={`relative scroll-mt-20 overflow-x-clip bg-card ${SECTION_Y}`}
+      className={`relative isolate scroll-mt-20 overflow-x-clip bg-card ${SECTION_Y}`}
     >
       <div className="container-yhc">
         <IngredientsSpread products={products} headingId="ingredients-heading" />

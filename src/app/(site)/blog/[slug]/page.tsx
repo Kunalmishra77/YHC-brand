@@ -7,12 +7,17 @@ import { ArticleMeta, ArticleRow, articleImage } from '@/components/site/article
 import { ContentBlocks } from '@/components/site/article/content-blocks';
 import { ReviewBadge } from '@/components/site/article/review-badge';
 import { TableOfContents } from '@/components/site/article/table-of-contents';
+import { CtaBand } from '@/components/site/cta-band';
 import { JsonLd } from '@/components/site/json-ld';
+import motion from '@/components/site/motion.module.css';
+import { Parallax } from '@/components/site/parallax';
+import { Reveal } from '@/components/site/reveal';
+import { SECTION_Y } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
-import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
 import { clientEnv } from '@/lib/env';
 import { SITE } from '@/lib/site';
+import { SLOTS } from '@/lib/slots';
 import { getDoctor } from '@/server/catalog';
 import { getArticle, getArticleSources, getArticles, getRelatedArticles } from '@/server/content/articles';
 import { tocFromBlocks, type ContentBlock } from '@/server/content/types';
@@ -152,21 +157,25 @@ export default async function ArticlePage({ params }: PageProps<'/blog/[slug]'>)
 
         <div className="container-yhc mt-10 md:mt-14">
           <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] bg-[#efeeeb] md:aspect-[21/8]">
-            <Image
-              src={image.src}
-              alt={image.alt}
-              fill
-              priority
-              sizes="(min-width: 1200px) 1168px, 100vw"
-              className="object-cover"
-            />
+            <Parallax>
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                priority
+                sizes="(min-width: 1200px) 1168px, 100vw"
+                className={`${motion.kenburns} object-cover`}
+              />
+            </Parallax>
           </div>
           <p className="mt-3 text-[12px] text-muted-foreground">
             Illustrative image — not a treatment result.
           </p>
         </div>
 
-        <div className="container-yhc grid gap-10 py-12 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-16">
+        <div
+          className={`container-yhc grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-16 ${SECTION_Y}`}
+        >
           <aside className="lg:sticky lg:top-28 lg:self-start">
             <TableOfContents entries={toc} />
           </aside>
@@ -215,41 +224,26 @@ export default async function ArticlePage({ params }: PageProps<'/blog/[slug]'>)
               </section>
             ) : null}
 
-            {/* Closing consult prompt */}
-            <div className="mt-16 max-w-[68ch] rounded-2xl bg-obsidian p-7 text-on-dark md:p-10">
-              <p className="font-display text-[clamp(1.75rem,1.4rem+1.2vw,2.25rem)] leading-tight">
-                Questions about your own hair?
-              </p>
-              <p className="mt-3 leading-relaxed text-on-dark-muted">
-                On a one-to-one video call, {doctor.name} looks at your health details and scalp photos and
-                tells you what is likely going on. You do not have to buy anything after.
-              </p>
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <Button
-                  asChild
-                  className="h-12 bg-[image:var(--yhc-silver)] px-6 text-base font-semibold text-obsidian hover:opacity-95"
-                >
-                  <Link href="/book">Book a consultation</Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="h-12 border-line-dark bg-transparent px-6 text-base text-on-dark hover:bg-graphite hover:text-on-dark"
-                >
-                  <Link href="/start">Begin my free 3D scan</Link>
-                </Button>
-              </div>
-            </div>
-            <p className="mt-6 max-w-[68ch] text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-14 max-w-[68ch] text-sm leading-relaxed text-muted-foreground">
               {t('legal.disclaimer')}
             </p>
           </div>
         </div>
       </article>
 
+      <CtaBand
+        id="article-cta-heading"
+        image={SLOTS.H04}
+        imagePosition="55% 50%"
+        title="Questions about your own hair?"
+        body={`On a one-to-one video call, ${doctor.name} looks at your health details and scalp photos and tells you what is likely going on. You do not have to buy anything after.`}
+        primary={{ href: '/book', label: 'Book a consultation' }}
+        secondary={{ href: '/start', label: 'Begin my free 3D scan' }}
+      />
+
       {related.length > 0 ? (
         <section className="border-t border-line bg-[#efeeeb]/60">
-          <div className="container-yhc py-14 lg:py-20">
+          <div className={`container-yhc ${SECTION_Y}`}>
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <h2 className="display text-[clamp(2rem,1.5rem+2vw,2.75rem)] text-balance">Keep reading</h2>
               <Link
@@ -260,8 +254,10 @@ export default async function ArticlePage({ params }: PageProps<'/blog/[slug]'>)
               </Link>
             </div>
             <div className="mt-8 border-t border-line">
-              {related.map((a) => (
-                <ArticleRow key={a.slug} article={a} />
+              {related.map((a, i) => (
+                <Reveal key={a.slug} delayMs={i * 100}>
+                  <ArticleRow article={a} />
+                </Reveal>
               ))}
             </div>
           </div>

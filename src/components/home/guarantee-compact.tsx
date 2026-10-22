@@ -1,9 +1,11 @@
 import { ArrowRight, Check } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import type { GuaranteePolicy } from '@/lib/domain/types';
 import { SLOTS } from '@/lib/slots';
 import { getGuarantee } from '@/server/catalog';
+import { ParallaxImage } from './fx/parallax-image';
+import { StaggerItem, StaggerList } from './fx/stagger';
+import { Reveal } from './testimonials/reveal';
 
 /** Each condition in a few plain words, with its figure from the active policy. */
 function conditions(g: GuaranteePolicy): string[] {
@@ -29,7 +31,8 @@ function refundPhrase(g: GuaranteePolicy): string {
 /**
  * Homepage section 12 · Money-back guarantee — a slim obsidian band: the H26 still life fades in from the
  * right, the promise and its conditions sit on the left, always visible. Terms come from the active
- * guarantee policy; renders nothing while `guarantee.enabled = false`.
+ * guarantee policy; renders nothing while `guarantee.enabled = false`. Cinematic pass (ADR-35): the still
+ * life drifts with the scroll and the conditions rise in one by one.
  */
 export function GuaranteeCompact() {
   const guarantee = getGuarantee();
@@ -48,12 +51,12 @@ export function GuaranteeCompact() {
 
       {/* Picture: a band on phones, the right half of the section from `lg` (fading into the black). */}
       <div className="relative aspect-[16/7] lg:absolute lg:inset-y-0 lg:right-0 lg:-z-10 lg:aspect-auto lg:w-[52%]">
-        <Image
+        <ParallaxImage
           src={image.src}
           alt={image.alt}
-          fill
           sizes="(min-width: 1024px) 52vw, 100vw"
-          className="object-cover"
+          amount={10}
+          className="absolute inset-0"
         />
         <div
           aria-hidden
@@ -61,28 +64,30 @@ export function GuaranteeCompact() {
         />
       </div>
 
-      <div className="container-yhc relative py-8 md:py-10">
+      <div className="container-yhc relative py-10 md:py-12">
         <div className="max-w-[40rem]">
-          <h2
-            id="guarantee-compact-heading"
-            className="display text-[clamp(1.75rem,1.45rem+1.1vw,2.5rem)] leading-[1.08] text-balance text-on-dark"
-          >
-            No visible improvement? You can {refundPhrase(guarantee)}.
-          </h2>
-          <p className="mt-2 text-sm text-on-dark-muted">
-            Only if you meet all of these. A doctor checks every claim.
-          </p>
-          <ul className="mt-4 flex flex-wrap gap-2" aria-label="Conditions">
+          <Reveal>
+            <h2
+              id="guarantee-compact-heading"
+              className="display text-[clamp(1.75rem,1.45rem+1.1vw,2.5rem)] leading-[1.08] text-balance text-on-dark"
+            >
+              No visible improvement? You can {refundPhrase(guarantee)}.
+            </h2>
+            <p className="mt-2 text-sm text-on-dark-muted">
+              Only if you meet all of these. A doctor checks every claim.
+            </p>
+          </Reveal>
+          <StaggerList className="mt-4 flex flex-wrap gap-2" label="Conditions">
             {conditions(guarantee).map((c) => (
-              <li
+              <StaggerItem
                 key={c}
                 className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-white/[0.06] px-3 text-[13px] text-on-dark ring-1 ring-line-dark backdrop-blur-sm"
               >
                 <Check className="size-3.5 shrink-0 text-brand-on-dark" aria-hidden />
                 {c}
-              </li>
+              </StaggerItem>
             ))}
-          </ul>
+          </StaggerList>
           <div className="mt-4 flex flex-wrap items-center gap-x-6">
             <Link
               href="/guarantee"

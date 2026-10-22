@@ -5,6 +5,7 @@ import { DARK_PRODUCT_IMAGES, PRODUCT_IMAGES } from '@/lib/images';
 import { formatINR } from '@/lib/money';
 import { cn } from '@/lib/utils';
 import { REGULATORY_LABEL } from './product-meta';
+import { IMG_HOVER_ZOOM } from './section';
 
 /** Editorial product tile: photograph first, quiet text below — no card chrome. */
 export function ProductTile({
@@ -22,7 +23,7 @@ export function ProductTile({
     <Link href={`/products/${product.slug}`} className={cn('group block rounded-xl', className)}>
       <div
         className={cn(
-          'relative aspect-[4/5] overflow-hidden rounded-[28px]',
+          'relative aspect-[4/5] overflow-hidden rounded-[28px] transition-shadow duration-500 group-hover:shadow-raised',
           dark ? 'bg-obsidian' : 'bg-[#efeeeb]',
         )}
       >
@@ -32,7 +33,7 @@ export function ProductTile({
             alt={image.alt}
             fill
             sizes={sizes}
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none"
+            className={cn('object-cover', IMG_HOVER_ZOOM)}
           />
         ) : null}
         <span

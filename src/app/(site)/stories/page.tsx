@@ -3,9 +3,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getConsultTerms } from '@/components/site/consult-fee';
 import { CtaBand } from '@/components/site/cta-band';
+import { PageIntro } from '@/components/site/page-intro';
+import { Reveal } from '@/components/site/reveal';
+import { SECTION_Y } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { StoriesEmpty } from '@/components/site/stories-empty';
 import { t } from '@/i18n/en';
+import { SLOTS } from '@/lib/slots';
 
 export const dynamic = 'force-dynamic';
 
@@ -63,19 +67,18 @@ export default function StoriesPage() {
   // FR-M1-6: only reviews with stored publication consent would be listed here. None exist yet.
   return (
     <>
-      <section className="border-b border-line">
-        <div className="container-yhc grid gap-8 py-16 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end lg:py-20">
-          <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-balance">
-            Real stories, only when patients want to share
-          </h1>
-          <p className="text-lg leading-relaxed text-body">
+      <PageIntro
+        title="Real stories, only when patients want to share"
+        image={SLOTS.H08}
+        lede={
+          <p>
             Hair is personal. We share a story only when the patient agrees in writing. Photos need a separate
             yes. We would rather show nothing than show something made up.
           </p>
-        </div>
-      </section>
+        }
+      />
 
-      <section className="container-yhc py-14 lg:py-20">
+      <section className={`container-yhc ${SECTION_Y}`}>
         <StoriesEmpty />
       </section>
 
@@ -124,14 +127,14 @@ export default function StoriesPage() {
           </div>
 
           <ul className="border-t border-line">
-            {INCLUDES.map(({ icon: Icon, title, body }) => (
-              <li key={title} className="flex gap-5 border-b border-line py-8">
+            {INCLUDES.map(({ icon: Icon, title, body }, i) => (
+              <Reveal as="li" key={title} delayMs={i * 80} className="flex gap-5 border-b border-line py-8">
                 <Icon className="mt-1 size-5 shrink-0 text-brand" aria-hidden />
                 <div>
                   <h3 className="text-lg font-semibold text-ink">{title}</h3>
                   <p className="mt-2 max-w-[56ch] leading-relaxed text-body">{body}</p>
                 </div>
-              </li>
+              </Reveal>
             ))}
           </ul>
         </div>
@@ -139,24 +142,29 @@ export default function StoriesPage() {
 
       {/* How patients can choose to share */}
       <section className="bg-obsidian text-on-dark">
-        <div className="container-yhc py-14 lg:py-20">
+        <div className={`container-yhc ${SECTION_Y}`}>
           <h2 className="display max-w-2xl text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance text-on-dark">
             If you would like to share yours
           </h2>
-          <ol className="mt-14 grid gap-px overflow-hidden rounded-2xl bg-line-dark sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-10 grid gap-px overflow-hidden rounded-2xl bg-line-dark sm:grid-cols-2 md:mt-14 lg:grid-cols-4">
             {STEPS.map((step, i) => (
-              <li key={step.title} className="flex flex-col bg-obsidian p-6 md:p-7 lg:min-h-72">
+              <Reveal
+                as="li"
+                key={step.title}
+                delayMs={i * 90}
+                className="flex flex-col bg-obsidian p-6 md:p-7 lg:min-h-64"
+              >
                 <span className="font-display text-5xl leading-none text-platinum/70">{i + 1}</span>
                 <h3 className="mt-8 text-lg font-semibold text-on-dark lg:mt-auto">{step.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-on-dark-muted">{step.body}</p>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </div>
       </section>
 
       {/* Privacy promise */}
-      <section className="container-yhc py-14 lg:py-20">
+      <section className={`container-yhc ${SECTION_Y}`}>
         <div className="grid gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16">
           <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
             Our privacy promise
@@ -187,6 +195,10 @@ export default function StoriesPage() {
       </section>
 
       <CtaBand
+        id="stories-cta-heading"
+        image={SLOTS.H18}
+        imagePosition="50% 30%"
+        align="right"
         bookLabel={terms.bookLabel}
         title="Every story starts with a consultation."
         body="Tell Dr. Tyagi what you are noticing. If a plan can help, we send it on WhatsApp after the call. You do not have to buy it."

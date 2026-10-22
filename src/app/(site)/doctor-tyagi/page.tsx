@@ -5,12 +5,15 @@ import { getConsultTerms } from '@/components/site/consult-fee';
 import { CtaBand } from '@/components/site/cta-band';
 import { DoctorCard } from '@/components/site/doctor-card';
 import { JsonLd } from '@/components/site/json-ld';
+import { Parallax } from '@/components/site/parallax';
+import { Reveal } from '@/components/site/reveal';
 import { H2, SECTION_Y, SectionHeader } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { publicCredential } from '@/lib/credentials';
 import { Button } from '@/components/ui/button';
 import { clientEnv } from '@/lib/env';
 import { CLINICAL } from '@/lib/images';
+import { SLOTS } from '@/lib/slots';
 import { getDoctor } from '@/server/catalog';
 
 export const dynamic = 'force-dynamic';
@@ -120,13 +123,15 @@ export default function DoctorPage() {
         <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
           <figure>
             <div className="relative aspect-[3/2] overflow-hidden rounded-[28px] bg-obsidian ring-1 ring-line md:aspect-[16/9] lg:aspect-[4/3]">
-              <Image
-                src={CLINICAL.scalpExam.src}
-                alt={CLINICAL.scalpExam.alt}
-                fill
-                sizes="(min-width: 1024px) 38vw, 100vw"
-                className="object-cover"
-              />
+              <Parallax>
+                <Image
+                  src={CLINICAL.scalpExam.src}
+                  alt={CLINICAL.scalpExam.alt}
+                  fill
+                  sizes="(min-width: 1024px) 38vw, 100vw"
+                  className="object-cover"
+                />
+              </Parallax>
             </div>
             <figcaption className="mt-3 text-[13px] text-muted-foreground">
               Illustrative image. Your own scalp photos are only for your doctor. We never use them in ads.
@@ -134,17 +139,17 @@ export default function DoctorPage() {
           </figure>
           <div className="grid content-start gap-x-10 gap-y-8 sm:grid-cols-2">
             {COVERS.map((c, i) => (
-              <div key={c.title} className="border-t border-line pt-5">
+              <Reveal key={c.title} delayMs={(i % 2) * 100} className="border-t border-line pt-5">
                 <span className="price text-sm text-muted-foreground">{String(i + 1).padStart(2, '0')}</span>
                 <h3 className="mt-2 text-lg font-semibold text-ink">{c.title}</h3>
                 <p className="mt-2 leading-relaxed text-pretty text-body">{c.body}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="container-yhc pb-16 md:pb-24">
+      <section className="container-yhc pb-4 lg:pb-6">
         <div className="rounded-2xl border border-line bg-mist/50 p-6 md:p-8">
           <h2 className="text-lg font-semibold text-ink">Our link with the doctor</h2>
           <p className="mt-2 max-w-3xl text-body">
@@ -155,9 +160,12 @@ export default function DoctorPage() {
       </section>
 
       <CtaBand
+        id="doctor-cta-heading"
+        image={SLOTS.H04}
+        imagePosition="55% 50%"
         title={`Talk to ${doctor.name} one to one.`}
         bookLabel={terms.bookLabel}
-        body="Pick a time that suits you. Before the call, you share your health details and scalp photos. Then the call is all about you."
+        body="Pick a time that suits you. Share your details and scalp photos first, so the call is all about you."
       />
     </>
   );

@@ -6,10 +6,12 @@ import { CtaBand } from '@/components/site/cta-band';
 import { FaqList, visibleFaqs } from '@/components/site/faq-list';
 import { JsonLd } from '@/components/site/json-ld';
 import { PageIntro } from '@/components/site/page-intro';
+import { Reveal } from '@/components/site/reveal';
 import { SECTION_Y } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import type { Faq } from '@/lib/domain/types';
 import { SITE } from '@/lib/site';
+import { SLOTS } from '@/lib/slots';
 import { getFaqs, getGuarantee } from '@/server/catalog';
 
 export const dynamic = 'force-dynamic';
@@ -64,6 +66,7 @@ export default function FaqsPage() {
       ) : null}
       <PageIntro
         title="Your questions, answered"
+        image={SLOTS.H27}
         lede={
           <p>
             Can&apos;t find your answer?{' '}
@@ -105,12 +108,18 @@ export default function FaqsPage() {
                 >
                   {CATEGORY_LABEL[category] ?? category}
                 </h2>
-                <FaqList faqs={items} />
+                <Reveal>
+                  <FaqList faqs={items} />
+                </Reveal>
               </section>
             ))
         )}
       </div>
       <CtaBand
+        id="faqs-cta-heading"
+        image={SLOTS.H10}
+        imagePosition="60% 50%"
+        title="Ask about your own hair."
         bookLabel={terms.bookLabel}
         body="The best answers are about your own hair. Ask Dr. Tyagi at your consultation."
       />

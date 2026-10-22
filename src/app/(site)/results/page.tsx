@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import { Camera, FileSignature, Ruler, ShieldCheck } from 'lucide-react';
-import Link from 'next/link';
+import { CtaBand } from '@/components/site/cta-band';
 import { PageIntro } from '@/components/site/page-intro';
 import { SLOTS } from '@/lib/slots';
 import { ResultsGallery } from '@/components/site/results-gallery';
-import { H2_SM, SECTION_Y, SectionHeader } from '@/components/site/section';
+import { Reveal } from '@/components/site/reveal';
+import { SECTION_Y, SectionHeader } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
-import { Button } from '@/components/ui/button';
 import { getPublishedResults } from '@/server/content/results';
 
 export const metadata: Metadata = pageMetadata({
@@ -59,14 +59,14 @@ export default function ResultsPage() {
         <div className={`container-yhc ${SECTION_Y}`}>
           <SectionHeader id="process-heading" eyebrow="Our rules" title="How we collect and show results" />
           <ul className="grid gap-px overflow-hidden rounded-2xl bg-line ring-1 ring-line sm:grid-cols-2">
-            {PROCESS.map(({ icon: Icon, title, body }) => (
-              <li key={title} className="bg-card p-6 md:p-8">
+            {PROCESS.map(({ icon: Icon, title, body }, i) => (
+              <Reveal as="li" key={title} delayMs={i * 90} className="bg-card p-6 md:p-8">
                 <span className="flex size-10 items-center justify-center rounded-full bg-mist text-brand">
                   <Icon className="size-5" aria-hidden />
                 </span>
                 <h3 className="mt-5 text-lg font-semibold text-ink">{title}</h3>
                 <p className="mt-2 max-w-[52ch] leading-relaxed text-pretty text-body">{body}</p>
-              </li>
+              </Reveal>
             ))}
           </ul>
           <p className="mt-8 max-w-2xl text-sm leading-relaxed text-pretty text-muted-foreground">
@@ -76,19 +76,14 @@ export default function ResultsPage() {
         </div>
       </section>
 
-      <section className="container-yhc py-16 md:py-20">
-        <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between md:gap-12">
-          <div className="max-w-xl">
-            <h2 className={H2_SM}>Your own “before” starts with a scan</h2>
-            <p className="mt-3 leading-relaxed text-pretty text-body">
-              The 3D scan records your scalp as it is today. At follow-up, the doctor compares against it.
-            </p>
-          </div>
-          <Button asChild className="h-12 shrink-0 px-7 text-base">
-            <Link href="/start">Begin my free 3D scan</Link>
-          </Button>
-        </div>
-      </section>
+      <CtaBand
+        id="results-cta-heading"
+        image={SLOTS.H18}
+        imagePosition="50% 30%"
+        title="Your own “before” starts with a scan"
+        body="The 3D scan records your scalp as it is today. At follow-up, the doctor compares against it."
+        primary={{ href: '/start', label: 'Begin my free 3D scan' }}
+      />
     </>
   );
 }

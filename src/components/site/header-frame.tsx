@@ -1,17 +1,36 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 /**
- * Sticky header: light glass everywhere (the homepage hero is light and pulls up under it), dark only in
- * the /start journey.
+ * Sticky header: light glass everywhere, dark glass over the homepage's dark cinematic hero
+ * (`#home-hero`, docs/21) until you scroll past it, and dark throughout the /start journey.
  */
 export function HeaderFrame({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  // The /start journey is an all-dark experience, so the header stays dark there.
   const journey = pathname.startsWith('/start');
-  const dark = journey;
+  const home = pathname === '/';
+  const [overHero, setOverHero] = useState(home);
+
+  useEffect(() => {
+    if (!home) return;
+    const check = () => {
+      const hero = document.getElementById('home-hero');
+      // Header is 64px tall; turn light once the hero's bottom edge has passed under it.
+      setOverHero(hero ? hero.getBoundingClientRect().bottom > 64 : window.scrollY < window.innerHeight * 0.6);
+    };
+    check();
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check);
+    return () => {
+      window.removeEventListener('scroll', check);
+      window.removeEventListener('resize', check);
+    };
+  }, [home]);
+
+  const dark = journey || (home && overHero);
   return (
     <header
       data-dark={dark}

@@ -6,6 +6,7 @@ import { getConsultTerms } from '@/components/site/consult-fee';
 import { CtaBand } from '@/components/site/cta-band';
 import { PageIntro } from '@/components/site/page-intro';
 import { PlanLadder } from '@/components/site/plan-ladder';
+import { Reveal } from '@/components/site/reveal';
 import { H2, SECTION_Y } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { SLOTS } from '@/lib/slots';
@@ -66,7 +67,7 @@ export default function PlansPage() {
         <section className="border-y border-line bg-card">
           <div className={`container-yhc ${SECTION_Y}`}>
             <h2 className={H2}>Compare the plans</h2>
-            <div className="mt-8 hidden overflow-x-auto sm:block">
+            <Reveal className="mt-8 hidden overflow-x-auto sm:block">
               <table className="w-full min-w-[520px] text-left text-sm">
                 <caption className="sr-only">Plan comparison</caption>
                 <thead>
@@ -119,14 +120,15 @@ export default function PlansPage() {
                   })}
                 </tbody>
               </table>
-            </div>
+            </Reveal>
             {/* Phones: one card per plan instead of a sideways-scrolling table. */}
             <ul className="mt-8 space-y-3 sm:hidden">
               {plans.map((p) => {
                 const perMonth = Math.round(p.pricePaise / p.months / 100) * 100;
                 const savings = monthly ? monthly.pricePaise * p.months - p.pricePaise : 0;
                 return (
-                  <li
+                  <Reveal
+                    as="li"
                     key={p.id}
                     className={
                       p.isRecommended
@@ -158,7 +160,7 @@ export default function PlansPage() {
                           : 'not included'}
                       </p>
                     ) : null}
-                  </li>
+                  </Reveal>
                 );
               })}
             </ul>
@@ -180,13 +182,17 @@ export default function PlansPage() {
             </Link>
             .
           </p>
-          <div className="mt-6 max-w-3xl">
+          <Reveal className="mt-6 max-w-3xl">
             <GuaranteeTerms policy={guarantee} />
-          </div>
+          </Reveal>
         </section>
       ) : null}
 
       <CtaBand
+        id="plans-cta-heading"
+        image={SLOTS.H16}
+        imagePosition="45% 50%"
+        align="right"
         title="Your plan starts with a consultation."
         bookLabel={terms.bookLabel}
         body="Dr. Tyagi tells you what to use and for how long. You decide if you want to go ahead."

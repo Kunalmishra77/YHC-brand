@@ -6,6 +6,7 @@ import { getConsultTerms } from '@/components/site/consult-fee';
 import { CtaBand } from '@/components/site/cta-band';
 import { PageIntro } from '@/components/site/page-intro';
 import { ProductTile } from '@/components/site/product-tile';
+import { Reveal } from '@/components/site/reveal';
 import { SECTION_Y, SectionHeader, TEXT_LINK } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { IMAGES } from '@/lib/images';
@@ -62,8 +63,10 @@ export default function ProductsPage() {
             }
           />
           <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-            {prescribed.map((p) => (
-              <ProductTile key={p.id} product={p} />
+            {prescribed.map((p, i) => (
+              <Reveal key={p.id} delayMs={(i % 3) * 100}>
+                <ProductTile product={p} />
+              </Reveal>
             ))}
           </div>
         </section>
@@ -78,16 +81,24 @@ export default function ProductsPage() {
               lede="Gentle on a scalp under treatment. Buy them on their own or with a plan."
             />
             <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-              {open.map((p) => (
-                <ProductTile key={p.id} product={p} />
+              {open.map((p, i) => (
+                <Reveal key={p.id} delayMs={(i % 3) * 100}>
+                  <ProductTile product={p} />
+                </Reveal>
               ))}
             </div>
           </div>
         </section>
       ) : null}
       <CtaBand
+        id="products-cta-heading"
+        // Still from the client's dropper film (16:9) — the tall pack shot cropped into its own label here.
+        image={{ src: '/media/seq/ritual/frame_0130.webp', width: 1600, height: 900, alt: 'A dropper over the scalp at the parting' }}
+        imagePosition="65% 50%"
+        align="left"
+        title="Not sure which products you need?"
         bookLabel={terms.bookLabel}
-        body="Not sure what you need? The consultation decides — based on your health, not a quiz score."
+        body="The consultation decides — based on your health, not a quiz score."
       />
     </>
   );

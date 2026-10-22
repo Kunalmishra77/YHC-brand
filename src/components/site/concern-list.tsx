@@ -6,6 +6,8 @@ import type { Concern } from '@/lib/domain/types';
 import { SLOTS } from '@/lib/slots';
 import type { VisualSlot } from '@/lib/visual-slots';
 import { cn } from '@/lib/utils';
+import { Reveal } from './reveal';
+import { IMG_HOVER_ZOOM } from './section';
 
 /** Hero image per concern key (C01–C05, YHC_IMAGE_PROMPTS.md). */
 const CONCERN_IMAGE: Record<string, VisualSlot> = {
@@ -38,8 +40,10 @@ export function ConcernList({ concerns, className }: { concerns: Concern[]; clas
         const big = i < 2;
         const oddLast = concerns.length % 2 === 1 && i === concerns.length - 1;
         return (
-          <li
+          <Reveal
+            as="li"
             key={c.slug}
+            delayMs={(i % 3) * 90}
             className={cn(
               'w-[80%] max-w-[22rem] shrink-0 snap-start sm:w-auto sm:max-w-none',
               big ? 'lg:col-span-3' : 'lg:col-span-2',
@@ -60,11 +64,15 @@ export function ConcernList({ concerns, className }: { concerns: Concern[]; clas
                     alt={img.alt}
                     fill
                     sizes="(min-width: 1024px) 50vw, (min-width: 640px) 90vw, 80vw"
-                    className="object-cover object-[78%_50%] transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                    className={cn('object-cover object-[78%_50%]', IMG_HOVER_ZOOM)}
                   />
                 ) : null}
+                <div
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-t from-obsidian/45 via-transparent to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none"
+                />
                 <span
-                  className="absolute right-4 bottom-4 flex size-11 items-center justify-center rounded-full bg-white/85 text-ink backdrop-blur transition-transform group-hover:-translate-y-0.5 motion-reduce:transition-none"
+                  className="absolute right-4 bottom-4 flex size-11 items-center justify-center rounded-full bg-white/85 text-ink backdrop-blur transition-[translate,background-color] duration-300 group-hover:-translate-y-0.5 group-hover:bg-white motion-reduce:transition-none"
                   aria-hidden
                 >
                   <ArrowUpRight className="size-5" />
@@ -73,7 +81,7 @@ export function ConcernList({ concerns, className }: { concerns: Concern[]; clas
               <p className="mt-4 text-lg font-semibold text-ink group-hover:text-brand">{c.title}</p>
               <p className="mt-1 text-sm text-pretty text-body">{c.summary}</p>
             </Link>
-          </li>
+          </Reveal>
         );
       })}
     </ul>

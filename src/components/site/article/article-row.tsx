@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { IMAGES, type SiteImage } from '@/lib/images';
 import { SLOTS } from '@/lib/slots';
 import { cn } from '@/lib/utils';
+import { IMG_HOVER_ZOOM } from '../section';
 import type { Article } from '@/server/content/types';
 import { formatContentDate } from './content-blocks';
 import { ReviewBadge } from './review-badge';
@@ -71,7 +72,7 @@ export function ArticleRow({
           alt=""
           fill
           sizes="(min-width: 640px) 180px, 100vw"
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none"
+          className={cn('object-cover', IMG_HOVER_ZOOM)}
         />
       </div>
     </article>

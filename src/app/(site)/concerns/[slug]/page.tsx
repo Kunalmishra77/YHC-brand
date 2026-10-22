@@ -7,7 +7,11 @@ import { getConsultTerms } from '@/components/site/consult-fee';
 import { concernImage } from '@/components/site/concern-list';
 import { CtaBand } from '@/components/site/cta-band';
 import { JsonLd } from '@/components/site/json-ld';
+import motion from '@/components/site/motion.module.css';
+import { Parallax } from '@/components/site/parallax';
 import { ProductTile } from '@/components/site/product-tile';
+import { Reveal } from '@/components/site/reveal';
+import { IMG_HOVER_ZOOM, riseDelay, SECTION_Y } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
@@ -15,6 +19,7 @@ import { concernKeyFromParam, concernPath, concernUrlSlug } from '@/lib/concern-
 import type { Concern } from '@/lib/domain/types';
 import { clientEnv } from '@/lib/env';
 import { IMAGES } from '@/lib/images';
+import { SLOTS } from '@/lib/slots';
 import { getConcern, getConcerns, getProducts } from '@/server/catalog';
 import { CONCERN_SEO_DESCRIPTION, clampDescription } from '@/server/content/seo-copy';
 
@@ -96,18 +101,20 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
         <header className="relative isolate overflow-hidden bg-obsidian text-on-dark">
           {/* C01–C05: landscape, calm on the left where the title sits (YHC_IMAGE_PROMPTS.md). */}
           <div className="absolute inset-0 -z-10" aria-hidden>
-            <Image
-              src={hero.src}
-              alt=""
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover object-[70%_50%] md:object-right"
-            />
+            <Parallax mode="exit" strength={10}>
+              <Image
+                src={hero.src}
+                alt=""
+                fill
+                priority
+                sizes="100vw"
+                className={`${motion.kenburns} object-cover object-[70%_50%] md:object-right`}
+              />
+            </Parallax>
             <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/80 to-obsidian/35 md:bg-gradient-to-r md:from-obsidian md:via-obsidian/75 md:to-obsidian/5" />
           </div>
           <div className="container-yhc py-14 lg:py-20">
-            <nav aria-label="Breadcrumb" className="text-sm text-on-dark-muted">
+            <nav aria-label="Breadcrumb" className={`${motion.rise} text-sm text-on-dark-muted`}>
               <Link
                 href="/concerns"
                 className="underline decoration-line-dark underline-offset-4 hover:text-on-dark"
@@ -116,11 +123,19 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
               </Link>{' '}
               / <span className="text-on-dark">{concern.title}</span>
             </nav>
-            <h1 className="display mt-6 max-w-2xl text-[clamp(2.75rem,1.8rem+3.6vw,5rem)] leading-[1.02] text-balance text-on-dark">
+            <h1
+              style={riseDelay(90)}
+              className={`${motion.rise} display mt-6 max-w-2xl text-[clamp(2.75rem,1.8rem+3.6vw,5rem)] leading-[1.02] text-balance text-on-dark`}
+            >
               {concern.title}
             </h1>
-            <p className="mt-6 max-w-xl text-xl leading-relaxed text-on-dark-muted">{concern.summary}</p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <p
+              style={riseDelay(200)}
+              className={`${motion.rise} mt-6 max-w-xl text-xl leading-relaxed text-on-dark-muted`}
+            >
+              {concern.summary}
+            </p>
+            <div style={riseDelay(300)} className={`${motion.rise} mt-9 flex flex-col gap-3 sm:flex-row`}>
               <Button
                 asChild
                 className="h-12 bg-[image:var(--yhc-silver)] px-6 text-base font-semibold text-obsidian hover:opacity-95"
@@ -139,18 +154,20 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
         </header>
 
         {/* Overview + causes */}
-        <section className="container-yhc grid gap-14 py-20 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:py-20">
+        <section
+          className={`container-yhc grid gap-14 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] ${SECTION_Y}`}
+        >
           <div>
             <p className="text-xl leading-relaxed text-ink">{concern.body}</p>
             <h2 className="display mt-14 text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
               What can cause it
             </h2>
             <ul className="mt-6 divide-y divide-line border-y border-line">
-              {concern.causes.map((cause) => (
-                <li key={cause} className="flex gap-4 py-4 text-lg text-body">
+              {concern.causes.map((cause, i) => (
+                <Reveal as="li" key={cause} delayMs={i * 70} className="flex gap-4 py-4 text-lg text-body">
                   <span className="mt-3.5 h-px w-5 shrink-0 bg-steel" aria-hidden />
                   {cause}
-                </li>
+                </Reveal>
               ))}
             </ul>
             <p className="mt-5 text-sm text-muted-foreground">
@@ -199,17 +216,31 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
         {products.length ? (
           <section className="border-t border-line bg-[#efeeeb]/60">
             {/* 2 products: heading beside them; 3: heading above — always a full row. */}
-            <div className="container-yhc py-14 lg:py-20">
+            <div className={`container-yhc ${SECTION_Y}`}>
               <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-                <div className={products.length === 2 ? 'sm:col-span-2 lg:col-span-1 lg:pr-6' : 'sm:col-span-2 lg:col-span-3 md:flex md:items-end md:justify-between md:gap-10'}>
-                  <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">What your plan may include</h2>
-                  <p className={products.length === 2 ? 'mt-4 max-w-md text-body' : 'mt-4 max-w-md text-body md:mt-0'}>
+                <div
+                  className={
+                    products.length === 2
+                      ? 'sm:col-span-2 lg:col-span-1 lg:pr-6'
+                      : 'sm:col-span-2 md:flex md:items-end md:justify-between md:gap-10 lg:col-span-3'
+                  }
+                >
+                  <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
+                    What your plan may include
+                  </h2>
+                  <p
+                    className={
+                      products.length === 2 ? 'mt-4 max-w-md text-body' : 'mt-4 max-w-md text-body md:mt-0'
+                    }
+                  >
                     If treatment can help, Dr. Tyagi picks the products, strength and routine. These are often
                     used for {concern.title.toLowerCase()}. {t('common.resultsVary')}
                   </p>
                 </div>
-                {products.map((p) => (
-                  <ProductTile key={p.id} product={p} />
+                {products.map((p, i) => (
+                  <Reveal key={p.id} delayMs={i * 100}>
+                    <ProductTile product={p} />
+                  </Reveal>
                 ))}
               </div>
             </div>
@@ -219,13 +250,13 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
 
       {/* Other concerns */}
       {others.length ? (
-        <section className="container-yhc py-14 lg:py-20">
+        <section className={`container-yhc ${SECTION_Y}`}>
           <h2 className="display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)] text-balance">Other concerns</h2>
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {others.map((c) => {
+            {others.map((c, i) => {
               const img = concernImage(c.slug);
               return (
-                <li key={c.slug}>
+                <Reveal as="li" key={c.slug} delayMs={i * 80}>
                   <Link
                     href={concernPath(c.slug)}
                     className="group flex h-full items-center gap-4 rounded-2xl bg-card p-3 ring-1 ring-line transition-shadow hover:shadow-card motion-reduce:transition-none"
@@ -237,7 +268,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
                           alt=""
                           fill
                           sizes="80px"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                          className={`object-cover ${IMG_HOVER_ZOOM}`}
                         />
                       </span>
                     ) : null}
@@ -246,7 +277,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
                       <span className="mt-1 block text-sm text-body">{c.summary}</span>
                     </span>
                   </Link>
-                </li>
+                </Reveal>
               );
             })}
           </ul>
@@ -255,6 +286,10 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
       ) : null}
 
       <CtaBand
+        id="concern-cta-heading"
+        image={SLOTS.H09}
+        imagePosition="65% 40%"
+        title="Find out which cause is yours."
         bookLabel={terms.bookLabel}
         body={`${concern.title} can have more than one cause. A consultation tells you which one is yours.`}
       />

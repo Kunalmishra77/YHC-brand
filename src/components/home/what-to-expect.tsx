@@ -80,7 +80,7 @@ export function WhatToExpect() {
       className={`relative scroll-mt-20 overflow-x-clip border-t border-line bg-card ${SECTION_Y}`}
     >
       <div className="container-yhc">
-        <Reveal className="mb-10 grid gap-4 md:mb-12 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-12">
+        <Reveal className="mb-8 grid gap-4 md:mb-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-12">
           <h2
             id="expect-heading"
             className="display text-[clamp(2.75rem,1.6rem+4.4vw,5.25rem)] leading-[0.95] tracking-[-0.01em] text-balance"
@@ -94,7 +94,7 @@ export function WhatToExpect() {
 
         <ExpectTimeline stages={stages()} />
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-4 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-md text-[13px] leading-relaxed text-pretty text-muted-foreground">
             Individual results vary. This shows the routine, not a promise of results. Your doctor sets your
             review dates.

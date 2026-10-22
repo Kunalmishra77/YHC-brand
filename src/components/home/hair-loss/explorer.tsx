@@ -104,10 +104,10 @@ export function HairLossExplorer({ types }: { types: HairLossTypeView[] }) {
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={active.id}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.35, ease: EASE }}
+              initial={{ opacity: 0, scale: 0.975 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.015 }}
+              transition={{ duration: 0.4, ease: EASE }}
               className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-start md:gap-8"
             >
               <Figure type={active} />
@@ -181,13 +181,20 @@ function Figure({ type }: { type: HairLossTypeView }) {
       <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] bg-card ring-1 ring-line md:aspect-square">
         {type.image ? (
           <>
-            <Image
-              src={type.image.src}
-              alt={type.image.alt}
-              fill
-              sizes="(min-width: 1024px) 26rem, (min-width: 768px) 45vw, 100vw"
-              className="object-cover"
-            />
+            <motion.div
+              className="absolute inset-0"
+              initial={{ scale: 1.14 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.1, ease: EASE }}
+            >
+              <Image
+                src={type.image.src}
+                alt={type.image.alt}
+                fill
+                sizes="(min-width: 1024px) 26rem, (min-width: 768px) 45vw, 100vw"
+                className="object-cover"
+              />
+            </motion.div>
             {/* The line diagram stays as a small key to where it shows. */}
             <span className="absolute right-3 bottom-3 w-16 rounded-xl bg-white/90 p-1.5 shadow-card backdrop-blur-sm">
               <HeadDiagram pattern={type.pattern} view="top" />

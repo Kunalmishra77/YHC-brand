@@ -1,6 +1,7 @@
 'use client';
 
 import { Minus, Plus, ShoppingBag, Stethoscope, Trash2 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
@@ -8,6 +9,7 @@ import { toast } from 'sonner';
 import { ContinueBar } from '@/components/booking/continue-bar';
 import { EmptyState, ListSkeleton } from '@/components/shared/states';
 import { Button } from '@/components/ui/button';
+import { PRODUCT_IMAGES } from '@/lib/images';
 import { formatINR } from '@/lib/money';
 import { MAX_QTY } from '@/lib/validation/checkout';
 import { cart, useCart } from './cart-store';
@@ -43,12 +45,9 @@ export function CartView({ catalog, add }: { catalog: CatalogItemView[]; add: Ad
   const count = rows.reduce((s, r) => s + r.qty, 0);
 
   return (
-    <div className="container-yhc py-10 md:py-16">
+    <div className="container-yhc py-14 lg:py-20">
       <div className="mx-auto max-w-5xl">
-        <p className="eyebrow">Your cart</p>
-        <h1 className="display mt-3 text-[clamp(2rem,1.5rem+1.8vw,2.75rem)] text-balance">
-          Your cart
-        </h1>
+        <h1 className="display text-[clamp(2rem,1.5rem+1.8vw,2.75rem)] text-balance">Your cart</h1>
 
         {add?.kind === 'needs_consult' ? (
           <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-line bg-card p-5 sm:flex-row sm:items-center">
@@ -94,73 +93,80 @@ export function CartView({ catalog, add }: { catalog: CatalogItemView[]; add: Ad
           ) : (
             <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_300px] lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12">
               <ul className="min-w-0 divide-y divide-line border-y border-line">
-                {rows.map((r) => (
-                  <li key={r.productId} className="flex gap-4 py-5">
-                    <div
-                      className="bg-silver flex size-20 shrink-0 items-end justify-center rounded-xl pb-2"
-                      aria-hidden
-                    >
-                      <span className="h-12 w-6 rounded-sm bg-obsidian/85 shadow-card" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <Link
-                            href={`/products/${r.product.slug}`}
-                            className="font-medium text-ink underline-offset-4 hover:underline"
-                          >
-                            {r.product.name}
-                          </Link>
-                          <p className="mt-0.5 text-sm text-muted-foreground">{r.product.tagline}</p>
-                        </div>
-                        <p className="price shrink-0 text-ink">{formatINR(r.product.pricePaise * r.qty)}</p>
+                {rows.map((r) => {
+                  const photo = PRODUCT_IMAGES[r.product.slug];
+                  return (
+                    <li key={r.productId} className="flex gap-4 py-5">
+                      <div
+                        className="bg-silver relative flex size-20 shrink-0 items-end justify-center overflow-hidden rounded-xl pb-2"
+                        aria-hidden
+                      >
+                        {photo ? (
+                          <Image src={photo.src} alt="" fill sizes="80px" className="object-cover" />
+                        ) : (
+                          <span className="h-12 w-6 rounded-sm bg-obsidian/85 shadow-card" />
+                        )}
                       </div>
-                      <div className="mt-3 flex items-center justify-between">
-                        <div className="flex items-center rounded-md border border-line bg-card">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <Link
+                              href={`/products/${r.product.slug}`}
+                              className="font-medium text-ink underline-offset-4 hover:underline"
+                            >
+                              {r.product.name}
+                            </Link>
+                            <p className="mt-0.5 text-sm text-muted-foreground">{r.product.tagline}</p>
+                          </div>
+                          <p className="price shrink-0 text-ink">{formatINR(r.product.pricePaise * r.qty)}</p>
+                        </div>
+                        <div className="mt-3 flex items-center justify-between">
+                          <div className="flex items-center rounded-md border border-line bg-card">
+                            <button
+                              type="button"
+                              aria-label={`Decrease quantity of ${r.product.name}`}
+                              disabled={r.qty <= 1}
+                              onClick={() => cart.setQty(r.productId, r.qty - 1)}
+                              className="flex size-11 items-center justify-center text-ink disabled:text-steel"
+                            >
+                              <Minus className="size-4" aria-hidden />
+                            </button>
+                            <span className="price w-8 text-center text-ink" aria-live="polite">
+                              <span className="sr-only">Quantity </span>
+                              {r.qty}
+                            </span>
+                            <button
+                              type="button"
+                              aria-label={`Increase quantity of ${r.product.name}`}
+                              disabled={r.qty >= MAX_QTY}
+                              onClick={() => cart.setQty(r.productId, r.qty + 1)}
+                              className="flex size-11 items-center justify-center text-ink disabled:text-steel"
+                            >
+                              <Plus className="size-4" aria-hidden />
+                            </button>
+                          </div>
                           <button
                             type="button"
-                            aria-label={`Decrease quantity of ${r.product.name}`}
-                            disabled={r.qty <= 1}
-                            onClick={() => cart.setQty(r.productId, r.qty - 1)}
-                            className="flex size-11 items-center justify-center text-ink disabled:text-steel"
+                            onClick={() => {
+                              cart.remove(r.productId);
+                              toast(`${r.product.name} removed`, {
+                                action: { label: 'Undo', onClick: () => cart.add(r.productId, r.qty) },
+                              });
+                            }}
+                            className="inline-flex min-h-11 items-center gap-1.5 px-2 text-sm text-body hover:text-danger"
                           >
-                            <Minus className="size-4" aria-hidden />
-                          </button>
-                          <span className="price w-8 text-center text-ink" aria-live="polite">
-                            <span className="sr-only">Quantity </span>
-                            {r.qty}
-                          </span>
-                          <button
-                            type="button"
-                            aria-label={`Increase quantity of ${r.product.name}`}
-                            disabled={r.qty >= MAX_QTY}
-                            onClick={() => cart.setQty(r.productId, r.qty + 1)}
-                            className="flex size-11 items-center justify-center text-ink disabled:text-steel"
-                          >
-                            <Plus className="size-4" aria-hidden />
+                            <Trash2 className="size-4" aria-hidden />
+                            Remove
                           </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            cart.remove(r.productId);
-                            toast(`${r.product.name} removed`, {
-                              action: { label: 'Undo', onClick: () => cart.add(r.productId, r.qty) },
-                            });
-                          }}
-                          className="inline-flex min-h-11 items-center gap-1.5 px-2 text-sm text-body hover:text-danger"
-                        >
-                          <Trash2 className="size-4" aria-hidden />
-                          Remove
-                        </button>
+                        <p className="mt-1 text-[13px] text-muted-foreground">
+                          {formatINR(r.product.pricePaise)} each · about {r.product.daysOfSupply} days per
+                          bottle
+                        </p>
                       </div>
-                      <p className="mt-1 text-[13px] text-muted-foreground">
-                        {formatINR(r.product.pricePaise)} each · about {r.product.daysOfSupply} days per
-                        bottle
-                      </p>
-                    </div>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
 
               <aside className="h-fit rounded-2xl border border-line bg-card p-5 shadow-card sm:p-6 md:sticky md:top-24">

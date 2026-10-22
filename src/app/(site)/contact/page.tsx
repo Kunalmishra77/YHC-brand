@@ -2,7 +2,10 @@ import { Clock, Mail, MessageCircle, Scale } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ContactForm } from '@/components/site/contact-form';
+import { CtaBand } from '@/components/site/cta-band';
 import { PageIntro } from '@/components/site/page-intro';
+import { Reveal } from '@/components/site/reveal';
+import { SECTION_Y } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { Button } from '@/components/ui/button';
 import { SITE } from '@/lib/site';
@@ -60,10 +63,16 @@ export default function ContactPage() {
         }
       />
 
-      <section className="container-yhc grid gap-14 py-14 lg:py-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <section
+        className={`container-yhc grid gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 ${SECTION_Y}`}
+      >
         <div className="min-w-0 md:grid md:grid-cols-2 md:items-start md:gap-8 lg:block">
           {/* Fastest channel */}
-          <div className="rounded-2xl bg-obsidian p-7 text-on-dark md:p-8">
+          <Reveal className="relative isolate overflow-hidden rounded-2xl bg-obsidian p-7 text-on-dark md:p-8">
+            <div
+              aria-hidden
+              className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_90%_0%,rgba(214,158,92,0.22),transparent_60%)]"
+            />
             {SITE.whatsappAvailable ? (
               <MessageCircle className="size-6 text-brand-on-dark" aria-hidden />
             ) : (
@@ -92,7 +101,7 @@ export default function ContactPage() {
                 </a>
               )}
             </Button>
-          </div>
+          </Reveal>
 
           <dl className="mt-8 divide-y divide-line border-y border-line md:mt-0 lg:mt-8">
             <div className="flex gap-4 py-5">
@@ -144,22 +153,27 @@ export default function ContactPage() {
           <p className="mt-3 max-w-lg leading-relaxed text-body">
             Leave your number. We will get back to you on WhatsApp or by phone.
           </p>
-          <div className="mt-8 rounded-2xl border border-line bg-card p-5 shadow-card sm:p-6 md:p-8">
+          <Reveal
+            delayMs={120}
+            className="mt-8 rounded-2xl border border-line bg-card p-5 shadow-card sm:p-6 md:p-8"
+          >
             <ContactForm />
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Who to contact for what */}
       <section className="border-t border-line bg-[#efeeeb]/60">
-        <div className="container-yhc py-14 lg:py-20">
+        <div className={`container-yhc ${SECTION_Y}`}>
           <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
             Who to contact for what
           </h2>
-          <ul className="mt-12 border-t border-line">
-            {ROUTES.map((r) => (
-              <li
+          <ul className="mt-8 border-t border-line md:mt-12">
+            {ROUTES.map((r, i) => (
+              <Reveal
+                as="li"
                 key={r.need}
+                delayMs={i * 70}
                 className="grid gap-2 border-b border-line py-6 md:grid-cols-[minmax(0,5fr)_minmax(0,5fr)_auto] md:items-baseline md:gap-8"
               >
                 <p className="text-lg font-semibold text-ink">{r.need}</p>
@@ -179,11 +193,21 @@ export default function ContactPage() {
                     {r.label}
                   </Link>
                 )}
-              </li>
+              </Reveal>
             ))}
           </ul>
         </div>
       </section>
+
+      <CtaBand
+        id="contact-cta-heading"
+        image={SLOTS.H06}
+        imagePosition="60% 50%"
+        title="A question about your hair?"
+        body="Our support team cannot give medical advice. The doctor can, at your consultation."
+        primary={{ href: '/book', label: 'Book a consultation' }}
+        whatsapp={false}
+      />
     </>
   );
 }

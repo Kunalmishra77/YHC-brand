@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import type { ResultEntry } from '@/server/content/results';
 import { BeforeAfterSlider } from './before-after-slider';
+import { Reveal } from './reveal';
 import { RAIL, RAIL_ITEM, TEXT_LINK } from './section';
 
 /** Shown under every result (copy rules: PRD §15). */
@@ -42,9 +43,9 @@ export function ResultsGallery({
           aria-label="Result placeholders"
         >
           {Array.from({ length: placeholders }, (_, i) => (
-            <li key={i} className={rail ? RAIL_ITEM : undefined}>
+            <Reveal as="li" key={i} delayMs={(i % 3) * 90} className={rail ? RAIL_ITEM : undefined}>
               <PlaceholderFrame index={i} />
-            </li>
+            </Reveal>
           ))}
         </ul>
         <ConsentNote />
@@ -86,10 +87,10 @@ export function ResultsGallery({
         className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3"
         aria-label="Before and after results"
       >
-        {results.map((r) => (
-          <li key={r.id}>
+        {results.map((r, i) => (
+          <Reveal as="li" key={r.id} delayMs={(i % 3) * 90}>
             <ResultCard result={r} />
-          </li>
+          </Reveal>
         ))}
       </ul>
       <ConsentNote />

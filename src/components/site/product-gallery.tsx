@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { LINE_LABEL, type ProductLine } from '@/lib/brand-media';
 import type { SiteImage } from '@/lib/images';
 import { cn } from '@/lib/utils';
+import { IMG_HOVER_ZOOM } from './section';
 
 const LINE_DOT: Record<ProductLine, string> = { men: 'bg-[#bfe3cb]', women: 'bg-[#f0c3cf]' };
 
@@ -61,15 +62,23 @@ export function ProductGallery({
       ) : null}
 
       <div className="group relative aspect-[4/5] overflow-hidden rounded-[28px] bg-obsidian">
-        <Image
-          key={main.src}
-          src={main.src}
-          alt={main.alt}
-          fill
-          priority
-          sizes="(min-width: 768px) 50vw, 100vw"
-          className="animate-in object-cover transition-transform duration-500 fade-in group-hover:scale-[1.03] motion-reduce:animate-none motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-        />
+        {/* every image stays mounted so switching crossfades instead of flashing */}
+        {images.map((img, i) => (
+          <Image
+            key={`${line}-${img.src}`}
+            src={img.src}
+            alt={i === active ? img.alt : ''}
+            aria-hidden={i === active ? undefined : true}
+            fill
+            priority={i === 0}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className={cn(
+              IMG_HOVER_ZOOM,
+              'object-cover transition-[opacity,scale] duration-700',
+              i === active ? 'opacity-100' : 'opacity-0',
+            )}
+          />
+        ))}
         {isPack ? (
           <span className="absolute bottom-3 left-3 rounded-full bg-black/55 px-2.5 py-1 text-[12px] text-white/85 backdrop-blur">
             Pack render

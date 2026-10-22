@@ -5,7 +5,9 @@ import { publicCredential } from '@/lib/credentials';
 import { getConsultTerms } from '@/components/site/consult-fee';
 import { CtaBand } from '@/components/site/cta-band';
 import { buildJourney } from '@/components/site/journey-steps';
-import { H1, H2, SECTION_Y, TEXT_LINK } from '@/components/site/section';
+import motion from '@/components/site/motion.module.css';
+import { Reveal } from '@/components/site/reveal';
+import { H1, H2, IMG_HOVER_ZOOM, riseDelay, SECTION_Y, TEXT_LINK } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { t } from '@/i18n/en';
 import { SLOTS } from '@/lib/slots';
@@ -75,14 +77,19 @@ export default function AboutPage() {
     <>
       {/* 1 · Opening */}
       <section className="border-b border-line">
-        <div className="container-yhc grid gap-10 py-14 md:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] md:items-center md:gap-12 md:py-24 lg:gap-16">
+        <div
+          className={`container-yhc grid gap-10 md:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] md:items-center md:gap-12 lg:gap-16 ${SECTION_Y}`}
+        >
           <div className="min-w-0">
-            <h1 className={H1}>Hair care that starts with a conversation.</h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-body">
+            <h1 className={`${motion.rise} ${H1}`}>Hair care that starts with a conversation.</h1>
+            <p
+              style={riseDelay(120)}
+              className={`${motion.rise} mt-6 max-w-xl text-lg leading-relaxed text-body`}
+            >
               Most hair products are sold before anyone asks you a single question. We do the opposite. Every
               plan starts with a one-to-one video call with {doctor.name}, and we check on it as you go.
             </p>
-            <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+            <div style={riseDelay(220)} className={`${motion.rise} mt-8 flex flex-wrap gap-x-8 gap-y-3`}>
               <Link href="/how-it-works" className={`text-ink ${TEXT_LINK}`}>
                 How it works
               </Link>
@@ -99,7 +106,7 @@ export default function AboutPage() {
                 fill
                 priority
                 sizes="(min-width: 768px) 42vw, 100vw"
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                className={`${motion.kenburns} object-cover ${IMG_HOVER_ZOOM}`}
               />
             </div>
             <figcaption className="mt-3 text-[12px] text-muted-foreground">
@@ -142,16 +149,18 @@ export default function AboutPage() {
               Each step in detail
             </Link>
           </div>
-          <ol className="mt-14 grid gap-px overflow-hidden rounded-2xl bg-line-dark sm:grid-cols-2 lg:grid-cols-5">
+          <ol className="mt-10 grid gap-px overflow-hidden rounded-2xl bg-line-dark sm:grid-cols-2 md:mt-14 lg:grid-cols-5">
             {journey.map((step, i) => (
-              <li
+              <Reveal
+                as="li"
                 key={step.title}
+                delayMs={i * 80}
                 className="flex flex-col bg-obsidian p-6 sm:last:odd:col-span-2 md:p-7 lg:min-h-72 lg:last:odd:col-span-1"
               >
                 <span className="font-display text-5xl leading-none text-platinum/70">{i + 1}</span>
                 <h3 className="mt-8 text-lg font-semibold text-on-dark lg:mt-auto">{step.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-on-dark-muted">{step.body}</p>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </div>
@@ -168,7 +177,12 @@ export default function AboutPage() {
         </div>
         <ol className="mt-12 grid border-t border-line md:grid-cols-2 md:gap-x-16">
           {NEVER.map((item, i) => (
-            <li key={item.title} className="flex gap-5 border-b border-line py-7">
+            <Reveal
+              as="li"
+              key={item.title}
+              delayMs={(i % 2) * 90}
+              className="flex gap-5 border-b border-line py-7"
+            >
               <span className="w-8 shrink-0 font-display text-2xl leading-none text-steel">
                 {String(i + 1).padStart(2, '0')}
               </span>
@@ -176,7 +190,7 @@ export default function AboutPage() {
                 <h3 className="text-lg font-semibold text-ink">{item.title}</h3>
                 <p className="mt-2 leading-relaxed text-body">{item.body}</p>
               </div>
-            </li>
+            </Reveal>
           ))}
         </ol>
       </section>
@@ -194,7 +208,7 @@ export default function AboutPage() {
                 alt={SLOTS.S06.alt}
                 fill
                 sizes="(min-width: 768px) 40vw, 100vw"
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                className={`object-cover ${IMG_HOVER_ZOOM}`}
               />
               <span className="absolute top-4 left-4 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-on-dark backdrop-blur">
                 {t('common.illustrativeImage')}
@@ -202,13 +216,13 @@ export default function AboutPage() {
             </div>
           </div>
           <dl className="divide-y divide-line border-y border-line md:self-end">
-            {VALUES.map((v) => (
-              <div key={v.title} className="py-7">
+            {VALUES.map((v, i) => (
+              <Reveal key={v.title} delayMs={i * 80} className="py-7">
                 <dt className="font-display text-[clamp(1.75rem,1.45rem+1vw,2.25rem)] leading-tight font-medium text-ink">
                   {v.title}
                 </dt>
                 <dd className="mt-2 max-w-[56ch] leading-relaxed text-body">{v.body}</dd>
-              </div>
+              </Reveal>
             ))}
           </dl>
         </div>
@@ -255,6 +269,9 @@ export default function AboutPage() {
       </section>
 
       <CtaBand
+        id="about-cta-heading"
+        image={SLOTS.J08}
+        imagePosition="60% 50%"
         bookLabel={terms.bookLabel}
         body={`The first step is a consultation. If treatment cannot help you, ${doctor.name} will tell you.`}
       />

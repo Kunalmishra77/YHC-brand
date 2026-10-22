@@ -1,9 +1,9 @@
 'use client';
 
 import { Plus } from 'lucide-react';
-import { AnimatePresence, MotionConfig, motion } from 'motion/react';
+import { AnimatePresence, MotionConfig, motion, useReducedMotion, useScroll, useSpring } from 'motion/react';
 import Image from 'next/image';
-import { useId, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import type { SiteImage } from '@/lib/images';
 import { cn } from '@/lib/utils';
 
@@ -31,26 +31,29 @@ export interface ExpectStage {
 const EASE = [0.2, 0.7, 0.2, 1] as const;
 
 /**
- * Section 9 timeline: four square pictures joined by a thin line that draws in once. A swipe rail on
+ * Section 9 timeline: four square pictures joined by a line that draws itself with the scroll; the
+ * stages rise in one after another. A swipe rail on
  * phones, four columns from `lg`. "More" slides the detail up over the picture, so the section never
  * grows taller when a stage is opened.
  */
 export function ExpectTimeline({ stages }: { stages: ExpectStage[] }) {
   const uid = useId();
   const [open, setOpen] = useState<string | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  // The joining line draws itself as the timeline scrolls up through the screen.
+  const { scrollYProgress } = useScroll({ target: rootRef, offset: ['start 85%', 'end 55%'] });
+  const draw = useSpring(scrollYProgress, { stiffness: 90, damping: 24, restDelta: 0.001 });
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="relative">
+      <div ref={rootRef} className="relative">
         {/* The line joining the stages (decorative; the list order carries the sequence). */}
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-[1.125rem] hidden lg:block">
           <div className="h-px bg-line" />
           <motion.div
-            className="absolute inset-x-0 top-0 h-px origin-left bg-obsidian"
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true, amount: 1 }}
-            transition={{ duration: 1.6, ease: EASE }}
+            className="absolute inset-x-0 -top-px h-[3px] origin-left rounded-full bg-[linear-gradient(90deg,var(--yhc-obsidian),var(--yhc-accent))]"
+            style={reduce ? undefined : { scaleX: draw }}
           />
         </div>
 
@@ -63,15 +66,25 @@ export function ExpectTimeline({ stages }: { stages: ExpectStage[] }) {
             const btnId = `${uid}-btn-${s.id}`;
             const panelId = `${uid}-panel-${s.id}`;
             return (
-              <li
+              <motion.li
                 key={s.id}
                 className="w-[78%] max-w-[20rem] shrink-0 snap-start sm:w-[44%] lg:w-auto lg:max-w-none"
+                initial={{ opacity: 0, y: 36 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ duration: 0.7, delay: i * 0.12, ease: EASE }}
               >
                 {/* Step marker on the line */}
                 <div className="mb-4 flex items-center gap-3">
-                  <span className="relative z-10 flex size-9 items-center justify-center rounded-full bg-obsidian text-sm font-semibold text-on-dark tabular-nums ring-4 ring-card">
+                  <motion.span
+                    className="relative z-10 flex size-9 items-center justify-center rounded-full bg-obsidian text-sm font-semibold text-on-dark tabular-nums ring-4 ring-card"
+                    initial={{ scale: 0.4 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: true, amount: 1 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 16, delay: 0.15 + i * 0.12 }}
+                  >
                     {i + 1}
-                  </span>
+                  </motion.span>
                   <span className="text-sm font-medium text-brand">{s.when}</span>
                 </div>
 
@@ -81,7 +94,7 @@ export function ExpectTimeline({ stages }: { stages: ExpectStage[] }) {
                     alt={s.image.alt}
                     fill
                     sizes="(min-width: 1024px) 18rem, (min-width: 640px) 44vw, 78vw"
-                    className="object-cover transition-transform duration-[1400ms] ease-yhc group-hover/stage:scale-[1.04] motion-reduce:transition-none"
+                    className="object-cover transition-transform duration-[1400ms] ease-yhc group-hover/stage:scale-[1.07] motion-reduce:transition-none"
                   />
                   {s.note ? (
                     <span className="absolute bottom-3 left-3 rounded-full bg-black/55 px-2.5 py-1 text-xs text-white backdrop-blur-sm">
@@ -155,7 +168,7 @@ export function ExpectTimeline({ stages }: { stages: ExpectStage[] }) {
                     </span>
                   </button>
                 </div>
-              </li>
+              </motion.li>
             );
           })}
         </ol>

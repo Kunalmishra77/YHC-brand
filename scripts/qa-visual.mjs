@@ -50,7 +50,7 @@ await browser.close();
 // Empty bands in the full-page shots
 for (const file of readdirSync(dir).filter((f) => /^(1440|390)_.*\.png$/.test(f))) {
   const img = sharp(join(dir, file));
-  const { width, height } = await img.metadata();
+  const { width } = await img.metadata();
   const scale = 4;
   const { data, info } = await img.resize(Math.round(width / scale)).greyscale().raw().toBuffer({ resolveWithObject: true });
   const W = info.width;

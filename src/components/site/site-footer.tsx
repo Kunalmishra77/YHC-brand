@@ -40,7 +40,8 @@ const LINK =
 
 /**
  * Footer: brand, lead doctor and contact; Explore / Patients / Legal columns (the medical disclaimer and
- * grievance officer pages are linked under Legal — ADR-30); then the bottom bar with the credit line and key policies.
+ * grievance officer pages are linked under Legal — ADR-30); then the bottom bar with the credit line and key policies,
+ * and a giant gradient "YHC." wordmark across the bottom (ADR-35).
  */
 export function SiteFooter({ doctor }: { doctor: Doctor }) {
   const primaryPolicies = LEGAL_PAGES.filter((p) => p.primary);
@@ -121,7 +122,14 @@ export function SiteFooter({ doctor }: { doctor: Doctor }) {
             </ul>
           </nav>
         </div>
-      </div>{' '}
+      </div>
+      {/* Giant wordmark across the full width (ADR-35, dewlab): decoration only — the logo above names the brand. */}
+      <div aria-hidden className="relative overflow-hidden select-none">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-[radial-gradient(ellipse_at_50%_100%,rgba(217,167,102,0.12),transparent_65%)]" />
+        <p className="container-yhc -mb-[0.14em] bg-[linear-gradient(180deg,#f2f2f0_0%,#c9ccd1_38%,#4e6378_78%,rgba(18,19,21,0)_100%)] bg-clip-text pt-2 text-center font-display text-[34vw] leading-[0.8] font-semibold tracking-[-0.04em] text-transparent [-webkit-background-clip:text] xl:text-[27rem]">
+          YHC.
+        </p>
+      </div>
     </footer>
   );
 }

@@ -212,3 +212,29 @@
     transform: translateX(calc(-50% - 0.625rem));
   }
 }
+
+/* Lenis (smooth scroll, ADR-35) */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+
+/* Homepage hero (docs/21): slow ken-burns drift on the hero pictures; still under reduced motion. */
+@keyframes yhc-kenburns {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.07) translate3d(-1.2%, -1%, 0);
+  }
+}
+.yhc-kenburns {
+  animation: yhc-kenburns 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .yhc-kenburns {
+    animation: none;
+  }
+}

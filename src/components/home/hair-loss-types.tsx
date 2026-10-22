@@ -191,7 +191,7 @@ export function HairLossTypes() {
   return (
     <section className="bg-pearl" aria-labelledby="hair-loss-types-heading">
       <div className={`container-yhc ${SECTION_Y}`}>
-        <div className="mb-8 grid gap-4 md:mb-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-12">
+        <div className="mb-6 grid gap-4 md:mb-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-12">
           <h2
             id="hair-loss-types-heading"
             className="display text-[clamp(2.5rem,1.5rem+3.8vw,4.5rem)] leading-[0.98] tracking-[-0.01em] text-balance"
@@ -205,7 +205,7 @@ export function HairLossTypes() {
 
         <HairLossExplorer types={types} />
 
-        <div className="mt-10 flex flex-col gap-5 border-t border-line pt-6 md:flex-row md:items-center md:justify-between">
+        <div className="mt-8 flex flex-col gap-5 border-t border-line pt-6 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="display text-[clamp(1.5rem,1.3rem+0.8vw,2rem)]">Not sure which? Take the scan.</p>
             <p className="mt-1 text-[13px] text-muted-foreground">

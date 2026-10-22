@@ -1,8 +1,8 @@
 import { getConsultTerms } from '@/components/site/consult-fee';
-import { SECTION_Y } from '@/components/site/section';
 import { illustrativeNote } from '@/components/site/slot-note';
 import { SLOTS } from '@/lib/slots';
 import type { VisualSlot } from '@/lib/visual-slots';
+import { JourneyPinned } from './how-it-works/journey-pinned';
 import { JourneyStepper } from './how-it-works/journey-stepper';
 import type { HowStep, StepImage } from './how-it-works/types';
 
@@ -19,7 +19,8 @@ const stepImage = (s: VisualSlot): StepImage => ({
 /**
  * Homepage section 6 · How it works — the real patient journey in its ADR-26 order, picture-led
  * (docs/20): steps as tabs, one big panel whose photo (slots H06–H12) crossfades with each step.
- * The fee and slot length come from settings (getConsultTerms), never constants.
+ * The fee and slot length come from settings (getConsultTerms), never constants. Cinematic pass
+ * (ADR-35): from lg with motion allowed the section pins into a scroll-driven "ritual" (JourneyPinned).
  */
 export function HowItWorksJourney() {
   const terms = getConsultTerms();
@@ -80,8 +81,8 @@ export function HowItWorksJourney() {
       aria-labelledby="how-it-works-heading"
       className="scroll-mt-16 border-y border-line bg-card"
     >
-      <div className={`container-yhc ${SECTION_Y}`}>
-        <div className="mb-8 grid gap-4 md:mb-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-16">
+      <div className="container-yhc pt-14 lg:pt-20">
+        <div className="mb-8 grid gap-4 md:mb-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-16">
           <div>
             <p className="eyebrow">How it works</p>
             <h2
@@ -95,7 +96,13 @@ export function HowItWorksJourney() {
             6 simple steps, then follow-up. No medicine until a doctor has seen you.
           </p>
         </div>
+      </div>
 
+      {/* lg + motion: pinned scroll story (200vh). Otherwise: the tab/swipe stepper. */}
+      <div className="hidden pb-4 lg:motion-safe:block">
+        <JourneyPinned steps={steps} terms={{ fee: terms.fee, slotMinutes: terms.slotMinutes }} />
+      </div>
+      <div className="container-yhc pb-14 lg:pb-20 lg:motion-safe:hidden">
         <JourneyStepper steps={steps} terms={{ fee: terms.fee, slotMinutes: terms.slotMinutes }} />
       </div>
     </section>

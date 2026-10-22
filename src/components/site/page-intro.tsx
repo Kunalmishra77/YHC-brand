@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import type { SiteImage } from '@/lib/images';
 import { cn } from '@/lib/utils';
+import styles from './motion.module.css';
+import { Parallax } from './parallax';
+import { riseDelay } from './section';
 import { illustrativeNote } from './slot-note';
 
 /**
@@ -10,6 +13,8 @@ import { illustrativeNote } from './slot-note';
  *   subject is never cropped away. Phones: the picture on top, the text below.
  * - Portrait / square image (pack renders, square art): a split header with a frame matching its shape.
  * `tone="dark"` uses the obsidian stage.
+ * Motion (docs/21): the banner settles with a slow ken-burns zoom and drifts as the page scrolls away;
+ * eyebrow, title, lede and actions rise in a short stagger. Reduced motion: all static.
  */
 export function PageIntro({
   eyebrow,
@@ -39,9 +44,15 @@ export function PageIntro({
 
   const text = (
     <>
-      {eyebrow ? <p className={cn('eyebrow', dark && 'text-brand-on-dark')}>{eyebrow}</p> : null}
+      {eyebrow ? (
+        <p style={riseDelay(0)} className={cn(styles.rise, 'eyebrow', dark && 'text-brand-on-dark')}>
+          {eyebrow}
+        </p>
+      ) : null}
       <h1
+        style={riseDelay(90)}
         className={cn(
+          styles.rise,
           'display max-w-3xl text-[clamp(2.5rem,1.75rem+3vw,4.25rem)] leading-[1.04] text-balance',
           dark && 'text-on-dark',
           eyebrow ? 'mt-4' : null,
@@ -50,11 +61,22 @@ export function PageIntro({
         {title}
       </h1>
       {lede ? (
-        <div className={cn('mt-6 max-w-[56ch] text-lg leading-relaxed text-pretty', dark ? 'text-on-dark-muted' : 'text-body')}>
+        <div
+          style={riseDelay(200)}
+          className={cn(
+            styles.rise,
+            'mt-6 max-w-[56ch] text-lg leading-relaxed text-pretty',
+            dark ? 'text-on-dark-muted' : 'text-body',
+          )}
+        >
           {lede}
         </div>
       ) : null}
-      {children ? <div className="mt-9">{children}</div> : null}
+      {children ? (
+        <div style={riseDelay(300)} className={cn(styles.rise, 'mt-9')}>
+          {children}
+        </div>
+      ) : null}
     </>
   );
 
@@ -74,14 +96,16 @@ export function PageIntro({
         )}
       >
         <div className="relative aspect-[16/10] sm:aspect-[16/8] md:absolute md:inset-0 md:-z-10 md:aspect-auto">
-          <Image
-            src={image.src}
-            alt={image.alt}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-[75%_50%] md:object-[100%_35%]"
-          />
+          <Parallax mode="exit" strength={10}>
+            <Image
+              src={image.src}
+              alt={image.alt}
+              fill
+              priority
+              sizes="100vw"
+              className={cn(styles.kenburns, 'object-cover object-[75%_50%] md:object-[100%_35%]')}
+            />
+          </Parallax>
           {/* desktop: calm fade on the left for the text */}
           <div
             aria-hidden
@@ -110,7 +134,13 @@ export function PageIntro({
   }
 
   return (
-    <section className={cn('border-b', dark ? 'border-line-dark bg-obsidian text-on-dark' : 'border-line', className)}>
+    <section
+      className={cn(
+        'border-b',
+        dark ? 'border-line-dark bg-obsidian text-on-dark' : 'border-line',
+        className,
+      )}
+    >
       <div
         className={cn(
           'container-yhc grid gap-10 pt-14 pb-12 md:py-20 lg:py-24',
@@ -133,7 +163,10 @@ export function PageIntro({
               fill
               priority
               sizes="(min-width: 768px) 40vw, 100vw"
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+              className={cn(
+                styles.kenburns,
+                'object-cover transition-[scale] duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100',
+              )}
             />
             {chip}
           </div>

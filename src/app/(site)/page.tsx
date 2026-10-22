@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import { ContactStrip } from '@/components/home/contact-strip';
 import { DoctorFeature } from '@/components/home/doctor-feature';
+import { FilmBand } from '@/components/home/film-band';
 import { GuaranteeCompact } from '@/components/home/guarantee-compact';
 import { HairLossTypes } from '@/components/home/hair-loss-types';
 import { HowItWorksJourney } from '@/components/home/how-it-works-journey';
 import { IngredientsExplorer } from '@/components/home/ingredients-explorer';
+import { LookCloserBand } from '@/components/home/look-closer-band';
 import { ResultsMarquee } from '@/components/home/results-marquee';
 import { ScanInvite } from '@/components/home/scan-invite';
 import { ScienceStory } from '@/components/home/science-story';
@@ -89,11 +91,38 @@ export default function HomePage() {
       <HowItWorksJourney />
       {/* 7 · The science */}
       <ScienceStory />
+      {/* 7b · Image-in-text band (ADR-35) */}
+      <LookCloserBand />
       {/* 8 · Before & after */}
       <ResultsMarquee />
+      {/* 8b · Ritual film (client's Flow film V03, scroll-played) */}
+      <FilmBand
+        id="ritual-film-heading"
+        name="ritual"
+        eyebrow="If your doctor prescribes the solution"
+        poster={{ src: '/media/seq/ritual/frame_0130.webp', alt: 'A dropper releases a few drops of serum onto a hair parting' }}
+        beats={[
+          { title: 'A few drops.', body: 'Your doctor tells you how many, and how often.' },
+          { title: 'On the thin areas.', body: 'Put them where your hair is thinning, then massage in gently.' },
+          { title: 'Every day.', body: 'Small, steady habits matter more than big promises. Results vary.' },
+        ]}
+        cta={{ href: '/start', label: 'Begin my free 3D scan' }}
+      />
       {/* 9 · What can you expect */}
       <WhatToExpect />
       {/* 10 · Ingredients */}
+      {/* 10a · Ingredients film (client's Flow film V04, scroll-played) */}
+      <FilmBand
+        id="ingredients-film-heading"
+        name="ingredients"
+        eyebrow="Inside the capsules"
+        poster={{ src: '/media/seq/ingredients/frame_0192.webp', alt: 'The YHC capsules jar surrounded by amla, leaves, roots and resin' }}
+        beats={[
+          { title: 'Plants with a long history.', body: 'Amla, bhringraj, ashwagandha and more go into the YHC capsules.' },
+          { title: 'Chosen with a doctor.', body: 'Your doctor decides if they belong in your plan.' },
+          { title: 'Nothing hidden.', body: 'Every ingredient is on the pack, and on this page.' },
+        ]}
+      />
       <IngredientsExplorer />
       {/* 11 · Types of hair loss */}
       <HairLossTypes />

@@ -5,8 +5,10 @@ import { getConsultTerms } from '@/components/site/consult-fee';
 import { ConcernList } from '@/components/site/concern-list';
 import { CtaBand } from '@/components/site/cta-band';
 import { PageIntro } from '@/components/site/page-intro';
+import { SECTION_Y } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { IMAGES } from '@/lib/images';
+import { SLOTS } from '@/lib/slots';
 import { getConcerns } from '@/server/catalog';
 
 export const dynamic = 'force-dynamic';
@@ -36,7 +38,7 @@ export default function ConcernsPage() {
           </p>
         }
       />
-      <section className="container-yhc py-14 lg:py-20">
+      <section className={`container-yhc ${SECTION_Y}`}>
         {concerns.length ? (
           <ConcernList concerns={concerns} />
         ) : (
@@ -47,8 +49,12 @@ export default function ConcernsPage() {
         )}
       </section>
       <CtaBand
+        id="concerns-cta-heading"
+        image={SLOTS.C01}
+        imagePosition="75% 50%"
+        title="Not sure what you are noticing?"
         bookLabel={terms.bookLabel}
-        body="Whatever you are noticing, a consultation is the fastest way to understand it."
+        body="Whatever it is, a consultation is the fastest way to understand it."
       />
     </>
   );

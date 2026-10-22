@@ -28,7 +28,7 @@ export function RiseTile({
 }
 
 /**
- * A real, settings-driven figure that fades up once visible. It is never animated through other
+ * A real, settings-driven figure that scales in once visible. It is never animated through other
  * numbers: a factual value (e.g. consultation length) must read the same in every frame, screenshot
  * and text extraction (audit CON-03).
  */
@@ -37,10 +37,11 @@ export function CountUp({ value, className }: { value: number; className?: strin
   return (
     <motion.span
       className={cn('inline-block tabular-nums', className)}
-      initial={reduce ? false : { opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={reduce ? false : { opacity: 0, scale: 0.6 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, margin: '-10% 0px' }}
-      transition={{ duration: 0.9, ease: [0.2, 0.7, 0.2, 1] }}
+      transition={{ type: 'spring', stiffness: 120, damping: 16, mass: 0.9 }}
+      style={{ transformOrigin: '0% 100%' }}
     >
       {value}
     </motion.span>

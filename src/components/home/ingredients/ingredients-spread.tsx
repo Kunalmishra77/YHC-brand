@@ -1,7 +1,7 @@
 'use client';
 
-import { ArrowRight, Leaf, Stethoscope } from 'lucide-react';
-import { AnimatePresence, MotionConfig, motion } from 'motion/react';
+import { ArrowLeft, ArrowRight, Leaf, Stethoscope } from 'lucide-react';
+import { AnimatePresence, MotionConfig, motion, useReducedMotion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useId, useRef, useState, type KeyboardEvent } from 'react';
@@ -39,9 +39,26 @@ export interface SpreadProduct {
 
 const EASE = [0.2, 0.7, 0.2, 1] as const;
 
+/** Soft background tints per pack line (the label colours on the packs), one shade per product. */
+const TINTS: Record<ProductLine, string[]> = {
+  men: ['#e2ece6', '#dce8e1', '#e6eee9'],
+  women: ['#f3e5e2', '#f0dfdc', '#f5e9e6'],
+};
+
+/** Where the floating ingredient photos sit around the arch, and how long each one takes to bob. */
+const ORBIT = [
+  { pos: '-left-[10%] top-[8%] lg:-left-[14%]', float: 5.2 },
+  { pos: '-right-[10%] top-[20%] lg:-right-[16%]', float: 6.1 },
+  { pos: '-left-[12%] top-[44%] lg:-left-[18%]', float: 5.7 },
+  { pos: '-right-[10%] top-[54%] lg:-right-[14%]', float: 6.6 },
+  { pos: '-left-[6%] bottom-[22%] lg:-left-[8%]', float: 5.9 },
+  { pos: '-right-[4%] bottom-[30%] lg:-right-[6%]', float: 6.3 },
+] as const;
+
 /**
- * Section 10 explorer. Left: the real pack, large, with a men/women switch; the chosen ingredient's
- * photo floats over it. Right: products as tabs (roving tabindex, arrow keys), the ingredients as photo
+ * Section 10 explorer (kanak pattern, ADR-35). Left: the real pack in an arch on a soft colour field
+ * (mint for the men line, blush for the women line), its ingredient photos floating around it, arrows to
+ * step through the products. Right: products as tabs (roving tabindex, arrow keys), the ingredients as photo
  * chips, and one plain line about the chosen one. Under reduced motion the pictures simply swap.
  */
 export function IngredientsSpread({ products, headingId }: { products: SpreadProduct[]; headingId: string }) {
@@ -50,11 +67,13 @@ export function IngredientsSpread({ products, headingId }: { products: SpreadPro
   const [ingIdx, setIngIdx] = useState(0);
   const [line, setLine] = useState<ProductLine>('men');
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const reduce = useReducedMotion();
 
   const product = products[productIdx] ?? products[0];
   if (!product) return null;
   const ing = product.ingredients[ingIdx] ?? product.ingredients[0];
   const pack = product.packs.find((p) => p.line === line) ?? product.packs[0];
+  const tint = TINTS[pack?.line ?? line][productIdx % 3] ?? '#e6e7e9';
   const tabId = (slug: string) => `${uid}-tab-${slug}`;
   const panelId = `${uid}-panel`;
 
@@ -95,83 +114,129 @@ export function IngredientsSpread({ products, headingId }: { products: SpreadPro
           <p className="mt-3 text-lg text-body">Pick a product. Tap an ingredient to see it.</p>
         </div>
 
-        {/* Stage: the real pack, with the chosen ingredient over it */}
-        <div className="relative aspect-square overflow-hidden rounded-[1.75rem] bg-obsidian sm:aspect-[5/4] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:aspect-[4/5]">
-          <AnimatePresence initial={false}>
-            {pack ? (
-              <motion.div
-                key={pack.src}
-                className="absolute inset-0"
-                initial={{ opacity: 0, scale: 1.04 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.7, ease: EASE }}
-              >
-                <Image
-                  src={pack.src}
-                  alt={pack.alt}
-                  fill
-                  sizes="(min-width: 1024px) 40vw, 100vw"
-                  className="object-cover"
-                />
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
+        {/* Kanak-style colour field: soft mint for the men line, blush for the women line, a shade per product. */}
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10"
+          initial={false}
+          animate={{ backgroundColor: tint }}
+          transition={{ duration: 0.9, ease: EASE }}
+        />
 
-          {product.packs.length > 1 ? (
-            <div
-              role="group"
-              aria-label="Pack"
-              className="absolute top-4 left-4 flex rounded-full bg-black/45 p-1 ring-1 ring-white/15 backdrop-blur-md"
-            >
-              {product.packs.map((p) => {
-                const on = p.line === (pack?.line ?? 'men');
-                return (
-                  <button
-                    key={p.line}
-                    type="button"
-                    aria-pressed={on}
-                    onClick={() => setLine(p.line)}
+        {/* Stage: the real pack in an arch, its ingredients floating around it */}
+        <div className="relative mx-auto w-[74%] max-w-[26rem] py-6 sm:w-[58%] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:w-[78%] lg:max-w-[30rem] lg:self-center">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[2rem] bg-obsidian shadow-[0_50px_90px_-40px_rgba(18,19,21,0.55)] ring-1 ring-black/5">
+            <AnimatePresence initial={false}>
+              {pack ? (
+                <motion.div
+                  key={pack.src}
+                  className="absolute inset-0"
+                  initial={{ opacity: 0, scale: 1.08 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.8, ease: EASE }}
+                >
+                  <Image
+                    src={pack.src}
+                    alt={pack.alt}
+                    fill
+                    sizes="(min-width: 1024px) 30rem, 74vw"
+                    className="object-cover"
+                  />
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+
+            {product.packs.length > 1 ? (
+              <div
+                role="group"
+                aria-label="Pack"
+                className="absolute bottom-4 left-1/2 flex -translate-x-1/2 rounded-full bg-black/45 p-1 ring-1 ring-white/15 backdrop-blur-md"
+              >
+                {product.packs.map((p) => {
+                  const on = p.line === (pack?.line ?? 'men');
+                  return (
+                    <button
+                      key={p.line}
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() => setLine(p.line)}
+                      className={cn(
+                        'flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-medium whitespace-nowrap transition-colors duration-300',
+                        on ? 'bg-white text-ink' : 'text-white/85 hover:text-white',
+                      )}
+                    >
+                      {p.label}
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
+
+          {/* Floating ingredient photos (decoration; the chips on the right are the controls). */}
+          <ul aria-hidden className="pointer-events-none absolute inset-0">
+            {product.ingredients.slice(0, ORBIT.length).map((x, i) => {
+              const spot = ORBIT[i];
+              if (!spot) return null;
+              const on = i === ingIdx;
+              return (
+                <motion.li
+                  key={`${product.slug}-${x.name}`}
+                  className={cn('absolute flex flex-col items-center gap-1.5', spot.pos)}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: on ? 1.16 : 1, y: reduce ? 0 : [0, -10, 0] }}
+                  transition={{
+                    opacity: { duration: 0.5, delay: 0.1 + i * 0.07 },
+                    scale: { type: 'spring', stiffness: 260, damping: 18 },
+                    y: { duration: spot.float, repeat: Infinity, ease: 'easeInOut', delay: i * 0.4 },
+                  }}
+                >
+                  <span
                     className={cn(
-                      'flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors duration-300',
-                      on ? 'bg-white text-ink' : 'text-white/85 hover:text-white',
+                      'relative flex size-14 items-center justify-center overflow-hidden rounded-full bg-white shadow-raised ring-4 sm:size-[4.5rem] lg:size-20',
+                      on ? 'ring-white' : 'ring-white/60',
                     )}
                   >
-                    {p.label}
-                  </button>
-                );
-              })}
+                    {x.image ? (
+                      <Image src={x.image.src} alt="" fill sizes="80px" className="object-cover" />
+                    ) : (
+                      <Leaf className="size-5 text-body" />
+                    )}
+                  </span>
+                  <span
+                    className={cn(
+                      'rounded-full px-2.5 py-0.5 text-[12px] font-medium whitespace-nowrap shadow-card transition-colors duration-300',
+                      on ? 'bg-obsidian text-on-dark' : 'bg-white/90 text-ink',
+                    )}
+                  >
+                    {x.name}
+                  </span>
+                </motion.li>
+              );
+            })}
+          </ul>
+
+          {/* Arrows: step through the products */}
+          {products.length > 1 ? (
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <ArrowButton
+                label="Previous product"
+                onClick={() => select((productIdx - 1 + products.length) % products.length)}
+              >
+                <ArrowLeft className="size-4" aria-hidden />
+              </ArrowButton>
+              <span
+                className="min-w-[3.5rem] text-center text-sm font-medium text-ink tabular-nums"
+                aria-live="polite"
+              >
+                {productIdx + 1} / {products.length}
+              </span>
+              <ArrowButton label="Next product" onClick={() => select((productIdx + 1) % products.length)}>
+                <ArrowRight className="size-4" aria-hidden />
+              </ArrowButton>
             </div>
           ) : null}
-
-          {/* Ingredient lens */}
-          <AnimatePresence mode="wait" initial={false}>
-            {ing ? (
-              <motion.div
-                key={`${product.slug}-${ing.name}`}
-                aria-hidden
-                className="absolute right-4 bottom-4 left-4 flex items-center gap-4 rounded-[1.25rem] bg-white/92 p-3 pr-5 shadow-raised backdrop-blur-md sm:right-auto sm:max-w-[22rem]"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 8 }}
-                transition={{ duration: 0.4, ease: EASE }}
-              >
-                <span className="relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-mist ring-1 ring-line sm:size-24">
-                  {ing.image ? (
-                    <Image src={ing.image.src} alt="" fill sizes="96px" className="object-cover" />
-                  ) : (
-                    <Leaf className="size-6 text-body" />
-                  )}
-                </span>
-                <span className="min-w-0">
-                  <span className="block font-display text-2xl leading-tight font-medium text-ink">
-                    {ing.name}
-                  </span>
-                  <span className="mt-0.5 block text-[13px] leading-snug text-body">{ing.role}</span>
-                </span>
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
         </div>
 
         <div className="min-w-0 lg:col-start-2">
@@ -287,5 +352,26 @@ export function IngredientsSpread({ products, headingId }: { products: SpreadPro
         </div>
       </div>
     </MotionConfig>
+  );
+}
+
+function ArrowButton({
+  label,
+  onClick,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      onClick={onClick}
+      className="flex size-12 items-center justify-center rounded-full bg-white/80 text-ink shadow-card ring-1 ring-black/5 backdrop-blur transition-[background-color,transform] duration-300 hover:bg-white active:scale-95"
+    >
+      {children}
+    </button>
   );
 }

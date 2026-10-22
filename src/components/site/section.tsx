@@ -18,6 +18,18 @@ export const H2_SM = 'display text-balance text-[clamp(1.75rem,1.4rem+1.5vw,2.5r
 /** Page-level h1 for inner pages and dark heroes. */
 export const H1 = 'display text-balance text-[clamp(2.5rem,1.75rem+3vw,4.25rem)] leading-[1.04]';
 
+/**
+ * Slow zoom for an image inside a `group` card on hover/focus (docs/21). Uses the `scale` property so it
+ * composes with ken-burns/parallax transforms. Static with reduced motion.
+ */
+export const IMG_HOVER_ZOOM =
+  'transition-[scale] duration-[900ms] ease-out group-hover:scale-[1.05] group-focus-within:scale-[1.05] motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-focus-within:scale-100';
+
+/** Inline style for a staggered page-load rise (`motion.module.css` → `.rise`). */
+export function riseDelay(ms: number): React.CSSProperties {
+  return { '--rise-delay': `${ms}ms` } as React.CSSProperties;
+}
+
 /** Body copy beside a heading — capped near 65ch. */
 export const LEDE = 'max-w-[62ch] text-pretty text-lg leading-relaxed';
 

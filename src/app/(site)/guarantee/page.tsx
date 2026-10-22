@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { CtaBand } from '@/components/site/cta-band';
 import { FaqList } from '@/components/site/faq-list';
 import { GuaranteeConditionList, guaranteeStory, refundLine } from '@/components/site/guarantee-panel';
 import { PageIntro } from '@/components/site/page-intro';
+import { Reveal } from '@/components/site/reveal';
 import { H2, LEDE, SECTION_Y, SectionHeader } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { VideoLibrary } from '@/components/site/video-library';
@@ -91,9 +93,9 @@ export default function GuaranteePage() {
             Read the full legal terms <ArrowRight className="size-4" aria-hidden />
           </Link>
         </div>
-        <div className="rounded-2xl bg-card p-6 shadow-card ring-1 ring-line/80 md:p-8">
+        <Reveal delayMs={100} className="rounded-2xl bg-card p-6 shadow-card ring-1 ring-line/80 md:p-8">
           <GuaranteeConditionList guarantee={guarantee} tone="light" className="text-ink" />
-        </div>
+        </Reveal>
       </section>
 
       <section className="border-y border-line bg-card" aria-labelledby="claim-heading">
@@ -101,11 +103,11 @@ export default function GuaranteePage() {
           <SectionHeader id="claim-heading" eyebrow="Step by step" title="How a claim works" />
           <ol className="grid gap-px overflow-hidden rounded-2xl bg-line ring-1 ring-line sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((s, i) => (
-              <li key={s.title} className="bg-card p-6 md:p-7 lg:min-h-64">
+              <Reveal as="li" key={s.title} delayMs={i * 90} className="bg-card p-6 md:p-7 lg:min-h-56">
                 <span className="font-display text-5xl leading-none text-steel">{i + 1}</span>
                 <h3 className="mt-6 text-lg font-semibold text-ink">{s.title}</h3>
                 <p className="mt-2 max-w-[48ch] text-sm leading-relaxed text-pretty text-body">{s.body}</p>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </div>
@@ -140,17 +142,16 @@ export default function GuaranteePage() {
         </section>
       ) : null}
 
-      <section className="border-t border-line bg-card">
-        <div className="container-yhc flex flex-col items-start gap-6 py-12 md:flex-row md:items-center md:justify-between md:gap-12 md:py-16">
-          <p className="max-w-xl text-lg leading-relaxed text-pretty text-body">
-            The guarantee covers plans your doctor prescribes after a consultation. It all starts with a free
-            3D scan.
-          </p>
-          <Button asChild className="h-12 px-6">
-            <Link href="/start">Begin my free 3D scan</Link>
-          </Button>
-        </div>
-      </section>
+      <CtaBand
+        id="guarantee-cta-heading"
+        image={SLOTS.H19}
+        imagePosition="30% 35%"
+        align="right"
+        title="It all starts with a free 3D scan."
+        body="The guarantee covers plans your doctor prescribes after a consultation."
+        primary={{ href: '/start', label: 'Begin my free 3D scan' }}
+        secondary={{ href: '/legal/guarantee', label: 'Read the full terms' }}
+      />
     </>
   );
 }

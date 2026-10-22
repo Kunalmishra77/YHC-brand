@@ -1,19 +1,21 @@
 import type { Metadata } from 'next';
-import { ArrowRight, Check, CircleHelp } from 'lucide-react';
+import { Check, CircleHelp } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { CtaBand } from '@/components/site/cta-band';
+import motion from '@/components/site/motion.module.css';
+import { Parallax } from '@/components/site/parallax';
 import { BackgroundVideo } from '@/components/site/background-video';
 import { EvidenceSection } from '@/components/site/evidence-section';
 import { HairCycleDiagram } from '@/components/site/hair-cycle-diagram';
 import { PatentSlot } from '@/components/site/patent-slot';
 import { Reveal } from '@/components/site/reveal';
-import { CTA_SILVER, H1, H2, LEDE, SECTION_Y, SectionHeader, TEXT_LINK } from '@/components/site/section';
+import { H1, H2, LEDE, riseDelay, SECTION_Y, SectionHeader } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { REGULATORY_LABEL } from '@/components/site/product-meta';
-import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
 import { doctorClaimLabel } from '@/lib/claims';
-import { CLINICAL, MEDIA, VIDEOS } from '@/lib/images';
+import { CLINICAL, VIDEOS } from '@/lib/images';
 import { SLOTS } from '@/lib/slots';
 import { getDoctor, getProducts } from '@/server/catalog';
 
@@ -67,7 +69,16 @@ export default function SciencePage() {
       {/* Hero — S01 once the generated image is in; the lab film until then */}
       <section className="relative isolate overflow-hidden bg-obsidian text-on-dark">
         {hero.ready ? (
-          <Image src={hero.src} alt="" fill priority sizes="100vw" className="-z-20 object-cover" />
+          <Parallax mode="exit" strength={10} className="-z-20">
+            <Image
+              src={hero.src}
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className={`${motion.kenburns} object-cover`}
+            />
+          </Parallax>
         ) : (
           <BackgroundVideo video={VIDEOS.science} priority className="-z-20" />
         )}
@@ -76,9 +87,11 @@ export default function SciencePage() {
           aria-hidden
         />
         <div className="container-yhc pt-20 pb-16 md:py-28 lg:py-32">
-          <p className="eyebrow text-brand-on-dark">The science</p>
-          <h1 className={`${H1} mt-4 max-w-3xl text-on-dark`}>Know the root. Then treat the hair.</h1>
-          <p className={`${LEDE} mt-6 text-on-dark-muted`}>
+          <p className={`${motion.rise} eyebrow text-brand-on-dark`}>The science</p>
+          <h1 style={riseDelay(90)} className={`${motion.rise} ${H1} mt-4 max-w-3xl text-on-dark`}>
+            Know the root. Then treat the hair.
+          </h1>
+          <p style={riseDelay(200)} className={`${motion.rise} ${LEDE} mt-6 text-on-dark-muted`}>
             How hair grows, why it gets thinner, and what your doctor’s plan tries to do. We also say what
             nobody can promise.
           </p>
@@ -153,11 +166,11 @@ export default function SciencePage() {
               consultation help find yours. This is general information, not a diagnosis.
             </p>
             <dl className="mt-10 grid gap-px overflow-hidden rounded-2xl bg-line-dark sm:grid-cols-2">
-              {CAUSES.map((c) => (
-                <div key={c.title} className="bg-obsidian p-6 lg:p-7">
+              {CAUSES.map((c, i) => (
+                <Reveal key={c.title} delayMs={i * 80} className="bg-obsidian p-6 lg:p-7">
                   <dt className="font-semibold text-on-dark">{c.title}</dt>
                   <dd className="mt-2 text-sm leading-relaxed text-on-dark-muted">{c.body}</dd>
-                </div>
+                </Reveal>
               ))}
             </dl>
           </div>
@@ -173,9 +186,10 @@ export default function SciencePage() {
           lede="What each product contains and why. Your doctor sets the strength and the mix."
         />
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-          {products.map((p) => (
+          {products.map((p, i) => (
             <Reveal
               key={p.id}
+              delayMs={i * 100}
               className="flex flex-col rounded-2xl bg-card p-6 shadow-card ring-1 ring-line md:p-7"
             >
               <p className="text-[12px] font-medium text-muted-foreground">
@@ -213,7 +227,7 @@ export default function SciencePage() {
             title="What we know — and what we don’t"
           />
           <div className="grid gap-5 md:grid-cols-2 lg:gap-6">
-            <div className="rounded-2xl bg-pearl p-6 ring-1 ring-line md:p-8">
+            <Reveal className="rounded-2xl bg-pearl p-6 ring-1 ring-line md:p-8">
               <h3 className="text-lg font-semibold text-ink">What we know</h3>
               <ul className="mt-5 space-y-3.5">
                 {KNOWN.map((line) => (
@@ -223,8 +237,8 @@ export default function SciencePage() {
                   </li>
                 ))}
               </ul>
-            </div>
-            <div className="rounded-2xl bg-pearl p-6 ring-1 ring-line md:p-8">
+            </Reveal>
+            <Reveal delayMs={120} className="rounded-2xl bg-pearl p-6 ring-1 ring-line md:p-8">
               <h3 className="text-lg font-semibold text-ink">What nobody can promise</h3>
               <ul className="mt-5 space-y-3.5">
                 {UNKNOWN.map((line) => (
@@ -234,32 +248,21 @@ export default function SciencePage() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="relative isolate overflow-hidden bg-obsidian text-on-dark">
-        <div className="absolute inset-0 -z-10" aria-hidden>
-          <Image src={MEDIA.dnaHelix.src} alt="" fill sizes="100vw" className="object-cover opacity-35" />
-          <div className="absolute inset-0 bg-gradient-to-r from-obsidian via-obsidian/80 to-obsidian/30" />
-        </div>
-        <div className={`container-yhc ${SECTION_Y}`}>
-          <h2 className={`${H2} max-w-2xl text-on-dark`}>See what is happening at your roots.</h2>
-          <p className={`${LEDE} mt-5 max-w-xl text-on-dark-muted`}>
-            Start with a free 3D scan. A doctor checks it before anything is prescribed.
-          </p>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
-            <Button asChild className={CTA_SILVER}>
-              <Link href="/start">Begin my free 3D scan</Link>
-            </Button>
-            <Link href="/doctor-tyagi" className={`text-on-dark ${TEXT_LINK}`}>
-              Meet {doctor.name} <ArrowRight className="size-4" aria-hidden />
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CtaBand
+        id="science-cta-heading"
+        image={SLOTS.H15}
+        imagePosition="0% 50%"
+        align="right"
+        title="See what is happening at your roots."
+        body="Start with a free 3D scan. A doctor checks it before anything is prescribed."
+        primary={{ href: '/start', label: 'Begin my free 3D scan' }}
+        secondary={{ href: '/doctor-tyagi', label: `Meet ${doctor.name}` }}
+      />
     </>
   );
 }

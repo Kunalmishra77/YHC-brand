@@ -10,12 +10,14 @@ import { doctorClaimLabel } from '@/lib/claims';
 import { SLOTS } from '@/lib/slots';
 import { getDoctor, getGuarantee } from '@/server/catalog';
 import { TreatmentIndex, type TreatmentArea } from './doctor-feature/treatment-index';
+import { Tilt } from './fx/tilt';
 import { CountUp, RiseTile, ScanRings } from './why-choose/motion';
 
 /**
  * Homepage section 4 · Why choose Your Hair Company — visual first (docs/20): a two-tile photo bento
  * (H04 video consultation · H05 scalp first) with the words laid on the pictures, then a closed
- * accordion for the details. On phones the tiles are a swipe rail. Every figure is true and
+ * accordion for the details. On phones the tiles are a swipe rail. Cinematic pass (ADR-35): the tiles
+ * tilt gently under a mouse and the photos zoom; the minutes figure scales in but never counts. Every figure is true and
  * settings-driven; the guarantee row appears only while a guarantee policy is active.
  */
 export function WhyChoose() {
@@ -86,71 +88,80 @@ export function WhyChoose() {
           tabIndex={0}
           role="region"
           aria-label="Why choose us (swipe for more)"
-          className="relative -mx-[var(--yhc-gutter)] mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain scroll-px-[var(--yhc-gutter)] px-[var(--yhc-gutter)] py-1 [scrollbar-width:none] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand lg:mx-0 lg:mt-14 lg:grid lg:grid-cols-12 lg:gap-5 lg:overflow-visible lg:px-0 lg:py-0 [&::-webkit-scrollbar]:hidden"
+          className="relative -mx-[var(--yhc-gutter)] mt-8 flex snap-x snap-mandatory scroll-px-[var(--yhc-gutter)] [scrollbar-width:none] gap-4 overflow-x-auto overscroll-x-contain px-[var(--yhc-gutter)] py-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand lg:mx-0 lg:mt-10 lg:grid lg:grid-cols-12 lg:gap-5 lg:overflow-visible lg:px-0 lg:py-0 [&::-webkit-scrollbar]:hidden"
         >
           {/* H04 · one-to-one video consultation */}
           <RiseTile className="w-[86%] shrink-0 snap-start sm:w-[62%] lg:col-span-8 lg:w-auto">
-            <figure className="group relative isolate aspect-square overflow-hidden rounded-[28px] bg-obsidian text-on-dark sm:aspect-[4/3] lg:aspect-auto lg:h-[28rem]">
-              <Image
-                src={consult.src}
-                alt={consult.alt}
-                fill
-                sizes="(min-width: 1024px) 62vw, 86vw"
-                className="-z-10 object-cover grayscale transition-transform duration-[1600ms] ease-out group-hover:scale-[1.04] motion-reduce:transition-none"
-              />
-              <div
-                aria-hidden
-                className="absolute inset-0 -z-10 bg-gradient-to-t from-obsidian/95 via-obsidian/35 to-transparent lg:bg-gradient-to-r lg:from-obsidian/90 lg:via-obsidian/30"
-              />
-              {consultNote ? (
-                <span className="absolute top-3 right-3 rounded-full bg-black/55 px-2.5 py-1 text-[12px] backdrop-blur">
-                  {consultNote}
-                </span>
-              ) : null}
-              <figcaption className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:max-w-[28rem] lg:p-10">
-                <p className="flex items-end gap-3 leading-none">
-                  <CountUp
-                    value={slotMinutes}
-                    className="font-display text-[clamp(4rem,3rem+3vw,5.75rem)] font-medium text-on-dark"
-                  />
-                  <span className="pb-2 font-display text-[clamp(1.5rem,1.3rem+0.8vw,2rem)] text-on-dark-muted">
-                    minutes
+            <Tilt max={4} className="h-full">
+              <figure className="group relative isolate aspect-square overflow-hidden rounded-[28px] bg-obsidian text-on-dark sm:aspect-[4/3] lg:aspect-auto lg:h-[28rem]">
+                <Image
+                  src={consult.src}
+                  alt={consult.alt}
+                  fill
+                  sizes="(min-width: 1024px) 62vw, 86vw"
+                  className="-z-10 object-cover grayscale transition-transform duration-[1600ms] ease-out group-hover:scale-[1.07] motion-reduce:transition-none"
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 -z-10 bg-gradient-to-t from-obsidian/95 via-obsidian/35 to-transparent lg:bg-gradient-to-r lg:from-obsidian/90 lg:via-obsidian/30"
+                />
+                {consultNote ? (
+                  <span className="absolute top-3 right-3 rounded-full bg-black/55 px-2.5 py-1 text-[12px] backdrop-blur">
+                    {consultNote}
                   </span>
-                </p>
-                <h3 className="mt-3 font-display text-[clamp(1.5rem,1.3rem+0.8vw,2rem)] leading-tight font-medium text-on-dark">
-                  On video with {doctor.name}.
-                </h3>
-                <p className="mt-2 text-base leading-relaxed text-on-dark-muted">
-                  A real doctor. Not a chatbot, not a sales call.
-                </p>
-              </figcaption>
-            </figure>
+                ) : null}
+                <figcaption className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:max-w-[28rem] lg:p-10">
+                  <p className="flex items-end gap-3 leading-none">
+                    <CountUp
+                      value={slotMinutes}
+                      className="font-display text-[clamp(4rem,3rem+3vw,5.75rem)] font-medium text-on-dark"
+                    />
+                    <span className="pb-2 font-display text-[clamp(1.5rem,1.3rem+0.8vw,2rem)] text-on-dark-muted">
+                      minutes
+                    </span>
+                  </p>
+                  <h3 className="mt-3 font-display text-[clamp(1.5rem,1.3rem+0.8vw,2rem)] leading-tight font-medium text-on-dark">
+                    On video with {doctor.name}.
+                  </h3>
+                  <p className="mt-2 text-base leading-relaxed text-on-dark-muted">
+                    A real doctor. Not a chatbot, not a sales call.
+                  </p>
+                </figcaption>
+              </figure>
+            </Tilt>
           </RiseTile>
 
           {/* H05 · scalp first — the photo seen through the scan rings */}
           <RiseTile order={1} className="w-[86%] shrink-0 snap-start sm:w-[62%] lg:col-span-4 lg:w-auto">
-            <figure className="group relative isolate aspect-[4/5] overflow-hidden rounded-[28px] bg-obsidian text-on-dark sm:aspect-[4/3] lg:aspect-auto lg:h-[28rem]">
-              <Image
-                src={scalp.src}
-                alt={scalp.alt}
-                fill
-                sizes="(min-width: 1024px) 31vw, 86vw"
-                className="-z-10 object-cover opacity-80 grayscale transition-transform duration-[1600ms] ease-out group-hover:scale-[1.06] motion-reduce:transition-none"
-              />
-              <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-obsidian via-obsidian/40 to-obsidian/10" />
-              <ScanRings className="absolute top-6 left-1/2 size-[13rem] -translate-x-1/2 text-platinum/80 sm:top-8" />
-              <figcaption className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
-                <h3 className="display text-[clamp(2.5rem,2rem+2vw,3.5rem)] leading-[0.95] text-on-dark">Scalp first.</h3>
-                <p className="mt-3 text-base leading-relaxed text-on-dark-muted">
-                  If treatment can’t help your roots, we tell you. No hard sell.
-                </p>
-              </figcaption>
-            </figure>
+            <Tilt max={6} className="h-full">
+              <figure className="group relative isolate aspect-[4/5] overflow-hidden rounded-[28px] bg-obsidian text-on-dark sm:aspect-[4/3] lg:aspect-auto lg:h-[28rem]">
+                <Image
+                  src={scalp.src}
+                  alt={scalp.alt}
+                  fill
+                  sizes="(min-width: 1024px) 31vw, 86vw"
+                  className="-z-10 object-cover opacity-80 grayscale transition-transform duration-[1600ms] ease-out group-hover:scale-[1.1] motion-reduce:transition-none"
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 -z-10 bg-gradient-to-t from-obsidian via-obsidian/40 to-obsidian/10"
+                />
+                <ScanRings className="absolute top-6 left-1/2 size-[13rem] -translate-x-1/2 text-platinum/80 sm:top-8" />
+                <figcaption className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+                  <h3 className="display text-[clamp(2.5rem,2rem+2vw,3.5rem)] leading-[0.95] text-on-dark">
+                    Scalp first.
+                  </h3>
+                  <p className="mt-3 text-base leading-relaxed text-on-dark-muted">
+                    If treatment can’t help your roots, we tell you. No hard sell.
+                  </p>
+                </figcaption>
+              </figure>
+            </Tilt>
           </RiseTile>
         </div>
 
         {/* The details, tap to open */}
-        <div className="mx-auto mt-12 grid max-w-5xl gap-6 lg:mt-14 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-16">
+        <div className="mx-auto mt-10 grid max-w-5xl gap-6 lg:mt-12 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-16">
           <RiseTile>
             <p className="display text-[clamp(1.75rem,1.4rem+1.6vw,2.75rem)] leading-tight text-balance">
               Good to know.

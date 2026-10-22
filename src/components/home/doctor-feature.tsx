@@ -8,6 +8,7 @@ import { publicCredential } from '@/lib/credentials';
 import { DOCTOR_PORTRAIT } from '@/lib/images';
 import { getDoctor } from '@/server/catalog';
 import { PortraitParallax } from './doctor-feature/portrait-parallax';
+import { Marquee } from './marquee';
 import { TreatmentChips, type TreatmentChip } from './doctor-feature/treatment-chips';
 
 /**
@@ -15,7 +16,8 @@ import { TreatmentChips, type TreatmentChip } from './doctor-feature/treatment-c
  * Full-bleed editorial split on obsidian: the real portrait fills one half edge to edge (slow parallax,
  * pearl consultation card resting on it); the other half has the name, one plain promise and tappable
  * pills for what he treats (docs/20: short and warm). Only confirmed credentials are shown
- * (publicCredential); the registration line is hidden when it is missing.
+ * (publicCredential); the registration line is hidden when it is missing. Cinematic pass (ADR-35): a
+ * deeper portrait parallax and a slow ribbon of what he treats under the split.
  */
 
 const TREATMENTS: TreatmentChip[] = [
@@ -58,7 +60,7 @@ export function DoctorFeature() {
     >
       <div className="grid lg:grid-cols-2">
         {/* Portrait — edge to edge on every screen */}
-        <div className="relative lg:min-h-[40rem]">
+        <div className="relative lg:min-h-[36rem]">
           <div className="relative lg:absolute lg:inset-0">
             <PortraitParallax
               image={DOCTOR_PORTRAIT}
@@ -96,7 +98,7 @@ export function DoctorFeature() {
         </div>
 
         {/* Text block */}
-        <div className="flex items-center px-[var(--yhc-gutter)] pt-12 pb-14 sm:pt-14 lg:px-16 lg:py-16 xl:px-20">
+        <div className="flex items-center px-[var(--yhc-gutter)] pt-10 pb-10 sm:pt-12 lg:px-14 lg:py-12 xl:px-20">
           <Reveal className="w-full max-w-xl">
             <p className="eyebrow text-brand-on-dark">Meet your doctor</p>
             <h2
@@ -113,7 +115,7 @@ export function DoctorFeature() {
               </p>
             ) : null}
 
-            <blockquote className="mt-7 border-l border-platinum/60 pl-5 sm:pl-6">
+            <blockquote className="mt-6 border-l border-platinum/60 pl-5 sm:pl-6">
               <p className="font-display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)] leading-snug font-medium text-balance text-on-dark">
                 We check first. We treat only if it will help.
               </p>
@@ -122,10 +124,10 @@ export function DoctorFeature() {
               </p>
             </blockquote>
 
-            <h3 className="mt-8 mb-3 text-[15px] font-semibold text-on-dark">What he treats</h3>
+            <h3 className="mt-7 mb-3 text-[15px] font-semibold text-on-dark">What he treats</h3>
             <TreatmentChips items={TREATMENTS} label="What he treats" />
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button asChild className={`group w-full rounded-full sm:w-auto ${CTA_SILVER}`}>
                 <Link href="/doctor-tyagi">
                   Meet {doctor.name}
@@ -141,6 +143,21 @@ export function DoctorFeature() {
             </div>
           </Reveal>
         </div>
+      </div>
+
+      {/* What he treats, as a slow ribbon of big serif words under the split (pause control included). */}
+      <div className="relative border-t border-line-dark pt-6 pb-5 lg:pt-8">
+        <Marquee label="What he treats" tone="dark" durationSec={36} minItems={8} className="text-center">
+          {TREATMENTS.map((item) => (
+            <span
+              key={item.title}
+              className="flex items-center gap-5 pr-1 font-display text-[clamp(2rem,1.4rem+2.6vw,3.75rem)] leading-none font-medium whitespace-nowrap text-white/10 transition-colors duration-500 [-webkit-text-stroke:1px_rgba(242,242,240,0.6)] hover:text-on-dark"
+            >
+              {item.title}
+              <span aria-hidden className="size-2.5 rounded-full bg-[image:var(--yhc-silver)]" />
+            </span>
+          ))}
+        </Marquee>
       </div>
     </section>
   );

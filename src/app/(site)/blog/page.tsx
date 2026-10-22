@@ -6,11 +6,15 @@ import { ReviewBadge } from '@/components/site/article/review-badge';
 import { CtaBand } from '@/components/site/cta-band';
 import { getConsultTerms } from '@/components/site/consult-fee';
 import { JsonLd } from '@/components/site/json-ld';
+import { PageIntro } from '@/components/site/page-intro';
+import { Reveal } from '@/components/site/reveal';
+import { IMG_HOVER_ZOOM, SECTION_Y } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { EmptyState } from '@/components/shared/states';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
 import { clientEnv } from '@/lib/env';
+import { SLOTS } from '@/lib/slots';
 import { getArticles } from '@/server/content/articles';
 
 // The closing band shows the live consultation fee (settings).
@@ -45,28 +49,30 @@ export default function BlogPage() {
         }}
       />
 
-      <section className="border-b border-line">
-        <div className="container-yhc grid gap-8 py-16 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end md:py-24">
-          <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-balance">
-            Hair guides, in simple words
-          </h1>
-          <div className="space-y-4">
-            <p className="text-lg leading-relaxed text-body">
+      <PageIntro
+        title="Hair guides, in simple words"
+        image={SLOTS.S06}
+        lede={
+          <>
+            <p>
               Short reads on what is happening with your hair and scalp, and what a doctor looks for. General
               information, not a diagnosis.
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="mt-3 text-sm text-muted-foreground">
               Dr. Tyagi checks every article. Until he has, it is marked as a draft.
             </p>
-          </div>
-        </div>
-      </section>
+          </>
+        }
+      />
 
       {featured ? (
         <>
           {/* Featured article */}
-          <section className="container-yhc py-14 lg:py-20">
-            <article className="group relative grid gap-8 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-center md:gap-14">
+          <section className={`container-yhc ${SECTION_Y}`}>
+            <Reveal
+              as="article"
+              className="group relative grid gap-8 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-center md:gap-14"
+            >
               <div className="relative aspect-[16/10] overflow-hidden rounded-[28px] bg-[#efeeeb] shadow-card">
                 <Image
                   src={articleImage(featured).src}
@@ -74,7 +80,7 @@ export default function BlogPage() {
                   fill
                   priority
                   sizes="(min-width: 768px) 58vw, 100vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02] motion-reduce:transition-none"
+                  className={`object-cover ${IMG_HOVER_ZOOM}`}
                 />
               </div>
               <div>
@@ -93,12 +99,12 @@ export default function BlogPage() {
                   Read the article
                 </p>
               </div>
-            </article>
+            </Reveal>
           </section>
 
           {/* Editorial list */}
           {rest.length > 0 ? (
-            <section className="container-yhc pb-20 lg:pb-20">
+            <section className="container-yhc pb-14 lg:pb-20">
               <div className="grid gap-10 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
                 <div className="md:sticky md:top-28 md:self-start">
                   <h2 className="display text-[clamp(2rem,1.5rem+2vw,2.75rem)] text-balance">More to read</h2>
@@ -114,7 +120,9 @@ export default function BlogPage() {
                 </div>
                 <div className="border-t border-line">
                   {rest.map((a) => (
-                    <ArticleRow key={a.slug} article={a} />
+                    <Reveal key={a.slug}>
+                      <ArticleRow article={a} />
+                    </Reveal>
                   ))}
                 </div>
               </div>
@@ -123,7 +131,7 @@ export default function BlogPage() {
           ) : null}
         </>
       ) : (
-        <section className="container-yhc py-16">
+        <section className={`container-yhc ${SECTION_Y}`}>
           <EmptyState
             title="No articles yet"
             body="We publish articles only after Dr. Tyagi checks them. The hair concern pages cover the basics."
@@ -137,9 +145,12 @@ export default function BlogPage() {
       )}
 
       <CtaBand
+        id="blog-cta-heading"
+        image={SLOTS.B03}
+        imagePosition="50% 50%"
         bookLabel={terms.bookLabel}
         title="Reading helps. A consultation answers."
-        body="Articles explain the big picture. Dr. Tyagi can look at your health and your scalp and tell you what is likely going on."
+        body="Dr. Tyagi looks at your health and your scalp, and tells you what is likely going on."
       />
     </>
   );

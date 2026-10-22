@@ -24,11 +24,11 @@ export function PortraitParallax({
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  const y = useTransform(scrollYProgress, [0, 1], ['-5%', '5%']);
+  const y = useTransform(scrollYProgress, [0, 1], ['-8%', '8%']);
 
   return (
     <div ref={ref} className={cn('relative overflow-hidden', className)}>
-      <motion.div className="absolute inset-x-0 -inset-y-[7%]" style={reduce ? undefined : { y }}>
+      <motion.div className="absolute inset-x-0 -inset-y-[10%]" style={reduce ? undefined : { y }}>
         <Image
           src={image.src}
           alt={image.alt}

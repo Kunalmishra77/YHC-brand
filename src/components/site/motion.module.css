@@ -1,0 +1,42 @@
+/*
+ * Page-load motion for inner pages (docs/21): a slow ken-burns settle on banner images and a staggered
+ * rise for intro text. Pure CSS so it runs before hydration and never leaves text hidden without JS.
+ * Reduced motion: no animation, everything static and visible.
+ */
+
+.kenburns {
+  animation: yhc-kenburns 16s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  transform-origin: 70% 45%;
+}
+
+.rise {
+  animation: yhc-rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+@keyframes yhc-kenburns {
+  from {
+    transform: scale(1.12);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes yhc-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kenburns,
+  .rise {
+    animation: none;
+  }
+}

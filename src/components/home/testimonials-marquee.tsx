@@ -1,9 +1,10 @@
 import { MessageCircle, PenLine, ShieldCheck, Undo2 } from 'lucide-react';
 import Link from 'next/link';
-import { SECTION_Y, SECTION_Y_SM, SectionHeader } from '@/components/site/section';
+import { SectionHeader } from '@/components/site/section';
 import { Button } from '@/components/ui/button';
 import { SITE } from '@/lib/site';
 import { getPublishedTestimonials } from '@/server/content/testimonials';
+import { StaggerItem, StaggerList } from './fx/stagger';
 import { Marquee } from './marquee';
 import { QuoteCard } from './testimonials/quote-card';
 import { Reveal } from './testimonials/reveal';
@@ -28,8 +29,15 @@ export function TestimonialsMarquee() {
 
   return (
     <section className="overflow-hidden bg-mist/60" aria-labelledby="testimonials-heading">
-      <div className={`container-yhc ${SECTION_Y}`}>
-        <SectionHeader id="testimonials-heading" title="What patients say" lede={NOTE} />
+      <div className="container-yhc py-12 lg:py-16">
+        <Reveal>
+          <SectionHeader
+            id="testimonials-heading"
+            title="What patients say"
+            lede={NOTE}
+            className="md:mb-10"
+          />
+        </Reveal>
         {items.length >= 3 ? (
           <Marquee label="Patient stories" durationSec={60} minItems={6} itemClassName="flex">
             {items.map((item) => (
@@ -61,7 +69,7 @@ function ShareYourStory() {
   return (
     <section className="relative isolate overflow-hidden bg-card" aria-labelledby="testimonials-heading">
       <div className="absolute inset-x-0 top-0 h-px bg-line" aria-hidden />
-      <div className={`container-yhc relative ${SECTION_Y_SM}`}>
+      <div className="container-yhc relative py-10 md:py-14">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:items-center lg:gap-16">
           <Reveal className="flex gap-5 sm:gap-8">
             {/* The visual: one large serif quote mark, deliberately left without a quote. */}
@@ -94,9 +102,9 @@ function ShareYourStory() {
             </div>
           </Reveal>
 
-          <ul className="divide-y divide-line rounded-[1.75rem] bg-pearl px-5 ring-1 ring-line sm:px-6">
+          <StaggerList className="divide-y divide-line rounded-[1.75rem] bg-pearl px-5 ring-1 ring-line sm:px-6">
             {PROMISES.map(({ icon: Icon, text }) => (
-              <li key={text} className="flex items-center gap-4 py-4">
+              <StaggerItem key={text} className="flex items-center gap-4 py-4">
                 <span
                   className="flex size-10 shrink-0 items-center justify-center rounded-full bg-obsidian text-platinum"
                   aria-hidden
@@ -104,9 +112,9 @@ function ShareYourStory() {
                   <Icon className="size-4" />
                 </span>
                 <span className="text-[15px] leading-snug text-pretty text-ink">{text}</span>
-              </li>
+              </StaggerItem>
             ))}
-          </ul>
+          </StaggerList>
         </div>
       </div>
     </section>

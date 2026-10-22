@@ -6,6 +6,8 @@ import { getConsultTerms } from '@/components/site/consult-fee';
 import { CtaBand } from '@/components/site/cta-band';
 import { buildJourney, JourneySteps } from '@/components/site/journey-steps';
 import { PageIntro } from '@/components/site/page-intro';
+import { Parallax } from '@/components/site/parallax';
+import { Reveal } from '@/components/site/reveal';
 import { H2, LEDE, SECTION_Y, SectionHeader, TEXT_LINK } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { CLINICAL } from '@/lib/images';
@@ -94,13 +96,15 @@ export default function HowItWorksPage() {
           className={`container-yhc grid items-center gap-10 lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)] lg:gap-20 ${SECTION_Y}`}
         >
           <figure className="relative aspect-[3/2] overflow-hidden rounded-[28px] bg-ink-2 ring-1 ring-line-dark">
-            <Image
-              src={CLINICAL.scalpParting.src}
-              alt={CLINICAL.scalpParting.alt}
-              fill
-              sizes="(min-width: 1024px) 45vw, 100vw"
-              className="object-cover"
-            />
+            <Parallax>
+              <Image
+                src={CLINICAL.scalpParting.src}
+                alt={CLINICAL.scalpParting.alt}
+                fill
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                className="object-cover"
+              />
+            </Parallax>
             <figcaption className="absolute bottom-4 left-4 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-on-dark backdrop-blur">
               Illustrative photo · scalp parting up close
             </figcaption>
@@ -119,11 +123,11 @@ export default function HowItWorksPage() {
                 ['Front hairline', 'Push your hair back. Use soft daylight.'],
                 ['Crown', 'Shoot from above. Ask someone to help.'],
                 ['Parting', 'Part your hair in the middle. Hold the camera straight above.'],
-              ].map(([title, body]) => (
-                <li key={title} className="bg-obsidian p-5">
+              ].map(([title, body], i) => (
+                <Reveal as="li" key={title} delayMs={i * 90} className="bg-obsidian p-5">
                   <p className="font-semibold text-on-dark">{title}</p>
                   <p className="mt-1 text-sm leading-relaxed text-on-dark-muted">{body}</p>
-                </li>
+                </Reveal>
               ))}
             </ul>
           </div>
@@ -139,7 +143,8 @@ export default function HowItWorksPage() {
         />
         <ol className="divide-y divide-line border-y border-line">
           {detail.map((step, i) => (
-            <li
+            <Reveal
+              as="li"
               key={step.title}
               className="grid gap-4 py-8 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-10 md:py-10"
             >
@@ -155,7 +160,7 @@ export default function HowItWorksPage() {
                   </li>
                 ))}
               </ul>
-            </li>
+            </Reveal>
           ))}
         </ol>
         {guarantee ? (
@@ -172,6 +177,9 @@ export default function HowItWorksPage() {
       </section>
 
       <CtaBand
+        id="how-cta-heading"
+        image={SLOTS.H11}
+        imagePosition="65% 55%"
         title="Ready for step one?"
         bookLabel={terms.bookLabel}
         body="Booking takes a few minutes. Then you fill in your hair details and add your scalp photos."
