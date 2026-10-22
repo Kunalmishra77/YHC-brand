@@ -1,27 +1,17 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 /**
- * Sticky header that sits as dark glass over the homepage video hero (the hero pulls up under it) and
- * turns light once you scroll past it.
+ * Sticky header: light glass everywhere (the homepage hero is light and pulls up under it), dark only in
+ * the /start journey.
  */
 export function HeaderFrame({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const overHero = pathname === '/';
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    if (!overHero) return;
-    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.6);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [overHero]);
   // The /start journey is an all-dark experience, so the header stays dark there.
   const journey = pathname.startsWith('/start');
-  const dark = journey || (overHero && !scrolled);
+  const dark = journey;
   return (
     <header
       data-dark={dark}

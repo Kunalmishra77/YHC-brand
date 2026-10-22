@@ -90,7 +90,7 @@ export function WhyChoose() {
         >
           {/* H04 · one-to-one video consultation */}
           <RiseTile className="w-[86%] shrink-0 snap-start sm:w-[62%] lg:col-span-8 lg:w-auto">
-            <figure className="group relative isolate aspect-[4/5] overflow-hidden rounded-[28px] bg-obsidian text-on-dark sm:aspect-[4/3] lg:aspect-auto lg:h-[28rem]">
+            <figure className="group relative isolate aspect-square overflow-hidden rounded-[28px] bg-obsidian text-on-dark sm:aspect-[4/3] lg:aspect-auto lg:h-[28rem]">
               <Image
                 src={consult.src}
                 alt={consult.alt}

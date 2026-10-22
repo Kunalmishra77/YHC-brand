@@ -28,23 +28,39 @@ export function ConcernList({ concerns, className }: { concerns: Concern[]; clas
   return (
     <ul
       className={cn(
-        'relative -mx-[var(--yhc-gutter)] flex snap-x snap-mandatory scroll-px-[var(--yhc-gutter)] [scrollbar-width:none] gap-4 overflow-x-auto overscroll-x-contain px-[var(--yhc-gutter)] py-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 lg:grid-cols-3 [&::-webkit-scrollbar]:hidden',
+        'relative -mx-[var(--yhc-gutter)] flex snap-x snap-mandatory scroll-px-[var(--yhc-gutter)] [scrollbar-width:none] gap-4 overflow-x-auto overscroll-x-contain px-[var(--yhc-gutter)] py-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 lg:grid-cols-6 [&::-webkit-scrollbar]:hidden',
         className,
       )}
     >
-      {concerns.map((c) => {
+      {concerns.map((c, i) => {
         const img = concernImage(c.slug);
+        // Balanced grid with no holes: 2 large + 3 small on desktop; on tablets the odd last card spans both.
+        const big = i < 2;
+        const oddLast = concerns.length % 2 === 1 && i === concerns.length - 1;
         return (
-          <li key={c.slug} className="w-[80%] max-w-[22rem] shrink-0 snap-start sm:w-auto sm:max-w-none">
+          <li
+            key={c.slug}
+            className={cn(
+              'w-[80%] max-w-[22rem] shrink-0 snap-start sm:w-auto sm:max-w-none',
+              big ? 'lg:col-span-3' : 'lg:col-span-2',
+              oddLast && 'sm:col-span-2 lg:col-span-2',
+            )}
+          >
             <Link href={concernPath(c.slug)} className="group block h-full rounded-[28px]">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-obsidian shadow-card">
+              <div
+                className={cn(
+                  'relative aspect-[4/3] overflow-hidden rounded-[28px] bg-obsidian shadow-card',
+                  big && 'lg:aspect-[16/9]',
+                  oddLast && 'sm:aspect-[21/9] lg:aspect-[4/3]',
+                )}
+              >
                 {img ? (
                   <Image
                     src={img.src}
                     alt={img.alt}
                     fill
-                    sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 80vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                    sizes="(min-width: 1024px) 50vw, (min-width: 640px) 90vw, 80vw"
+                    className="object-cover object-[78%_50%] transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                   />
                 ) : null}
                 <span

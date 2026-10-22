@@ -35,7 +35,7 @@ export default function LegalIndexPage() {
         </div>
       </section>
 
-      <section className="container-yhc py-16 md:py-24">
+      <section className="container-yhc py-14 lg:py-20">
         <ol className="border-t border-line">
           {docs.map((d, i) => (
             <li key={d.slug} className="group relative border-b border-line">

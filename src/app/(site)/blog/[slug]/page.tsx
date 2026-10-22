@@ -249,7 +249,7 @@ export default async function ArticlePage({ params }: PageProps<'/blog/[slug]'>)
 
       {related.length > 0 ? (
         <section className="border-t border-line bg-[#efeeeb]/60">
-          <div className="container-yhc py-16 md:py-24">
+          <div className="container-yhc py-14 lg:py-20">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
               <h2 className="display text-[clamp(2rem,1.5rem+2vw,2.75rem)] text-balance">Keep reading</h2>
               <Link

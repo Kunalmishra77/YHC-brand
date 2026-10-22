@@ -221,18 +221,20 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
         </div>
       </section>
 
-      <section className="container-yhc py-20 md:py-24">
-        <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
-          {product.requiresConsultation ? 'Often prescribed together' : 'Also in everyday care'}
-        </h2>
-        <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-          {getProducts()
-            .filter((p) => p.slug !== product.slug && p.requiresConsultation === product.requiresConsultation)
-            .slice(0, 3)
-            .map((p) => (
-              <ProductTile key={p.id} product={p} />
-            ))}
+      {/* Heading in the first column, the other products beside it — a full row with no gaps. */}
+      <section className="container-yhc grid gap-x-6 gap-y-10 py-14 sm:grid-cols-2 lg:grid-cols-3 lg:py-20">
+        <div className="sm:col-span-2 lg:col-span-1 lg:pr-6">
+          <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
+            {product.requiresConsultation ? 'Often prescribed together' : 'Also in everyday care'}
+          </h2>
+          <p className="mt-4 max-w-sm text-body">Your doctor decides which of these you need, and how to use them.</p>
         </div>
+        {getProducts()
+          .filter((p) => p.slug !== product.slug && p.requiresConsultation === product.requiresConsultation)
+          .slice(0, 2)
+          .map((p) => (
+            <ProductTile key={p.id} product={p} />
+          ))}
       </section>
     </>
   );

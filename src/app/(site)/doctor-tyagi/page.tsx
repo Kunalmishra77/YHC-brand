@@ -119,7 +119,7 @@ export default function DoctorPage() {
         />
         <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
           <figure>
-            <div className="relative aspect-[3/2] overflow-hidden rounded-[28px] bg-obsidian ring-1 ring-line md:aspect-[16/9] lg:aspect-[4/5]">
+            <div className="relative aspect-[3/2] overflow-hidden rounded-[28px] bg-obsidian ring-1 ring-line md:aspect-[16/9] lg:aspect-[4/3]">
               <Image
                 src={CLINICAL.scalpExam.src}
                 alt={CLINICAL.scalpExam.alt}

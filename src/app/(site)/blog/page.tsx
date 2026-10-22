@@ -65,7 +65,7 @@ export default function BlogPage() {
       {featured ? (
         <>
           {/* Featured article */}
-          <section className="container-yhc py-16 md:py-24">
+          <section className="container-yhc py-14 lg:py-20">
             <article className="group relative grid gap-8 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-center md:gap-14">
               <div className="relative aspect-[16/10] overflow-hidden rounded-[28px] bg-[#efeeeb] shadow-card">
                 <Image
@@ -98,7 +98,7 @@ export default function BlogPage() {
 
           {/* Editorial list */}
           {rest.length > 0 ? (
-            <section className="container-yhc pb-20 md:pb-28">
+            <section className="container-yhc pb-20 lg:pb-20">
               <div className="grid gap-10 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
                 <div className="md:sticky md:top-28 md:self-start">
                   <h2 className="display text-[clamp(2rem,1.5rem+2vw,2.75rem)] text-balance">More to read</h2>

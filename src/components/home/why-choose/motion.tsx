@@ -19,7 +19,7 @@ export function RiseTile({
       className={className}
       initial={reduce ? false : { opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '0px 0px -12% 0px' }}
+      viewport={{ once: true, amount: 0, margin: '0px 0px 10% 0px' }}
       transition={{ duration: 0.7, delay: order * 0.08, ease: [0.2, 0.7, 0.2, 1] }}
     >
       {children}

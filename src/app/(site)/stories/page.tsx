@@ -64,7 +64,7 @@ export default function StoriesPage() {
   return (
     <>
       <section className="border-b border-line">
-        <div className="container-yhc grid gap-8 py-16 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end md:py-24">
+        <div className="container-yhc grid gap-8 py-16 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-end lg:py-20">
           <h1 className="display text-[clamp(2.5rem,1.7rem+3vw,4rem)] text-balance">
             Real stories, only when patients want to share
           </h1>
@@ -75,12 +75,12 @@ export default function StoriesPage() {
         </div>
       </section>
 
-      <section className="container-yhc py-16 md:py-24">
+      <section className="container-yhc py-14 lg:py-20">
         <StoriesEmpty />
       </section>
 
       {/* What a published story will include */}
-      <section className="container-yhc pb-20 md:pb-28">
+      <section className="container-yhc pb-14 lg:pb-20">
         <div className="grid gap-12 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16">
           <div className="md:sticky md:top-28 md:self-start">
             <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
@@ -139,7 +139,7 @@ export default function StoriesPage() {
 
       {/* How patients can choose to share */}
       <section className="bg-obsidian text-on-dark">
-        <div className="container-yhc py-20 md:py-28">
+        <div className="container-yhc py-14 lg:py-20">
           <h2 className="display max-w-2xl text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance text-on-dark">
             If you would like to share yours
           </h2>
@@ -156,7 +156,7 @@ export default function StoriesPage() {
       </section>
 
       {/* Privacy promise */}
-      <section className="container-yhc py-20 md:py-28">
+      <section className="container-yhc py-14 lg:py-20">
         <div className="grid gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16">
           <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
             Our privacy promise

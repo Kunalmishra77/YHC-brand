@@ -38,7 +38,7 @@ function FullEvidence() {
       aria-labelledby="evidence-heading"
       className="scroll-mt-20 border-y border-line bg-card"
     >
-      <div className="container-yhc py-20 md:py-28">
+      <div className="container-yhc py-14 lg:py-20">
         <div className="max-w-3xl">
           <p className="eyebrow">What the research says</p>
           <h2 id="evidence-heading" className={`${H2} mt-4`}>
@@ -130,7 +130,7 @@ function CompactEvidence() {
 
   return (
     <section aria-labelledby="evidence-compact-heading" className="border-y border-line bg-card">
-      <div className="container-yhc py-16 md:py-24">
+      <div className="container-yhc py-14 lg:py-20">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
             <p className="eyebrow">What the research says</p>

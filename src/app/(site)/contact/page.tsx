@@ -60,7 +60,7 @@ export default function ContactPage() {
         }
       />
 
-      <section className="container-yhc grid gap-14 py-16 md:py-24 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <section className="container-yhc grid gap-14 py-14 lg:py-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
         <div className="min-w-0 md:grid md:grid-cols-2 md:items-start md:gap-8 lg:block">
           {/* Fastest channel */}
           <div className="rounded-2xl bg-obsidian p-7 text-on-dark md:p-8">
@@ -152,7 +152,7 @@ export default function ContactPage() {
 
       {/* Who to contact for what */}
       <section className="border-t border-line bg-[#efeeeb]/60">
-        <div className="container-yhc py-20 md:py-28">
+        <div className="container-yhc py-14 lg:py-20">
           <h2 className="display text-[clamp(2.25rem,1.6rem+2.4vw,3.5rem)] text-balance">
             Who to contact for what
           </h2>

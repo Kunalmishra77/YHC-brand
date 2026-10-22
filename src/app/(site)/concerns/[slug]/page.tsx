@@ -106,7 +106,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
             />
             <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/80 to-obsidian/35 md:bg-gradient-to-r md:from-obsidian md:via-obsidian/75 md:to-obsidian/5" />
           </div>
-          <div className="container-yhc py-16 md:py-28">
+          <div className="container-yhc py-14 lg:py-20">
             <nav aria-label="Breadcrumb" className="text-sm text-on-dark-muted">
               <Link
                 href="/concerns"
@@ -139,7 +139,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
         </header>
 
         {/* Overview + causes */}
-        <section className="container-yhc grid gap-14 py-20 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:py-28">
+        <section className="container-yhc grid gap-14 py-20 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:py-20">
           <div>
             <p className="text-xl leading-relaxed text-ink">{concern.body}</p>
             <h2 className="display mt-14 text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
@@ -198,17 +198,16 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
         {/* What a plan may include */}
         {products.length ? (
           <section className="border-t border-line bg-[#efeeeb]/60">
-            <div className="container-yhc py-20 md:py-28">
-              <div className="grid gap-6 md:grid-cols-2 md:items-end">
-                <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
-                  What your plan may include
-                </h2>
-                <p className="max-w-md text-body md:justify-self-end">
-                  If treatment can help, Dr. Tyagi picks the products, strength and routine. These are often
-                  used for {concern.title.toLowerCase()}. {t('common.resultsVary')}
-                </p>
-              </div>
-              <div className="mt-12 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            {/* 2 products: heading beside them; 3: heading above — always a full row. */}
+            <div className="container-yhc py-14 lg:py-20">
+              <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+                <div className={products.length === 2 ? 'sm:col-span-2 lg:col-span-1 lg:pr-6' : 'sm:col-span-2 lg:col-span-3 md:flex md:items-end md:justify-between md:gap-10'}>
+                  <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">What your plan may include</h2>
+                  <p className={products.length === 2 ? 'mt-4 max-w-md text-body' : 'mt-4 max-w-md text-body md:mt-0'}>
+                    If treatment can help, Dr. Tyagi picks the products, strength and routine. These are often
+                    used for {concern.title.toLowerCase()}. {t('common.resultsVary')}
+                  </p>
+                </div>
                 {products.map((p) => (
                   <ProductTile key={p.id} product={p} />
                 ))}
@@ -220,7 +219,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
 
       {/* Other concerns */}
       {others.length ? (
-        <section className="container-yhc py-20 md:py-24">
+        <section className="container-yhc py-14 lg:py-20">
           <h2 className="display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)] text-balance">Other concerns</h2>
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {others.map((c) => {
