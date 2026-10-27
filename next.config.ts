@@ -8,7 +8,14 @@ import { legacyConcernRedirects } from './src/lib/concern-path';
  */
 const isDev = process.env.NODE_ENV !== 'production';
 
-const csp = [
+// Public content pages may be framed by the AI Agentix portfolio; booking, cart,
+// checkout, orders, accounts, the doctor/sales/admin portals and the API stay unframeable.
+const PORTFOLIO_FRAME_ANCESTORS =
+  process.env.PORTFOLIO_FRAME_ANCESTORS ?? 'https://agentix-portfolio.vercel.app https://ai-agentix.com https://*.ai-agentix.com';
+const PUBLIC_PAGES =
+  'about|assessment|blog|concerns|contact|doctor-tyagi|faqs|guarantee|how-it-works|legal|plans|privacy-policy|products|refund-policy|results|science|start|stories|terms-and-conditions';
+
+const cspDirectives = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://www.googletagmanager.com https://connect.facebook.net`,
   "style-src 'self' 'unsafe-inline'",
@@ -17,16 +24,21 @@ const csp = [
   "font-src 'self' data:",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://www.google-analytics.com https://*.analytics.google.com https://*.google-analytics.com https://connect.facebook.net https://www.facebook.com",
   "frame-src 'self'",
-  "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
   "object-src 'none'",
-].join('; ');
+];
+
+const lockedHeaders = [
+  { key: 'Content-Security-Policy', value: [...cspDirectives, "frame-ancestors 'none'"].join('; ') },
+  { key: 'X-Frame-Options', value: 'DENY' },
+];
+const publicHeaders = [
+  { key: 'Content-Security-Policy', value: [...cspDirectives, `frame-ancestors 'self' ${PORTFOLIO_FRAME_ANCESTORS}`].join('; ') },
+];
 
 const securityHeaders = [
-  { key: 'Content-Security-Policy', value: csp },
   { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
-  { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   // Camera for the guided scalp scan, camera + microphone for the video consultation.
@@ -37,7 +49,12 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   async headers() {
-    return [{ source: '/:path*', headers: securityHeaders }];
+    return [
+      { source: '/:path*', headers: securityHeaders },
+      { source: '/', headers: [...securityHeaders, ...publicHeaders] },
+      { source: `/:page(${PUBLIC_PAGES})/:rest*`, headers: publicHeaders },
+      { source: `/((?!(?:${PUBLIC_PAGES})(?:/|$)).+)`, headers: lockedHeaders },
+    ];
   },
   // SEO-05: concern URLs moved from /concerns/hair_fall to /concerns/hair-fall.
   async redirects() {
