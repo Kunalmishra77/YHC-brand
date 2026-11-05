@@ -10,6 +10,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import type { beginScanSchema, startScanFormSchema, zoneAnalysisSchema } from '@/lib/validation/scan';
 import { emitEvent, getLiveSetting } from './platform';
+import { TEAM_PHOTO_CONSENT_VERSION } from './scans';
 
 /*
  * Real patient journey v1 (ADR-36): email OTP → customer + lead → scan (photos in the private
@@ -168,7 +169,8 @@ export async function beginScan(
   await admin.from('consents').insert({
     customer_id: customerId,
     kind: 'photo_clinical_use',
-    version: CONSENT_VERSION,
+    // ADR-37: this wording lets the hair-care team see this customer's scans from now on.
+    version: TEAM_PHOTO_CONSENT_VERSION,
     granted: true,
     source: 'website',
     ip: ctx.ip,

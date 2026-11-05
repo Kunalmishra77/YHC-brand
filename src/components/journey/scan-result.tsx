@@ -75,14 +75,16 @@ export function OutcomeCard({
   );
 }
 
-export function ZoneGrid({ zones }: { zones: ScanZoneView[] }) {
+export function ZoneGrid({ zones, teamVisible = false }: { zones: ScanZoneView[]; teamVisible?: boolean }) {
   if (!zones.length) return null;
   return (
     <section aria-labelledby="zones-title" className="mt-10">
       <h2 id="zones-title" className="font-display text-2xl font-medium text-ink">
         Your photos, area by area
       </h2>
-      <p className="mt-1 text-sm text-muted-foreground">Only you can see these photos.</p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {teamVisible ? 'Only you and our hair-care team can see these photos.' : 'Only you can see these photos.'}
+      </p>
       <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {zones.map((z) => (
           <li key={z.zone} className="overflow-hidden rounded-2xl bg-white ring-1 ring-line">

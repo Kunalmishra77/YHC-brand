@@ -356,7 +356,7 @@ function PhotoConsent({
       <ul className="mt-5 space-y-3 text-on-dark-muted">
         {[
           'Each photo is checked on your phone and then saved securely with us.',
-          'Only you can see your photos in your account. Our sales team never sees them.',
+          'Only you and our hair-care team can see your photos. The team uses them to advise you on your call.',
           'Photos are used only to check your hair and track your progress. Never for ads.',
           'You can ask us to delete them at any time.',
         ].map((line) => (
@@ -377,7 +377,7 @@ function PhotoConsent({
           className="mt-0.5 size-5 border-white/40 bg-white/5 data-[state=checked]:border-white data-[state=checked]:bg-white data-[state=checked]:text-obsidian"
         />
         <label htmlFor="photo-consent" className="text-sm leading-snug text-on-dark">
-          I agree that Your Hair Company stores my scalp photos to check my hair, as described in the{' '}
+          I agree that Your Hair Company stores my scalp photos and answers, and that its hair-care team may see them to advise me, as described in the{' '}
           <Link href="/legal/privacy" className="underline underline-offset-2">
             privacy policy
           </Link>

@@ -212,7 +212,7 @@ export function ZoneCapture({
           <HowToScanList />
         </div>
         <p className="mt-5 max-w-lg text-[13px] text-on-dark-muted">
-          Your photos are uploaded securely and kept private. Our sales team never sees them.
+          Your photos are uploaded securely and kept private. Only you and our hair-care team can see them.
         </p>
       </aside>
 

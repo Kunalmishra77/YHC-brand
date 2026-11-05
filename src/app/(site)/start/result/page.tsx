@@ -29,7 +29,7 @@ export default async function ResultPage() {
       lede="Based on the photos you took just now."
     >
       <OutcomeCard outcome={scan.outcome} reasons={scan.reasons} phone={customer.phone.replace(/^\+91/, '+91 ')} />
-      <ZoneGrid zones={scan.zones} />
+      <ZoneGrid zones={scan.zones} teamVisible={scan.teamVisible} />
       <div className="mt-10 flex flex-col gap-3 sm:flex-row">
         <Link
           href="/account"

@@ -52,7 +52,7 @@ export default async function AccountScans(props: PageProps<'/account/scan'>) {
         </nav>
       ) : null}
       <OutcomeCard outcome={scan.outcome} reasons={scan.reasons} phone={customer.phone.replace(/^\+91/, '+91 ')} />
-      <ZoneGrid zones={scan.zones} />
+      <ZoneGrid zones={scan.zones} teamVisible={scan.teamVisible} />
       <Link href="/start/scan" className="mt-8 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-ink underline underline-offset-4">
         Scan again to track changes
         <ArrowRight className="size-4" aria-hidden />

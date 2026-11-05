@@ -37,7 +37,7 @@ pnpm test:e2e
 - **MFA is enforced in the database**: doctor/admin rights need an `aal2` session. When testing as a doctor/admin, sign in with TOTP or the DB returns nothing.
 - **Events**: every important state change calls `emitEvent()`; CRM stages, messages, analytics react to events in handlers — not inline in UI code.
 - **RLS is the safety net, not the plan**: check roles in server actions/handlers too (`requireRole`). Service-role client (`@/lib/supabase/admin`) only in `src/server/**` and `src/app/api/**`.
-- **Clinical data** (intake, photos, assessments, consultations, prescriptions, dosage) is never shown to sales (they use `v_sales_*` views), never put in WhatsApp text, email subjects, calendar events, logs or Sentry. Patient-facing consult summaries never include `private_notes`. Every clinical view → `audit('clinical.view')`.
+- **Clinical data** (intake, photos, assessments, consultations, prescriptions, dosage) is never shown to sales (they use `v_sales_*` views) — sole exception: scalp scans the customer agreed to share with the team (ADR-37, `getScanForTeam()`); never put in WhatsApp text, email subjects, calendar events, logs or Sentry. Patient-facing consult summaries never include `private_notes`. Every clinical view → `audit('clinical.view')`.
 - **Adapters** for every provider (`src/server/integrations/*`), with a `log`/mock implementation for dev and tests.
 - **Settings over constants**: time windows, offsets, fees and toggles come from the `settings` table (`getSetting`), seeded in `supabase/seed.sql`.
 - **Guarantee** terms come from the active `guarantee_policies` row; everything guarantee-related is hidden while `guarantee.enabled = false`.
