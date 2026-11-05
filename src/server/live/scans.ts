@@ -6,9 +6,31 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { audit } from './platform';
 
 /*
- * Customer-side reads of their own scans (ADR-36). Photos come back as signed URLs valid for 10
- * minutes; every read of clinical data is audited ('clinical.view').
+ * Customer-side reads of their own scans (ADR-36). Photos are served by our own route
+ * (/api/scan/photo/[scanId]/[zone]) — never as Supabase signed URLs, because *.supabase.co is
+ * blocked by several Indian ISPs and the browser would show a broken image. Every read of
+ * clinical data is audited ('clinical.view').
  */
+
+/** Same-origin URL of one scan photo (the route checks the viewer owns the scan). */
+export function photoPath(scanId: string, zone: CaptureZone): string {
+  return `/api/scan/photo/${scanId}/${zone}`;
+}
+
+/** The JPEG bytes of one zone photo, only when the scan belongs to `customerId`. */
+export async function readScanPhoto(customerId: string, scanId: string, zone: CaptureZone): Promise<Blob | null> {
+  const admin = createSupabaseAdminClient();
+  const { data: photo } = await admin
+    .from('scan_photos')
+    .select('storage_path')
+    .eq('scan_id', scanId)
+    .eq('customer_id', customerId)
+    .eq('zone', zone)
+    .maybeSingle();
+  if (!photo) return null;
+  const { data } = await admin.storage.from('clinical').download(photo.storage_path);
+  return data ?? null;
+}
 
 export interface ScanZoneView {
   zone: CaptureZone;
@@ -84,9 +106,6 @@ export async function getScan(
     .from('scan_photos')
     .select('zone, storage_path, quality, metrics')
     .eq('scan_id', scan.id);
-  const paths = (photos ?? []).map((p) => p.storage_path);
-  const signed = paths.length ? (await admin.storage.from('clinical').createSignedUrls(paths, 600)).data ?? [] : [];
-  const urlFor = new Map(signed.map((s) => [s.path, s.signedUrl]));
 
   await audit({ actorId: viewer.id, actorRole: viewer.role, action: 'clinical.view', entity: 'scan', entityId: scan.id });
 
@@ -99,7 +118,7 @@ export async function getScan(
     return [
       {
         zone,
-        photoUrl: urlFor.get(p.storage_path) ?? null,
+        photoUrl: photoPath(scan.id, zone),
         ok: q.ok === true,
         cover: typeof m.cover === 'number' ? m.cover : null,
       },

@@ -88,7 +88,7 @@ export function ZoneGrid({ zones }: { zones: ScanZoneView[] }) {
           <li key={z.zone} className="overflow-hidden rounded-2xl bg-white ring-1 ring-line">
             <div className="relative aspect-[4/3] bg-mist">
               {z.photoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element -- short-lived signed URL from private storage
+                // eslint-disable-next-line @next/next/no-img-element -- private photo served by our own route
                 <img src={z.photoUrl} alt={`Your ${ANGLE_LABEL[z.zone]} photo`} className="size-full object-cover" />
               ) : null}
             </div>

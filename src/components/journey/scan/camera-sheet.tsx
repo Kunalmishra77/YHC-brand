@@ -11,7 +11,7 @@ import { hasCamera, reencode, reencodeFile } from './encode';
 
 /*
  * Full-bleed camera for one scan zone (phones: the whole screen; desktop: a phone-sized frame).
- * Environment camera by default, switchable; a photo picker is the fallback when there is no camera
+ * Front (selfie) camera by default, switchable to the back camera; a photo picker is the fallback when there is no camera
  * or permission. Frames are re-encoded locally — nothing is uploaded.
  */
 
@@ -81,7 +81,7 @@ function CameraView({
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [camera, setCamera] = useState<CameraState>(() => (hasCamera() ? 'starting' : 'unavailable'));
-  const [facing, setFacing] = useState<Facing>('environment');
+  const [facing, setFacing] = useState<Facing>('user');
   const [attempt, setAttempt] = useState(0);
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState(false);
@@ -343,7 +343,7 @@ function CameraView({
         ref={fileRef}
         type="file"
         accept="image/*"
-        capture="environment"
+        capture="user"
         className="sr-only"
         tabIndex={-1}
         aria-hidden
