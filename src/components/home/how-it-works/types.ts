@@ -18,7 +18,7 @@ export interface HowStep {
   body: string;
   /** Short supporting line under the body (fee, "free", who decides). */
   meta?: string;
-  /** Happens after the consultation (follow-up) — labelled "After" so the journey reads as 6 + 1. */
+  /** Happens after the main steps (follow-up) — labelled "After" so the journey reads as 4 + 1. */
   after?: boolean;
   /** The step's photo (slots H06–H12). */
   image: StepImage;

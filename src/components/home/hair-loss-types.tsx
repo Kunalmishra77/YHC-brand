@@ -229,7 +229,7 @@ export function HairLossTypes() {
             <Button asChild className="h-12 w-full px-7 text-base sm:w-auto">
               <Link href="/start">
                 <ScanLine className="size-4" aria-hidden />
-                Begin my free 3D scan
+                Begin my free scalp scan
               </Link>
             </Button>
             <Link href="/science" className={`text-ink ${TEXT_LINK}`}>

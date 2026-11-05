@@ -10,7 +10,6 @@ import { Reveal } from '@/components/site/reveal';
 import { SECTION_Y, SectionHeader, TEXT_LINK } from '@/components/site/section';
 import { pageMetadata } from '@/components/site/seo';
 import { IMAGES } from '@/lib/images';
-import { t } from '@/i18n/en';
 import { getProducts } from '@/server/catalog';
 
 export const dynamic = 'force-dynamic';
@@ -18,7 +17,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Products',
   description:
-    'The YHC range: hair regrowth solution, nourishing tablets and Ayurvedic capsules, for men and women, every ingredient listed. Your doctor decides.',
+    'The YHC range: hair regrowth solution, nourishing tablets and Ayurvedic capsules, for men and women, every ingredient listed. Start with a free scalp scan.',
   path: '/products',
 });
 
@@ -36,8 +35,8 @@ export default function ProductsPage() {
         tone="dark"
         lede={
           <p>
-            3 products, each in a men’s and a women’s pack. Your doctor picks the right ones for you at your
-            consultation. {t('common.inclGst')}.
+            3 products, each in a men’s and a women’s pack. Products are not sold online right now: start
+            with a free scalp scan and our hair-care team will talk you through your options.
           </p>
         }
       />
@@ -45,7 +44,7 @@ export default function ProductsPage() {
         <div className={`container-yhc ${SECTION_Y}`}>
           <EmptyState
             title="Products coming soon"
-            body="We add each product once its details are confirmed. You can still book a consultation."
+            body="We add each product once its details are confirmed. You can still take the free scalp scan."
           />
         </div>
       ) : null}
@@ -54,10 +53,10 @@ export default function ProductsPage() {
           <SectionHeader
             id="prescribed-heading"
             eyebrow="The YHC range"
-            title="Picked for you by your doctor"
-            lede="Your doctor decides which products you need and how to use them. The solution has a prescription medicine, so you need a prescription for it."
+            title="Developed with a dermatologist"
+            lede="Every ingredient is listed. The solution has a prescription medicine, so it is supplied only with a doctor’s prescription."
             action={
-              <Link href="/book" className={`text-ink ${TEXT_LINK}`}>
+              <Link href={terms.bookHref} className={`text-ink ${TEXT_LINK}`}>
                 {terms.bookLabel} <ArrowRight className="size-4" aria-hidden />
               </Link>
             }
@@ -76,9 +75,9 @@ export default function ProductsPage() {
           <div className={`container-yhc ${SECTION_Y}`}>
             <SectionHeader
               id="everyday-heading"
-              eyebrow="No consultation needed"
+              eyebrow="No prescription needed"
               title="Everyday hair care"
-              lede="Gentle on a scalp under treatment. Buy them on their own or with a plan."
+              lede="Gentle on a scalp under treatment. Ask our team about them after your scan."
             />
             <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
               {open.map((p, i) => (
@@ -98,7 +97,7 @@ export default function ProductsPage() {
         align="left"
         title="Not sure which products you need?"
         bookLabel={terms.bookLabel}
-        body="The consultation decides — based on your health, not a quiz score."
+        body="Take the free scalp scan. You see your result straight away, and our team calls you to talk it through."
       />
     </>
   );

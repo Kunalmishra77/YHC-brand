@@ -344,7 +344,7 @@ export function IngredientsSpread({ products, headingId }: { products: SpreadPro
 
             <p className="mt-4 flex items-start gap-2.5 text-sm leading-relaxed text-body">
               <Stethoscope className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
-              <span>Your doctor decides what you need, and how strong.</span>
+              <span>Prescription only: a doctor decides if you need it, and how strong.</span>
             </p>
             <Link href={`/products/${product.slug}`} className={cn('mt-2 text-ink', TEXT_LINK)}>
               See {product.name} <ArrowRight className="size-4" aria-hidden />

@@ -45,8 +45,8 @@ function FullEvidence() {
             Hair follows biology, not marketing.
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-body">
-            A few proven facts explain why we check your roots first, why a doctor decides your treatment, and
-            why change is judged over months, not weeks. Each fact links to its source.
+            A few proven facts explain why we check your roots first, why one product does not suit everyone,
+            and why change is judged over months, not weeks. Each fact links to its source.
           </p>
         </div>
 
@@ -66,8 +66,8 @@ function FullEvidence() {
             <h3 className="display text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)]">What this means in practice</h3>
             <p className="mt-4 leading-relaxed text-body">
               Shedding, thinning and scarring can look the same in a mirror. They are very different.
-              Treatment can only help roots that are still alive. So we check your roots, and a doctor
-              decides, before any plan.
+              Treatment can only help roots that are still alive. So we check your roots first, before
+              any plan is suggested.
             </p>
           </div>
           <ul className="divide-y divide-line border-y border-line">

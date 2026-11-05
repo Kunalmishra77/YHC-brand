@@ -4,7 +4,7 @@ import { track } from '@/lib/analytics';
 import { ArrowLeft, CheckCircle2, Loader2, Lock, RotateCcw, Video } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useState, useTransition } from 'react';
-import { journeyHoldAction, journeyPayAction, journeySlotsAction } from '@/app/(site)/start/actions';
+import { journeyHoldAction, journeyPayAction, journeySlotsAction } from '@/app/(site)/start/legacy-actions';
 import { ContinueBar } from '@/components/booking/continue-bar';
 import { Countdown } from '@/components/booking/countdown';
 import { DemoPaymentSheet } from '@/components/booking/demo-payment-sheet';

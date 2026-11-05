@@ -1,12 +1,4 @@
-import {
-  CalendarCheck,
-  ClipboardList,
-  HeartPulse,
-  MessageSquareText,
-  ScanLine,
-  Stethoscope,
-  UserRound,
-} from 'lucide-react';
+import { ClipboardList, MessageSquareText, PhoneCall, ScanLine, UserRound } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -16,38 +8,28 @@ export interface JourneyStep {
   icon: LucideIcon;
 }
 
-/** The patient journey in its ADR-26 order. Copy only; the fee is passed in from settings. */
-export function buildTrustJourney({ fee, slotMinutes }: { fee: string; slotMinutes: number }): JourneyStep[] {
+/** The visitor journey (2026-11-05: free scan, instant result, a call back from our team). Copy only. */
+export function buildTrustJourney(): JourneyStep[] {
   return [
-    { title: 'Basic details', body: 'Your name, mobile and address — under a minute.', icon: UserRound },
+    { title: 'Basic details', body: 'Your name and mobile number — under a minute.', icon: UserRound },
     {
-      title: '3D scalp scan',
-      body: 'A guided phone-camera scan of your scalp and roots, from home.',
+      title: 'Scalp scan',
+      body: 'A free, guided phone-camera scan of your scalp and roots, from home.',
       icon: ScanLine,
     },
     {
-      title: 'Personalised assessment',
-      body: 'Whether treatment looks suitable, needs a doctor’s review, or is not right — with reasons.',
+      title: 'Your result',
+      body: 'Whether our hair care looks suitable for you or not, with reasons. A quick check, not a diagnosis.',
       icon: ClipboardList,
     },
     {
-      title: 'Health form',
-      body: 'History, medicines and lifestyle, so the doctor has the full picture.',
-      icon: HeartPulse,
-    },
-    {
-      title: 'Doctor slot',
-      body: `Pick a time for a ${slotMinutes}-minute video consultation · ${fee}.`,
-      icon: CalendarCheck,
-    },
-    {
-      title: 'Consultation & plan',
-      body: 'The doctor explains what is likely going on and prescribes only if treatment is right.',
-      icon: Stethoscope,
+      title: 'A call back',
+      body: 'Our hair-care team calls you to talk through your result and your options.',
+      icon: PhoneCall,
     },
     {
       title: 'Follow-up',
-      body: 'Check-ins and a follow-up review, so the plan is adjusted as you go.',
+      body: 'If you start a plan, we check in so you stay on track.',
       icon: MessageSquareText,
     },
   ];
@@ -64,7 +46,7 @@ export function JourneyTimeline({
 }) {
   const dark = tone === 'dark';
   return (
-    <ol className={cn('relative grid max-w-2xl gap-0 lg:max-w-none lg:grid-cols-7 lg:gap-x-6', className)}>
+    <ol className={cn('relative grid max-w-2xl gap-0 lg:max-w-none lg:grid-cols-5 lg:gap-x-6', className)}>
       {steps.map((s, i) => {
         const Icon = s.icon;
         const last = i === steps.length - 1;

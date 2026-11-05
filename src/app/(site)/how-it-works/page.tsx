@@ -12,56 +12,51 @@ import { H2, LEDE, SECTION_Y, SectionHeader, TEXT_LINK } from '@/components/site
 import { pageMetadata } from '@/components/site/seo';
 import { CLINICAL } from '@/lib/images';
 import { SLOTS } from '@/lib/slots';
-import { getDoctor, getGuarantee } from '@/server/catalog';
-import { getSetting } from '@/server/demo/store';
+import { getGuarantee } from '@/server/catalog';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = pageMetadata({
   title: 'How it works',
   description:
-    'Book, talk to the doctor, get your plan, get it delivered and stay in touch. Every step, with the fees.',
+    'Take a free scalp scan, see your result straight away, and our hair-care team calls you back. Every step, in plain words.',
   path: '/how-it-works',
 });
 
 export default function HowItWorksPage() {
-  const doctor = getDoctor();
   const guarantee = getGuarantee();
   const terms = getConsultTerms();
-  const holdMinutes = getSetting('consult.hold_minutes');
-  const linkHours = getSetting('recommendation.link_ttl_hours');
 
+  // 2026-11-05 client decision: free scan → instant result → our team calls you back. No paid
+  // consultation, booking or doctor video call for now.
   const detail: { title: string; points: string[] }[] = [
     {
-      title: 'Book',
+      title: 'Scan',
       points: [
-        `Pick a free time. We keep it for you for ${holdMinutes} minutes while you pay the ${terms.fee} fee.`,
-        'Your booking is confirmed once your payment reaches us. We confirm it on WhatsApp.',
-        'Then fill in your hair details and add 3 scalp photos: front hairline, crown and parting.',
+        'Add your name and mobile number. We send a code to confirm it.',
+        'Your phone guides you to take a few photos of your scalp, at home. It is free.',
+        'Use soft daylight and hold the camera steady. The screen shows you where to point it.',
       ],
     },
     {
-      title: 'Consult',
+      title: 'Result',
       points: [
-        `A ${terms.slotMinutes}-minute video call with ${doctor.name}, on your phone or laptop.`,
-        'Sit somewhere quiet and bright. Keep your current products or medicines close by.',
-        'Ask anything. You get a clear answer, not a sales pitch.',
+        'You see your result straight away: whether our hair care looks suitable for you or not.',
+        'It is a quick check, not a diagnosis. For any medical worry, please see a doctor.',
       ],
     },
     {
-      title: 'Plan',
+      title: 'Call',
       points: [
-        'If treatment can help you, we send your plan and prescription on WhatsApp after the call.',
-        `The payment link works for ${linkHours} hours. You choose 1, 2 or 3 months.`,
-        terms.creditEnabled
-          ? `Buy your plan within ${terms.creditWindowDays} days of your consultation and the ${terms.fee} fee comes off your first plan.`
-          : 'You do not have to buy anything. Your prescription is yours either way.',
+        'Our hair-care team calls you back on the number you gave us.',
+        'They talk through your result, answer your questions and explain your options.',
+        'Ask anything. You do not have to buy anything, and no one pushes you to decide on the call.',
       ],
     },
     {
       title: 'Delivered',
       points: [
-        'We pack your plan and ship it anywhere in India. You can track it on WhatsApp.',
+        'If you choose a plan, we pack it and ship it anywhere in India. You can track it on WhatsApp.',
         'When it arrives, you get a short guide to start your routine.',
       ],
     },
@@ -70,7 +65,7 @@ export default function HowItWorksPage() {
       points: [
         'We check in on WhatsApp. Reply "going well", "I have a question", or tell us about a side effect.',
         'You take progress photos each month, so you can see change instead of guessing.',
-        `${doctor.name} reviews your progress and adjusts your plan. We remind you before it runs out.`,
+        'We remind you before your plan runs out.',
       ],
     },
   ];
@@ -82,12 +77,12 @@ export default function HowItWorksPage() {
         image={SLOTS.S02}
         lede={
           <p>
-            5 simple steps, from booking to follow-up. You pay just {terms.fee} to start. You get a plan only
-            if it can help you.
+            5 simple steps, from your free scalp scan to follow-up. Starting costs nothing. We suggest a plan
+            only if it can help you.
           </p>
         }
       >
-        <JourneySteps steps={buildJourney(terms)} />
+        <JourneySteps steps={buildJourney()} />
       </PageIntro>
 
       {/* Why photos matter — dark split band to break up the two text-led sections */}
@@ -110,13 +105,13 @@ export default function HowItWorksPage() {
             </figcaption>
           </figure>
           <div>
-            <p className="eyebrow text-brand-on-dark">Before your call</p>
+            <p className="eyebrow text-brand-on-dark">Your scalp scan</p>
             <h2 id="photos-heading" className={`${H2} mt-4 text-on-dark`}>
-              3 photos, taken the same way each time
+              Photos, taken the same way each time
             </h2>
             <p className={`${LEDE} mt-6 text-on-dark-muted`}>
-              Clear photos let {doctor.name} see your roots before the call. Later, you compare new photos
-              with them to see the change.
+              Clear photos give you a more useful result. Later, you can compare new photos with them to see
+              the change.
             </p>
             <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl bg-line-dark ring-1 ring-line-dark sm:grid-cols-3">
               {[
@@ -139,7 +134,7 @@ export default function HowItWorksPage() {
           id="detail-heading"
           eyebrow="Step by step"
           title="Each step in detail"
-          lede="What happens, what you do and what it costs. Know it all before you pay for anything."
+          lede="What happens and what you do. The scan and the call are free."
         />
         <ol className="divide-y divide-line border-y border-line">
           {detail.map((step, i) => (
@@ -178,11 +173,11 @@ export default function HowItWorksPage() {
 
       <CtaBand
         id="how-cta-heading"
-        image={SLOTS.H11}
+        image={SLOTS.H03}
         imagePosition="65% 55%"
         title="Ready for step one?"
         bookLabel={terms.bookLabel}
-        body="Booking takes a few minutes. Then you fill in your hair details and add your scalp photos."
+        body="The scan takes a few minutes on your phone. You see your result straight away, then our team calls you back."
       />
     </>
   );

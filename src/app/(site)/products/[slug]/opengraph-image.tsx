@@ -26,7 +26,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     eyebrow: 'YHC product',
     title: product.name,
     subtitle: product.requiresConsultation
-      ? 'Supplied after a consultation with the doctor.'
+      ? 'Supplied only with a doctor’s prescription.'
       : 'Every ingredient listed on the page.',
     chips: [...(media ? [media.pack] : []), ...lines.map((l) => LINE_LABEL[l])],
     photo: `public/media/products/og/${productKey(product.slug)}.jpg`,

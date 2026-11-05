@@ -81,8 +81,8 @@ export default function ResultsPage() {
         image={SLOTS.H18}
         imagePosition="50% 30%"
         title="Your own “before” starts with a scan"
-        body="The 3D scan records your scalp as it is today. At follow-up, the doctor compares against it."
-        primary={{ href: '/start', label: 'Begin my free 3D scan' }}
+        body="The scalp scan records your scalp as it is today, so later photos can be compared against it."
+        primary={{ href: '/start', label: 'Begin my free scalp scan' }}
       />
     </>
   );

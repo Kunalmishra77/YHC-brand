@@ -42,7 +42,7 @@ export function ProductTile({
             dark ? 'bg-white/10 text-on-dark' : 'bg-white/70 text-ink',
           )}
         >
-          {product.requiresConsultation ? 'Your doctor decides' : 'Buy directly'}
+          {product.requiresConsultation ? 'Ask our team first' : 'Everyday care'}
         </span>
       </div>
       <div className="mt-4 flex items-start justify-between gap-4">

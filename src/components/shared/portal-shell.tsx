@@ -1,9 +1,10 @@
 'use client';
 
-import { Menu, Repeat, X } from 'lucide-react';
+import { Menu, LogOut, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { signOutAction } from '@/app/auth/actions';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -189,14 +190,15 @@ function SidebarContent({
             <p className="truncate text-[12px] text-on-dark-muted capitalize">{user.role}</p>
           </div>
         </div>
-        <Link
-          href="/demo"
-          onClick={onNavigate}
-          className="mt-3 flex min-h-10 items-center justify-center gap-1.5 rounded-lg border border-line-dark text-[12px] text-on-dark-muted transition-colors hover:border-steel hover:text-on-dark"
-        >
-          <Repeat className="size-3.5" aria-hidden />
-          Switch demo role
-        </Link>
+        <form action={signOutAction}>
+          <button
+            type="submit"
+            className="mt-3 flex min-h-10 w-full items-center justify-center gap-1.5 rounded-lg border border-line-dark text-[12px] text-on-dark-muted transition-colors hover:border-steel hover:text-on-dark"
+          >
+            <LogOut className="size-3.5" aria-hidden />
+            Sign out
+          </button>
+        </form>
       </div>
     </>
   );

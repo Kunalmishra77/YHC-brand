@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 
 /**
  * Side-by-side plan comparison. The doctor-recommended duration rises out of the row instead of
- * three identical cards. Plans are never bought from here: they are prescribed after a consultation.
+ * three identical cards. Plans are never bought from here: our team talks them through after the free scan.
  */
 export function PlanLadder({
   plans,
@@ -15,7 +15,7 @@ export function PlanLadder({
 }: {
   plans: Plan[];
   guarantee: GuaranteePolicy | null;
-  /** e.g. "₹500 consultation fee credited if bought within 7 days" */
+  /** Optional extra benefit line; marketing pages pass null while there is no paid consultation. */
   creditLine: string | null;
   headingLevel?: 'h2' | 'h3';
 }) {
@@ -41,7 +41,7 @@ export function PlanLadder({
             {plan.isRecommended ? (
               <div className="bg-silver flex items-center gap-2 rounded-t-xl px-5 py-2.5 text-sm font-semibold text-obsidian">
                 <Stethoscope className="size-4" aria-hidden />
-                Doctor’s pick
+                Recommended
               </div>
             ) : null}
             <div className={cn('flex flex-1 flex-col p-5 md:p-6', plan.isRecommended && 'md:py-8')}>
@@ -53,8 +53,7 @@ export function PlanLadder({
               <ul className="mt-5 space-y-2.5 border-t border-line pt-5 text-sm text-body">
                 <li className="flex gap-2">
                   <Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden />
-                  {plan.months === 1 ? '1 month' : `${plan.months} months`} of the routine Dr. Tyagi picks for
-                  you
+                  {plan.months === 1 ? '1 month' : `${plan.months} months`} of a routine suited to your scalp
                 </li>
                 <li className="flex gap-2">
                   <Check className="mt-0.5 size-4 shrink-0 text-success" aria-hidden />

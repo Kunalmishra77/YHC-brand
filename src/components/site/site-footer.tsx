@@ -25,7 +25,6 @@ const EXPLORE: FooterLink[] = [
 
 const PATIENTS: FooterLink[] = [
   { href: '/start', label: t('nav.beginScan') },
-  { href: '/book', label: t('common.bookConsultation') },
   { href: '/doctor-tyagi', label: t('nav.doctor') },
   { href: '/account', label: t('nav.account') },
   { href: '/faqs', label: t('nav.faqs') },
@@ -52,11 +51,11 @@ export function SiteFooter({ doctor }: { doctor: Doctor }) {
         <div className="col-span-2 md:col-span-3 lg:col-span-1">
           <Logo tone="light" />
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-pretty">
-            Science-first hair care. A dermatologist reviews every case before anything is prescribed.
+            Science-first hair care, developed with a dermatologist. Start with a free scalp scan from your phone.
           </p>
           {/* FR-M1-9: lead doctor + registration on every page; placeholders are never shown to visitors */}
           <p className="mt-6 max-w-sm border-t border-line-dark pt-5 text-sm leading-relaxed">
-            <span className="text-on-dark">Consultations led by {doctor.name}</span>
+            <span className="text-on-dark">Founding dermatologist: {doctor.name}</span>
             {publicCredential(doctor.qualifications) ? `, ${publicCredential(doctor.qualifications)}` : ''}
             {publicCredential(doctor.registrationNo) ? (
               <span className="mt-1 block">

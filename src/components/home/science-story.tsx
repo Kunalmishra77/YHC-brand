@@ -165,7 +165,7 @@ export function ScienceStory() {
               asChild
               className="h-12 bg-[image:var(--yhc-silver)] px-7 text-base font-semibold text-obsidian hover:opacity-95"
             >
-              <Link href="/start">Begin my free 3D scan</Link>
+              <Link href="/start">Begin my free scalp scan</Link>
             </Button>
           </div>
         </div>

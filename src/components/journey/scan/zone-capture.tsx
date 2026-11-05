@@ -7,6 +7,7 @@ import {
   Camera,
   Check,
   CircleHelp,
+  Loader2,
   RotateCcw,
   ScanLine,
 } from 'lucide-react';
@@ -34,6 +35,10 @@ import { ZONE_REFERENCE_POSITION, ZONE_TIP } from './zone-guide';
 export interface ScanShot {
   url: string;
   kb: number;
+  /** upload status (ADR-36): the photo goes to our server as soon as it is taken */
+  state: 'uploading' | 'saved' | 'failed';
+  /** plain-words retake tip when the photo is blurry, dark, glaring or not of the scalp */
+  hint: string | null;
 }
 
 export type ZoneShots = Partial<Record<CaptureZone, ScanShot>>;
@@ -56,7 +61,7 @@ function issueText(captured: CaptureZone[], skipped: CaptureZone[]): string | nu
   const issue = zoneSelectionIssue(captured, skipped);
   if (!issue) return null;
   if (issue.code === 'required_missing')
-    return `Please scan ${issue.zones.map((z) => ANGLE_LABEL[z]).join(' and ')}. Your doctor needs ${issue.zones.length > 1 ? 'these' : 'this'}.`;
+    return `Please scan ${issue.zones.map((z) => ANGLE_LABEL[z]).join(' and ')}. We need ${issue.zones.length > 1 ? 'these' : 'this'} to check your hair.`;
   if (issue.code === 'too_few')
     return `Please scan at least ${MIN_CAPTURED_ZONES} areas. ${issue.missing} more to go.`;
   return 'Something went wrong. Please take one photo again.';
@@ -90,7 +95,7 @@ export function ZoneCapture({
   const shot = shots[zone];
   const isSkipped = skipped.includes(zone);
   const required = isRequiredZone(zone);
-  const captured = orderZones(CAPTURE_ZONES.filter((z) => shots[z]));
+  const captured = orderZones(CAPTURE_ZONES.filter((z) => shots[z]?.state === 'saved'));
   const isLast = index === TOTAL - 1;
   const example = ZONE_EXAMPLE[zone];
 
@@ -142,7 +147,7 @@ export function ZoneCapture({
   };
 
   const fixZone = blocked ? nextZoneToFix(captured, skipped) : null;
-  const canNext = Boolean(shot) || isSkipped;
+  const canNext = (Boolean(shot) && shot?.state === 'saved') || (!shot && isSkipped);
 
   return (
     <section className="lg:grid lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start lg:gap-14">
@@ -157,7 +162,7 @@ export function ZoneCapture({
           Back to questions
         </button>
         <p className="mt-6 text-[13px] font-semibold tracking-[0.14em] text-brand-on-dark uppercase">
-          Guided 3D scalp scan
+          Guided scalp scan
         </p>
         <h2 className="mt-3 font-display text-[44px] leading-[1.05] font-medium text-balance text-on-dark">
           7 areas, one close-up at a time
@@ -207,8 +212,7 @@ export function ZoneCapture({
           <HowToScanList />
         </div>
         <p className="mt-5 max-w-lg text-[13px] text-on-dark-muted">
-          Demo: your photos stay on this phone or computer and are never uploaded. We only send which areas
-          you scanned.
+          Your photos are uploaded securely and kept private. Our sales team never sees them.
         </p>
       </aside>
 
@@ -277,9 +281,20 @@ export function ZoneCapture({
                   </span>
                 </p>
                 {shot ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-success-bg px-3 py-1 text-[12px] font-medium text-success">
-                    <Check className="size-3.5" aria-hidden />
-                    Done
+                  <span
+                    className={cn(
+                      'inline-flex items-center gap-1 rounded-full px-3 py-1 text-[12px] font-medium',
+                      shot.state === 'failed' ? 'bg-warning-bg text-ink' : 'bg-success-bg text-success',
+                    )}
+                  >
+                    {shot.state === 'uploading' ? (
+                      <Loader2 className="size-3.5 animate-spin motion-reduce:animate-none" aria-hidden />
+                    ) : shot.state === 'failed' ? (
+                      <AlertCircle className="size-3.5 text-warning" aria-hidden />
+                    ) : (
+                      <Check className="size-3.5" aria-hidden />
+                    )}
+                    {shot.state === 'uploading' ? 'Saving…' : shot.state === 'failed' ? 'Not saved' : 'Done'}
                   </span>
                 ) : required ? (
                   <span className="rounded-full bg-mist px-3 py-1 text-[12px] font-medium text-ink">
@@ -343,7 +358,7 @@ export function ZoneCapture({
                 {shot ? (
                   <>
                     <Check className="size-3.5" aria-hidden />
-                    Done · stays on this device
+                    {shot.state === 'saved' ? 'Saved privately' : 'Your photo'}
                   </>
                 ) : (
                   'Example of a good photo'
@@ -352,6 +367,17 @@ export function ZoneCapture({
             </div>
 
             <div className="px-5 pt-4">
+              {shot?.state === 'failed' ? (
+                <p role="alert" className="mb-3 flex gap-2 rounded-2xl bg-warning-bg px-4 py-3 text-sm text-ink">
+                  <AlertCircle className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden />
+                  This photo did not save. Check your internet and press Retake.
+                </p>
+              ) : shot?.hint ? (
+                <p role="status" className="mb-3 flex gap-2 rounded-2xl bg-warning-bg px-4 py-3 text-sm text-ink">
+                  <AlertCircle className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden />
+                  {shot.hint} A clearer photo gives you a better result.
+                </p>
+              ) : null}
               <p className="text-[15px] leading-relaxed text-body">{ZONE_TIP[zone]}</p>
               {isSkipped && !shot ? (
                 <p className="mt-3 rounded-2xl bg-mist px-4 py-3 text-sm text-ink">
@@ -418,7 +444,13 @@ export function ZoneCapture({
           </button>
           {!canNext ? (
             <p className="mt-2 text-center text-[12px] text-muted-foreground">
-              {required ? 'Scan this area to go on.' : 'Scan this area, or skip it for now.'}
+              {shot?.state === 'uploading'
+                ? 'Saving your photo…'
+                : shot?.state === 'failed'
+                  ? 'Retake this photo to go on.'
+                  : required
+                    ? 'Scan this area to go on.'
+                    : 'Scan this area, or skip it for now.'}
             </p>
           ) : null}
         </div>

@@ -9,8 +9,9 @@ export const en = {
     tagline: 'Doctor-led hair care',
   },
   common: {
-    bookConsultation: 'Book consultation',
-    bookConsultationPrice: 'Book consultation · ₹500',
+    // 2026-11-05: no paid consultation for now — the main CTA is the free scalp scan.
+    bookConsultation: 'Begin my free scalp scan',
+    talkToUs: 'Talk to us',
     freeAssessment: 'Free hair assessment',
     whatsapp: 'WhatsApp',
     continue: 'Continue',
@@ -43,12 +44,12 @@ export const en = {
     howItWorks: 'How it works',
     faqs: 'FAQs',
     science: 'Science',
-    scan: '3D Scan',
+    scan: 'Scalp scan',
     results: 'Results',
     guarantee: 'Guarantee',
     doctorShort: 'Doctor',
     plansShort: 'Plans',
-    beginScan: 'Begin 3D scan',
+    beginScan: 'Begin scalp scan',
     account: 'My account',
   },
   legal: {

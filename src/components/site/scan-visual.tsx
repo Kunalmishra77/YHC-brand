@@ -3,7 +3,7 @@ import { CLINICAL } from '@/lib/images';
 import { cn } from '@/lib/utils';
 
 /**
- * Decorative "3D scan" illustration: a macro hair photograph with a scanning overlay. It illustrates the
+ * Decorative "scalp scan" illustration: a macro hair photograph with a scanning overlay. It illustrates the
  * idea of looking at roots first — it is not a real scan output and is labelled as an illustration.
  */
 export function ScanVisual({ className }: { className?: string }) {
@@ -84,7 +84,7 @@ export function ScanVisual({ className }: { className?: string }) {
           ['Roots', 'located'],
           ['Density', 'mapped by zone'],
           ['Follicles', 'checked for activity'],
-          ['Next', 'doctor review'],
+          ['Next', 'a call from our team'],
         ].map(([k, v]) => (
           <span key={k} className="rounded-xl border border-white/10 bg-black/40 px-3 py-2 backdrop-blur-md">
             <span className="block text-on-dark-muted">{k}</span>

@@ -26,13 +26,13 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   ...pageMetadata({
-    title: 'Science-first, doctor-led hair care',
+    title: 'Science-first hair care · Free scalp scan',
     description:
-      'Hair care begins with science, not products. Take a guided 3D scalp scan; a dermatologist decides if treatment can help before anything is prescribed.',
+      'Hair care begins with science, not products. Take a free scalp scan with your phone, see your result straight away, and our hair-care team calls you back.',
     path: '/',
   }),
   // SEO-04: under 60 characters.
-  title: { absolute: 'Your Hair Company — Science-first, doctor-led hair care' },
+  title: { absolute: 'Your Hair Company — Science-first hair care · Free scalp scan' },
 };
 
 /**
@@ -54,7 +54,7 @@ export default function HomePage() {
           name: 'Your Hair Company',
           url: clientEnv.NEXT_PUBLIC_SITE_URL,
           email: SITE.supportEmail,
-          description: 'Science-first, doctor-led hair care: scalp scan, video consultation and follow-up.',
+          description: 'Science-first hair care, developed with a dermatologist: a free scalp scan, an instant result and a call back from our team.',
           areaServed: 'IN',
           logo: logoUrl,
         }}
@@ -85,7 +85,7 @@ export default function HomePage() {
       <ScanInvite />
       {/* 4 · Why choose Your Hair Company */}
       <WhyChoose />
-      {/* 5 · Dr. Anil Tyagi and his treatments */}
+      {/* 5 · Dr. Anil Tyagi, the dermatologist behind YHC */}
       <DoctorFeature />
       {/* 6 · How it works */}
       <HowItWorksJourney />
@@ -99,14 +99,14 @@ export default function HomePage() {
       <FilmBand
         id="ritual-film-heading"
         name="ritual"
-        eyebrow="If your doctor prescribes the solution"
+        eyebrow="How the solution is used"
         poster={{ src: '/media/seq/ritual/frame_0130.webp', alt: 'A dropper releases a few drops of serum onto a hair parting' }}
         beats={[
-          { title: 'A few drops.', body: 'Your doctor tells you how many, and how often.' },
+          { title: 'A few drops.', body: 'The pack tells you how many, and how often.' },
           { title: 'On the thin areas.', body: 'Put them where your hair is thinning, then massage in gently.' },
           { title: 'Every day.', body: 'Small, steady habits matter more than big promises. Results vary.' },
         ]}
-        cta={{ href: '/start', label: 'Begin my free 3D scan' }}
+        cta={{ href: '/start', label: 'Begin my free scalp scan' }}
       />
       {/* 9 · What can you expect */}
       <WhatToExpect />
@@ -119,7 +119,7 @@ export default function HomePage() {
         poster={{ src: '/media/seq/ingredients/frame_0192.webp', alt: 'The YHC capsules jar surrounded by amla, leaves, roots and resin' }}
         beats={[
           { title: 'Plants with a long history.', body: 'Amla, bhringraj, ashwagandha and more go into the YHC capsules.' },
-          { title: 'Chosen with a doctor.', body: 'Your doctor decides if they belong in your plan.' },
+          { title: 'Developed with a dermatologist.', body: 'Ask our hair-care team if they suit you.' },
           { title: 'Nothing hidden.', body: 'Every ingredient is on the pack, and on this page.' },
         ]}
       />

@@ -17,10 +17,10 @@ const NOTES: Record<string, string> = {
     'A well-known Ayurvedic root, used as a general tonic. Tell your doctor if you have a thyroid problem or are pregnant.',
   'green tea': 'An extract from green tea leaves.',
   'pumpkin seed': 'An extract from pumpkin seeds, common in hair supplements.',
-  iron: 'Low iron can cause extra hair fall. Extra iron helps only if you are low, and too much can harm you. Your doctor checks first.',
+  iron: 'Low iron can cause extra hair fall. Extra iron helps only if you are low, and too much can harm you. Check with a doctor first.',
   zinc: 'A mineral your body needs. Too little can go with hair fall. More than you need does not help.',
   'vitamin a':
-    'Your body needs only a little. Too much vitamin A can itself cause hair loss, so your doctor checks your other supplements.',
+    'Your body needs only a little. Too much vitamin A can itself cause hair loss, so a doctor should check your other supplements.',
   copper: 'A mineral your body needs in very small amounts.',
   'folic acid': 'A B-vitamin your body uses to make new cells.',
   'vitamin b5': 'A B-vitamin found in many everyday foods.',
@@ -31,7 +31,7 @@ const NOTES: Record<string, string> = {
   procapil: 'A branded mix of a small protein and plant compounds, used in scalp care.',
   'capilia longa': 'A branded extract from turmeric, used in scalp care.',
   finasteride:
-    'A prescription medicine for pattern hair loss. Used only if your doctor prescribes it after checking it suits you. Not safe during pregnancy or breastfeeding.',
+    'A prescription medicine for pattern hair loss. Used only if a doctor prescribes it after checking it suits you. Not safe during pregnancy or breastfeeding.',
 };
 
 export function ingredientNote(name: string, role: string): string {

@@ -17,13 +17,13 @@ import { clientEnv } from '@/lib/env';
 import { SLOTS } from '@/lib/slots';
 import { getArticles } from '@/server/content/articles';
 
-// The closing band shows the live consultation fee (settings).
+// The closing band reads live settings (getConsultTerms).
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = pageMetadata({
   title: 'Hair health articles',
   description:
-    'Simple guides to hair and scalp health: hair fall, how hair grows, scalp photos, food and hair, and what happens on a video consultation.',
+    'Simple guides to hair and scalp health: hair fall, how hair grows, scalp photos, food and hair, and what to expect from our free scalp scan.',
   path: '/blog',
 });
 
@@ -149,8 +149,8 @@ export default function BlogPage() {
         image={SLOTS.B03}
         imagePosition="50% 50%"
         bookLabel={terms.bookLabel}
-        title="Reading helps. A consultation answers."
-        body="Dr. Tyagi looks at your health and your scalp, and tells you what is likely going on."
+        title="Reading helps. A scan shows you more."
+        body="Take the free scalp scan with your phone. You see your result straight away, and our hair-care team calls you back."
       />
     </>
   );

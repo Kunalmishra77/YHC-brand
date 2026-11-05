@@ -19,7 +19,7 @@ interface CtaAction {
 /**
  * Closing call to action for inner pages (docs/21): a wide rounded frame with a page-relevant photo
  * drifting slowly behind a warm obsidian fade, one serif line, one sentence and the next step.
- * Default action is booking (`bookLabel`) plus WhatsApp; pass `primary` (e.g. the free scan) to change it.
+ * Default action is the free scalp scan (`bookLabel`, links to /start) plus WhatsApp; pass `primary` to change it.
  */
 export function CtaBand({
   title = 'Start with a conversation, not a product.',
@@ -35,7 +35,7 @@ export function CtaBand({
 }: {
   title?: string;
   body: string;
-  /** Label for the default "/book" action. */
+  /** Label for the default free-scan ("/start") action. */
   bookLabel?: string;
   /** Replaces the default booking action. */
   primary?: CtaAction;
@@ -51,7 +51,7 @@ export function CtaBand({
   align?: 'left' | 'right';
   id?: string;
 }) {
-  const main = primary ?? { href: '/book', label: bookLabel ?? 'Book consultation' };
+  const main = primary ?? { href: '/start', label: bookLabel ?? 'Begin my free scalp scan' };
   const showWhatsapp = (whatsapp ?? !primary) && SITE.whatsappAvailable;
   const note = illustrativeNote(image);
   const right = align === 'right';

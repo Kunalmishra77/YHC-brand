@@ -1,267 +1,89 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import type { z } from 'zod';
-import type { ConfirmedView, HoldView, SlotDayView } from '@/components/booking/types';
-import type { Suitability } from '@/lib/journey/types';
+import { z } from 'zod';
 import { AppError } from '@/lib/errors';
-import { serverEnv } from '@/lib/env.server';
-import { getSessionUser, requireRole } from '@/lib/rbac';
-import type { Result } from '@/lib/result';
-import { appointmentIdSchema } from '@/lib/validation/booking';
+import { requireRole } from '@/lib/rbac';
+import { err, ok, type Result } from '@/lib/result';
+import type { ScanOutcome } from '@/lib/scan/rules';
 import {
-  journeyDetailsSchema,
-  journeyHoldSchema,
-  startJourneySchema,
-  submitScanSchema,
-  verifyJourneySchema,
-} from '@/lib/validation/journey';
-import {
-  busyAppointments,
-  captureConsultPayment,
-  db,
-  findOrCreateCustomer,
-  getSlots,
-  holdSlot,
-  recordAudit,
-  saveIntake,
-} from '@/server/demo/store';
-import {
-  getJourneyForCustomer,
-  linkAppointment,
-  resumeHref,
-  saveDetails,
-  saveScan,
-  startJourney,
-} from '@/server/journey/store';
-import { guard, setCustomerSession } from '../book/action-utils';
-import {
-  DEMO_OTP,
-  OTP_RESEND_SECONDS,
-  bookedAt,
-  confirmedView,
-  holdView,
-  maskPhone,
-  otpAttempts,
-  slotDays,
-} from '../book/booking-views';
-import { claimCustomerByDemoOtp } from '@/server/demo/otp-claim';
+  type StartScanFormInput,
+  beginScanSchema,
+  startScanFormSchema,
+  submitScanIdSchema,
+  verifyScanFormSchema,
+} from '@/lib/validation/scan';
+import { beginScan, sendEmailCode, submitScan, verifyEmailCode } from '@/server/live/journey';
 
 /*
- * Patient journey actions (ADR-26). The demo store plays Postgres; `journeyPayAction` plays the
- * Razorpay webhook → capture_payment() path (server decides). Clinical answers never go to logs.
+ * Real patient journey actions (ADR-36): email OTP → scan → result. Every action re-checks the
+ * session and role; the server decides the outcome. Clinical answers never go to logs.
  */
 
-const MAX_OTP_ATTEMPTS = 5;
+async function run<T>(fn: () => Promise<T>): Promise<Result<T>> {
+  try {
+    return ok(await fn());
+  } catch (e) {
+    if (e instanceof AppError) return err(e.code, e.message);
+    if (e instanceof z.ZodError) return err('invalid_input', e.issues[0]?.message ?? 'Please check the form.');
+    // Next.js control flow (redirect / notFound) must pass through untouched.
+    if (e instanceof Error && 'digest' in e && typeof e.digest === 'string' && e.digest.startsWith('NEXT_')) throw e;
+    return err('internal', 'Something went wrong. Please try again.');
+  }
+}
 
-async function currentJourneyCustomer() {
+async function requestContext() {
+  const h = await headers();
+  const ip = h.get('x-forwarded-for')?.split(',')[0]?.trim() || null;
+  return { ip: ip && /^[0-9a-f.:]+$/i.test(ip) ? ip : null, userAgent: h.get('user-agent')?.slice(0, 300) ?? null };
+}
+
+async function journeyCustomer() {
   const user = await requireRole(['customer']);
-  const customer = db().customers.find((c) => c.id === user.customerId);
-  if (!customer) throw new AppError('unauthenticated', 'Please start again with your mobile number.', 401);
-  const journey = getJourneyForCustomer(customer.id);
-  if (!journey) throw new AppError('journey_missing', 'Please start with your basic details.', 409);
-  return { customer, journey };
+  if (!user.customerId) throw new AppError('unauthenticated', 'Please start again with your details.', 401);
+  return user;
 }
 
-// ---------------------------------------------------------------------------------------------
-// step 1 — basic details + demo OTP
+/** Step 1a — validate the details and email the 6-digit code. */
+export async function sendCodeAction(raw: StartScanFormInput): Promise<Result<{ sentTo: string }>> {
+  return run(async () => sendEmailCode(startScanFormSchema.parse(raw)));
+}
 
-/**
- * Without `code`: validates the details and "sends" the demo OTP. With `code`: verifies it, creates or
- * finds the customer, starts the journey, signs the customer in and redirects to the scan.
- */
-export async function startJourneyAction(
-  raw: z.input<typeof startJourneySchema> & { code?: string },
-): Promise<Result<{ sentTo: string; demoCode: string; resendIn: number }>> {
-  return guard(async () => {
-    // TODO(phase-03): Supabase phone OTP (WhatsApp first, SMS fallback) replaces the demo code.
-    if (!serverEnv.DEMO_MODE)
-      throw new AppError('not_available', 'Online assessment is not available yet.', 503);
-
-    if (raw.code === undefined) {
-      const input = startJourneySchema.parse(raw);
-      return { sentTo: maskPhone(`+91${input.mobile}`), demoCode: DEMO_OTP, resendIn: OTP_RESEND_SECONDS };
-    }
-
-    const input = verifyJourneySchema.parse(raw);
-    const phone = `+91${input.mobile}`;
-    const now = Date.now();
-    const tries = otpAttempts().get(phone);
-    if (tries && tries.until > now && tries.n >= MAX_OTP_ATTEMPTS)
-      throw new AppError(
-        'rate_limited',
-        'Too many tries. Please wait 10 minutes and request a new code.',
-        429,
-      );
-    if (input.code !== DEMO_OTP) {
-      otpAttempts().set(phone, { n: tries && tries.until > now ? tries.n + 1 : 1, until: now + 10 * 60_000 });
-      throw new AppError('otp_invalid', 'That code does not match. Please check and try again.', 422);
-    }
-    otpAttempts().delete(phone);
-
-    const session = await getSessionUser();
-    const customer = claimCustomerByDemoOtp({
-      phone,
-      name: input.name,
-      source: 'website',
-      sessionCustomerId: session?.customerId ?? null,
-    });
-    const journey = startJourney({ customerId: customer.id });
-    // TODO(store): a proper consents table (docs/09); the audit log records it for the demo.
-    recordAudit(
-      `customer:${customer.id}`,
-      'consent.recorded',
-      `journey ${journey.id} · privacy, whatsapp_contact`,
+/** Step 1b — check the code, create the customer + lead, sign in, go to the scan. */
+export async function verifyCodeAction(
+  raw: StartScanFormInput & { code: string; utm?: Record<string, string> },
+): Promise<Result<never>> {
+  return run(async () => {
+    const input = verifyScanFormSchema.parse(raw);
+    const utm = Object.fromEntries(
+      Object.entries(raw.utm ?? {})
+        .filter(([k, v]) => /^utm_[a-z]{3,8}$/.test(k) && typeof v === 'string')
+        .map(([k, v]) => [k, v.slice(0, 100)]),
     );
-    await setCustomerSession(customer.id);
-    redirect(resumeHref(journey));
+    await verifyEmailCode(input, { ...(await requestContext()), utm });
+    redirect('/start/scan');
   });
 }
 
-// ---------------------------------------------------------------------------------------------
-// step 2 — scan (demo: answers + which zones were captured/skipped; photos never leave the device)
+/** Step 2a — save the answers and open a scan. */
+export async function beginScanAction(raw: z.input<typeof beginScanSchema>): Promise<Result<{ scanId: string }>> {
+  return run(async () => {
+    const user = await journeyCustomer();
+    // customerId is checked in journeyCustomer()
+    return beginScan(user.customerId as string, beginScanSchema.parse(raw), await requestContext());
+  });
+}
 
-export async function submitScanAction(
-  raw: z.input<typeof submitScanSchema>,
-): Promise<Result<{ suitability: Suitability }>> {
-  return guard(async () => {
-    const input = submitScanSchema.parse(raw);
-    const { customer } = await currentJourneyCustomer();
-    const scan = saveScan(customer.id, input);
+/** Step 2c — all photos uploaded: decide the outcome and pass it to the sales team. */
+export async function submitScanAction(raw: { scanId: string }): Promise<Result<{ outcome: ScanOutcome }>> {
+  return run(async () => {
+    const user = await journeyCustomer();
+    const { scanId } = submitScanIdSchema.parse(raw);
+    const res = await submitScan(user.customerId as string, scanId);
     revalidatePath('/account');
-    return { suitability: scan.suitability };
-  });
-}
-
-// ---------------------------------------------------------------------------------------------
-// step 4 — detailed health form
-
-export async function saveJourneyDetailsAction(
-  raw: z.input<typeof journeyDetailsSchema>,
-): Promise<Result<{ next: string }>> {
-  return guard(async () => {
-    const details = journeyDetailsSchema.parse(raw);
-    const { customer, journey } = await currentJourneyCustomer();
-    if (!journey.scan) throw new AppError('scan_missing', 'Please complete your 3D scan first.', 409);
-    findOrCreateCustomer({ phone: customer.phone, age: details.age });
-    customer.gender = details.gender;
-    saveDetails(customer.id, details);
-    recordAudit(
-      `customer:${customer.id}`,
-      'consent.recorded',
-      `journey ${journey.id} · telemedicine, privacy_terms`,
-    );
-
-    // Already booked (patient came back to edit): keep the intake on the appointment in sync.
-    const appt = journey.appointmentId
-      ? db().appointments.find((a) => a.id === journey.appointmentId && a.status === 'booked')
-      : undefined;
-    if (appt) {
-      saveIntake({
-        ...intakeFrom(details),
-        appointmentId: appt.id,
-        photos: Math.min(3, journey.scan.angles.length),
-      });
-      revalidatePath('/account');
-      return { next: '/account' };
-    }
-    return { next: '/start/book' };
-  });
-}
-
-function intakeFrom(d: z.output<typeof journeyDetailsSchema>) {
-  return {
-    duration: d.duration,
-    pattern: d.pattern,
-    previousTreatments: d.previousTreatments,
-    currentProducts: d.currentProducts,
-    medicalHistory: d.medicalHistory,
-    medications: d.medications,
-    allergies: d.allergies,
-    familyHistory: d.familyHistory,
-  };
-}
-
-// ---------------------------------------------------------------------------------------------
-// step 5 — slot + ₹500 demo payment
-
-export async function journeySlotsAction(): Promise<Result<SlotDayView[]>> {
-  return guard(() => slotDays());
-}
-
-export async function journeyHoldAction(raw: z.input<typeof journeyHoldSchema>): Promise<Result<HoldView>> {
-  return guard(async () => {
-    const { startsAt: iso } = journeyHoldSchema.parse(raw);
-    const { customer, journey } = await currentJourneyCustomer();
-    if (!journey.details)
-      throw new AppError('details_missing', 'Please complete your health form first.', 409);
-    const startsAt = new Date(iso);
-    const now = new Date();
-
-    const existing = db().appointments.find(
-      (a) =>
-        a.customerId === customer.id &&
-        a.status === 'held' &&
-        a.startsAt === startsAt.toISOString() &&
-        a.holdExpiresAt !== null &&
-        Date.parse(a.holdExpiresAt) > now.getTime(),
-    );
-    if (existing) return holdView(existing, now);
-
-    // The server decides what is bookable — only times the availability engine offers right now.
-    const offered = getSlots(now).some((d) =>
-      d.slots.some((s) => s.startsAt.getTime() === startsAt.getTime()),
-    );
-    if (!offered)
-      throw new AppError('slot_taken', 'That time was just taken. Please pick another slot.', 409);
-
-    const appt = holdSlot({ customerId: customer.id, startsAt, concern: journey.details.concern });
-    revalidatePath('/start/book');
-    return holdView(appt, now);
-  });
-}
-
-export async function journeyPayAction(raw: { appointmentId: string }): Promise<Result<ConfirmedView>> {
-  return guard(async () => {
-    const appointmentId = appointmentIdSchema.parse(raw.appointmentId);
-    const { customer, journey } = await currentJourneyCustomer();
-    const appt = db().appointments.find((a) => a.id === appointmentId && a.customerId === customer.id);
-    if (!appt) throw new AppError('not_found', 'We could not find this booking.', 404);
-
-    if (appt.status !== 'booked') {
-      const now = new Date();
-      const expired =
-        appt.status === 'expired' ||
-        (appt.status === 'held' && (!appt.holdExpiresAt || Date.parse(appt.holdExpiresAt) <= now.getTime()));
-      if (expired) {
-        const clash = busyAppointments(now).some(
-          (a) =>
-            a.id !== appt.id &&
-            Date.parse(a.startsAt) < Date.parse(appt.endsAt) &&
-            Date.parse(appt.startsAt) < Date.parse(a.endsAt),
-        );
-        if (appt.status !== 'held' || clash)
-          throw new AppError(
-            'slot_lost',
-            'This time was released before the payment finished. Nothing was charged in this demo — please pick another time.',
-            409,
-          );
-      }
-      captureConsultPayment(appt.id);
-    }
-
-    if (journey.details && journey.scan) {
-      saveIntake({
-        ...intakeFrom(journey.details),
-        appointmentId: appt.id,
-        photos: Math.min(3, journey.scan.angles.length),
-      });
-    }
-    linkAppointment(customer.id, appt.id, Boolean(journey.details));
-    revalidatePath('/account');
-    revalidatePath('/start/book');
-    const paidAt = bookedAt(appt.id, db().events) ?? new Date().toISOString();
-    return confirmedView(appt, paidAt);
+    revalidatePath('/start/result');
+    return res;
   });
 }

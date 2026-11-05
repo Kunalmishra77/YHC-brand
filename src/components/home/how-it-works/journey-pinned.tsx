@@ -24,7 +24,7 @@ const TINTS = ['#1c1e21', '#1b2129', '#1e252d', '#24262b', '#2a2620', '#1f2622',
  * Keyboard: every segment label is a button that scrolls to its step; all step text stays in the DOM
  * as an ordered list for screen readers.
  */
-export function JourneyPinned({ steps, terms }: { steps: HowStep[]; terms: SlotTerms }) {
+export function JourneyPinned({ steps }: { steps: HowStep[]; terms: SlotTerms }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: trackRef, offset: ['start start', 'end end'] });
   const n = steps.length;
@@ -146,11 +146,11 @@ export function JourneyPinned({ steps, terms }: { steps: HowStep[]; terms: SlotT
                 className="h-12 bg-[image:var(--yhc-silver)] px-7 text-base font-semibold text-obsidian hover:opacity-95"
               >
                 <Link href="/start">
-                  Begin my free 3D scan <ArrowRight className="size-4" aria-hidden />
+                  Begin my free scalp scan <ArrowRight className="size-4" aria-hidden />
                 </Link>
               </Button>
               <p className="max-w-[26ch] text-[13px] leading-snug text-on-dark-muted">
-                Starting is free. The {terms.fee} fee is only for the doctor’s call.
+                The scan is free. Our hair-care team then calls you back.
               </p>
             </div>
 

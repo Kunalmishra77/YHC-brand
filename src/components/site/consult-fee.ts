@@ -18,6 +18,9 @@ export function getConsultTerms() {
     creditLine: creditEnabled
       ? `${formatINR(feePaise)} consultation fee credited if you buy within ${creditWindowDays} days of your consultation`
       : null,
-    bookLabel: `Book consultation · ${formatINR(feePaise)}`,
+    // 2026-11-05 client decision: no paid consultation for now. Every former "book" CTA is the free
+    // scalp scan; the fee fields above stay only for the legal pages and the (blocked) booking routes.
+    bookLabel: 'Begin my free scalp scan',
+    bookHref: '/start',
   };
 }

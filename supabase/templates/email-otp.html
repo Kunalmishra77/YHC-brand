@@ -1,0 +1,12 @@
+<!-- Supabase Auth email template (Magic Link + Confirm signup): sends the 6-digit code, no link.
+     Paste into Supabase Dashboard → Authentication → Emails → Templates. Subject: "Your Your Hair Company code: {{ .Token }}" -->
+<div style="background:#f4f3f0;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;color:#121315">
+  <div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;padding:32px">
+    <p style="margin:0 0 4px;font-size:22px;letter-spacing:2px;font-family:Georgia,serif">YHC</p>
+    <p style="margin:0 0 24px;font-size:11px;letter-spacing:2px;color:#6b6f76">YOUR HAIR COMPANY</p>
+    <p style="margin:0 0 16px;font-size:16px;line-height:1.5">Here is your code to continue your free scalp scan:</p>
+    <p style="margin:0 0 16px;font-size:34px;font-weight:bold;letter-spacing:8px">{{ .Token }}</p>
+    <p style="margin:0 0 24px;font-size:14px;line-height:1.5;color:#6b6f76">It works for 10 minutes. If you did not ask for this code, you can ignore this email.</p>
+    <p style="margin:0;font-size:12px;line-height:1.5;color:#6b6f76">Your Hair Company · care@yourhaircompany.com</p>
+  </div>
+</div>

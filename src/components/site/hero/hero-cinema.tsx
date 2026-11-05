@@ -161,7 +161,7 @@ export function HeroCinema({
           style={{ opacity: introOpacity, y: introY }}
         >
           <div className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both duration-1000">
-            <p className="eyebrow text-brand-on-dark">Doctor-led hair care</p>
+            <p className="eyebrow text-brand-on-dark">Science-first hair care</p>
             <h1
               id="hero-heading"
               className="mt-5 font-display text-[clamp(3rem,1.4rem+3vw,4.75rem)] leading-[1.02] font-medium text-balance text-on-dark"
@@ -234,7 +234,7 @@ export function HeroCinema({
             href="/start"
             className="inline-flex h-12 items-center gap-2 rounded-full bg-[image:var(--yhc-silver)] px-6 text-[15px] font-semibold text-obsidian shadow-[0_20px_50px_-20px_rgba(0,0,0,0.8)] transition-transform hover:-translate-y-0.5 focus-visible:outline-on-dark"
           >
-            Begin my free 3D scan
+            Begin my free scalp scan
             <ArrowRight className="size-4" aria-hidden />
           </Link>
         </motion.div>

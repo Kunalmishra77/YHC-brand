@@ -19,12 +19,14 @@ const stepImage = (s: VisualSlot): StepImage => ({
 /**
  * Homepage section 6 · How it works — the real patient journey in its ADR-26 order, picture-led
  * (docs/20): steps as tabs, one big panel whose photo (slots H06–H12) crossfades with each step.
- * The fee and slot length come from settings (getConsultTerms), never constants. Cinematic pass
+ * Slot terms still come from settings (getConsultTerms) for the visuals' props. Cinematic pass
  * (ADR-35): from lg with motion allowed the section pins into a scroll-driven "ritual" (JourneyPinned).
  */
 export function HowItWorksJourney() {
   const terms = getConsultTerms();
 
+  // 2026-11-05 client decision: free scan → instant result → our team calls you back. No health form,
+  // paid slot or doctor video call for now (the 'health' / 'slot' visuals stay for later).
   const steps: HowStep[] = [
     {
       id: 'details',
@@ -35,7 +37,7 @@ export function HowItWorksJourney() {
     },
     {
       id: 'scan',
-      title: '3D scalp scan',
+      title: 'Scalp scan',
       body: 'Your phone guides you to take photos of your scalp, at home.',
       meta: 'Free',
       image: stepImage(SLOTS.H07),
@@ -43,33 +45,21 @@ export function HowItWorksJourney() {
     {
       id: 'assessment',
       title: 'Your result',
-      body: 'See if treatment looks right for you, with the reasons.',
-      meta: 'The doctor makes the final call',
+      body: 'See straight away if our hair care looks suitable for you, with the reasons.',
+      meta: 'A quick check, not a diagnosis',
       image: stepImage(SLOTS.H08),
     },
     {
-      id: 'health',
-      title: 'Health form',
-      body: 'Tell us about your health, medicines and daily life. Your doctor reads it before the call.',
-      image: stepImage(SLOTS.H09),
-    },
-    {
-      id: 'slot',
-      title: 'Book and pay',
-      body: `Pick a time for a ${terms.slotMinutes}-minute video call with the doctor.`,
-      meta: `Fee ${terms.fee}`,
-      image: stepImage(SLOTS.H10),
-    },
-    {
       id: 'consult',
-      title: 'Video call and plan',
-      body: 'The doctor explains what is going on. You get a plan only if it will help.',
-      image: stepImage(SLOTS.H11),
+      title: 'We call you back',
+      body: 'Our hair-care team calls you to talk through your result, your questions and your options.',
+      meta: 'No payment needed',
+      image: stepImage(SLOTS.H27),
     },
     {
       id: 'followup',
       title: 'Follow-up',
-      body: 'Regular check-ins and a review call. Your plan can change as you go.',
+      body: 'If you start a plan, we check in regularly so you stay on track.',
       after: true,
       image: stepImage(SLOTS.H12),
     },
@@ -93,7 +83,7 @@ export function HowItWorksJourney() {
             </h2>
           </div>
           <p className="max-w-md leading-relaxed text-pretty text-body lg:justify-self-end lg:pb-3">
-            6 simple steps, then follow-up. No medicine until a doctor has seen you.
+            4 simple steps, then follow-up. The scan is free and you see your result straight away.
           </p>
         </div>
       </div>

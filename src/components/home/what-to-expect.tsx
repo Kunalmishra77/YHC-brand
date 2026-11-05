@@ -14,7 +14,7 @@ function source(id: string): StageSource[] {
 }
 
 /**
- * The routine of a plan in four pictures — what you do, what we check, when the doctor reviews. It shows
+ * The routine of a plan in four pictures — what you do, what we check, when our team checks in. It shows
  * the routine (H16–H19 show daily life, never hair "results"); timings are the routine and published
  * guidance on hair growth, not promised outcomes.
  * TODO(client): Dr. Tyagi to review this wording and the usual review timing — see docs/12 (content).
@@ -27,7 +27,7 @@ function stages(): ExpectStage[] {
       title: 'Your routine starts',
       line: 'Your plan comes with simple steps. We check in on WhatsApp.',
       detail:
-        'Your doctor gives you clear steps for each product. We check in on WhatsApp, so questions, missed doses or an itchy scalp are caught early.',
+        'Your plan comes with clear steps for each product. We check in on WhatsApp, so questions, missed doses or an itchy scalp are caught early.',
       image: SLOTS.H16,
       note: illustrativeNote(SLOTS.H16),
       sources: [],
@@ -56,13 +56,13 @@ function stages(): ExpectStage[] {
     },
     {
       id: 'review',
-      when: 'At your review',
-      title: 'Your doctor checks in',
-      line: 'Your doctor looks at your photos and may change the plan.',
+      when: 'Along the way',
+      title: 'Our team checks in',
+      line: 'Our hair-care team calls to see how you are getting on.',
       detail:
-        'Your doctor sets the review date. Doctors usually advise 6 to 12 months of steady use before judging a treatment. Some people do not respond. Any benefit usually lasts only while you keep using it.',
-      image: SLOTS.H19,
-      note: illustrativeNote(SLOTS.H19),
+        'We call to see how your routine is going and answer your questions. Doctors usually advise 6 to 12 months of steady use before judging a treatment. Some people do not respond. Any benefit usually lasts only while you keep using it.',
+      image: SLOTS.H27,
+      note: illustrativeNote(SLOTS.H27),
       sources: [...source('ongoing-use'), ...source('treatment-timeline')],
     },
   ];
@@ -96,13 +96,12 @@ export function WhatToExpect() {
 
         <div className="mt-8 flex flex-col gap-4 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-md text-[13px] leading-relaxed text-pretty text-muted-foreground">
-            Individual results vary. This shows the routine, not a promise of results. Your doctor sets your
-            review dates.
+            Individual results vary. This shows the routine, not a promise of results.
           </p>
           <Button asChild className="h-12 w-full px-7 text-base sm:w-auto">
             <Link href="/start">
               <ScanLine className="size-4" aria-hidden />
-              Begin my free 3D scan
+              Begin my free scalp scan
             </Link>
           </Button>
         </div>

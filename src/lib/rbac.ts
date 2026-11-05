@@ -6,6 +6,7 @@ import { serverEnv } from '@/lib/env.server';
 import { demoUserFor } from '@/lib/demo-session';
 import { ensureDemoState } from '@/server/demo/persist';
 import { readDemoSession } from '@/server/demo/session';
+import { getLiveSessionUser } from '@/server/live/session';
 
 export interface SessionUser {
   id: string;
@@ -31,8 +32,9 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     const session = await readDemoSession();
     return session ? demoUserFor(session.role, session.customerId) : null;
   }
-  // TODO(phase-01): Supabase session via @/lib/supabase/server + profiles.role + JWT aal.
-  return null;
+  // Real Supabase session (ADR-36): profiles.role + JWT aal.
+  const user = await getLiveSessionUser();
+  return user ? { id: user.id, name: user.name, role: user.role, aal: user.aal, customerId: user.customerId } : null;
 }
 
 /** Call at the top of every server action / handler — never trust the proxy alone. */

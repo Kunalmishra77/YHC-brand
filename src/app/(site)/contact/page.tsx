@@ -14,13 +14,13 @@ import { SLOTS } from '@/lib/slots';
 export const metadata: Metadata = pageMetadata({
   title: 'Contact us',
   description:
-    'Reach Your Hair Company on WhatsApp or email for help with bookings, orders and delivery. Or write to our grievance officer if a problem is not solved.',
+    'Reach Your Hair Company on WhatsApp or email for help with your scan, orders and delivery. Or write to our grievance officer if a problem is not solved.',
   path: '/contact',
 });
 
 const ROUTES = [
   {
-    need: 'A booking, an order or a delivery',
+    need: 'Your scan, an order or a delivery',
     where: SITE.whatsappAvailable ? 'WhatsApp or email our support team' : 'Email our support team',
     href: SITE.whatsappAvailable ? SITE.whatsappUrl : `mailto:${SITE.supportEmail}`,
     label: SITE.whatsappAvailable ? 'Message on WhatsApp' : 'Email support',
@@ -28,9 +28,9 @@ const ROUTES = [
   },
   {
     need: 'A question about your hair or treatment',
-    where: 'Book a consultation. Our support team cannot give medical advice.',
-    href: '/book',
-    label: 'Book a consultation',
+    where: 'Take the free scalp scan; our hair-care team calls you back. We cannot give medical advice.',
+    href: '/start',
+    label: 'Begin my free scalp scan',
     external: false,
   },
   {
@@ -57,7 +57,7 @@ export default function ContactPage() {
         image={SLOTS.H27}
         lede={
           <p>
-            Questions about a booking, an order or a delivery? Message us. Someone from the YHC team will
+            Questions about your scan, an order or a delivery? Message us. Someone from the YHC team will
             reply.
           </p>
         }
@@ -82,8 +82,8 @@ export default function ContactPage() {
               {SITE.whatsappAvailable ? 'WhatsApp is fastest' : 'Write to the care team'}
             </h2>
             <p className="mt-3 leading-relaxed text-on-dark-muted">
-              Bookings, orders, delivery and tracking. Please don&apos;t send photos or health details here.
-              Keep those for your consultation.
+              Your scan, orders, delivery and tracking. Please don&apos;t send photos or health details
+              here.
             </p>
             <Button
               asChild
@@ -204,8 +204,8 @@ export default function ContactPage() {
         image={SLOTS.H06}
         imagePosition="60% 50%"
         title="A question about your hair?"
-        body="Our support team cannot give medical advice. The doctor can, at your consultation."
-        primary={{ href: '/book', label: 'Book a consultation' }}
+        body="Take the free scalp scan. You see your result straight away, and our hair-care team calls you back. For medical advice, please see a doctor."
+        primary={{ href: '/start', label: 'Begin my free scalp scan' }}
         whatsapp={false}
       />
     </>

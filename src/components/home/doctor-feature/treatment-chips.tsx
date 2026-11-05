@@ -11,7 +11,7 @@ export interface TreatmentChip {
 }
 
 /**
- * Compact "what he treats" picker for the doctor section: the areas are tabs shown as pills; the chosen
+ * Compact "what our approach covers" picker for the doctor section: the areas are tabs shown as pills; the chosen
  * one's single plain line shows underneath. Arrow keys move between pills. Reduced motion: no fade.
  */
 export function TreatmentChips({ items, label }: { items: TreatmentChip[]; label: string }) {

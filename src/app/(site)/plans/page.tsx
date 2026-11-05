@@ -20,7 +20,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Treatment plans',
   description:
-    'Compare 1, 2 and 3-month plans: total price, price per month and what you save. Dr. Tyagi decides your plan after a consultation.',
+    'Compare 1, 2 and 3-month plans: total price, price per month and what you save. Start with a free scalp scan; our team talks you through your options.',
   path: '/plans',
 });
 
@@ -38,27 +38,27 @@ export default function PlansPage() {
         image={SLOTS.S04}
         lede={
           <p>
-            Dr. Tyagi decides what goes in your plan, after your consultation. You choose how many months.
-            That sets the price. {t('common.inclGst')}.
+            Start with a free scalp scan. Our hair-care team then calls you to talk through your options. You
+            choose how many months. That sets the price. {t('common.inclGst')}.
           </p>
         }
       />
 
       <section className={`container-yhc ${SECTION_Y}`}>
         {plans.length ? (
-          <PlanLadder plans={plans} guarantee={guarantee} creditLine={terms.creditLine} headingLevel="h2" />
+          <PlanLadder plans={plans} guarantee={guarantee} creditLine={null} headingLevel="h2" />
         ) : (
           <EmptyState
             title="Plan prices are coming soon"
-            body="Book a consultation. Dr. Tyagi will explain your options."
+            body="Take the free scalp scan. Our team will call you to explain your options."
           />
         )}
         <div className="mt-12 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
           <Button asChild className="h-12 w-full px-6 text-base sm:w-auto">
-            <Link href="/book">Book consultation first · {terms.fee}</Link>
+            <Link href={terms.bookHref}>{terms.bookLabel}</Link>
           </Button>
           <p className="text-center text-sm text-pretty text-muted-foreground sm:text-left">
-            Your doctor decides your plan after the consultation. You do not have to buy.
+            Plans are not sold online right now. Our team talks you through them after your scan. You do not have to buy.
           </p>
         </div>
       </section>
@@ -100,7 +100,7 @@ export default function PlansPage() {
                         <th scope="row" className="py-4 pr-4 font-semibold text-ink">
                           {p.name}
                           {p.isRecommended ? (
-                            <span className="block text-[13px] font-normal text-brand">Doctor’s pick</span>
+                            <span className="block text-[13px] font-normal text-brand">Recommended</span>
                           ) : null}
                         </th>
                         <td className="price py-4 pr-4 text-ink">{formatINR(p.pricePaise)}</td>
@@ -137,7 +137,7 @@ export default function PlansPage() {
                     }
                   >
                     <p className="font-semibold text-ink">{p.name}</p>
-                    {p.isRecommended ? <p className="text-[13px] text-brand">Doctor’s pick</p> : null}
+                    {p.isRecommended ? <p className="text-[13px] text-brand">Recommended</p> : null}
                     <dl className="mt-3 grid grid-cols-3 gap-2 text-sm">
                       <div>
                         <dt className="text-[13px] text-muted-foreground">Total</dt>
@@ -166,7 +166,6 @@ export default function PlansPage() {
             </ul>
             <p className="mt-4 text-sm text-muted-foreground">
               Savings are compared with buying the 1-month plan every month.
-              {terms.creditLine ? ` ${terms.creditLine}.` : null}
             </p>
           </div>
         </section>
@@ -193,9 +192,9 @@ export default function PlansPage() {
         image={SLOTS.H16}
         imagePosition="45% 50%"
         align="right"
-        title="Your plan starts with a consultation."
+        title="Your plan starts with a free scalp scan."
         bookLabel={terms.bookLabel}
-        body="Dr. Tyagi tells you what to use and for how long. You decide if you want to go ahead."
+        body="See your result straight away. Our team calls you back to talk through your options. You decide if you want to go ahead."
       />
     </>
   );

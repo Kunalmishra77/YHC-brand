@@ -14,17 +14,17 @@ export interface HeroAct {
 export const HERO_ACTS: readonly HeroAct[] = [
   {
     word: 'Look closer.',
-    line: 'A free 3D scan of your scalp, taken with your own phone at home.',
+    line: 'A free scalp scan, taken with your own phone at home.',
     image: SLOTS.H01,
   },
   {
     word: 'Roots first.',
-    line: 'A doctor checks your hair roots before anything else is suggested.',
+    line: 'You see your result straight away, before anything else is suggested.',
     image: SLOTS.H13,
   },
   {
     word: 'A plan only if it helps.',
-    line: 'If treatment can help, your doctor makes a plan. If not, we tell you.',
+    line: 'Our hair-care team calls you to talk through your options. If we cannot help, we tell you.',
     image: SLOTS.P01,
   },
 ];
@@ -36,7 +36,7 @@ export const HERO_FILM = {
 } as const;
 
 export const HERO_HEADLINE = 'Hair care begins with science, not with products.';
-export const HERO_LINE = 'First we scan your scalp. Then a doctor tells you if treatment will help.';
+export const HERO_LINE = 'First a free scan of your scalp. Then our team calls you to talk through your options.';
 
 /** Static film grain (SVG noise), laid over the stage at low opacity. */
 export const GRAIN_URL =

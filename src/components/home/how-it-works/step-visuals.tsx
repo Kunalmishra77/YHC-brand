@@ -6,10 +6,9 @@ import {
   Check,
   MessageSquareText,
   Mic,
+  PhoneCall,
   PhoneOff,
-  Stethoscope,
   UserRound,
-  Video,
   X,
 } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -102,7 +101,7 @@ function DetailsVisual({ active, still }: VisualProps) {
   return (
     <Phone>
       <div className="flex h-full flex-col px-4 pt-9 pb-4">
-        <Kicker>Step 1 of 7</Kicker>
+        <Kicker>Step 1 of 5</Kicker>
         <p className="mt-1.5 text-[18px] leading-tight font-semibold text-on-dark">Your details</p>
         <div className="mt-5 space-y-3.5">
           {fields.map((f, i) => (
@@ -133,7 +132,7 @@ function DetailsVisual({ active, still }: VisualProps) {
   );
 }
 
-/* 2 · 3D scalp scan — app-style flow (client reference: progress dashes, head zone, magnified scalp) - */
+/* 2 · Scalp scan — app-style flow (client reference: progress dashes, head zone, magnified scalp) - */
 const HEAD_SIDE =
   'M30 6 C15 6 7 17 7 30 C7 38 10 42 9 46 L5 52 L10 54 L10 60 C10 64 14 66 19 65 L21 72 L40 72 L40 60 C48 56 52 46 52 31 C52 15 44 6 30 6 Z';
 
@@ -282,8 +281,7 @@ function AssessmentVisual({ active, still }: VisualProps) {
     { r: 28, to: 0.7, label: 'Scalp' },
   ];
   const outcomes = [
-    { icon: Check, word: 'Suitable' },
-    { icon: Stethoscope, word: 'Needs a doctor’s review' },
+    { icon: Check, word: 'Suitable for our hair care' },
     { icon: X, word: 'Not suitable, and why' },
   ];
   return (
@@ -341,7 +339,7 @@ function AssessmentVisual({ active, still }: VisualProps) {
           );
         })}
       </ul>
-      <p className="mt-3 text-xs text-steel">Example. The doctor decides.</p>
+      <p className="mt-3 text-xs text-steel">Example only. A quick check, not a diagnosis.</p>
     </Card>
   );
 }
@@ -458,7 +456,7 @@ function SlotVisual({ active, still, terms }: VisualProps & { terms: SlotTerms }
   );
 }
 
-/* 6 · Video consultation & plan ------------------------------------------------------------------ */
+/* 4 · A call back from our hair-care team (2026-11-05: no doctor video call for now) ------------- */
 function ConsultVisual({ active, still }: VisualProps) {
   return (
     <div className="relative w-[330px] pb-16">
@@ -470,19 +468,19 @@ function ConsultVisual({ active, still }: VisualProps) {
             animate={active && !still ? { opacity: [1, 0.3, 1] } : { opacity: 1 }}
             transition={active && !still ? { duration: 1.6, repeat: Infinity } : { duration: 0 }}
           />
-          Video call
+          Call back
         </div>
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
           <span className="flex size-16 items-center justify-center rounded-full border border-platinum/40 bg-graphite">
-            <Stethoscope className="size-7 text-platinum" />
+            <PhoneCall className="size-7 text-platinum" />
           </span>
-          <span className="text-xs text-on-dark-muted">Your doctor</span>
+          <span className="text-xs text-on-dark-muted">Our hair-care team</span>
         </div>
         <div className="absolute right-3 bottom-12 flex h-16 w-12 items-center justify-center rounded-xl border border-line-dark bg-obsidian">
           <UserRound className="size-5 text-steel" />
         </div>
         <div className="absolute inset-x-0 bottom-3 flex justify-center gap-2">
-          {[Mic, Video, PhoneOff].map((Icon, i) => (
+          {[Mic, MessageSquareText, PhoneOff].map((Icon, i) => (
             <span
               key={i}
               className={cn(
@@ -501,25 +499,25 @@ function ConsultVisual({ active, still }: VisualProps) {
         animate={{ opacity: active ? 1 : 0, y: active ? 0 : 24 }}
         transition={tr(still, 0.6, 0.6)}
       >
-        <Kicker>Your plan</Kicker>
-        <p className="mt-1 text-[12px] text-on-dark">From your doctor</p>
+        <Kicker>Your options</Kicker>
+        <p className="mt-1 text-[12px] text-on-dark">Talked through on the call</p>
         <div className="mt-3 space-y-1.5">
           {['82%', '64%', '74%'].map((w) => (
             <span key={w} className="block h-1.5 rounded-full bg-graphite" style={{ width: w }} />
           ))}
         </div>
-        <p className="mt-3 text-xs text-steel">Only if it will help</p>
+        <p className="mt-3 text-xs text-steel">You decide. No pressure.</p>
       </motion.div>
     </div>
   );
 }
 
-/* 7 · Follow-up ---------------------------------------------------------------------------------- */
+/* 5 · Follow-up ---------------------------------------------------------------------------------- */
 function FollowUpVisual({ active, still }: VisualProps) {
   const items = [
     { icon: MessageSquareText, title: 'Check-in', body: 'How is it going?' },
     { icon: Camera, title: 'Photo update', body: 'Same light, same spots' },
-    { icon: CalendarCheck, title: 'Review call', body: 'The doctor updates your plan' },
+    { icon: CalendarCheck, title: 'Team call', body: 'We help you stay on track' },
   ];
   return (
     <div className="relative w-[300px]">

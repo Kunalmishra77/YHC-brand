@@ -38,7 +38,7 @@ function concernFromParam(param: string) {
 function concernDescription(concern: Concern): string {
   return (
     CONCERN_SEO_DESCRIPTION[concern.slug] ??
-    clampDescription(`${concern.summary} What it can mean, and how a talk with Dr. Tyagi helps.`)
+    clampDescription(`${concern.summary} What it can mean, and how a free scalp scan helps.`)
   );
 }
 
@@ -140,14 +140,14 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
                 asChild
                 className="h-12 bg-[image:var(--yhc-silver)] px-6 text-base font-semibold text-obsidian hover:opacity-95"
               >
-                <Link href={`/book`}>{terms.bookLabel}</Link>
+                <Link href={terms.bookHref}>{terms.bookLabel}</Link>
               </Button>
               <Button
                 asChild
                 variant="outline"
                 className="h-12 border-line-dark bg-transparent px-6 text-base text-on-dark hover:bg-graphite hover:text-on-dark"
               >
-                <Link href="/start">{t('common.freeAssessment')}</Link>
+                <Link href="/how-it-works">How it works</Link>
               </Button>
             </div>
           </div>
@@ -171,14 +171,14 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
               ))}
             </ul>
             <p className="mt-5 text-sm text-muted-foreground">
-              General information, not a diagnosis. Only a consultation can tell which one is yours.
+              General information, not a diagnosis. Only a doctor who has examined you can tell which one is yours.
             </p>
           </div>
 
           <aside className="space-y-6 md:sticky md:top-24 md:self-start">
             <div className="rounded-2xl bg-card p-7 shadow-card ring-1 ring-line">
               <MessageSquareText className="size-5 text-brand" aria-hidden />
-              <h2 className="mt-4 text-lg font-semibold text-ink">What Dr. Tyagi may ask</h2>
+              <h2 className="mt-4 text-lg font-semibold text-ink">Questions worth thinking about</h2>
               <ul className="mt-4 space-y-3 text-[15px] text-body">
                 {concern.questions.map((q) => (
                   <li key={q} className="flex gap-3">
@@ -188,8 +188,8 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
                 ))}
               </ul>
               <p className="mt-5 border-t border-line pt-4 text-sm text-muted-foreground">
-                You answer most of these in a short form before the call. So all {terms.slotMinutes} minutes
-                are about you.
+                Have your answers ready. They help you make sense of your scan result and your call with our
+                team.
               </p>
             </div>
             <div className="rounded-2xl bg-warning-bg p-7">
@@ -206,7 +206,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
                 ))}
               </ul>
               <p className="mt-4 text-sm text-body">
-                Some of these are best checked in person. Dr. Tyagi will tell you if so.
+                Some of these are best checked by a doctor in person.
               </p>
             </div>
           </aside>
@@ -233,8 +233,8 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
                       products.length === 2 ? 'mt-4 max-w-md text-body' : 'mt-4 max-w-md text-body md:mt-0'
                     }
                   >
-                    If treatment can help, Dr. Tyagi picks the products, strength and routine. These are often
-                    used for {concern.title.toLowerCase()}. {t('common.resultsVary')}
+                    These are often used for {concern.title.toLowerCase()}. Our hair-care team can talk you
+                    through them after your free scalp scan. {t('common.resultsVary')}
                   </p>
                 </div>
                 {products.map((p, i) => (
@@ -291,7 +291,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
         imagePosition="65% 40%"
         title="Find out which cause is yours."
         bookLabel={terms.bookLabel}
-        body={`${concern.title} can have more than one cause. A consultation tells you which one is yours.`}
+        body={`${concern.title} can have more than one cause. The free scalp scan is a simple first step.`}
       />
     </>
   );

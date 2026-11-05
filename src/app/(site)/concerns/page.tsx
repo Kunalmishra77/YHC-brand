@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Hair concerns',
   description:
-    'Hair fall, thinning, a receding hairline, crown thinning or scalp problems: what each one can mean, common causes, and how a consultation helps.',
+    'Hair fall, thinning, a receding hairline, crown thinning or scalp problems: what each one can mean, common causes, and how a free scalp scan helps.',
   path: '/concerns',
 });
 
@@ -32,7 +32,7 @@ export default function ConcernsPage() {
           <p>
             Tap the one that looks most like you. Not sure? The{' '}
             <Link href="/start" className="text-brand underline underline-offset-4">
-              free 3D scan
+              free scalp scan
             </Link>{' '}
             shows you a next step.
           </p>
@@ -44,7 +44,7 @@ export default function ConcernsPage() {
         ) : (
           <EmptyState
             title="Guides coming soon"
-            body="Dr. Tyagi checks every guide before we publish it. Until then, a consultation covers every concern."
+            body="Dr. Tyagi checks every guide before we publish it. Until then, the free scalp scan is a good first step."
           />
         )}
       </section>
@@ -54,7 +54,7 @@ export default function ConcernsPage() {
         imagePosition="75% 50%"
         title="Not sure what you are noticing?"
         bookLabel={terms.bookLabel}
-        body="Whatever it is, a consultation is the fastest way to understand it."
+        body="Whatever it is, the free scalp scan is a simple first step. Our hair-care team then calls you to talk it through."
       />
     </>
   );

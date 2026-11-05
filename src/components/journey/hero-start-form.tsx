@@ -1,29 +1,26 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft, ArrowRight, Loader2, ScanFace, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Loader2, Mail, ScanFace, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useId, useState, useTransition } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { startJourneyAction } from '@/app/(site)/start/actions';
+import { sendCodeAction, verifyCodeAction } from '@/app/(site)/start/actions';
 import { OtpInput } from '@/components/booking/otp-input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { track } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
-import { startJourneySchema, type StartJourney, type StartJourneyInput } from '@/lib/validation/journey';
+import { type StartScanForm, type StartScanFormInput, startScanFormSchema } from '@/lib/validation/scan';
 
 /**
- * Glass "Start your assessment" form shown in the homepage hero (ADR-26, step 1: basic details).
- * CONTRACT shared by two workstreams — keep the export name and props stable:
- *   <HeroStartForm className? />  — collects name + mobile and starts the journey.
- * Flow: details → OTP inside the panel → server action signs in + redirects to /start/scan. The address
- * is asked only at plan checkout (ADR-33, audit UX-04).
+ * "Free scalp scan" start form (homepage hero and /start). CONTRACT — keep the export name and props:
+ *   <HeroStartForm className? />
+ * Flow (ADR-36): name, mobile, email, age → a 6-digit code by email → the server signs the customer in,
+ * creates the lead and redirects to /start/scan.
  */
 export function HeroStartForm({ className }: { className?: string }) {
   const uid = useId();
-  const [otpFor, setOtpFor] = useState<{ values: StartJourney; sentTo: string; demoCode: string } | null>(
-    null,
-  );
+  const [otpFor, setOtpFor] = useState<{ values: StartScanForm; sentTo: string } | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -32,21 +29,21 @@ export function HeroStartForm({ className }: { className?: string }) {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<StartJourneyInput, unknown, StartJourney>({
-    resolver: zodResolver(startJourneySchema),
-    defaultValues: { name: '', mobile: '', consent: false },
+  } = useForm<StartScanFormInput, unknown, StartScanForm>({
+    resolver: zodResolver(startScanFormSchema),
+    defaultValues: { name: '', mobile: '', email: '', age: '' as unknown as number, consent: false },
   });
 
-  const sendCode = (values: StartJourney) => {
+  const sendCode = (values: StartScanForm) => {
     setServerError(null);
     startTransition(async () => {
-      const res = await startJourneyAction(values);
+      const res = await sendCodeAction(values);
       if (!res.ok) {
         setServerError(res.error.message);
         return;
       }
       track('details_submitted');
-      setOtpFor({ values, sentTo: res.data.sentTo, demoCode: res.data.demoCode });
+      setOtpFor({ values, sentTo: res.data.sentTo });
     });
   };
 
@@ -60,7 +57,6 @@ export function HeroStartForm({ className }: { className?: string }) {
       {otpFor ? (
         <OtpStep
           sentTo={otpFor.sentTo}
-          demoCode={otpFor.demoCode}
           values={otpFor.values}
           onBack={() => {
             setOtpFor(null);
@@ -71,16 +67,16 @@ export function HeroStartForm({ className }: { className?: string }) {
         <form noValidate onSubmit={handleSubmit(sendCode)}>
           <div className="flex items-center gap-2 text-[13px] font-medium text-white/75">
             <ScanFace className="size-4" aria-hidden />
-            Free 3D scalp scan
+            Free scalp scan
           </div>
           <h2 className="mt-3 font-display text-[28px] leading-[1.1] font-medium text-balance text-white sm:text-[32px]">
             Check your hair for free
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-pretty text-white/75">
-            Scan your scalp with your phone. A doctor checks it. You get a plan only if it will help.
+            Scan your scalp with your phone and see your result straight away. Our team then calls you.
           </p>
 
-          <fieldset disabled={pending} className="mt-5 space-y-3.5">
+          <fieldset disabled={pending} className="mt-5 space-y-3">
             <GlassField id={`${uid}-name`} label="Your name" error={errors.name?.message}>
               <input
                 id={`${uid}-name`}
@@ -111,6 +107,34 @@ export function HeroStartForm({ className }: { className?: string }) {
               </div>
             </GlassField>
 
+            <div className="grid grid-cols-[minmax(0,1fr)_6.5rem] gap-3">
+              <GlassField id={`${uid}-email`} label="Email (for your code)" error={errors.email?.message}>
+                <input
+                  id={`${uid}-email`}
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  className={inputClass(Boolean(errors.email))}
+                  aria-invalid={errors.email ? true : undefined}
+                  aria-describedby={`${uid}-email-err`}
+                  {...register('email')}
+                />
+              </GlassField>
+              <GlassField id={`${uid}-age`} label="Age" error={errors.age?.message}>
+                <input
+                  id={`${uid}-age`}
+                  type="number"
+                  inputMode="numeric"
+                  min={18}
+                  max={100}
+                  className={cn(inputClass(Boolean(errors.age)), 'price')}
+                  aria-invalid={errors.age ? true : undefined}
+                  aria-describedby={`${uid}-age-err`}
+                  {...register('age')}
+                />
+              </GlassField>
+            </div>
+
             <Controller
               control={control}
               name="consent"
@@ -131,7 +155,7 @@ export function HeroStartForm({ className }: { className?: string }) {
                       <Link href="/legal/privacy" className="text-white underline underline-offset-2">
                         privacy policy
                       </Link>{' '}
-                      and to being contacted on WhatsApp about my assessment.
+                      and to a call or WhatsApp from Your Hair Company about my scan.
                     </label>
                   </div>
                   {errors.consent ? (
@@ -160,12 +184,12 @@ export function HeroStartForm({ className }: { className?: string }) {
             {pending ? (
               <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
             ) : null}
-            Begin my 3D scan
+            Begin my free scalp scan
             {!pending ? <ArrowRight className="size-4" aria-hidden /> : null}
           </button>
           <p className="mt-3.5 flex items-center justify-center gap-1.5 text-center text-[12px] leading-snug text-white/60">
             <ShieldCheck className="size-3.5" aria-hidden />
-            Checked by a doctor. Takes about 4 minutes.
+            Free. Takes about 4 minutes. Your photos stay private.
           </p>
         </form>
       )}
@@ -173,25 +197,38 @@ export function HeroStartForm({ className }: { className?: string }) {
   );
 }
 
-function OtpStep({
-  sentTo,
-  demoCode,
-  values,
-  onBack,
-}: {
-  sentTo: string;
-  demoCode: string;
-  values: StartJourney;
-  onBack: () => void;
-}) {
+function readUtm(): Record<string, string> {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const fresh = Object.fromEntries([...params].filter(([k]) => k.startsWith('utm_')));
+    if (Object.keys(fresh).length) {
+      sessionStorage.setItem('yhc.utm', JSON.stringify(fresh));
+      return fresh;
+    }
+    const kept = sessionStorage.getItem('yhc.utm');
+    return kept ? (JSON.parse(kept) as Record<string, string>) : {};
+  } catch {
+    return {};
+  }
+}
+
+function OtpStep({ sentTo, values, onBack }: { sentTo: string; values: StartScanForm; onBack: () => void }) {
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [resendIn, setResendIn] = useState(60);
   const [pending, startTransition] = useTransition();
   const hintId = useId();
 
   useEffect(() => {
     document.getElementById(`${hintId}-title`)?.focus();
   }, [hintId]);
+
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const t = window.setTimeout(() => setResendIn((s) => s - 1), 1000);
+    return () => window.clearTimeout(t);
+  }, [resendIn]);
 
   const verify = (value: string) => {
     if (value.length !== 6) {
@@ -201,9 +238,21 @@ function OtpStep({
     setError(null);
     startTransition(async () => {
       // On success the server redirects to the scan; only failures come back here.
-      const res = await startJourneyAction({ ...values, code: value });
-      // A redirect resolves without a Result — guard for it.
+      const res = await verifyCodeAction({ ...values, code: value, utm: readUtm() });
       if (res && !res.ok) setError(res.error.message);
+    });
+  };
+
+  const resend = () => {
+    setError(null);
+    setNotice(null);
+    startTransition(async () => {
+      const res = await sendCodeAction(values);
+      if (!res.ok) setError(res.error.message);
+      else {
+        setNotice('A new code is on its way.');
+        setResendIn(60);
+      }
     });
   };
 
@@ -224,11 +273,12 @@ function OtpStep({
       >
         Enter your code
       </h2>
-      <p id={hintId} className="mt-2 text-sm text-white/75">
-        We sent a 6-digit code on WhatsApp to <span className="price text-white">{sentTo}</span>.
-      </p>
-      <p className="mt-2 inline-flex rounded-md bg-white/10 px-2.5 py-1 text-[12px] text-white/80">
-        Demo: use code <span className="price ml-1 text-white">{demoCode}</span>
+      <p id={hintId} className="mt-2 flex items-start gap-2 text-sm text-white/75">
+        <Mail className="mt-0.5 size-4 shrink-0" aria-hidden />
+        <span>
+          We emailed a 6-digit code to <span className="text-white">{sentTo}</span>. Check your spam folder if
+          you can&apos;t see it.
+        </span>
       </p>
       <div className="mt-5">
         <OtpInput
@@ -255,6 +305,16 @@ function OtpStep({
         {pending ? <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden /> : null}
         Confirm and start my scan
       </button>
+      <p aria-live="polite" className="mt-3 text-center text-[13px] text-white/70">
+        {notice ??
+          (resendIn > 0 ? (
+            `You can ask for a new code in ${resendIn}s`
+          ) : (
+            <button type="button" onClick={resend} disabled={pending} className="underline underline-offset-4">
+              Send a new code
+            </button>
+          ))}
+      </p>
     </div>
   );
 }

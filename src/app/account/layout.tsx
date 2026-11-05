@@ -1,15 +1,15 @@
-import { MessageCircle, Repeat } from 'lucide-react';
+import { LogOut, Mail } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { signOutAction } from '@/app/auth/actions';
 import { AccountNav, type AccountTab } from '@/components/account/account-nav';
-import { SkipLink } from '@/components/shared/skip-link';
 import { Logo } from '@/components/shared/logo';
+import { SkipLink } from '@/components/shared/skip-link';
 import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
+import { getSessionUser } from '@/lib/rbac';
 import { formatIst } from '@/lib/time';
-import { SITE } from '@/lib/site';
-import { getGuarantee } from '@/server/catalog';
-import { getCurrentCustomer } from '@/server/session';
+import { getCustomer } from '@/server/live/scans';
 
 export const metadata: Metadata = { title: 'My account', robots: { index: false } };
 
@@ -20,19 +20,14 @@ function greeting(now: Date) {
   return 'Good evening';
 }
 
+/** Customer portal (ADR-36): scan results and contact details. Orders/consultations return later. */
 export default async function AccountLayout({ children }: LayoutProps<'/account'>) {
-  const customer = await getCurrentCustomer();
-  const guarantee = getGuarantee();
+  const user = await getSessionUser();
+  const customer = user?.role === 'customer' && user.customerId ? await getCustomer(user.customerId) : null;
 
   const tabs: AccountTab[] = [
     { href: '/account', label: 'Overview' },
-    { href: '/account/scan', label: '3D scan' },
-    { href: '/account/consultations', label: 'Consultations' },
-    { href: '/account/orders', label: 'Orders' },
-    { href: '/account/progress', label: 'Progress' },
-    ...(guarantee ? [{ href: '/account/guarantee', label: 'Guarantee' }] : []),
-    { href: '/account/profile', label: 'Profile' },
-    { href: '/account/support', label: 'Support' },
+    { href: '/account/scan', label: 'My scans' },
   ];
 
   return (
@@ -40,30 +35,26 @@ export default async function AccountLayout({ children }: LayoutProps<'/account'
       <SkipLink />
       <header className="border-b border-white/5 bg-obsidian text-on-dark print:hidden">
         <div className="container-yhc flex h-14 items-center justify-between gap-3 md:h-16">
-          <Logo tone="light" />
+          <Link href="/" aria-label="Your Hair Company — home">
+            <Logo tone="light" />
+          </Link>
           <div className="flex items-center gap-1">
-            <Button
-              asChild
-              variant="ghost"
-              className="h-11 px-3 text-on-dark-muted hover:bg-graphite hover:text-on-dark"
-            >
-              <a href={SITE.whatsappUrl} target="_blank" rel="noreferrer">
-                <MessageCircle className="size-4" aria-hidden />
-                <span className="hidden sm:inline">{t('common.whatsapp')}</span>
-                <span className="sr-only sm:hidden">Message us on WhatsApp</span>
+            <Button asChild variant="ghost" className="h-11 px-3 text-on-dark-muted hover:bg-graphite hover:text-on-dark">
+              <a href="mailto:care@yourhaircompany.com">
+                <Mail className="size-4" aria-hidden />
+                <span className="hidden sm:inline">Email us</span>
+                <span className="sr-only sm:hidden">Email us</span>
               </a>
             </Button>
-            <Button
-              asChild
-              variant="ghost"
-              className="h-11 px-3 text-on-dark-muted hover:bg-graphite hover:text-on-dark"
-            >
-              <Link href="/demo">
-                <Repeat className="size-4" aria-hidden />
-                <span className="hidden sm:inline">Switch demo role</span>
-                <span className="sr-only sm:hidden">Switch demo role</span>
-              </Link>
-            </Button>
+            {customer ? (
+              <form action={signOutAction}>
+                <Button type="submit" variant="ghost" className="h-11 px-3 text-on-dark-muted hover:bg-graphite hover:text-on-dark">
+                  <LogOut className="size-4" aria-hidden />
+                  <span className="hidden sm:inline">Sign out</span>
+                  <span className="sr-only sm:hidden">Sign out</span>
+                </Button>
+              </form>
+            ) : null}
           </div>
         </div>
       </header>
@@ -90,25 +81,20 @@ export default async function AccountLayout({ children }: LayoutProps<'/account'
           </main>
         </>
       ) : (
-        <main
-          id="main"
-          tabIndex={-1}
-          className="container-yhc flex flex-1 flex-col items-center justify-center py-16 text-center outline-none"
-        >
+        <main id="main" tabIndex={-1} className="container-yhc flex flex-1 flex-col items-center justify-center py-16 text-center outline-none">
           <p className="display text-[28px]">Sign in to see your account</p>
           <p className="mt-2 max-w-sm text-body">
-            Your consultations, orders and progress live here. In this demo, pick the customer role to
-            continue.
+            Enter your details on the start page. We email you a code, and you are in.
           </p>
           <Button asChild className="mt-6 h-11 px-6">
-            <Link href="/demo?next=/account">Choose a demo role</Link>
+            <Link href="/start">Sign in with your email</Link>
           </Button>
         </main>
       )}
 
       <footer className="border-t border-line print:hidden">
         <div className="container-yhc flex flex-col gap-2 py-6 text-[13px] text-muted-foreground sm:flex-row sm:justify-between">
-          <p className="max-w-2xl">{t('legal.disclaimer')}</p>
+          <p className="max-w-2xl">The scalp scan is a photo check, not a medical diagnosis. Results vary from person to person.</p>
           <Link href="/legal/grievance" className="underline underline-offset-2 hover:text-ink">
             {t('legal.grievance')}
           </Link>

@@ -1,4 +1,4 @@
-import { Pill, ShieldAlert, Stethoscope } from 'lucide-react';
+import { Pill, ScanLine, ShieldAlert } from 'lucide-react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,7 +15,6 @@ import { Button } from '@/components/ui/button';
 import { t } from '@/i18n/en';
 import { clientEnv } from '@/lib/env';
 import { LABEL_PARTIES, PRODUCT_MEDIA, ingredientImage, productHero } from '@/lib/brand-media';
-import { formatINR } from '@/lib/money';
 import { SLOTS } from '@/lib/slots';
 import type { VisualSlot } from '@/lib/visual-slots';
 import { getProduct, getProducts } from '@/server/catalog';
@@ -54,7 +53,6 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
   const terms = getConsultTerms();
   const base = clientEnv.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '');
   const hero = productHero(product.slug);
-  const buyable = !product.requiresConsultation && product.pricePaise !== null;
   const media = PRODUCT_MEDIA[product.slug];
   const hasFinasteride = product.ingredients.some((i) => /finasteride/i.test(i.name));
   const lifestyle = LIFESTYLE[product.slug];
@@ -72,16 +70,6 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
           url: `${base}/products/${product.slug}`,
           // SEO-06: absolute URL of the men-line pack hero (front of pack only, ADR-32).
           ...(hero ? { image: `${base}${hero.src}` } : {}),
-          ...(buyable && product.pricePaise !== null
-            ? {
-                offers: {
-                  '@type': 'Offer',
-                  priceCurrency: 'INR',
-                  price: (product.pricePaise / 100).toFixed(2),
-                  availability: 'https://schema.org/InStock',
-                },
-              }
-            : {}),
         }}
       />
       <JsonLd
@@ -128,38 +116,28 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
               <ShieldAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
               <span>
                 Contains finasteride, a prescription medicine. Do not use it if you are pregnant or
-                breastfeeding. Tell the doctor if either applies, or if you are planning a pregnancy.
+                breastfeeding. Tell your doctor if either applies, or if you are planning a pregnancy.
               </span>
             </p>
           ) : null}
 
+          {/* 2026-11-05: the shop is hidden — product pages are information only; the CTA is the free scan. */}
           <div className="mt-10 rounded-2xl border border-line bg-card p-5 shadow-card sm:p-6">
-            {buyable && product.pricePaise !== null ? (
-              <>
-                <p className="price text-2xl text-ink">{formatINR(product.pricePaise)}</p>
-                <p className="text-sm text-muted-foreground">{t('common.inclGst')}</p>
-                <Button asChild className="mt-4 h-12 w-full text-base sm:w-auto sm:px-8">
-                  <Link href={`/cart?add=${encodeURIComponent(product.id)}`}>Add to cart</Link>
-                </Button>
-              </>
-            ) : (
-              <>
-                <p className="flex items-start gap-2 text-body">
-                  <Stethoscope className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
-                  <span>
-                    Your doctor decides if you need it, at your consultation. If Dr. Tyagi recommends it, it
-                    comes in your plan.
-                  </span>
-                </p>
-                <Button
-                  asChild
-                  className="mt-4 h-auto min-h-12 w-full py-3 text-base whitespace-normal lg:w-auto lg:px-8"
-                >
-                  <Link href="/book">Book a consultation to get this</Link>
-                </Button>
-                <p className="mt-2 text-sm text-muted-foreground">Consultation fee {terms.fee}</p>
-              </>
-            )}
+            <p className="flex items-start gap-2 text-body">
+              <ScanLine className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
+              <span>
+                {product.requiresConsultation
+                  ? 'This product has a prescription medicine, so it is supplied only with a doctor’s prescription. Start with a free scalp scan and our hair-care team will talk you through your options.'
+                  : 'Products are not sold online right now. Start with a free scalp scan and our hair-care team will talk you through your options.'}
+              </span>
+            </p>
+            <Button
+              asChild
+              className="mt-4 h-auto min-h-12 w-full py-3 text-base whitespace-normal lg:w-auto lg:px-8"
+            >
+              <Link href={terms.bookHref}>{terms.bookLabel}</Link>
+            </Button>
+            <p className="mt-2 text-sm text-muted-foreground">Free. You see your result straight away.</p>
           </div>
         </div>
       </section>
@@ -192,8 +170,7 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
               })}
             </dl>
             <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">
-              Ingredient photos are illustrative. Amounts are on the pack. Your doctor explains them at the
-              consultation.
+              Ingredient photos are illustrative. Amounts are on the pack.
             </p>
           </div>
           <div className="space-y-10">
@@ -227,10 +204,10 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
       <section className={`container-yhc grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 ${SECTION_Y}`}>
         <div className="sm:col-span-2 lg:col-span-1 lg:pr-6">
           <h2 className="display text-[clamp(2rem,1.5rem+2vw,3rem)] text-balance">
-            {product.requiresConsultation ? 'Often prescribed together' : 'Also in everyday care'}
+            {product.requiresConsultation ? 'Also in the YHC range' : 'Also in everyday care'}
           </h2>
           <p className="mt-4 max-w-sm text-body">
-            Your doctor decides which of these you need, and how to use them.
+            Not sure which of these suit you? Take the free scalp scan and our team will talk you through it.
           </p>
         </div>
         {getProducts()

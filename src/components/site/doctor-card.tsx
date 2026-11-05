@@ -1,8 +1,7 @@
-import { BadgeCheck, Video } from 'lucide-react';
+import { BadgeCheck, Stethoscope } from 'lucide-react';
 import Image from 'next/image';
 import type { Doctor } from '@/lib/domain/types';
 import { publicCredential } from '@/lib/credentials';
-import { getConsultTerms } from './consult-fee';
 import { DOCTOR_PORTRAIT } from '@/lib/images';
 import { cn } from '@/lib/utils';
 
@@ -41,10 +40,10 @@ export function DoctorCard({
         <p className="mt-6 max-w-prose text-lg leading-relaxed text-pretty text-body">{doctor.bio}</p>
         <ul className="mt-8 grid max-w-prose gap-3 text-body sm:grid-cols-2">
           {[
-            'Looks at your health details and scalp photos before the call',
-            'Tells you what is likely going on, in plain words',
-            'Prescribes only if treatment can help you',
-            'Checks your progress at follow-up',
+            'Founding dermatologist behind Your Hair Company',
+            'Helped develop our products and our roots-first approach',
+            'Believes in checking the scalp before suggesting anything',
+            'Plain words, no false promises',
           ].map((line) => (
             <li key={line} className="flex gap-2.5 text-[15px]">
               <span className="mt-2.5 h-px w-4 shrink-0 bg-steel" aria-hidden />
@@ -95,8 +94,8 @@ function CredentialCard({ doctor }: { doctor: Doctor }) {
         <div className="flex items-center justify-between border-b border-line-dark px-6 py-4">
           <span className="font-display text-lg">Your Hair Company</span>
           <span className="flex items-center gap-1.5 text-[12px] text-on-dark-muted">
-            <Video className="size-3.5" aria-hidden />
-            Video consultation
+            <Stethoscope className="size-3.5" aria-hidden />
+            Founding dermatologist
           </span>
         </div>
         <div className="px-6 pt-6 pb-6">
@@ -122,14 +121,14 @@ function CredentialCard({ doctor }: { doctor: Doctor }) {
               <dd className="mt-0.5">Hair &amp; scalp</dd>
             </div>
             <div>
-              <dt className="text-[12px] text-on-dark-muted">Consults</dt>
-              <dd className="mt-0.5">One to one, {getConsultTerms().slotMinutes} min</dd>
+              <dt className="text-[12px] text-on-dark-muted">Role</dt>
+              <dd className="mt-0.5">Product &amp; method</dd>
             </div>
           </dl>
         </div>
         <figcaption className="flex items-center gap-2 border-t border-line-dark bg-ink-2 px-6 py-3.5 text-[12px] text-on-dark-muted">
           <BadgeCheck className="size-4 text-brand-on-dark" aria-hidden />
-          Registration number appears on every prescription
+          The dermatologist behind YHC&rsquo;s products and method
         </figcaption>
       </div>
     </figure>

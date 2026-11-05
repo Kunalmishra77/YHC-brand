@@ -154,11 +154,11 @@ export function JourneyStepper({ steps, terms }: { steps: HowStep[]; terms: Slot
         {/* CTA with the fee note, beside the steps (audit UX-02). */}
         <div className="mt-8 hidden border-t border-line pt-6 lg:mt-auto lg:block">
           <p className="max-w-md text-sm leading-relaxed text-body">
-            Starting is free. You pay the {terms.fee} fee only when you book a call with the doctor.
+            The scan is free. Our hair-care team then calls you back to talk through your options.
           </p>
           <Button asChild className="mt-4 h-12 px-7 text-base">
             <Link href="/start">
-              Begin my free 3D scan <ArrowRight className="size-4" aria-hidden />
+              Begin my free scalp scan <ArrowRight className="size-4" aria-hidden />
             </Link>
           </Button>
         </div>
@@ -292,12 +292,12 @@ export function JourneyStepper({ steps, terms }: { steps: HowStep[]; terms: Slot
       {/* Phones: swipe hint + CTA under the panel */}
       <div className="border-t border-line pt-6 lg:hidden">
         <p className="text-sm leading-relaxed text-body">
-          Swipe the picture to see each step. Starting is free. You pay the {terms.fee} fee only when you
-          book a call with the doctor.
+          Swipe the picture to see each step. The scan is free. Our hair-care team then calls you back to
+          talk through your options.
         </p>
         <Button asChild className="mt-4 h-12 w-full px-7 text-base sm:w-auto">
           <Link href="/start">
-            Begin my free 3D scan <ArrowRight className="size-4" aria-hidden />
+            Begin my free scalp scan <ArrowRight className="size-4" aria-hidden />
           </Link>
         </Button>
       </div>

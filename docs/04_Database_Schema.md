@@ -30,9 +30,10 @@ content: concerns · posts · faqs · reviews (consent required to approve)
 | Identity | `profiles`, `customers`, `addresses` |
 | Doctor & calendar | `doctors`, `doctor_integrations`, `availability_rules`, `availability_exceptions`, `calendar_busy_blocks` |
 | Booking & clinical | `appointments`, `intake_forms`, `media`, `consultations`, `prescriptions`, `assessments` (free assessment answers) |
+| Scalp scan (ADR-36) | `scans` (answers, per-zone analysis, `outcome` eligible/not_eligible/unclear), `scan_photos` (one per zone; bytes in the private `clinical` bucket at `scans/{customer}/{scan}/{zone}.jpg`) |
 | Catalog | `products`, `plans`, `protocol_templates` |
 | Commerce | `orders`, `order_items`, `recommendations`, `consult_credits`, `payments`, `refunds`, `shipments` |
-| CRM | `leads`, `lead_activities`, `tasks` |
+| CRM | `leads` (+ `outcome`, `latest_scan_id`, `owner_name` — ADR-36), `lead_activities`, `tasks` |
 | Messaging | `message_templates`, `messages` |
 | Care | `care_checkins` |
 | Guarantee | `guarantee_policies`, `guarantee_enrollments`, `guarantee_claims` |
@@ -68,6 +69,7 @@ Doctor and admin columns apply only to MFA (aal2) sessions; with aal1 they see n
 | Appointments | own R | own R | R | R | all | – |
 | Intake | own R, insert, update until consult starts | R (own patients) | **none** | none | all | – |
 | Media, assessments | own R | R | **none** | none | all | – |
+| Scans, scan photos | own R (writes: server only) | none (flow off) | **none** — only `leads.outcome` | none | all | – |
 | Consultations | – (server returns a summary without private notes) | own R/W | none | none | all | – |
 | Prescriptions | own R | own R/W | none | none | all | – |
 | Products, plans, published content, active guarantee policy, public settings | R | R | R | R | all | R |

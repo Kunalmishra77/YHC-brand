@@ -95,7 +95,7 @@ export function ResultsMarquee() {
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
                 <Button asChild className="h-12 rounded-full px-7 text-base">
                   <Link href="/start">
-                    Begin my free 3D scan <ArrowRight className="size-4" aria-hidden />
+                    Begin my free scalp scan <ArrowRight className="size-4" aria-hidden />
                   </Link>
                 </Button>
                 <p className="text-[13px] text-muted-foreground">

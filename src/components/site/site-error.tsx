@@ -10,14 +10,14 @@ export function SiteError({ retry }: { retry: () => void }) {
   return (
     <div className="container-yhc py-16">
       <ErrorState
-        body="This page did not load. Please try again, or go straight to booking — it takes a few minutes."
+        body="This page did not load. Please try again, or start your free scalp scan instead."
         action={
           <div className="flex flex-wrap justify-center gap-2">
             <Button onClick={() => retry()} className="h-11 px-5">
               {t('common.retry')}
             </Button>
             <Button asChild variant="outline" className="h-11 px-5">
-              <Link href="/book">{t('common.bookConsultation')}</Link>
+              <Link href="/start">{t('nav.beginScan')}</Link>
             </Button>
           </div>
         }

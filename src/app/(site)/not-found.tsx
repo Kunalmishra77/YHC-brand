@@ -34,7 +34,7 @@ export default function SiteNotFound() {
         </p>
         <div style={riseDelay(270)} className={`${motion.rise} mt-8 flex flex-col gap-3 sm:flex-row`}>
           <Button asChild className="h-12 px-6 text-base">
-            <Link href="/start">Begin my free 3D scan</Link>
+            <Link href="/start">Begin my free scalp scan</Link>
           </Button>
           <Button asChild variant="outline" className="h-12 border-steel px-6 text-base">
             <Link href="/">Go to the home page</Link>

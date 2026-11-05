@@ -112,7 +112,7 @@ export async function ensureDemoState(): Promise<void> {
     if (head && head.version > s.version) {
       const { data } = await supabase.from('demo_state').select('state, version').eq('id', ROW_ID).single();
       if (data) {
-        restore(data.state as Snapshot);
+        restore(data.state as unknown as Snapshot);
         s.version = data.version;
         s.serialized = JSON.stringify(capture());
       }

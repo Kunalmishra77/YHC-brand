@@ -31,10 +31,10 @@ export default function GuaranteePage() {
       <PageIntro
         eyebrow="Guarantee"
         title="No guarantee is on offer right now"
-        lede="When it comes back, we will show its full conditions here before anyone pays. You can still start with a free 3D scan and a doctor consultation."
+        lede="When it comes back, we will show its full conditions here before anyone pays. You can still start with a free scalp scan."
       >
         <Button asChild className="h-12 px-6">
-          <Link href="/start">Begin my free 3D scan</Link>
+          <Link href="/start">Begin my free scalp scan</Link>
         </Button>
       </PageIntro>
     );
@@ -147,9 +147,9 @@ export default function GuaranteePage() {
         image={SLOTS.H19}
         imagePosition="30% 35%"
         align="right"
-        title="It all starts with a free 3D scan."
+        title="It all starts with a free scalp scan."
         body="The guarantee covers plans your doctor prescribes after a consultation."
-        primary={{ href: '/start', label: 'Begin my free 3D scan' }}
+        primary={{ href: '/start', label: 'Begin my free scalp scan' }}
         secondary={{ href: '/legal/guarantee', label: 'Read the full terms' }}
       />
     </>

@@ -10,7 +10,7 @@ import { SITE } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
 /**
- * Sticky mobile action bar: WhatsApp + Begin 3D scan (FR-M1-3, ADR-26). On the homepage it waits until
+ * Sticky mobile action bar: WhatsApp + Begin scalp scan (FR-M1-3, ADR-26). On the homepage it waits until
  * the hero (which has the start form) has scrolled away.
  */
 export function StickyMobileBar() {

@@ -19,7 +19,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'FAQs',
   description:
-    'Simple answers about the scan, the consultation, plans, delivery and the money-back guarantee conditions at Your Hair Company.',
+    'Simple answers about the free scalp scan, your result, plans, delivery and the money-back guarantee conditions at Your Hair Company.',
   path: '/faqs',
 });
 
@@ -121,7 +121,7 @@ export default function FaqsPage() {
         imagePosition="60% 50%"
         title="Ask about your own hair."
         bookLabel={terms.bookLabel}
-        body="The best answers are about your own hair. Ask Dr. Tyagi at your consultation."
+        body="The best answers are about your own hair. Take the free scalp scan and our hair-care team will call you to talk it through."
       />
     </>
   );

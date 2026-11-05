@@ -5,28 +5,28 @@ export interface JourneyStep {
   body: string;
 }
 
-/** Book → Consult → Plan → Delivered → Follow-up, with the fee and length from settings. */
-export function buildJourney({ fee, slotMinutes }: { fee: string; slotMinutes: number }): JourneyStep[] {
+/** Scan → Result → Call → Delivered → Follow-up (2026-11-05: no paid consultation for now). */
+export function buildJourney(): JourneyStep[] {
   return [
     {
-      title: 'Book',
-      body: `Pick a time and pay the ${fee} consultation fee. Then tell us about your hair and add a few scalp photos.`,
+      title: 'Scan',
+      body: 'Take a free scalp scan with your phone camera, at home. Add your name and mobile number.',
     },
     {
-      title: 'Consult',
-      body: `Talk to Dr. Tyagi on a ${slotMinutes}-minute video call. Just you and the doctor, going through your photos and questions.`,
+      title: 'Result',
+      body: 'See your result straight away: whether our hair care looks suitable for you or not. It is a quick check, not a diagnosis.',
     },
     {
-      title: 'Plan',
-      body: 'If treatment can help, Dr. Tyagi writes your plan. We send it on WhatsApp. You decide if you want it.',
+      title: 'Call',
+      body: 'Our hair-care team calls you back to talk through your result, answer your questions and explain your options.',
     },
     {
       title: 'Delivered',
-      body: 'We ship your plan anywhere in India. Track it on WhatsApp. Simple steps to start come with it.',
+      body: 'If you choose a plan, we ship it anywhere in India. Track it on WhatsApp. Simple steps to start come with it.',
     },
     {
       title: 'Follow-up',
-      body: 'We check in often. You take monthly photos. Your doctor reviews them and adjusts your plan.',
+      body: 'We check in often and help you stay on track with your routine.',
     },
   ];
 }

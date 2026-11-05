@@ -35,7 +35,7 @@ export function HeroStacked({ trust }: { trust: React.ReactNode }) {
             href="#start-form"
             className={`mt-7 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[image:var(--yhc-silver)] text-[15px] font-semibold text-obsidian shadow-[0_20px_50px_-20px_rgba(0,0,0,0.8)] focus-visible:outline-on-dark sm:w-auto sm:px-8 ${ENTER} delay-300`}
           >
-            Begin my free 3D scan
+            Begin my free scalp scan
             <ArrowDown className="size-4" aria-hidden />
           </a>
           <div className={`mt-8 hidden md:block ${ENTER} delay-500`}>{trust}</div>

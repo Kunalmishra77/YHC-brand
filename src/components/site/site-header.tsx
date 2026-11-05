@@ -129,7 +129,7 @@ export function SiteHeader() {
                 <div className="grid grid-cols-2 gap-3">
                   <SheetClose asChild>
                     <Button asChild variant="outline" className="h-12 border-steel">
-                      <Link href="/book">{t('common.bookConsultation')}</Link>
+                      <Link href="/contact">{t('common.talkToUs')}</Link>
                     </Button>
                   </SheetClose>
                   {SITE.whatsappAvailable ? (

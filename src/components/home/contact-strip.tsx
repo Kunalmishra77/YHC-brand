@@ -45,7 +45,7 @@ export function ContactStrip() {
                 Questions? Talk to us.
               </h2>
               <p className="mt-3 max-w-[40ch] leading-relaxed text-pretty text-body">
-                A real person replies. Medical questions go to your doctor.
+                A real person replies. For medical questions, please talk to your own doctor.
               </p>
             </Reveal>
             <Reveal delay={0.08} className="mt-6">

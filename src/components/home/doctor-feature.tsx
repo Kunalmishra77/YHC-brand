@@ -1,6 +1,5 @@
-import { ArrowRight, Check, Video } from 'lucide-react';
+import { ArrowRight, Check, Stethoscope } from 'lucide-react';
 import Link from 'next/link';
-import { getConsultTerms } from '@/components/site/consult-fee';
 import { Reveal } from '@/components/site/reveal';
 import { CTA_GHOST_DARK, CTA_SILVER } from '@/components/site/section';
 import { Button } from '@/components/ui/button';
@@ -12,12 +11,13 @@ import { Marquee } from './marquee';
 import { TreatmentChips, type TreatmentChip } from './doctor-feature/treatment-chips';
 
 /**
- * Homepage section 5 · Dr. Anil Tyagi and his treatment approach — credibility and trust.
+ * Homepage section 5 · Dr. Anil Tyagi, the founding dermatologist behind YHC's products and approach.
+ * (2026-11-05: he does not review scans or take calls for now, so nothing here promises that.)
  * Full-bleed editorial split on obsidian: the real portrait fills one half edge to edge (slow parallax,
- * pearl consultation card resting on it); the other half has the name, one plain promise and tappable
- * pills for what he treats (docs/20: short and warm). Only confirmed credentials are shown
+ * pearl "about" card resting on it); the other half has the name, one plain promise and tappable
+ * pills for what the approach covers (docs/20: short and warm). Only confirmed credentials are shown
  * (publicCredential); the registration line is hidden when it is missing. Cinematic pass (ADR-35): a
- * deeper portrait parallax and a slow ribbon of what he treats under the split.
+ * deeper portrait parallax and a slow ribbon of what the approach covers under the split.
  */
 
 const TREATMENTS: TreatmentChip[] = [
@@ -27,28 +27,27 @@ const TREATMENTS: TreatmentChip[] = [
   },
   {
     title: 'Sudden shedding',
-    body: 'Hair fall after illness, fever, childbirth, stress or a crash diet (telogen effluvium). He finds the cause first.',
+    body: 'Hair fall after illness, fever, childbirth, stress or a crash diet (telogen effluvium). Our approach looks for the cause first.',
   },
   {
     title: 'Scalp problems',
-    body: 'Flakes, itching, redness or oily scalp. He checks your scalp as carefully as your hair.',
+    body: 'Flakes, itching, redness or oily scalp. We look at your scalp as carefully as your hair.',
   },
   {
-    title: 'Follow-up',
-    body: 'He looks at your check-ins and photos, then changes or stops your plan if needed.',
+    title: 'Staying on track',
+    body: 'If you start a plan, our team checks in with you so you can keep going, or stop, when needed.',
   },
 ];
 
-const CONSULT_COVERS = [
-  'He reads your scan and history first',
-  'He explains what is going on, simply',
-  'A plan only if treatment will help',
-  'When you will check progress together',
+const ABOUT_LINES = [
+  'Developed our scalp-first approach',
+  'Helped shape our hair-care products',
+  'Check the roots before suggesting anything',
+  'Plain words, no false promises',
 ];
 
 export function DoctorFeature() {
   const doctor = getDoctor();
-  const { slotMinutes } = getConsultTerms();
   const role = publicCredential(doctor.qualifications) ?? 'Dermatologist';
   const registration = publicCredential(doctor.registrationNo);
   const council = registration ? publicCredential(doctor.council) : null;
@@ -73,19 +72,19 @@ export function DoctorFeature() {
             />
           </div>
 
-          {/* Consultation card: overlaps the photo's lower edge on phones, rests on it from lg */}
+          {/* About card: overlaps the photo's lower edge on phones, rests on it from lg */}
           <div className="relative z-10 mx-[var(--yhc-gutter)] -mt-24 sm:mx-auto sm:max-w-md lg:absolute lg:bottom-10 lg:left-10 lg:mx-0 lg:mt-0 lg:w-[20rem] xl:left-14">
             <Reveal>
               <div className="rounded-2xl bg-pearl/95 p-5 text-ink shadow-raised ring-1 ring-white/60 backdrop-blur sm:p-6">
                 <p className="flex items-center gap-2 text-[13px] font-semibold text-brand">
-                  <Video className="size-4" aria-hidden />
-                  {slotMinutes}-minute video call
+                  <Stethoscope className="size-4" aria-hidden />
+                  Founding dermatologist
                 </p>
                 <h3 className="mt-3 font-display text-[1.75rem] leading-tight font-medium">
-                  Just you and him
+                  The method behind YHC
                 </h3>
                 <ul className="mt-4 space-y-2.5">
-                  {CONSULT_COVERS.map((line) => (
+                  {ABOUT_LINES.map((line) => (
                     <li key={line} className="flex gap-2.5 text-[15px] leading-snug text-body">
                       <Check className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
                       {line}
@@ -100,7 +99,7 @@ export function DoctorFeature() {
         {/* Text block */}
         <div className="flex items-center px-[var(--yhc-gutter)] pt-10 pb-10 sm:pt-12 lg:px-14 lg:py-12 xl:px-20">
           <Reveal className="w-full max-w-xl">
-            <p className="eyebrow text-brand-on-dark">Meet your doctor</p>
+            <p className="eyebrow text-brand-on-dark">The doctor behind YHC</p>
             <h2
               id="doctor-feature-heading"
               className="display mt-4 text-[clamp(2.75rem,1.8rem+3.8vw,4.75rem)] leading-[0.95] text-balance text-on-dark"
@@ -120,12 +119,12 @@ export function DoctorFeature() {
                 We check first. We treat only if it will help.
               </p>
               <p className="mt-3 text-[15px] leading-relaxed text-on-dark-muted">
-                He looks at your scalp and your story first, then explains it in simple words.
+                That is why every YHC journey starts with a free scan of your scalp.
               </p>
             </blockquote>
 
-            <h3 className="mt-7 mb-3 text-[15px] font-semibold text-on-dark">What he treats</h3>
-            <TreatmentChips items={TREATMENTS} label="What he treats" />
+            <h3 className="mt-7 mb-3 text-[15px] font-semibold text-on-dark">What our approach covers</h3>
+            <TreatmentChips items={TREATMENTS} label="What our approach covers" />
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button asChild className={`group w-full rounded-full sm:w-auto ${CTA_SILVER}`}>
@@ -138,16 +137,16 @@ export function DoctorFeature() {
                 </Link>
               </Button>
               <Button asChild variant="outline" className={`w-full rounded-full sm:w-auto ${CTA_GHOST_DARK}`}>
-                <Link href="/start">Begin my free 3D scan</Link>
+                <Link href="/start">Begin my free scalp scan</Link>
               </Button>
             </div>
           </Reveal>
         </div>
       </div>
 
-      {/* What he treats, as a slow ribbon of big serif words under the split (pause control included). */}
+      {/* What our approach covers, as a slow ribbon of big serif words under the split (pause control included). */}
       <div className="relative border-t border-line-dark pt-6 pb-5 lg:pt-8">
-        <Marquee label="What he treats" tone="dark" durationSec={36} minItems={8} className="text-center">
+        <Marquee label="What our approach covers" tone="dark" durationSec={36} minItems={8} className="text-center">
           {TREATMENTS.map((item) => (
             <span
               key={item.title}

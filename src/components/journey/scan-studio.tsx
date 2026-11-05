@@ -1,14 +1,15 @@
 'use client';
 
-import { AlertCircle, ArrowLeft, ArrowRight, Check, Loader2 } from 'lucide-react';
+import { AlertCircle, ArrowLeft, ArrowRight, Check, Loader2, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { submitScanAction } from '@/app/(site)/start/actions';
+import { useEffect, useRef, useState, useTransition } from 'react';
+import { beginScanAction, submitScanAction } from '@/app/(site)/start/actions';
+import { Checkbox } from '@/components/ui/checkbox';
 import { DURATION_ANSWERS, FAMILY_ANSWERS, LONG_BALD_ANSWERS, PATTERN_ANSWERS } from '@/lib/journey/labels';
-import { CAPTURE_ZONES, type CaptureZone, type ScanAnswers } from '@/lib/journey/types';
-import { orderZones } from '@/lib/journey/zones';
+import { type CaptureZone, type ScanAnswers } from '@/lib/journey/types';
 import { track } from '@/lib/analytics';
+import { ISSUE_HINT, analysePhoto } from '@/lib/scan/analyse';
 import { cn } from '@/lib/utils';
 import { AngleGuide } from './angle-guide';
 import styles from './journey.module.css';
@@ -16,22 +17,17 @@ import { ProgressRing } from './meters';
 import { type ZoneShots, ZoneCapture } from './scan/zone-capture';
 
 /*
- * Guided 3D scalp scan (ADR-26 demo). Pre-scan questions -> 7 guided zone captures (getUserMedia with
- * a photo-picker fallback; at least 4 zones incl. Forehead - Centre and Crown) -> staged "analysis".
- * Photos are re-encoded/downscaled on a canvas and kept only as local previews; nothing is uploaded.
- * The server receives the answers and which zones were captured/skipped, and computes a SIMULATED
- * result.
+ * Guided scalp scan (ADR-36). 4 questions → photo consent → 7 guided zone captures (at least 4,
+ * including Forehead – Centre and Crown). Each photo is re-encoded on the device (no EXIF/GPS),
+ * checked in the browser (blur, light, glare, hair vs scalp) and uploaded to our server straight
+ * away. On "Analyse" the server decides the outcome with `scan.rules` and the result page opens.
  */
 
-type Phase = 'intro' | 'questions' | 'capture' | 'analysing';
+type Phase = 'intro' | 'questions' | 'consent' | 'capture' | 'analysing';
 
-const STAGES = [
-  'Mapping your scalp',
-  'Finding hair roots',
-  'Counting how close the roots are',
-  'Checking roots and scalp health',
-] as const;
-const ANALYSIS_MS = 6000;
+const STAGES = ['Checking photo quality', 'Finding hair and scalp', 'Comparing your areas', 'Preparing your result'] as const;
+const MIN_ANALYSIS_MS = 3200;
+
 interface Question<K extends keyof ScanAnswers> {
   key: K;
   title: string;
@@ -39,43 +35,24 @@ interface Question<K extends keyof ScanAnswers> {
   options: { value: ScanAnswers[K]; label: string; hint?: string }[];
 }
 
-const QUESTIONS: [
-  Question<'duration'>,
-  Question<'pattern'>,
-  Question<'longBald'>,
-  Question<'familyHistory'>,
-] = [
-  {
-    key: 'duration',
-    title: 'How long have you noticed thinning?',
-    hint: 'Your best guess is fine.',
-    options: DURATION_ANSWERS,
-  },
-  {
-    key: 'pattern',
-    title: 'Where do you notice it most?',
-    hint: 'Pick the closest pattern.',
-    options: PATTERN_ANSWERS,
-  },
+const QUESTIONS: [Question<'duration'>, Question<'pattern'>, Question<'longBald'>, Question<'familyHistory'>] = [
+  { key: 'duration', title: 'How long have you noticed thinning?', hint: 'Your best guess is fine.', options: DURATION_ANSWERS },
+  { key: 'pattern', title: 'Where do you notice it most?', hint: 'Pick the closest pattern.', options: PATTERN_ANSWERS },
   {
     key: 'longBald',
     title: 'Is any area completely bald for 5 years or more?',
     hint: 'Smooth skin with no hair at all, for a long time.',
     options: LONG_BALD_ANSWERS,
   },
-  {
-    key: 'familyHistory',
-    title: 'Does hair loss run in your family?',
-    hint: 'Parents, grandparents or siblings.',
-    options: FAMILY_ANSWERS,
-  },
+  { key: 'familyHistory', title: 'Does hair loss run in your family?', hint: 'Parents, grandparents or siblings.', options: FAMILY_ANSWERS },
 ];
 
-export function ScanStudio({ firstName, hasScan }: { firstName: string; hasScan: boolean }) {
+export function ScanStudio({ firstName, hasResult }: { firstName: string; hasResult: boolean }) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>('intro');
   const [qIndex, setQIndex] = useState(0);
   const [answers, setAnswers] = useState<Partial<ScanAnswers>>({});
+  const [scanId, setScanId] = useState<string | null>(null);
   const [shots, setShots] = useState<ZoneShots>({});
   const [skipped, setSkipped] = useState<CaptureZone[]>([]);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -93,28 +70,40 @@ export function ScanStudio({ firstName, hasScan }: { firstName: string; hasScan:
   }, [phase, qIndex]);
 
   const addShot = (zone: CaptureZone, blob: Blob) => {
+    if (!scanId) return;
     const url = URL.createObjectURL(blob);
     urls.current.push(url);
-    setShots((prev) => ({ ...prev, [zone]: { url, kb: Math.round(blob.size / 1024) } }));
+    const kb = Math.round(blob.size / 1024);
+    setShots((prev) => ({ ...prev, [zone]: { url, kb, state: 'uploading', hint: null } }));
     setSkipped((prev) => prev.filter((z) => z !== zone));
+    void (async () => {
+      let hint: string | null = null;
+      try {
+        const analysis = await analysePhoto(blob);
+        hint = analysis.issue ? ISSUE_HINT[analysis.issue] : null;
+        const body = new FormData();
+        body.set('scanId', scanId);
+        body.set('zone', zone);
+        body.set('analysis', JSON.stringify(analysis));
+        body.set('file', blob, `${zone}.jpg`);
+        const res = await fetch('/api/scan/photo', { method: 'POST', body });
+        if (!res.ok) throw new Error('upload');
+        setShots((prev) => (prev[zone]?.url === url ? { ...prev, [zone]: { url, kb, state: 'saved', hint } } : prev));
+      } catch {
+        setShots((prev) => (prev[zone]?.url === url ? { ...prev, [zone]: { url, kb, state: 'failed', hint } } : prev));
+      }
+    })();
   };
 
-  const complete = useMemo(
-    () =>
-      answers.duration && answers.pattern && answers.longBald && answers.familyHistory
-        ? (answers as ScanAnswers)
-        : null,
-    [answers],
-  );
-  const capturedZones = useMemo(() => orderZones(CAPTURE_ZONES.filter((z) => shots[z])), [shots]);
-  const skippedZones = useMemo(() => orderZones(skipped), [skipped]);
+  const complete =
+    answers.duration && answers.pattern && answers.longBald && answers.familyHistory ? (answers as ScanAnswers) : null;
 
   return (
     <div className="mx-auto w-full max-w-5xl">
       {phase === 'intro' ? (
         <Intro
           firstName={firstName}
-          hasScan={hasScan}
+          hasResult={hasResult}
           headingRef={headingRef}
           onStart={() => {
             track('scan_started');
@@ -132,7 +121,22 @@ export function ScanStudio({ firstName, hasScan }: { firstName: string; hasScan:
           onAnswer={(key, value) => {
             setAnswers((prev) => ({ ...prev, [key]: value }));
             if (qIndex < QUESTIONS.length - 1) setQIndex(qIndex + 1);
-            else setPhase('capture');
+            else setPhase(scanId ? 'capture' : 'consent');
+          }}
+        />
+      ) : null}
+
+      {phase === 'consent' && complete ? (
+        <PhotoConsent
+          answers={complete}
+          headingRef={headingRef}
+          onBack={() => {
+            setQIndex(QUESTIONS.length - 1);
+            setPhase('questions');
+          }}
+          onReady={(id) => {
+            setScanId(id);
+            setPhase('capture');
           }}
         />
       ) : null}
@@ -151,57 +155,52 @@ export function ScanStudio({ firstName, hasScan }: { firstName: string; hasScan:
         />
       ) : null}
 
-      {phase === 'analysing' && complete ? (
+      {phase === 'analysing' && scanId ? (
         <Analysing
-          answers={complete}
-          capturedZones={capturedZones}
-          skippedZones={skippedZones}
+          scanId={scanId}
           preview={shots.crown?.url ?? shots.top?.url ?? shots.forehead_centre?.url ?? null}
           headingRef={headingRef}
-          onDone={() => router.push('/start/assessment')}
+          onDone={() => router.push('/start/result')}
           onBack={() => setPhase('capture')}
         />
       ) : null}
     </div>
   );
 }
+
 // ---------------------------------------------------------------------------------------------
 
 function Intro({
   firstName,
-  hasScan,
+  hasResult,
   headingRef,
   onStart,
 }: {
   firstName: string;
-  hasScan: boolean;
+  hasResult: boolean;
   headingRef: React.Ref<HTMLHeadingElement>;
   onStart: () => void;
 }) {
   return (
     <section className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
       <div>
-        <p className="text-[13px] font-semibold tracking-[0.14em] text-brand-on-dark uppercase">
-          Guided 3D scalp scan
-        </p>
+        <p className="text-[13px] font-semibold tracking-[0.14em] text-brand-on-dark uppercase">Guided scalp scan</p>
         <h1
           ref={headingRef}
           tabIndex={-1}
           className="mt-3 font-display text-[36px] leading-[1.05] font-medium text-balance text-on-dark outline-none md:text-[52px]"
         >
-          {firstName
-            ? `${firstName}, let's look at your scalp and hair roots`
-            : "Let's look at your scalp and hair roots"}
+          {firstName ? `${firstName}, let's look at your scalp and hair` : "Let's look at your scalp and hair"}
         </h1>
         <p className="mt-4 max-w-xl text-on-dark-muted">
-          4 quick questions. Then your phone camera guides you through 7 areas of your scalp, one close-up at
-          a time. Your doctor uses the scan to see your roots and scalp health.
+          4 quick questions. Then your phone camera guides you through 7 areas of your scalp, one close-up at a
+          time. You see your result straight away.
         </p>
         <ol className="mt-7 grid gap-3 sm:grid-cols-3">
           {[
             ['4 questions', 'About your hair'],
             ['7 areas', 'Hairline, top, crown, parting and back'],
-            ['Your report', 'Roots, thickness and scalp health'],
+            ['Your result', 'Where hair is still growing'],
           ].map(([t, d], i) => (
             <li key={t} className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
               <p className="price text-[13px] text-platinum">0{i + 1}</p>
@@ -219,31 +218,24 @@ function Intro({
             Start my scan
             <ArrowRight className="size-4" aria-hidden />
           </button>
-          {hasScan ? (
+          {hasResult ? (
             <Link
-              href="/start/assessment"
+              href="/start/result"
               className="inline-flex min-h-11 items-center justify-center px-2 text-sm text-on-dark-muted underline underline-offset-4 hover:text-on-dark"
             >
-              See your earlier report
+              See your last result
             </Link>
           ) : null}
         </div>
         <p className="mt-5 max-w-xl text-[13px] text-on-dark-muted">
-          Demo: your photos stay on this device and are never uploaded. We only send which areas you scanned.
-          The report is simulated — your doctor makes the final call.
+          Use good light and hold the phone still. Your photos are stored privately. The result is a photo check,
+          not a medical diagnosis.
         </p>
       </div>
       <div className="relative mx-auto aspect-square w-full max-w-[380px]">
         <div className={cn('absolute inset-0 rounded-full ring-1 ring-white/10', styles.grid)} />
         <svg viewBox="0 0 200 200" className={cn('absolute inset-0', styles.orbit)} aria-hidden>
-          <circle
-            cx="100"
-            cy="100"
-            r="96"
-            fill="none"
-            stroke="rgba(230,232,236,0.25)"
-            strokeDasharray="2 6"
-          />
+          <circle cx="100" cy="100" r="96" fill="none" stroke="rgba(230,232,236,0.25)" strokeDasharray="2 6" />
           <circle cx="100" cy="4" r="3" fill="rgba(230,232,236,0.9)" />
         </svg>
         <div className="absolute inset-[12%] overflow-hidden rounded-full bg-white/[0.03] ring-1 ring-white/15">
@@ -282,10 +274,7 @@ function Questions({
       </div>
       <div className="mt-3 flex gap-1" aria-hidden>
         {QUESTIONS.map((x, i) => (
-          <span
-            key={x.key}
-            className={cn('h-1 flex-1 rounded-full', i <= index ? 'bg-silver' : 'bg-white/15')}
-          />
+          <span key={x.key} className={cn('h-1 flex-1 rounded-full', i <= index ? 'bg-silver' : 'bg-white/15')} />
         ))}
       </div>
       <h1
@@ -308,16 +297,12 @@ function Questions({
               onClick={() => onAnswer(q.key, o.value as never)}
               className={cn(
                 'flex min-h-14 items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left ring-1 transition-colors',
-                active
-                  ? 'bg-white/15 ring-white/60'
-                  : 'bg-white/5 ring-white/10 hover:bg-white/10 hover:ring-white/25',
+                active ? 'bg-white/15 ring-white/60' : 'bg-white/5 ring-white/10 hover:bg-white/10 hover:ring-white/25',
               )}
             >
               <span>
                 <span className="block font-medium text-on-dark">{o.label}</span>
-                {o.hint ? (
-                  <span className="mt-0.5 block text-[13px] text-on-dark-muted">{o.hint}</span>
-                ) : null}
+                {o.hint ? <span className="mt-0.5 block text-[13px] text-on-dark-muted">{o.hint}</span> : null}
               </span>
               {active ? <Check className="size-4 shrink-0 text-on-dark" aria-hidden /> : null}
             </button>
@@ -327,20 +312,105 @@ function Questions({
     </section>
   );
 }
+
+// ---------------------------------------------------------------------------------------------
+
+function PhotoConsent({
+  answers,
+  headingRef,
+  onBack,
+  onReady,
+}: {
+  answers: ScanAnswers;
+  headingRef: React.Ref<HTMLHeadingElement>;
+  onBack: () => void;
+  onReady: (scanId: string) => void;
+}) {
+  const [agreed, setAgreed] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  const go = () => {
+    if (!agreed) {
+      setError('Please agree so we can store your scan photos.');
+      return;
+    }
+    setError(null);
+    startTransition(async () => {
+      const res = await beginScanAction({ answers, photoConsent: true });
+      if (res.ok) onReady(res.data.scanId);
+      else setError(res.error.message);
+    });
+  };
+
+  return (
+    <section className="mx-auto max-w-2xl">
+      <BackButton onClick={onBack}>Back</BackButton>
+      <h1
+        ref={headingRef}
+        tabIndex={-1}
+        className="mt-6 font-display text-[30px] leading-[1.1] font-medium text-balance text-on-dark outline-none md:text-[40px]"
+      >
+        Your photos stay private
+      </h1>
+      <ul className="mt-5 space-y-3 text-on-dark-muted">
+        {[
+          'Each photo is checked on your phone and then saved securely with us.',
+          'Only you can see your photos in your account. Our sales team never sees them.',
+          'Photos are used only to check your hair and track your progress. Never for ads.',
+          'You can ask us to delete them at any time.',
+        ].map((line) => (
+          <li key={line} className="flex gap-3">
+            <Lock className="mt-1 size-4 shrink-0 text-platinum" aria-hidden />
+            <span>{line}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-7 flex items-start gap-3 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
+        <Checkbox
+          id="photo-consent"
+          checked={agreed}
+          onCheckedChange={(v) => {
+            setAgreed(v === true);
+            setError(null);
+          }}
+          className="mt-0.5 size-5 border-white/40 bg-white/5 data-[state=checked]:border-white data-[state=checked]:bg-white data-[state=checked]:text-obsidian"
+        />
+        <label htmlFor="photo-consent" className="text-sm leading-snug text-on-dark">
+          I agree that Your Hair Company stores my scalp photos to check my hair, as described in the{' '}
+          <Link href="/legal/privacy" className="underline underline-offset-2">
+            privacy policy
+          </Link>
+          .
+        </label>
+      </div>
+      <p aria-live="assertive" className="mt-3 min-h-5 text-sm text-[#ffb4a8]">
+        {error}
+      </p>
+      <button
+        type="button"
+        onClick={go}
+        disabled={pending}
+        className="bg-silver mt-2 inline-flex h-12 items-center justify-center gap-2 rounded-xl px-7 text-[15px] font-semibold text-obsidian hover:opacity-95 disabled:opacity-70"
+      >
+        {pending ? <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden /> : null}
+        Open the camera guide
+        {!pending ? <ArrowRight className="size-4" aria-hidden /> : null}
+      </button>
+    </section>
+  );
+}
+
 // ---------------------------------------------------------------------------------------------
 
 function Analysing({
-  answers,
-  capturedZones,
-  skippedZones,
+  scanId,
   preview,
   headingRef,
   onDone,
   onBack,
 }: {
-  answers: ScanAnswers;
-  capturedZones: CaptureZone[];
-  skippedZones: CaptureZone[];
+  scanId: string;
   preview: string | null;
   headingRef: React.Ref<HTMLHeadingElement>;
   onDone: () => void;
@@ -354,10 +424,9 @@ function Analysing({
     onDoneRef.current = onDone;
   }, [onDone]);
 
-  // Server computes and stores the (simulated) result while the staged animation runs.
   useEffect(() => {
     let cancelled = false;
-    void submitScanAction({ answers, capturedZones, skippedZones })
+    void submitScanAction({ scanId })
       .then((res) => {
         if (cancelled) return;
         if (res.ok) track('scan_completed');
@@ -369,13 +438,13 @@ function Analysing({
     return () => {
       cancelled = true;
     };
-  }, [answers, capturedZones, skippedZones, attempt]);
+  }, [scanId, attempt]);
 
   useEffect(() => {
     const started = performance.now();
     let raf = 0;
     const tick = (t: number) => {
-      const p = Math.min(100, ((t - started) / ANALYSIS_MS) * 100);
+      const p = Math.min(100, ((t - started) / MIN_ANALYSIS_MS) * 100);
       setProgress(p);
       if (p < 100) raf = requestAnimationFrame(tick);
     };
@@ -391,38 +460,26 @@ function Analysing({
   const failed = typeof result === 'object';
 
   return (
-    <section
-      className="mx-auto flex max-w-2xl flex-col items-center text-center"
-      aria-live="polite"
-      aria-busy={!failed}
-    >
-      <div className="relative">
-        <ProgressRing
-          value={progress}
-          size={232}
-          stroke={6}
-          tone="dark"
-          label={`Analysis ${Math.round(progress)}% done`}
-        >
-          <div className="relative size-[184px] overflow-hidden rounded-full bg-black ring-1 ring-white/10">
-            {preview ? (
-              // eslint-disable-next-line @next/next/no-img-element -- local blob preview
-              <img src={preview} alt="" className="size-full object-cover opacity-60 grayscale" />
-            ) : (
-              <AngleGuide angle="closeup" className="size-full" />
-            )}
-            <div className={cn('absolute inset-0', styles.grid)} aria-hidden />
-            <span className={styles.scanLine} aria-hidden />
-          </div>
-        </ProgressRing>
-      </div>
+    <section className="mx-auto flex max-w-2xl flex-col items-center text-center" aria-live="polite" aria-busy={!failed}>
+      <ProgressRing value={progress} size={232} stroke={6} tone="dark" label={`Analysis ${Math.round(progress)}% done`}>
+        <div className="relative size-[184px] overflow-hidden rounded-full bg-black ring-1 ring-white/10">
+          {preview ? (
+            // eslint-disable-next-line @next/next/no-img-element -- local blob preview
+            <img src={preview} alt="" className="size-full object-cover opacity-60 grayscale" />
+          ) : (
+            <AngleGuide angle="closeup" className="size-full" />
+          )}
+          <div className={cn('absolute inset-0', styles.grid)} aria-hidden />
+          <span className={styles.scanLine} aria-hidden />
+        </div>
+      </ProgressRing>
       <p className="price mt-6 text-sm text-platinum">{Math.round(progress)}%</p>
       <h1
         ref={headingRef}
         tabIndex={-1}
         className="mt-2 font-display text-[30px] leading-[1.1] font-medium text-balance text-on-dark outline-none md:text-[40px]"
       >
-        Checking your scalp &amp; hair roots
+        Checking your scalp &amp; hair
       </h1>
       <ol className="mt-6 w-full max-w-sm space-y-2.5 text-left">
         {STAGES.map((s, i) => {
@@ -433,11 +490,7 @@ function Analysing({
               <span
                 className={cn(
                   'flex size-6 shrink-0 items-center justify-center rounded-full ring-1',
-                  done
-                    ? 'bg-platinum text-obsidian ring-platinum'
-                    : active
-                      ? 'ring-white/60'
-                      : 'ring-white/15',
+                  done ? 'bg-platinum text-obsidian ring-platinum' : active ? 'ring-white/60' : 'ring-white/15',
                 )}
               >
                 {done ? (
@@ -457,14 +510,11 @@ function Analysing({
       {progress >= 100 && result === 'pending' ? (
         <p className="mt-5 flex items-center gap-2 text-sm text-on-dark-muted">
           <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
-          Getting your report ready…
+          Getting your result ready…
         </p>
       ) : null}
       {failed ? (
-        <div
-          role="alert"
-          className="mt-6 w-full max-w-sm rounded-2xl bg-white/5 p-4 text-left ring-1 ring-white/15"
-        >
+        <div role="alert" className="mt-6 w-full max-w-sm rounded-2xl bg-white/5 p-4 text-left ring-1 ring-white/15">
           <p className="flex items-center gap-2 text-sm font-medium text-on-dark">
             <AlertCircle className="size-4" aria-hidden />
             {result.error}
@@ -486,12 +536,12 @@ function Analysing({
               onClick={onBack}
               className="inline-flex h-11 items-center rounded-xl px-4 text-sm text-on-dark ring-1 ring-white/25"
             >
-              Back to capture
+              Back to photos
             </button>
           </div>
         </div>
       ) : null}
-      <p className="mt-8 text-[13px] text-on-dark-muted">Demo report — your doctor makes the final call.</p>
+      <p className="mt-8 text-[13px] text-on-dark-muted">A photo check, not a medical diagnosis.</p>
     </section>
   );
 }

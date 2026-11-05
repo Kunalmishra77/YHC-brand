@@ -13,7 +13,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   return brandCard({
     eyebrow: 'Hair concern',
     title: concern?.title ?? 'Hair concerns',
-    subtitle: concern?.summary ?? 'What each can mean, and how a consultation helps.',
+    subtitle: concern?.summary ?? 'What each can mean, and how a free scalp scan helps.',
     backdrop: 'hairMacro',
   });
 }

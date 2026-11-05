@@ -37,7 +37,7 @@ const ART: Record<CaptureZone, ZoneArt> = {
     dots: { left: [17, 14], top: [21, 15] },
   },
   forehead_centre: {
-    why: 'The doctor needs your front hairline. You can’t skip this one.',
+    why: 'Your front hairline matters most. You can’t skip this one.',
     image: MEDIA.hairMacroWide,
     zoom: 1.05,
     dots: { left: [13, 19], top: [30, 11], right: [47, 19] },
@@ -55,7 +55,7 @@ const ART: Record<CaptureZone, ZoneArt> = {
     dots: { left: [30, 6], top: [30, 27], right: [30, 6] },
   },
   crown: {
-    why: 'Hard to see in a mirror. The doctor needs it, so you can’t skip it.',
+    why: 'Hard to see in a mirror, and it matters, so you can’t skip it.',
     image: CLINICAL.scalpExam,
     zoom: 1.1,
     dots: { left: [45, 12], top: [30, 45], right: [15, 12] },

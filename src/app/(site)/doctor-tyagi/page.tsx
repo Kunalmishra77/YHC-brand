@@ -21,26 +21,28 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Meet Dr. Tyagi',
   description:
-    'Dr. Tyagi leads every Your Hair Company consultation. See his qualifications, his medical registration and what happens on the video call.',
+    'Meet Dr. Tyagi, the founding dermatologist behind Your Hair Company: his qualifications, his medical registration and his scalp-first approach.',
   path: '/doctor-tyagi',
 });
 
+// 2026-11-05: Dr. Tyagi is not reviewing scans or holding consultations for now, so this page is about
+// the doctor behind YHC and his approach — it promises no call, review or prescription.
 const COVERS = [
   {
-    title: 'Your history',
-    body: 'When it started and how it has changed. Your family, your health, your medicines and anything you have tried.',
+    title: 'Roots first',
+    body: 'Hair grows from living roots. Checking the scalp comes before any product. That is why YHC starts with a scalp scan.',
   },
   {
-    title: 'Your scalp photos',
-    body: 'Your hairline, crown and parting photos from before the call, checked together with what Dr. Tyagi sees on video.',
+    title: 'Plain words',
+    body: 'What may be going on, and what hair care can and cannot do, said simply. No jargon, no hype.',
   },
   {
     title: 'What is realistic',
-    body: 'A clear answer on what may be going on, what treatment can and cannot do, and how we check progress.',
+    body: 'Change is slow and different for everyone. No false promises and no fixed timelines.',
   },
   {
-    title: 'A plan — only if it can help',
-    body: 'If treatment makes sense, you get a prescription and a plan on WhatsApp. Sometimes the best advice is a blood test, a specialist, or just a gentler routine.',
+    title: 'Products with a purpose',
+    body: 'Every ingredient in the YHC range has a job, and every ingredient is listed on the pack.',
   },
 ];
 
@@ -69,10 +71,10 @@ export default function DoctorPage() {
         <DoctorCard doctor={doctor} headingLevel="h1">
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button asChild className="h-12 px-6 text-base whitespace-normal">
-              <Link href="/book">{terms.bookLabel}</Link>
+              <Link href={terms.bookHref}>{terms.bookLabel}</Link>
             </Button>
             <Button asChild variant="outline" className="h-12 border-steel px-6 text-base whitespace-normal">
-              <Link href="/how-it-works">How a consultation works</Link>
+              <Link href="/how-it-works">How it works</Link>
             </Button>
           </div>
         </DoctorCard>
@@ -86,7 +88,7 @@ export default function DoctorPage() {
             <p className="eyebrow">Check for yourself</p>
             <h2 className={`${H2} mt-4`}>Credentials</h2>
             <p className="mt-4 max-w-xs leading-relaxed text-pretty text-body">
-              The same details are on every prescription you get.
+              Check his details for yourself.
             </p>
           </div>
           <dl className="divide-y divide-line border-y border-line">
@@ -99,7 +101,6 @@ export default function DoctorPage() {
                   'Registered with',
                   publicCredential(doctor.registrationNo) ? publicCredential(doctor.council) : null,
                 ],
-                ['Consultations', `${terms.slotMinutes}-minute video call · ${terms.fee}`],
               ] satisfies [string, string | null][]
             )
               .filter((row): row is [string, string] => row[1] !== null)
@@ -117,8 +118,8 @@ export default function DoctorPage() {
       <section className={`container-yhc ${SECTION_Y}`} aria-labelledby="covers-heading">
         <SectionHeader
           id="covers-heading"
-          eyebrow={`${terms.slotMinutes} minutes, one to one`}
-          title="What you talk about"
+          eyebrow="His approach"
+          title="How he thinks about hair"
         />
         <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
           <figure>
@@ -134,7 +135,7 @@ export default function DoctorPage() {
               </Parallax>
             </div>
             <figcaption className="mt-3 text-[13px] text-muted-foreground">
-              Illustrative image. Your own scalp photos are only for your doctor. We never use them in ads.
+              Illustrative image. Your own scalp photos are private. We never use them in ads.
             </figcaption>
           </figure>
           <div className="grid content-start gap-x-10 gap-y-8 sm:grid-cols-2">
@@ -153,19 +154,20 @@ export default function DoctorPage() {
         <div className="rounded-2xl border border-line bg-mist/50 p-6 md:p-8">
           <h2 className="text-lg font-semibold text-ink">Our link with the doctor</h2>
           <p className="mt-2 max-w-3xl text-body">
-            {doctor.name} works with Your Hair Company and prescribes products YHC sells. Your prescription is
-            yours, whether or not you buy from us. You are free to buy the medicines anywhere.
+            {doctor.name} works with Your Hair Company and helped develop the products YHC sells. He is not
+            reviewing individual scans or holding consultations at the moment. After your free scalp scan,
+            our hair-care team calls you back.
           </p>
         </div>
       </section>
 
       <CtaBand
         id="doctor-cta-heading"
-        image={SLOTS.H04}
+        image={SLOTS.H03}
         imagePosition="55% 50%"
-        title={`Talk to ${doctor.name} one to one.`}
+        title="Start with your scalp."
         bookLabel={terms.bookLabel}
-        body="Pick a time that suits you. Share your details and scalp photos first, so the call is all about you."
+        body="Take the free scalp scan with your phone. You see your result straight away, and our hair-care team calls you back."
       />
     </>
   );

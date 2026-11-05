@@ -1,5 +1,5 @@
 /*
- * Patient journey (ADR-26): basic details → 3D scan → assessment → health form → book → consultation.
+ * Patient journey (ADR-26, real v1 ADR-36): basic details → scalp scan → result → the team calls back.
  * Shared, serialisable types — used by the server journey module and the client components.
  */
 
@@ -75,14 +75,15 @@ export interface ScanResult {
 
 export type JourneyStep = 'details' | 'scan' | 'assessment' | 'health_form' | 'book' | 'consultation';
 
-/** The one step list for the journey (stepper, portal tracker, homepage How it works — audit CON-03). */
+/**
+ * The one step list for the journey (stepper, portal tracker, homepage How it works — audit CON-03).
+ * Real journey v1 (ADR-36): details → scalp scan → result; the team then calls. The health form,
+ * booking and consultation steps are hidden until the doctor flow returns ('assessment' = the result).
+ */
 export const JOURNEY_STEPS: readonly { id: JourneyStep; label: string }[] = [
-  { id: 'details', label: 'Details' },
-  { id: 'scan', label: '3D scan' },
-  { id: 'assessment', label: 'Assessment' },
-  { id: 'health_form', label: 'Health form' },
-  { id: 'book', label: 'Book & pay' },
-  { id: 'consultation', label: 'Consultation' },
+  { id: 'details', label: 'Your details' },
+  { id: 'scan', label: 'Scalp scan' },
+  { id: 'assessment', label: 'Your result' },
 ];
 
 /** One row of the "My journey" tracker in the patient portal. */

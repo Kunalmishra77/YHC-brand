@@ -1,275 +1,84 @@
-import { CalendarClock, MessageSquareText, Package } from 'lucide-react';
+import { ArrowRight, PhoneCall, ScanFace } from 'lucide-react';
 import Link from 'next/link';
-import { AppointmentChip } from '@/components/account/chips';
-import { formatDay, formatWhen } from '@/components/account/format';
-import { JourneyProgress } from '@/components/account/journey-progress';
-import { ACCOUNT_LINKS } from '@/components/account/links';
-import { PlanProgress } from '@/components/account/plan-progress';
-import { JoinConsultButton } from '@/components/journey/join-consult-button';
-import { StatusChip, type ChipTone } from '@/components/shared/status-chip';
-import { EmptyState } from '@/components/shared/states';
-import { Button } from '@/components/ui/button';
-import type { CareCheckin } from '@/lib/domain/types';
-import { istDate } from '@/lib/time';
-import { deriveNextStep } from '@/server/account/next-step';
-import {
-  CONCERN_LABEL,
-  activePlan,
-  customerAppointments,
-  customerCheckins,
-  customerPhotos,
-  followUpDueOn,
-  reorderWindowDays,
-} from '@/server/account/queries';
-import { getDoctor } from '@/server/catalog';
-import { getJourneyForCustomer, journeyTracker } from '@/server/journey/store';
-import { getCurrentCustomer } from '@/server/session';
+import { redirect } from 'next/navigation';
+import { OutcomeCard } from '@/components/journey/scan-result';
+import { getSessionUser } from '@/lib/rbac';
+import { getCustomer, listScans } from '@/server/live/scans';
 
 export const dynamic = 'force-dynamic';
 
-// No setting exists for the join window yet; matches the /consult waiting room default.
-const JOIN_WINDOW_MINUTES = 15;
-
-const REPLY: Record<NonNullable<CareCheckin['reply']>, { tone: ChipTone; words: string }> = {
-  going_well: { tone: 'success', words: 'Going well' },
-  have_questions: { tone: 'info', words: 'Had a question' },
-  side_effect: { tone: 'warning', words: 'Reported a side effect' },
-};
-
-export default async function AccountOverviewPage() {
-  const customer = await getCurrentCustomer();
-  if (!customer) return null;
-  const now = new Date();
-  const { upcoming, past } = customerAppointments(customer.id, now);
-  const plan = activePlan(customer.id, now);
-  const checkins = customerCheckins(customer.id).filter((c) => new Date(c.sentAt) <= now);
-  const doctor = getDoctor();
-
-  const step = deriveNextStep({
-    now,
-    today: istDate(now),
-    upcoming: upcoming.map((a) => ({
-      id: a.id,
-      startsAt: a.startsAt,
-      endsAt: a.endsAt,
-      intakeDone: a.intakeDone,
-      whenLabel: formatWhen(a.startsAt),
-    })),
-    plan: plan
-      ? {
-          orderId: plan.order.id,
-          orderCode: plan.order.code,
-          deliveredOn: plan.deliveredOn,
-          planEndOn: plan.planEndOn,
-        }
-      : null,
-    hasNewerPlanOrder: plan?.hasNewerPlanOrder ?? false,
-    photoDates: customerPhotos(customer.id).map((p) => p.takenOn),
-    followUpDueOn: followUpDueOn(customer.id, now),
-    hasAnyConsult: past.some((a) => a.status === 'completed') || upcoming.length > 0,
-    joinWindowMinutes: JOIN_WINDOW_MINUTES,
-    reorderWindowDays: reorderWindowDays(),
-    readableDate: (d) => formatDay(d, 'EEE d MMM'),
-    links: {
-      intake: ACCOUNT_LINKS.intake,
-      join: ACCOUNT_LINKS.join,
-      photos: ACCOUNT_LINKS.photos,
-      order: ACCOUNT_LINKS.order,
-      book: bookHref(followUpDueOn(customer.id, now)),
-    },
-  });
-
-  const next = upcoming[0];
-  const journey = getJourneyForCustomer(customer.id);
-  const journeySteps = journey ? journeyTracker(journey, now) : null;
+/** /account — overview (ADR-36): latest result, what happens next, contact details. */
+export default async function AccountOverview() {
+  const user = await getSessionUser();
+  if (user?.role !== 'customer' || !user.customerId) redirect('/start');
+  const [customer, scans] = await Promise.all([getCustomer(user.customerId), listScans(user.customerId)]);
+  if (!customer) redirect('/start');
+  const latest = scans.find((s) => s.status === 'submitted');
+  const open = scans.find((s) => s.status === 'in_progress');
+  const phone = customer.phone.replace(/^\+91/, '+91 ');
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-8">
-      <div className="space-y-6">
-        {/* Next step — the one thing to do now */}
-        <section
-          aria-labelledby="next-step"
-          className="bg-hero-dark relative overflow-hidden rounded-3xl p-6 text-on-dark shadow-raised md:p-8"
-        >
-          <p className="text-[13px] font-semibold tracking-[0.12em] text-brand-on-dark uppercase">
-            Next step
-          </p>
-          <h2 id="next-step" className="display mt-3 text-[28px] text-balance text-on-dark md:text-[34px]">
-            {step.title}
-          </h2>
-          <p className="mt-3 max-w-prose text-on-dark-muted">{step.body}</p>
-          {step.cta ? (
-            <Button
-              asChild
-              className="bg-silver mt-6 h-12 w-full px-6 text-obsidian hover:opacity-95 sm:w-auto"
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <div className="min-w-0">
+        {latest?.outcome ? (
+          <>
+            <OutcomeCard outcome={latest.outcome} reasons={latest.reasons} phone={phone} />
+            <Link
+              href="/account/scan"
+              className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-ink underline underline-offset-4"
             >
-              <Link href={step.cta.href}>{step.cta.label}</Link>
-            </Button>
-          ) : null}
-        </section>
-
-        {/* My journey (ADR-26) */}
-        {journeySteps ? <JourneyProgress steps={journeySteps} /> : null}
-
-        {/* Current plan */}
-        <section
-          aria-labelledby="plan-heading"
-          className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="eyebrow">Your plan</p>
-              <h2 id="plan-heading" className="mt-1.5 text-lg font-semibold text-ink">
-                {plan ? plan.plan.name : 'No active plan'}
-              </h2>
-            </div>
-            <Package className="mt-1 size-5 text-steel" aria-hidden />
-          </div>
-          {plan ? (
-            <>
-              <PlanProgress day={plan.progress.day} total={plan.progress.total} className="mt-5" />
-              <dl className="mt-5 grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <dt className="text-muted-foreground">Started</dt>
-                  <dd className="mt-0.5 font-medium text-ink">{formatDay(plan.deliveredOn)}</dd>
-                </div>
-                <div>
-                  <dt className="text-muted-foreground">Plan ends</dt>
-                  <dd className="mt-0.5 font-medium text-ink">{formatDay(plan.planEndOn)}</dd>
-                </div>
-              </dl>
-              <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-sm">
-                <Link
-                  href={ACCOUNT_LINKS.order(plan.order.code)}
-                  className="font-medium text-brand underline-offset-4 hover:underline"
-                >
-                  Order {plan.order.code}
-                </Link>
-                <Link
-                  href="/account/progress"
-                  className="font-medium text-brand underline-offset-4 hover:underline"
-                >
-                  Progress photos
-                </Link>
-              </div>
-            </>
-          ) : (
-            <p className="mt-3 text-sm text-body">
-              Your plan appears here once Dr. Tyagi has recommended one and it has been delivered.
+              See your photos area by area
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          </>
+        ) : (
+          <section className="rounded-[28px] bg-white p-6 ring-1 ring-line sm:p-8">
+            <ScanFace className="size-8 text-steel" aria-hidden />
+            <h2 className="mt-4 font-display text-[28px] leading-tight font-medium text-ink">
+              {open ? 'Finish your scalp scan' : 'Take your free scalp scan'}
+            </h2>
+            <p className="mt-2 max-w-xl text-body">
+              It takes a few minutes with your phone camera. You see your result straight away.
             </p>
-          )}
-        </section>
+            <Link
+              href="/start/scan"
+              className="mt-6 inline-flex h-12 items-center gap-2 rounded-xl bg-obsidian px-6 text-[15px] font-semibold text-pearl hover:opacity-95"
+            >
+              {open ? 'Continue my scan' : 'Start my scan'}
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          </section>
+        )}
       </div>
 
-      <div className="space-y-6">
-        {/* Upcoming consultation */}
-        <section
-          aria-labelledby="upcoming-heading"
-          className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
-        >
-          <div className="flex items-center gap-2">
-            <CalendarClock className="size-4 text-steel" aria-hidden />
-            <h2 id="upcoming-heading" className="text-base font-semibold text-ink">
-              Upcoming consultation
-            </h2>
-          </div>
-          {next ? (
-            <div className="mt-4">
-              <p className="price text-lg text-ink">{formatWhen(next.startsAt)}</p>
-              <p className="mt-1 text-sm text-body">
-                {next.kind === 'follow_up' ? 'Follow-up' : 'First consultation'} with {doctor.name} ·{' '}
-                {CONCERN_LABEL[next.concern]}
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <AppointmentChip status={next.status} />
-                <StatusChip tone={next.intakeDone ? 'success' : 'warning'}>
-                  {next.intakeDone ? 'Hair profile done' : 'Hair profile pending'}
-                </StatusChip>
-              </div>
-              <JoinConsultButton
-                className="mt-5"
-                href={ACCOUNT_LINKS.join(next.id)}
-                startsAt={next.startsAt}
-                endsAt={next.endsAt}
-                windowMinutes={JOIN_WINDOW_MINUTES}
-                initialOpen={
-                  now.getTime() >= Date.parse(next.startsAt) - JOIN_WINDOW_MINUTES * 60_000 &&
-                  now.getTime() < Date.parse(next.endsAt)
-                }
-              />
-              <Link
-                href="/account/consultations"
-                className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-brand underline-offset-4 hover:underline"
-              >
-                Manage consultation
-              </Link>
+      <aside className="space-y-4">
+        <section className="rounded-2xl bg-white p-5 ring-1 ring-line">
+          <h2 className="font-semibold text-ink">Your details</h2>
+          <dl className="mt-3 space-y-2 text-sm">
+            <div>
+              <dt className="text-muted-foreground">Name</dt>
+              <dd className="text-ink">{customer.name}</dd>
             </div>
-          ) : (
-            <p className="mt-3 text-sm text-body">
-              Nothing booked.{' '}
-              {past.length
-                ? 'Your past consultations and prescriptions are in '
-                : 'Book when you are ready — '}
-              <Link
-                href={past.length ? '/account/consultations' : ACCOUNT_LINKS.book}
-                className="font-medium text-brand underline-offset-4 hover:underline"
-              >
-                {past.length ? 'Consultations' : 'pick a time'}
-              </Link>
-              .
-            </p>
-          )}
-        </section>
-
-        {/* Check-ins */}
-        <section
-          aria-labelledby="checkins-heading"
-          className="rounded-2xl bg-card p-5 shadow-card ring-1 ring-line/80 md:p-6"
-        >
-          <div className="flex items-center gap-2">
-            <MessageSquareText className="size-4 text-steel" aria-hidden />
-            <h2 id="checkins-heading" className="text-base font-semibold text-ink">
-              Your weekly check-ins
-            </h2>
-          </div>
-          {checkins.length === 0 ? (
-            <EmptyState
-              className="mt-4 py-6"
-              title="No check-ins yet"
-              body="Once your plan is delivered, we check in on WhatsApp each week. Your replies show here."
-            />
-          ) : (
-            <ol className="mt-4 divide-y divide-line">
-              {checkins.slice(0, 4).map((c) => (
-                <li key={c.id} className="py-3 first:pt-0 last:pb-0">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-ink">
-                      Week {c.week} ·{' '}
-                      <span className="font-normal text-muted-foreground">
-                        {formatWhen(c.sentAt, 'd MMM')}
-                      </span>
-                    </p>
-                    {c.reply ? (
-                      <StatusChip tone={REPLY[c.reply].tone}>{REPLY[c.reply].words}</StatusChip>
-                    ) : (
-                      <StatusChip tone="neutral">No reply yet</StatusChip>
-                    )}
-                  </div>
-                  {c.replyText ? <p className="mt-1.5 text-sm text-body">“{c.replyText}”</p> : null}
-                </li>
-              ))}
-            </ol>
-          )}
-          <p className="mt-4 text-[13px] text-muted-foreground">
-            Replying to check-ins helps Dr. Tyagi adjust your routine
-            {checkins.some((c) => !c.reply) ? ' — you can still reply to the open one on WhatsApp.' : '.'}
+            <div>
+              <dt className="text-muted-foreground">Mobile</dt>
+              <dd className="price text-ink">{phone}</dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">Email</dt>
+              <dd className="break-all text-ink">{customer.email ?? '—'}</dd>
+            </div>
+          </dl>
+          <p className="mt-3 text-[13px] text-muted-foreground">
+            Need to change something? Email care@yourhaircompany.com.
           </p>
         </section>
-      </div>
+        <section className="rounded-2xl bg-mist p-5">
+          <PhoneCall className="size-5 text-ink" aria-hidden />
+          <p className="mt-2 text-sm leading-relaxed text-ink">
+            Our hair-care team calls you after your scan, during working hours. The scan and the call are free.
+          </p>
+        </section>
+      </aside>
     </div>
   );
-}
-
-function bookHref(followUp: string | null) {
-  return followUp ? ACCOUNT_LINKS.bookFollowUp : ACCOUNT_LINKS.book;
 }

@@ -1,6 +1,6 @@
-import { BadgeCheck, ShieldCheck, Stethoscope } from 'lucide-react';
+import { ScanFace, ShieldCheck, Stethoscope } from 'lucide-react';
 import { illustrativeNote } from '@/components/site/slot-note';
-import { CLAIMS, doctorClaimLabel, verifiedPatent } from '@/lib/claims';
+import { CLAIMS, verifiedPatent } from '@/lib/claims';
 import { publicCredential } from '@/lib/credentials';
 import { SLOTS } from '@/lib/slots';
 import { HeroCinema } from './hero/hero-cinema';
@@ -24,11 +24,11 @@ export function HomeHero({
 }) {
   const trust = (
     <ul className="flex flex-wrap gap-2" aria-label="Why people trust us">
-      <TrustChip icon={<Stethoscope className="size-4" aria-hidden />}>{doctorClaimLabel()}</TrustChip>
-      <TrustChip icon={<BadgeCheck className="size-4" aria-hidden />}>
+      <TrustChip icon={<ScanFace className="size-4" aria-hidden />}>Free scalp scan · result in minutes</TrustChip>
+      <TrustChip icon={<Stethoscope className="size-4" aria-hidden />}>
         {publicCredential(registrationNo)
-          ? `${doctorName} · Reg. No. ${registrationNo}`
-          : `Video call with ${doctorName}`}
+          ? `Developed with ${doctorName} · Reg. No. ${registrationNo}`
+          : 'Developed with a dermatologist'}
       </TrustChip>
       {guaranteeOn ? (
         <TrustChip icon={<ShieldCheck className="size-4" aria-hidden />}>

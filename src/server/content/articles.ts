@@ -247,7 +247,7 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'next-step', text: 'The next step' },
       {
         type: 'paragraph',
-        text: 'Not sure if it is hair fall or thinning? Start with the guided 3D scalp scan. Your report tells you, in plain words, if treatment looks suitable, if a doctor should look first, or if treatment is unlikely to help. If you go ahead, Dr. Tyagi checks everything before your video consultation. He suggests treatment only if it can help you.',
+        text: 'Not sure if it is hair fall or thinning? Start with the free, guided scalp scan. Your result tells you straight away, in plain words, if our hair care looks suitable for you or not. It is a quick check, not a diagnosis. Our hair-care team then calls you to talk through your options.',
       },
       ...sourcesBlocks('hair-shedding-vs-hair-loss'),
     ],
@@ -350,7 +350,7 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'next-step', text: 'The next step' },
       {
         type: 'paragraph',
-        text: 'Individual results vary, and no honest doctor can promise a timeline. A scan and consultation can give you a clear picture: what is likely going on, if your roots are still active, and a fair way to measure progress. Start your scan whenever you are ready.',
+        text: 'Individual results vary, and no honest doctor can promise a timeline. A free scalp scan is a good first step: it gives you a first look at your roots and a fair way to measure progress later. Start your scan whenever you are ready.',
       },
       ...sourcesBlocks('hair-growth-cycle-explained'),
     ],
@@ -377,7 +377,7 @@ const ARTICLES: Article[] = [
         type: 'paragraph',
         text: 'Treatment can only help hair roots that are still alive. In scarring hair loss, scar tissue replaces the roots, and a scarred root can never grow hair again. Hair fall, pattern thinning and scarring can look the same in a mirror. So we look closely at your scalp first — the way skin doctors do with a close-up scalp check called trichoscopy — before suggesting anything.',
       },
-      { type: 'heading', id: 'details-and-scan', text: 'Steps 1 and 2: your details and the 3D scan' },
+      { type: 'heading', id: 'details-and-scan', text: 'Steps 1 and 2: your details and the scalp scan' },
       {
         type: 'paragraph',
         text: 'You start with a few details — your name, mobile number and address. Then we guide you, step by step, to photograph your hairline, crown and parting with your phone. Soft daylight, clean, dry, loose hair, and no camera filters make the biggest difference.',
@@ -416,7 +416,7 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'booking', text: 'Step 5: picking a time' },
       {
         type: 'paragraph',
-        text: 'Then you pick a time that suits you and pay the ₹500 consultation fee online. Consultations are for adults aged 18 and over. Your confirmation arrives on WhatsApp, with your booking details and the doctor’s registration number. We also remind you before the call.',
+        text: 'Doctor consultations are not being booked at the moment; for now, our hair-care team calls you back after your free scalp scan. Consultations are for adults aged 18 and over. Your confirmation arrives on WhatsApp, with your booking details and the doctor’s registration number. We also remind you before the call.',
       },
       { type: 'heading', id: 'during-the-call', text: 'Step 6: the consultation' },
       {
@@ -560,7 +560,7 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'next-step', text: 'The next step' },
       {
         type: 'paragraph',
-        text: 'The guided 3D scan uses these same tips and walks you through each angle. Dr. Tyagi checks your scan before your call. Individual results of any treatment vary. Good photos simply make it easier to see what is really happening.',
+        text: 'The free, guided scalp scan uses these same tips and walks you through each angle. Individual results of any treatment vary. Good photos simply make it easier to see what is really happening.',
       },
       ...sourcesBlocks('how-to-take-scalp-photos'),
     ],
@@ -655,7 +655,7 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'next-step', text: 'The next step' },
       {
         type: 'paragraph',
-        text: 'Food is one piece of the picture. The scan and consultation look at all of it — your roots, your health, your diet and any tests — and suggest what is worth doing. Individual results vary.',
+        text: 'Food is one piece of the picture. A doctor can look at all of it — your roots, your health, your diet and any tests — and suggest what is worth doing. The free scalp scan is a simple first step. Individual results vary.',
       },
       ...sourcesBlocks('nutrition-and-hair'),
     ],

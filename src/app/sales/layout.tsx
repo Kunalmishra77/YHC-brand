@@ -1,42 +1,30 @@
-import { ChartColumn, Columns3, HeartHandshake, ListChecks, Users } from 'lucide-react';
+import { Users, UsersRound } from 'lucide-react';
 import { redirect } from 'next/navigation';
-import { LeadSearch } from '@/components/sales/lead-search';
-import { NewLeadDialog } from '@/components/sales/new-lead-dialog';
-import { RealtimeAlerts } from '@/components/sales/realtime-alerts';
+import { MemberPicker } from '@/components/sales-live/member-picker';
 import { PortalShell } from '@/components/shared/portal-shell';
-import type { SessionUser } from '@/lib/rbac';
-import { requireSales } from '@/server/sales/mutations';
-import { latestEventId, openTaskCount } from '@/server/sales/views';
+import { getSessionUser } from '@/lib/rbac';
+import { currentMember, getTeam, leadCounts } from '@/server/live/sales';
 
+/** Sales portal (ADR-36): one shared login for the team; each person picks their name per device. */
 export default async function SalesLayout({ children }: LayoutProps<'/sales'>) {
-  let user: SessionUser;
-  try {
-    user = await requireSales();
-  } catch {
-    redirect('/demo?next=/sales');
-  }
+  const user = await getSessionUser();
+  if (!user || (user.role !== 'sales' && user.role !== 'admin')) redirect('/auth/login?next=/sales');
+  const [team, member, counts] = await Promise.all([getTeam(), currentMember(), leadCounts()]);
 
   const nav = [
-    { href: '/sales', label: 'Pipeline', icon: <Columns3 /> },
-    { href: '/sales/leads', label: 'Leads', icon: <Users /> },
-    { href: '/sales/tasks', label: 'My tasks', icon: <ListChecks />, count: openTaskCount(user.id) },
-    { href: '/sales/care', label: 'Care', icon: <HeartHandshake /> },
-    { href: '/sales/performance', label: 'Performance', icon: <ChartColumn /> },
+    { href: '/sales', label: 'Leads', icon: <Users />, count: counts.newCount },
+    { href: '/sales/team', label: 'Team', icon: <UsersRound /> },
   ];
 
   return (
     <PortalShell
-      portal="Sales CRM"
+      portal="Sales"
       nav={nav}
-      user={{ name: user.name, role: user.role }}
+      user={{ name: member ?? user.name, role: user.role }}
       topbar={
-        <>
-          <LeadSearch />
-          <div className="ml-auto flex items-center gap-2">
-            <RealtimeAlerts initialLastId={latestEventId()} />
-            <NewLeadDialog />
-          </div>
-        </>
+        <div className="ml-auto">
+          <MemberPicker team={team} current={member && team.includes(member) ? member : null} />
+        </div>
       }
     >
       {children}

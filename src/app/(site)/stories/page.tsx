@@ -24,7 +24,7 @@ const INCLUDES = [
   {
     icon: Quote,
     title: 'Their own words',
-    body: 'What they noticed, why they booked and what the plan was like. We only shorten it. We never rewrite it to sound better.',
+    body: 'What they noticed, why they started and what the plan was like. We only shorten it. We never rewrite it to sound better.',
   },
   {
     icon: Clock,
@@ -172,8 +172,8 @@ export default function StoriesPage() {
           <div>
             <ul className="space-y-4 text-lg leading-relaxed text-body">
               {[
-                'Your scalp photos are for your doctor. Using them in a story needs a separate yes, in writing.',
-                'We never share your diagnosis, prescription or consultation notes.',
+                'Your scalp photos are private. Using them in a story needs a separate yes, in writing.',
+                'We never share your health details or scan results.',
                 'A story never shows your phone number, address or anything that could help someone contact you.',
                 'If you change your mind, we take your story off the site.',
               ].map((line) => (
@@ -200,8 +200,8 @@ export default function StoriesPage() {
         imagePosition="50% 30%"
         align="right"
         bookLabel={terms.bookLabel}
-        title="Every story starts with a consultation."
-        body="Tell Dr. Tyagi what you are noticing. If a plan can help, we send it on WhatsApp after the call. You do not have to buy it."
+        title="Every story starts with a free scalp scan."
+        body="See your result straight away. Our hair-care team then calls you to talk through your options. You do not have to buy anything."
       />
     </>
   );

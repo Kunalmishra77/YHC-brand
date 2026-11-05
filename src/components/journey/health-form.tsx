@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { Controller, useForm, type Control, type DefaultValues } from 'react-hook-form';
-import { saveJourneyDetailsAction } from '@/app/(site)/start/actions';
+import { saveJourneyDetailsAction } from '@/app/(site)/start/legacy-actions';
 import { ContinueBar } from '@/components/booking/continue-bar';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';

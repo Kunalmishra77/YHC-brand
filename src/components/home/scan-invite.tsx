@@ -10,7 +10,7 @@ import { ScanExplorer } from './scan-invite/scan-explorer';
 import { ScanPhoto } from './scan-invite/scan-photo';
 
 /**
- * Homepage section 3 · Take your scalp scan — invitation to start the 3D scan (/start), visual first
+ * Homepage section 3 · Take your scalp scan — invitation to start the scalp scan (/start), visual first
  * (docs/20): a real-life photo of someone scanning at a mirror (slot H03) with the tappable phone
  * preview standing in front of it, and a few words beside it. Step copy matches /start. Cinematic pass
  * (ADR-35): the photo drifts with scroll, a scan line sweeps over it and the zones pop in as chips.
@@ -37,7 +37,7 @@ export function ScanInvite() {
       >
         {/* Words: kept short — the picture and the phone tell the story */}
         <Reveal>
-          <p className="eyebrow">Free 3D scalp scan</p>
+          <p className="eyebrow">Free scalp scan</p>
           <h2 id="scan-invite-heading" className="mt-5">
             <span className="display block text-[clamp(3.25rem,2rem+5.5vw,6rem)] leading-[0.9] tracking-[-0.01em]">
               Look closer.
@@ -47,7 +47,7 @@ export function ScanInvite() {
             </span>
           </h2>
           <p className="mt-5 max-w-[40ch] text-lg leading-relaxed text-pretty text-body">
-            You see your result straight away. A doctor makes the final call.
+            You see your result straight away. Then our hair-care team calls you back.
           </p>
 
           <ol className="mt-7 space-y-3">
@@ -64,12 +64,12 @@ export function ScanInvite() {
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
             <Button asChild className="group h-14 w-full rounded-full px-8 text-base sm:w-auto">
               <Link href="/start">
-                Begin my free 3D scan
+                Begin my free scalp scan
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
               </Link>
             </Button>
             <p className="text-center text-[13px] leading-snug text-muted-foreground sm:max-w-[16rem] sm:text-left">
-              A first check, not a diagnosis. The doctor decides.
+              A quick first check, not a diagnosis. No payment needed.
             </p>
           </div>
         </Reveal>

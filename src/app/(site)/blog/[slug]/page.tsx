@@ -233,12 +233,11 @@ export default async function ArticlePage({ params }: PageProps<'/blog/[slug]'>)
 
       <CtaBand
         id="article-cta-heading"
-        image={SLOTS.H04}
+        image={SLOTS.H03}
         imagePosition="55% 50%"
         title="Questions about your own hair?"
-        body={`On a one-to-one video call, ${doctor.name} looks at your health details and scalp photos and tells you what is likely going on. You do not have to buy anything after.`}
-        primary={{ href: '/book', label: 'Book a consultation' }}
-        secondary={{ href: '/start', label: 'Begin my free 3D scan' }}
+        body="Take the free scalp scan with your phone. You see your result straight away, and our hair-care team calls you back. You do not have to buy anything."
+        primary={{ href: '/start', label: 'Begin my free scalp scan' }}
       />
 
       {related.length > 0 ? (

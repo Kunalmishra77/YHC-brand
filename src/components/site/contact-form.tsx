@@ -26,7 +26,7 @@ type Field = keyof z.infer<typeof schema>;
 
 /**
  * Demo contact form: validates on the client and shows a confirmation. Nothing is sent.
- * Asks people not to share medical details here — those belong in the consultation.
+ * Asks people not to share medical details here.
  */
 export function ContactForm() {
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
@@ -131,8 +131,8 @@ export function ContactForm() {
         <FieldError id="contact-message-error" message={errors.message} />
       </div>
       <p id="contact-note" className="text-sm text-muted-foreground">
-        Please don&apos;t include medical details or photos here — share those privately with Dr. Tyagi when
-        you book.
+        Please don&apos;t include medical details or photos here. For your scalp, take the free scalp scan
+        instead.
       </p>
       <Button type="submit" className="h-12 w-full px-8 text-base sm:w-auto">
         Send message

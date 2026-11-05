@@ -1,41 +1,38 @@
 import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getConsultTerms } from '@/components/site/consult-fee';
 import { guaranteeConditions, refundLine } from '@/components/site/guarantee-panel';
 import { SECTION_Y } from '@/components/site/section';
 import { illustrativeNote } from '@/components/site/slot-note';
 import { t } from '@/i18n/en';
-import { doctorClaimLabel } from '@/lib/claims';
 import { SLOTS } from '@/lib/slots';
-import { getDoctor, getGuarantee } from '@/server/catalog';
+import { getGuarantee } from '@/server/catalog';
 import { TreatmentIndex, type TreatmentArea } from './doctor-feature/treatment-index';
 import { Tilt } from './fx/tilt';
-import { CountUp, RiseTile, ScanRings } from './why-choose/motion';
+import { RiseTile, ScanRings } from './why-choose/motion';
 
 /**
  * Homepage section 4 · Why choose Your Hair Company — visual first (docs/20): a two-tile photo bento
- * (H04 video consultation · H05 scalp first) with the words laid on the pictures, then a closed
+ * (H03 free scalp scan · H05 scalp first) with the words laid on the pictures, then a closed
  * accordion for the details. On phones the tiles are a swipe rail. Cinematic pass (ADR-35): the tiles
- * tilt gently under a mouse and the photos zoom; the minutes figure scales in but never counts. Every figure is true and
+ * tilt gently under a mouse and the photos zoom; Every figure is true and
  * settings-driven; the guarantee row appears only while a guarantee policy is active.
  */
 export function WhyChoose() {
-  const doctor = getDoctor();
   const guarantee = getGuarantee();
-  const { slotMinutes } = getConsultTerms();
-  const consult = SLOTS.H04;
+  // 2026-11-05: no doctor video call for now — the first tile is the free scalp scan.
+  const consult = SLOTS.H03;
   const scalp = SLOTS.H05;
   const consultNote = illustrativeNote(consult);
 
   const details: TreatmentArea[] = [
     {
-      title: 'Medicine only if you need it',
-      body: 'Your doctor decides if you need treatment. The dose is set for you. No one-size-fits-all kit.',
+      title: 'Only what suits you',
+      body: 'Your scan result shows if our hair care looks suitable for you. If it does not, we tell you. No one-size-fits-all kit.',
     },
     {
       title: 'We stay with you',
-      body: 'Weekly check-ins, progress photos and a follow-up call. Your plan can change, or stop, when needed.',
+      body: 'Regular check-ins and calls from our hair-care team. Your plan can change, or stop, when needed.',
     },
     {
       title: 'Real results, shared with consent',
@@ -58,8 +55,8 @@ export function WhyChoose() {
           ),
         }
       : {
-          title: `${doctorClaimLabel()} care`,
-          body: 'Your doctor picks everything in your plan for your scalp, and explains it before you decide.',
+          title: 'Developed with a dermatologist',
+          body: 'Our products and our scalp-first approach were developed with our founding dermatologist.',
         },
   ];
 
@@ -79,7 +76,7 @@ export function WhyChoose() {
             </h2>
           </div>
           <p className="max-w-[40ch] text-base leading-relaxed text-pretty text-body lg:justify-self-end lg:pb-2">
-            Most brands sell first. We check your scalp first, and treat only if it will help.
+            Most brands sell first. We check your scalp first, and suggest a plan only if it can help.
           </p>
         </RiseTile>
 
@@ -90,7 +87,7 @@ export function WhyChoose() {
           aria-label="Why choose us (swipe for more)"
           className="relative -mx-[var(--yhc-gutter)] mt-8 flex snap-x snap-mandatory scroll-px-[var(--yhc-gutter)] [scrollbar-width:none] gap-4 overflow-x-auto overscroll-x-contain px-[var(--yhc-gutter)] py-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand lg:mx-0 lg:mt-10 lg:grid lg:grid-cols-12 lg:gap-5 lg:overflow-visible lg:px-0 lg:py-0 [&::-webkit-scrollbar]:hidden"
         >
-          {/* H04 · one-to-one video consultation */}
+          {/* H03 · free scalp scan at home */}
           <RiseTile className="w-[86%] shrink-0 snap-start sm:w-[62%] lg:col-span-8 lg:w-auto">
             <Tilt max={4} className="h-full">
               <figure className="group relative isolate aspect-square overflow-hidden rounded-[28px] bg-obsidian text-on-dark sm:aspect-[4/3] lg:aspect-auto lg:h-[28rem]">
@@ -112,19 +109,18 @@ export function WhyChoose() {
                 ) : null}
                 <figcaption className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:max-w-[28rem] lg:p-10">
                   <p className="flex items-end gap-3 leading-none">
-                    <CountUp
-                      value={slotMinutes}
-                      className="font-display text-[clamp(4rem,3rem+3vw,5.75rem)] font-medium text-on-dark"
-                    />
+                    <span className="font-display text-[clamp(4rem,3rem+3vw,5.75rem)] font-medium text-on-dark">
+                      Free
+                    </span>
                     <span className="pb-2 font-display text-[clamp(1.5rem,1.3rem+0.8vw,2rem)] text-on-dark-muted">
-                      minutes
+                      scalp scan
                     </span>
                   </p>
                   <h3 className="mt-3 font-display text-[clamp(1.5rem,1.3rem+0.8vw,2rem)] leading-tight font-medium text-on-dark">
-                    On video with {doctor.name}.
+                    Taken at home, with your phone.
                   </h3>
                   <p className="mt-2 text-base leading-relaxed text-on-dark-muted">
-                    A real doctor. Not a chatbot, not a sales call.
+                    See your result straight away. Then our hair-care team calls you back.
                   </p>
                 </figcaption>
               </figure>

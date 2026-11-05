@@ -7,7 +7,7 @@ export const DEFAULT_OG_IMAGE = {
   url: '/opengraph-image',
   width: 1200,
   height: 630,
-  alt: 'Your Hair Company — doctor-led hair care',
+  alt: 'Your Hair Company — science-first hair care',
 } as const;
 
 /**

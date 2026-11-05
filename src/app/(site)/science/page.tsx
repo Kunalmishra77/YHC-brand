@@ -14,7 +14,6 @@ import { H1, H2, LEDE, riseDelay, SECTION_Y, SectionHeader } from '@/components/
 import { pageMetadata } from '@/components/site/seo';
 import { REGULATORY_LABEL } from '@/components/site/product-meta';
 import { t } from '@/i18n/en';
-import { doctorClaimLabel } from '@/lib/claims';
 import { CLINICAL, VIDEOS } from '@/lib/images';
 import { SLOTS } from '@/lib/slots';
 import { getDoctor, getProducts } from '@/server/catalog';
@@ -22,7 +21,7 @@ import { getDoctor, getProducts } from '@/server/catalog';
 export const metadata: Metadata = pageMetadata({
   title: 'The science',
   description:
-    'How hair grows, why it gets thinner, and what a doctor’s plan tries to do — plus an honest list of what nobody can promise.',
+    'How hair grows, why it gets thinner, and what a hair-care plan tries to do — plus an honest list of what nobody can promise.',
   path: '/science',
   ownImage: true,
 });
@@ -38,7 +37,7 @@ const CAUSES = [
   },
   {
     title: 'Food and health',
-    body: 'Low iron, low vitamin D or thyroid problems can play a part. That is why the doctor asks.',
+    body: 'Low iron, low vitamin D or thyroid problems can play a part. A doctor can check these with simple tests.',
   },
   {
     title: 'Scalp problems',
@@ -50,13 +49,13 @@ const KNOWN = [
   'Hair grows in cycles. A hair root must be alive to grow a new hair.',
   'Thinning has many causes. The right care depends on your cause.',
   'Change is slow. You see it over months, not days.',
-  'Using your plan every day, as your doctor says, matters most.',
+  'Using your plan every day, as the pack says, matters most.',
 ];
 
 const UNKNOWN = [
   'Exactly how you will respond. Individual results vary.',
   'How much hair, if any, will grow back.',
-  'Whether a scan alone can explain your case. That is why a doctor checks it.',
+  'Whether a scan alone can explain your case. It is a first check, not a diagnosis.',
 ];
 
 export default function SciencePage() {
@@ -92,7 +91,7 @@ export default function SciencePage() {
             Know the root. Then treat the hair.
           </h1>
           <p style={riseDelay(200)} className={`${motion.rise} ${LEDE} mt-6 text-on-dark-muted`}>
-            How hair grows, why it gets thinner, and what your doctor’s plan tries to do. We also say what
+            How hair grows, why it gets thinner, and what a hair-care plan tries to do. We also say what
             nobody can promise.
           </p>
           {hero.ready ? null : (
@@ -101,13 +100,13 @@ export default function SciencePage() {
         </div>
       </section>
 
-      {/* Patent + doctor-recommended */}
+      {/* Patent + developed with a dermatologist */}
       <section className="border-b border-line bg-card">
         <div className="container-yhc grid gap-6 py-10 md:grid-cols-2 md:items-center md:gap-12 md:py-12">
           <PatentSlot />
           <p className="max-w-[62ch] leading-relaxed text-pretty text-body">
-            <span className="font-semibold text-ink">{doctorClaimLabel()}.</span> {doctor.name} picks every
-            product in your plan, for you, after your consultation.
+            <span className="font-semibold text-ink">Developed with a dermatologist.</span> Our products and
+            our scalp-first approach were developed with {doctor.name}, our founding dermatologist.
           </p>
         </div>
       </section>
@@ -162,8 +161,8 @@ export default function SciencePage() {
               Different causes need different care
             </h2>
             <p className="mt-5 max-w-[62ch] leading-relaxed text-pretty text-on-dark-muted">
-              Two people can look the same but have different causes. The scan, the health form and the
-              consultation help find yours. This is general information, not a diagnosis.
+              Two people can look the same but have different causes. The free scalp scan is a first check.
+              This is general information, not a diagnosis.
             </p>
             <dl className="mt-10 grid gap-px overflow-hidden rounded-2xl bg-line-dark sm:grid-cols-2">
               {CAUSES.map((c, i) => (
@@ -183,7 +182,7 @@ export default function SciencePage() {
           id="formulation-heading"
           eyebrow="What is inside"
           title="Every ingredient has a job"
-          lede="What each product contains and why. Your doctor sets the strength and the mix."
+          lede="What each product contains and why. Every ingredient is listed."
         />
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
           {products.map((p, i) => (
@@ -194,7 +193,7 @@ export default function SciencePage() {
             >
               <p className="text-[12px] font-medium text-muted-foreground">
                 {REGULATORY_LABEL[p.regulatoryCategory]} ·{' '}
-                {p.requiresConsultation ? 'Your doctor decides if you need it' : 'You can buy it directly'}
+                {p.requiresConsultation ? 'Needs a doctor’s prescription' : 'No prescription needed'}
               </p>
               <h3 className="mt-2 text-lg font-semibold text-ink">
                 <Link
@@ -259,8 +258,8 @@ export default function SciencePage() {
         imagePosition="0% 50%"
         align="right"
         title="See what is happening at your roots."
-        body="Start with a free 3D scan. A doctor checks it before anything is prescribed."
-        primary={{ href: '/start', label: 'Begin my free 3D scan' }}
+        body="Start with a free scalp scan. You see your result straight away, then our hair-care team calls you back."
+        primary={{ href: '/start', label: 'Begin my free scalp scan' }}
         secondary={{ href: '/doctor-tyagi', label: `Meet ${doctor.name}` }}
       />
     </>
