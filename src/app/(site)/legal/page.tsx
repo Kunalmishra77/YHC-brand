@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { formatContentDate } from '@/components/site/article/content-blocks';
 import { pageMetadata } from '@/components/site/seo';
 import { LEGAL_PAGES, SITE } from '@/lib/site';
+import { getGuarantee } from '@/server/catalog';
 import { getLegalSummary, isLegalSlug, LEGAL_ENTITY } from '@/server/content/legal';
 
 export const metadata: Metadata = pageMetadata({
@@ -13,7 +14,10 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default function LegalIndexPage() {
+  // Guarantee terms are listed only while a guarantee is offered (ADR-38).
+  const guaranteeOn = getGuarantee() !== null;
   const docs = LEGAL_PAGES.map((p) => p.slug)
+    .filter((slug) => guaranteeOn || slug !== 'guarantee')
     .filter(isLegalSlug)
     .map((slug) => getLegalSummary(slug));
 

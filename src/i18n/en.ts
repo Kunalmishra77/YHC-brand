@@ -54,7 +54,7 @@ export const en = {
   },
   legal: {
     disclaimer:
-      'Information on this site is for general education and is not a substitute for medical advice. Treatment is prescribed only after a consultation. Individual results vary.',
+      'Information on this site is for general education and is not a substitute for medical advice. The scalp scan is a photo check, not a diagnosis. Individual results vary.',
     grievance: 'Grievance officer',
   },
   status: {

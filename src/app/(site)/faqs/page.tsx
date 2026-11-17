@@ -19,7 +19,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'FAQs',
   description:
-    'Simple answers about the free scalp scan, your result, plans, delivery and the money-back guarantee conditions at Your Hair Company.',
+    'Simple answers about the free scalp scan, your result, the call with our team, plans, delivery and privacy at Your Hair Company.',
   path: '/faqs',
 });
 

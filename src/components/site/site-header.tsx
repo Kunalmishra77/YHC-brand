@@ -13,14 +13,16 @@ const HDR_LINK =
   'text-body transition-colors hover:text-ink group-data-[dark=true]/hdr:text-on-dark-muted group-data-[dark=true]/hdr:hover:text-on-dark';
 const HDR_LINK_ACTIVE = 'text-ink group-data-[dark=true]/hdr:text-on-dark';
 
-export function SiteHeader() {
+/** `guaranteeOn` false: the Guarantee link is left out (everything guarantee-related is hidden). */
+export function SiteHeader({ guaranteeOn }: { guaranteeOn: boolean }) {
+  const nav = SITE_NAV.filter((item) => guaranteeOn || item.href !== '/guarantee');
   return (
     <HeaderFrame>
       <div className="container-yhc flex h-16 items-center justify-between gap-4">
         <Logo adaptive priority />
 
         <nav aria-label="Main" className="hidden h-full items-stretch gap-5 lg:flex xl:gap-7">
-          {SITE_NAV.map((item) => (
+          {nav.map((item) => (
             <SiteNavLink
               key={item.href}
               href={item.href}
@@ -95,7 +97,7 @@ export function SiteHeader() {
               <nav aria-label="Mobile" className="flex-1 overflow-y-auto px-[var(--yhc-gutter)] py-2">
                 <ul>
                   {[
-                    ...SITE_NAV.map((item) => ({ href: item.href, label: t(item.key) })),
+                    ...nav.map((item) => ({ href: item.href, label: t(item.key) })),
                     { href: '/account', label: t('nav.account') },
                   ].map((item) => (
                     <li key={item.href}>

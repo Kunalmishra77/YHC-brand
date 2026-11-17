@@ -1,7 +1,7 @@
 import { ShieldCheck } from 'lucide-react';
 import { Logo } from '@/components/shared/logo';
 import { SiteFooter } from '@/components/site/site-footer';
-import { getDoctor } from '@/server/catalog';
+import { getDoctor, getGuarantee } from '@/server/catalog';
 
 /** Focused layout for plan links (ADR-14): no shop navigation, just the plan and the footer disclosures. */
 export default function PlanLinkLayout({ children }: LayoutProps<'/r'>) {
@@ -19,7 +19,7 @@ export default function PlanLinkLayout({ children }: LayoutProps<'/r'>) {
       <main id="main" className="flex-1">
         {children}
       </main>
-      <SiteFooter doctor={getDoctor()} />
+      <SiteFooter doctor={getDoctor()} guaranteeOn={getGuarantee() !== null} />
     </>
   );
 }

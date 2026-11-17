@@ -42,7 +42,10 @@ const LINK =
  * grievance officer pages are linked under Legal — ADR-30); then the bottom bar with the credit line and key policies,
  * and a giant gradient "YHC." wordmark across the bottom (ADR-35).
  */
-export function SiteFooter({ doctor }: { doctor: Doctor }) {
+export function SiteFooter({ doctor, guaranteeOn }: { doctor: Doctor; guaranteeOn: boolean }) {
+  // Everything guarantee-related is hidden while guarantee.enabled = false.
+  const explore = EXPLORE.filter((l) => guaranteeOn || l.href !== '/guarantee');
+  const legal = LEGAL.filter((l) => guaranteeOn || l.href !== '/legal/guarantee');
   const primaryPolicies = LEGAL_PAGES.filter((p) => p.primary);
   return (
     <footer className="mt-auto bg-obsidian pb-[calc(6rem+env(safe-area-inset-bottom))] text-on-dark-muted md:pb-0">
@@ -86,11 +89,11 @@ export function SiteFooter({ doctor }: { doctor: Doctor }) {
           </ul>
         </div>
 
-        <FooterColumn title="Explore" links={EXPLORE} />
+        <FooterColumn title="Explore" links={explore} />
         <FooterColumn title="Patients" links={PATIENTS} />
         <FooterColumn
           title="Legal"
-          links={LEGAL}
+          links={legal}
           className="col-span-2 md:col-span-1"
           listClassName="grid grid-cols-2 gap-x-6 md:grid-cols-1"
         />

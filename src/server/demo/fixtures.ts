@@ -535,8 +535,20 @@ export const SETTINGS: Setting[] = [
     description: 'No scheduled non-urgent messages in this IST window',
   },
   {
+    // Public pages read these defaults (not the settings table). Off until the guarantee terms are
+    // approved and the follow-up consultation they require can be booked again (ADR-38).
     key: 'guarantee.enabled',
-    value: 'true',
-    description: 'Show the guarantee (demo: on, with DRAFT terms; production default off until approved)',
+    value: 'false',
+    description: 'Show the guarantee (off until the terms are approved and consultations are back)',
+  },
+  {
+    key: 'features.doctor_consult',
+    value: 'false',
+    description: 'Doctor consultation, booking and the fee (off until Dr. Tyagi is available — ADR-36)',
+  },
+  {
+    key: 'features.shop',
+    value: 'false',
+    description: 'Cart and checkout on the website (off: orders are taken by the sales team)',
   },
 ];

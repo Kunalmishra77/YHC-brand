@@ -40,15 +40,15 @@ export const LEGAL_SEO_DESCRIPTION: Record<LegalSlug, string> = {
   privacy:
     'What we collect — including your scalp scan and health information — why, who can see it, where it is stored, how long it is kept, and your rights.',
   terms:
-    'The terms for using Your Hair Company: the guided 3D scalp scan, telemedicine consultations with a doctor, prescriptions, orders and payments.',
+    'The terms for using Your Hair Company: the free scalp scan, calls with our hair-care team, orders and payments, and doctor consultations when offered.',
   'refund-cancellation':
-    'Your Hair Company refund policy: rescheduling and cancelling consultations, cancelling orders, returning damaged or wrong items, and how refunds are paid.',
+    'Your Hair Company refund policy: cancelling orders before dispatch, returning damaged, wrong or expired items, and how and when refunds are paid.',
   shipping:
     'Your Hair Company shipping policy: where we deliver, delivery charges, order tracking on WhatsApp and what to do if a parcel is damaged or goes wrong.',
   guarantee:
     'Your Hair Company money-back guarantee terms: the conditions that apply and how a claim is reviewed by a doctor, whenever a guarantee is being offered.',
   'medical-disclaimer':
-    'Medical disclaimer for Your Hair Company: what the information on this site is, and is not, and how telemedicine consultations with a doctor work.',
+    'Medical disclaimer for Your Hair Company: what the information on this site and the scalp scan are, and are not, and how to use hair treatment safely.',
   grievance:
     'Contact the Your Hair Company grievance officer if an issue with a booking, order or consultation has not been resolved, and see how quickly we respond.',
 };

@@ -67,6 +67,15 @@ export type LegalSlug =
   'privacy' | 'terms' | 'refund-cancellation' | 'shipping' | 'guarantee' | 'medical-disclaimer' | 'grievance';
 
 export interface LegalContext {
+  /**
+   * Doctor consultations, booking and online payment are offered (`features.doctor_consult`). Off in the
+   * real journey v1 (ADR-36): the policies then describe what happens today — free scalp scan, a call
+   * back from the hair-care team, orders taken by the team — and the consultation wording returns when
+   * the setting is switched on.
+   */
+  consultations: boolean;
+  /** Cart and online checkout on the website (`features.shop`). Off: orders are taken by the team. */
+  onlineShop: boolean;
   consultFee: string;
   freeRescheduleHours: number;
   creditLine: string | null;
@@ -87,7 +96,7 @@ export interface LegalDocument {
   blocks: ContentBlock[];
 }
 
-const LAST_UPDATED = '2026-10-05';
+const LAST_UPDATED = '2026-11-17';
 
 const h = (id: string, text: string): ContentBlock => ({ type: 'heading', id, text });
 const sub = (text: string): ContentBlock => ({ type: 'subheading', text });
@@ -97,6 +106,10 @@ const ol = (...items: string[]): ContentBlock => ({ type: 'list', items, ordered
 const note = (text: string, title?: string): ContentBlock => ({ type: 'callout', text, title });
 
 function privacy(c: LegalContext): ContentBlock[] {
+  return c.consultations ? privacyWithConsultations(c) : privacyScanJourney(c);
+}
+
+function privacyWithConsultations(c: LegalContext): ContentBlock[] {
   return [
     p(
       'This Privacy Policy explains what personal data Your Hair Company (“YHC”, “we”, “us”) collects when you use our website, scalp scan, assessment, consultations and shop; why we collect it; who we share it with; how long we keep it; and the rights you have. It is written to meet the Digital Personal Data Protection Act, 2023 and the Digital Personal Data Protection Rules, 2025. In the language of that Act, you are the Data Principal and we are the Data Fiduciary.',
@@ -209,7 +222,126 @@ function privacy(c: LegalContext): ContentBlock[] {
     p(
       'If you ask us to erase your data and some of it must be kept by law, we restrict access to those records, keep them only for the legally required period, and then delete them.',
     ),
+    ...privacyRights(c),
+  ];
+}
 
+/** Privacy policy while consultations are off (ADR-36/37): scan, call back, team orders. */
+function privacyScanJourney(c: LegalContext): ContentBlock[] {
+  return [
+    p(
+      'This Privacy Policy explains what personal data Your Hair Company (“YHC”, “we”, “us”) collects when you use our website, take the free scalp scan, speak with our hair-care team or order products; why we collect it; who can see it; how long we keep it; and the rights you have. It is written to meet the Digital Personal Data Protection Act, 2023 and the Digital Personal Data Protection Rules, 2025. In the language of that Act, you are the Data Principal and we are the Data Fiduciary.',
+    ),
+    note(
+      'We use your data to run your scalp scan, call you back about it and handle any order you place. We never sell it. Your scan photos and answers are seen only by you and — if you agree on the scan page — by our hair-care team, so they can advise you on your call. They are never used in marketing.',
+      'In short',
+    ),
+
+    h('who-we-are', 'Who we are'),
+    p(entityDetails(c.supportEmail)),
+    p(
+      `We offer a free guided scalp scan, a call back from our hair-care team to talk through your options, and hair-care products. Doctor consultations are not offered at the moment; if they start again, we will update this policy first. For the purposes of this policy, ${operatorName()} is the Data Fiduciary responsible for your personal data.`,
+    ),
+
+    h('what-we-collect', 'What we collect'),
+    sub('Information you give us'),
+    ul(
+      'Identity and contact details: your name, mobile number, email address and age.',
+      'Scan answers and photos: your answers to the short questions in the scan, and the photos of your scalp you take during it. We treat these as health information.',
+      'Delivery details, if you order: your address, PIN code and any delivery instructions.',
+      'What you tell us: what you say to our team on calls, on WhatsApp, by email or through the contact form.',
+    ),
+    sub('Information created while you use YHC'),
+    ul(
+      'Scan result: the photo check made from your photos — whether hair roots still look visible, the main areas look bare, or we need a closer look — with the reasons and a note for each area.',
+      'Call records: notes our team makes about your calls, what you asked about and when to call you back.',
+      'Order records: what you ordered, amounts, invoices and delivery status.',
+      'Consent records: which notices you agreed to, the version and when.',
+    ),
+    sub('Information collected automatically'),
+    ul(
+      'Device and usage data: browser and device type, pages visited, referring links and approximate location derived from your IP address, collected through cookies and similar tools (see “Cookies”).',
+    ),
+
+    h('why-we-use-it', 'Why we use it'),
+    p(
+      'We use personal data only for the purposes we tell you about when we collect it, and only as much as each purpose needs:',
+    ),
+    ul(
+      'To sign you in with a one-time code sent to your email address.',
+      'To run the scalp scan and show you your result.',
+      'To call you, or message you on WhatsApp, about your scan — as you asked when you signed up.',
+      'To take and deliver orders, issue GST invoices and handle refunds.',
+      'To send offers and marketing messages, only if you have separately agreed to them.',
+      'To answer your questions and resolve complaints.',
+      'To keep the service working and safe, prevent fraud and misuse, and meet our legal obligations.',
+    ),
+
+    h('scan-and-assessment', 'The scalp scan'),
+    ul(
+      'The scan guides your phone camera to take photos of your scalp from several angles. Your phone checks each photo for light and focus and estimates how much hair it shows; the photos and the result are then saved in private storage.',
+      'The result is a photo check, not a medical diagnosis. It does not find the cause of hair loss, and it is not a prescription.',
+      'Scan photos are used only to show you your result and to help our team advise you. They are not used in marketing, and are not used to train or improve any software unless you give separate, specific consent.',
+    ),
+
+    h('consent', 'Consent, and changing your mind'),
+    p(
+      'We ask for your consent in clear, separate steps: when you sign up (this Privacy Policy and a call or WhatsApp about your scan) and when you start the scan (saving your photos and letting our hair-care team see them). Each request explains what the data is used for. We keep a record of what you agreed to and when.',
+    ),
+    p(
+      `You can withdraw any consent at any time, as easily as you gave it: tell our team on a call, reply STOP to a marketing message, or write to ${c.grievanceEmail}. Once you withdraw, we stop that processing within a reasonable time. Withdrawal does not affect processing that already took place, and some records must still be kept by law (see “How long we keep data”).`,
+    ),
+    p(
+      'In a few limited cases the law allows us to process data without asking for consent, for example to respond to a medical emergency or to comply with a legal obligation or court order.',
+    ),
+
+    h('clinical-data', 'Who can see your scan'),
+    ul(
+      'You can always see your own scans, photos and results in your account.',
+      'If you agreed on the scan page, our hair-care team can see the photos and answers of that scan, so they can talk it through with you on the call. Scans you took before agreeing stay visible only to you; the team sees just the result.',
+      'Every time a team member opens a scan, the access is recorded.',
+      'Scan details are never written into WhatsApp messages, email subject lines, calendar invitations or system logs.',
+      'Your photos are never used in advertising or published stories unless you give separate written consent, which you can withdraw at any time.',
+    ),
+
+    h('sharing', 'Who we share data with'),
+    p(
+      'We do not sell or rent personal data. We share it only with service providers (Data Processors) that help us run YHC, and only what each one needs:',
+    ),
+    ul(
+      'Hosting and operations: Vercel (website hosting) and Supabase (sign-in, database and file storage, India region).',
+      'Email: Google (Gmail), to send your sign-in codes and replies to your emails.',
+      'Calls and WhatsApp: our team calls you from their phones and may message you on WhatsApp (run by Meta). Scan details are never written in these messages.',
+      'Delivery, if you order: our courier partners — your name, phone number and address only.',
+      'Payments, if you order: the payment service used for your order. We never see or store your card or bank login details.',
+      'Analytics and advertising measurement: Google Analytics and Meta, only with your cookie consent and never with health information.',
+    ),
+    p(
+      'We may also disclose personal data when the law requires it — for example to a court, regulator or government authority acting lawfully — or to protect someone’s life or safety. If our business is reorganised or transferred, your data may pass to the new operator, who must honour this policy.',
+    ),
+
+    h('where-stored', 'Where your data is stored'),
+    p(
+      'Our database and file storage, including your scan photos and answers, are hosted in India (Mumbai region). Some service providers listed above may process limited data, such as email or message delivery, outside India. Where that happens, we do so only as permitted under the DPDP Act and any restrictions notified by the Government of India.',
+    ),
+
+    h('retention', 'How long we keep data'),
+    ul(
+      'Scan photos, answers and results are kept while you are in touch with us, and deleted within 12 months of your last activity unless you ask us to keep them.',
+      'Invoices, payment and order records are kept for the period required under GST, income tax and company law (currently up to eight years).',
+      'Call notes and other account data are deleted or anonymised once they are no longer needed, or when you ask us to erase them.',
+      'Marketing preferences are kept until you withdraw consent; after that we keep only a record that you opted out, so we do not contact you again.',
+    ),
+    p(
+      'If you ask us to erase your data and some of it must be kept by law, we restrict access to those records, keep them only for the legally required period, and then delete them.',
+    ),
+    ...privacyRights(c),
+  ];
+}
+
+/** Rights, security, children, cookies, changes and contact — the same in both versions. */
+function privacyRights(c: LegalContext): ContentBlock[] {
+  return [
     h('your-rights', 'Your rights'),
     p('Under the DPDP Act you have the right to:'),
     ul(
@@ -229,7 +361,7 @@ function privacy(c: LegalContext): ContentBlock[] {
 
     h('protection', 'How we protect your data'),
     p(
-      'We use reasonable technical and organisational safeguards: encryption in transit and at rest, private file storage shared only through short-lived links, role-based access limited to people who need it, multi-factor sign-in for doctors and administrators, access logging for clinical records, and regular reviews of who has access. No system is entirely free of risk.',
+      'We use reasonable technical and organisational safeguards: encryption in transit and at rest, private file storage that is never public (photos are shown only through our own website, after checking who is asking), role-based access limited to people who need it, access logging for scans and health records, and regular reviews of who has access. No system is entirely free of risk.',
     ),
     p(
       'If a personal data breach affects you, we will tell you without delay — what happened, the likely impact, what we are doing about it and what you can do — and we will report it to the Data Protection Board of India as the law requires.',
@@ -259,10 +391,58 @@ function privacy(c: LegalContext): ContentBlock[] {
   ];
 }
 
+/** Terms sections that differ while consultations are off (ADR-36): scan, call back, team orders. */
+function termsScanJourney(): ContentBlock[] {
+  return [
+    h('the-service', 'What YHC provides'),
+    p(
+      'YHC provides a free guided scalp scan with a photo check, a call back from our hair-care team to talk through your options, and hair-care products that you can order through our team. Doctor consultations and online checkout are not offered at the moment. If they start, these Terms will be updated before they do.',
+    ),
+    sub('The scalp scan'),
+    p(
+      'The scan and its result are a photo check: they estimate how much hair your photos show in each area. They are not a diagnosis or a prescription, and they do not find the cause of hair loss. Photo quality depends on your phone, the light and how the photos are taken; if a photo is not clear, the result may say we need a closer look.',
+    ),
+    sub('Our hair-care team'),
+    p(
+      'Our hair-care team explains our products and plans and helps you order. They do not diagnose conditions or prescribe medicines. If something about your health worries you, please see a doctor.',
+    ),
+    note(
+      'YHC is not an emergency service. If you have a medical emergency, sudden severe symptoms or a serious reaction to a product, go to your nearest hospital or call emergency services.',
+      'Not for emergencies',
+    ),
+
+    h('account', 'Your account'),
+    p(
+      'You sign in with a one-time code sent to your email address. You are responsible for keeping access to your email and account to yourself; activity after a valid sign-in is treated as yours. Tell us promptly if you think someone else has used your account. We may suspend an account to protect you or others while we look into a problem.',
+    ),
+
+    h('prescriptions', 'Prescription medicines'),
+    p(
+      'We supply prescription medicines only against a valid prescription from a registered doctor. While doctor consultations are paused, products that need a prescription are shown on this site for information only.',
+    ),
+
+    h('orders', 'Orders, prices and payment'),
+    ul(
+      'Orders are placed with our hair-care team. Before you pay, the team confirms the products, the price, any delivery charge and how to pay.',
+      'Prices are in Indian rupees and include GST. A GST invoice is issued for every order.',
+      'An order is confirmed only once we have received your payment.',
+      'We may decline or cancel an order, with a full refund, if a product is unavailable, a price or description was given in error, or we cannot deliver to your address.',
+      'Delivery is covered by the Shipping Policy, and cancellations and refunds by the Refund Policy.',
+    ),
+
+    h('plans', 'Plans'),
+    p(
+      'A plan is a supply of products for a set number of months. Hair responds slowly and differently for everyone; individual results vary and no particular outcome or timeline is promised.',
+    ),
+  ];
+}
+
 function terms(c: LegalContext): ContentBlock[] {
   return [
     p(
-      `These Terms & Conditions (“Terms”) govern your use of the Your Hair Company website and services — the scalp scan and assessment, online consultations, treatment plans and product orders. YHC is operated by ${operatorName()} (“YHC”, “we”, “us”). By creating an account, booking a consultation or placing an order, you agree to these Terms. Please read them together with our Privacy Policy, Refund Policy, Shipping Policy and Medical Disclaimer, which form part of these Terms.`,
+      c.consultations
+        ? `These Terms & Conditions (“Terms”) govern your use of the Your Hair Company website and services — the scalp scan and assessment, online consultations, treatment plans and product orders. YHC is operated by ${operatorName()} (“YHC”, “we”, “us”). By creating an account, booking a consultation or placing an order, you agree to these Terms. Please read them together with our Privacy Policy, Refund Policy, Shipping Policy and Medical Disclaimer, which form part of these Terms.`
+        : `These Terms & Conditions (“Terms”) govern your use of the Your Hair Company website and services — the free scalp scan, calls with our hair-care team, plans and product orders. YHC is operated by ${operatorName()} (“YHC”, “we”, “us”). By creating an account, taking the scan or placing an order, you agree to these Terms. Please read them together with our Privacy Policy, Refund Policy, Shipping Policy and Medical Disclaimer, which form part of these Terms.`,
     ),
 
     h('eligibility', 'Who can use YHC'),
@@ -272,6 +452,42 @@ function terms(c: LegalContext): ContentBlock[] {
       'You must give true, accurate and complete information about yourself and your health, and keep it up to date. You may book or order only for yourself unless we have agreed otherwise.',
     ),
 
+    ...(c.consultations ? termsWithConsultations(c) : termsScanJourney()),
+
+    h('guarantee', 'Money-back guarantee'),
+    p(
+      c.guarantee
+        ? 'Where a money-back guarantee is offered on a plan, it applies only when every condition in the Guarantee Terms is met, and a doctor reviews every claim. The Guarantee Terms set out the conditions in full and form part of these Terms.'
+        : 'No money-back guarantee is currently offered. If one is introduced, its full conditions will be published on the Guarantee Terms page before it is offered anywhere on the site.',
+    ),
+
+    h('communications', 'Messages from us'),
+    p(
+      c.consultations
+        ? 'We send booking, order, delivery and care messages on WhatsApp, SMS and email so we can provide the service. Marketing messages are sent only if you have agreed to them, and you can opt out at any time by replying STOP or changing your preferences in your account.'
+        : 'We call you and send WhatsApp messages and emails about your scan, your orders and deliveries, because you asked for a call back when you signed up. Marketing messages are sent only if you have agreed to them, and you can opt out at any time by replying STOP or telling our team.',
+    ),
+
+    h('acceptable-use', 'Acceptable use'),
+    p('When using YHC, you agree not to:'),
+    ul(
+      'Give false information, impersonate anyone, or sign up or order on someone else’s behalf without their permission.',
+      'Resell, share or supply prescribed products to anyone else.',
+      'Try to access other people’s data, probe or disrupt the site, or use bots or scrapers on it.',
+      'Upload content that is unlawful, abusive, obscene or that belongs to someone else.',
+      c.consultations
+        ? 'Record consultations without the doctor’s consent, or behave abusively towards doctors or staff.'
+        : 'Behave abusively towards our team.',
+    ),
+    p(
+      'We may end a call or consultation, cancel an order or suspend or close an account if these Terms are broken, refunding any amount owed for services not provided.',
+    ),
+    ...termsCommon(c),
+  ];
+}
+
+function termsWithConsultations(c: LegalContext): ContentBlock[] {
+  return [
     h('the-service', 'What YHC provides'),
     p(
       'YHC provides a guided online scalp scan and assessment, video consultations with a registered medical practitioner for hair and scalp concerns, doctor-recommended treatment plans, and hair-care products, some of which can be bought without a consultation.',
@@ -323,32 +539,12 @@ function terms(c: LegalContext): ContentBlock[] {
     p(
       'A plan is a supply of products for a set number of months, recommended by your doctor. Using it as directed, replying to check-ins and attending follow-ups help your doctor judge how you are responding and adjust your plan. Hair responds slowly and differently for everyone; individual results vary and no particular outcome or timeline is promised.',
     ),
+  ];
+}
 
-    h('guarantee', 'Money-back guarantee'),
-    p(
-      c.guarantee
-        ? 'Where a money-back guarantee is offered on a plan, it applies only when every condition in the Guarantee Terms is met, and a doctor reviews every claim. The Guarantee Terms set out the conditions in full and form part of these Terms.'
-        : 'No money-back guarantee is currently offered. If one is introduced, its full conditions will be published on the Guarantee Terms page before it is offered anywhere on the site.',
-    ),
-
-    h('communications', 'Messages from us'),
-    p(
-      'We send booking, order, delivery and care messages on WhatsApp, SMS and email so we can provide the service. Marketing messages are sent only if you have agreed to them, and you can opt out at any time by replying STOP or changing your preferences in your account.',
-    ),
-
-    h('acceptable-use', 'Acceptable use'),
-    p('When using YHC, you agree not to:'),
-    ul(
-      'Give false information, impersonate anyone, or book or order on someone else’s behalf without their permission.',
-      'Resell, share or supply prescribed products to anyone else.',
-      'Try to access other people’s data, probe or disrupt the site, or use bots or scrapers on it.',
-      'Upload content that is unlawful, abusive, obscene or that belongs to someone else.',
-      'Record consultations without the doctor’s consent, or behave abusively towards doctors or staff.',
-    ),
-    p(
-      'We may end a consultation, cancel an order or suspend or close an account if these Terms are broken, refunding any amount owed for services not provided.',
-    ),
-
+/** Intellectual property to contact — the same in both versions. */
+function termsCommon(c: LegalContext): ContentBlock[] {
+  return [
     h('intellectual-property', 'Intellectual property'),
     p(
       'The YHC name and logo, site design, text, images, articles, scan and assessment experience, and software belong to YHC or its licensors and are protected by law. You may view and print pages for your personal use. You may not copy, reproduce, modify or use them commercially without our written permission. Your own photos and information remain yours; you give us permission to use them only as described in our Privacy Policy.',
@@ -361,10 +557,14 @@ function terms(c: LegalContext): ContentBlock[] {
 
     h('liability', 'Limitation of liability'),
     ul(
-      'We take care to run YHC well, but we cannot promise that the site, scan or video calls will always be available, uninterrupted or error-free.',
+      c.consultations
+        ? 'We take care to run YHC well, but we cannot promise that the site, scan or video calls will always be available, uninterrupted or error-free.'
+        : 'We take care to run YHC well, but we cannot promise that the site or the scan will always be available, uninterrupted or error-free.',
       'To the extent the law allows, we are not liable for indirect or consequential loss, or for loss caused by events beyond our reasonable control (such as network outages, courier disruption, natural events or government action).',
       'To the extent the law allows, our total liability for any claim relating to a consultation, plan or order is limited to the amount you paid for that consultation, plan or order.',
-      'Clinical advice is given by the treating doctor in the exercise of their independent professional judgement.',
+      ...(c.consultations
+        ? ['Clinical advice is given by the treating doctor in the exercise of their independent professional judgement.']
+        : []),
       'Nothing in these Terms limits any right you have under the Consumer Protection Act, 2019 or any other law that cannot be excluded by contract, or our liability for death or personal injury caused by negligence, or for fraud.',
     ),
 
@@ -400,24 +600,32 @@ function terms(c: LegalContext): ContentBlock[] {
 function refund(c: LegalContext): ContentBlock[] {
   return [
     p(
-      'This Refund Policy explains when you can reschedule or cancel a consultation, cancel an order or return a product, and how refunds are paid. It applies to everything booked or bought from Your Hair Company and forms part of our Terms & Conditions. It does not affect your rights under the Consumer Protection Act, 2019.',
+      c.consultations
+        ? 'This Refund Policy explains when you can reschedule or cancel a consultation, cancel an order or return a product, and how refunds are paid. It applies to everything booked or bought from Your Hair Company and forms part of our Terms & Conditions. It does not affect your rights under the Consumer Protection Act, 2019.'
+        : 'This Refund Policy explains when you can cancel an order or return a product, and how refunds are paid. The scalp scan and the call with our team are free, so there is nothing to refund for them. This policy applies to everything bought from Your Hair Company and forms part of our Terms & Conditions. It does not affect your rights under the Consumer Protection Act, 2019.',
     ),
 
-    h('consultation', 'Consultation fee'),
-    p(`The consultation fee (currently ${c.consultFee}) is paid when you book.`),
-    ul(
-      `Rescheduling: you can move your consultation free of charge up to ${c.freeRescheduleHours} hours before it starts, from your account or by messaging us.`,
-      'Cancelling more than 24 hours before your consultation: you receive a full refund of the consultation fee.',
-      'Cancelling within 24 hours of your consultation: the fee is not refunded, but you can reschedule once at no extra charge.',
-      'Missing your consultation without notice (a no-show): the fee is not refunded. If something unexpected stopped you from joining, write to us and we will look at it fairly.',
-      'If the doctor cannot attend, or the call cannot take place because of a problem on our side, you choose between a free reschedule and a full refund.',
-    ),
-    ...(c.creditLine ? [note(c.creditLine, 'Consultation credit')] : []),
+    ...(c.consultations
+      ? [
+          h('consultation', 'Consultation fee'),
+          p(`The consultation fee (currently ${c.consultFee}) is paid when you book.`),
+          ul(
+            `Rescheduling: you can move your consultation free of charge up to ${c.freeRescheduleHours} hours before it starts, from your account or by messaging us.`,
+            'Cancelling more than 24 hours before your consultation: you receive a full refund of the consultation fee.',
+            'Cancelling within 24 hours of your consultation: the fee is not refunded, but you can reschedule once at no extra charge.',
+            'Missing your consultation without notice (a no-show): the fee is not refunded. If something unexpected stopped you from joining, write to us and we will look at it fairly.',
+            'If the doctor cannot attend, or the call cannot take place because of a problem on our side, you choose between a free reschedule and a full refund.',
+          ),
+          ...(c.creditLine ? [note(c.creditLine, 'Consultation credit')] : []),
+        ]
+      : []),
 
     h('orders', 'Plan and product orders'),
     sub('Before dispatch'),
     p(
-      'You can cancel any order — a treatment plan or individual products — for a full refund at any time before it is dispatched. Message us on WhatsApp or email us with your order number, or cancel from your account where the option is shown.',
+      c.consultations
+        ? 'You can cancel any order — a treatment plan or individual products — for a full refund at any time before it is dispatched. Message us on WhatsApp or email us with your order number, or cancel from your account where the option is shown.'
+        : `You can cancel any order — a plan or individual products — for a full refund at any time before it is dispatched. Tell the team member who took your order, or email ${c.supportEmail} with your order number.`,
     ),
     sub('After dispatch'),
     ul(
@@ -432,7 +640,9 @@ function refund(c: LegalContext): ContentBlock[] {
 
     h('damaged', 'Damaged, wrong or expired items'),
     ol(
-      'Tell us on WhatsApp or by email within 48 hours of delivery, with your order number.',
+      c.consultations
+        ? 'Tell us on WhatsApp or by email within 48 hours of delivery, with your order number.'
+        : 'Tell our team (on WhatsApp or on a call) or email us within 48 hours of delivery, with your order number.',
       'Send clear photos of the item, its batch and expiry details, the packaging and the shipping label. An unboxing video helps, but is not required.',
       'We review your request and reply within 2 working days. If needed, we arrange a free pickup of the item.',
       'We then send a replacement or refund the item — your choice where both are possible.',
@@ -450,16 +660,26 @@ function refund(c: LegalContext): ContentBlock[] {
 
     h('how-refunds-work', 'How and when refunds are paid'),
     ul(
-      'Refunds are paid to the original payment method (UPI, card, net banking or wallet) through our payment partner, Razorpay.',
-      'Approved refunds are credited within 5–7 working days. We share the refund reference so you can check with your bank; the exact time it appears depends on your bank or card issuer.',
-      'If the original payment method can no longer accept a refund, we will pay it by bank transfer to an account in your name.',
-      'All orders and consultations are prepaid, so there are no cash refunds.',
+      ...(c.consultations
+        ? [
+            'Refunds are paid to the original payment method (UPI, card, net banking or wallet) through our payment partner, Razorpay.',
+            'Approved refunds are credited within 5–7 working days. We share the refund reference so you can check with your bank; the exact time it appears depends on your bank or card issuer.',
+            'If the original payment method can no longer accept a refund, we will pay it by bank transfer to an account in your name.',
+            'All orders and consultations are prepaid, so there are no cash refunds.',
+          ]
+        : [
+            'Refunds are paid back the way you paid where possible (for example UPI, card or bank transfer).',
+            'Approved refunds are sent within 5–7 working days. We share the refund reference so you can check with your bank; the exact time it appears depends on your bank or card issuer.',
+            'If the way you paid can no longer accept a refund, we pay it by bank transfer to an account in your name.',
+          ]),
     ),
 
     h('contact', 'How to request a refund or cancellation'),
     ol(
-      `Message us on WhatsApp or write to ${c.supportEmail}.`,
-      'Include your name, the mobile number on your account, your booking or order number, what you would like us to do, and photos if the request is about a product.',
+      c.consultations
+        ? `Message us on WhatsApp or write to ${c.supportEmail}.`
+        : `Tell our team on WhatsApp or a call, or write to ${c.supportEmail}.`,
+      'Include your name, the mobile number you gave us, your booking or order number, what you would like us to do, and photos if the request is about a product.',
       'We acknowledge your request within one working day and keep you updated until it is resolved.',
     ),
     p(
@@ -473,19 +693,32 @@ function shipping(c: LegalContext): ContentBlock[] {
     p('We deliver across India through our courier partners. This page explains how delivery works.'),
     h('where', 'Where we deliver'),
     p(
-      'We deliver to serviceable PIN codes across India. At checkout we check your PIN code; if we cannot deliver there, you will be told before you pay.',
+      c.onlineShop
+        ? 'We deliver to serviceable PIN codes across India. At checkout we check your PIN code; if we cannot deliver there, you will be told before you pay.'
+        : 'We deliver to serviceable PIN codes across India. When you order, our team checks your PIN code; if we cannot deliver there, you will be told before you pay.',
     ),
     h('when', 'Dispatch and delivery times'),
     p(
       'Orders are packed and handed to the courier after payment is confirmed. Delivery time depends on your PIN code and the courier; we share the expected delivery date with your tracking link.',
     ),
     h('charges', 'Delivery charges'),
-    p('Any delivery charge is shown at checkout, before you pay. Prices already include GST.'),
+    p(
+      c.onlineShop
+        ? 'Any delivery charge is shown at checkout, before you pay. Prices already include GST.'
+        : 'Our team tells you any delivery charge before you pay. Prices already include GST.',
+    ),
     h('tracking', 'Tracking your order'),
     ul(
-      'As soon as your order ships, we send the tracking link on WhatsApp.',
-      'You can also see order status in your account.',
-      'We message you again when the parcel is out for delivery and when it is delivered.',
+      ...(c.onlineShop
+        ? [
+            'As soon as your order ships, we send the tracking link on WhatsApp.',
+            'You can also see order status in your account.',
+            'We message you again when the parcel is out for delivery and when it is delivered.',
+          ]
+        : [
+            'As soon as your order ships, we send you the tracking link on WhatsApp or by email.',
+            'If you have a question about your delivery, ask our team or write to us.',
+          ]),
     ),
     h('address', 'Your address and delivery attempts'),
     ul(
@@ -502,7 +735,11 @@ function shipping(c: LegalContext): ContentBlock[] {
       'If a parcel arrives damaged or is marked delivered but has not reached you, tell us within 48 hours. See the Refund Policy for what happens next.',
     ),
     h('contact', 'Questions'),
-    p(`Message us on WhatsApp, or write to ${c.supportEmail}.`),
+    p(
+      c.onlineShop
+        ? `Message us on WhatsApp, or write to ${c.supportEmail}.`
+        : `Ask our team on WhatsApp or a call, or write to ${c.supportEmail}.`,
+    ),
   ];
 }
 
@@ -567,15 +804,27 @@ function disclaimer(c: LegalContext): ContentBlock[] {
     p(
       'Information on this website — including articles, concern pages, product pages, the scalp scan and the online assessment — is for general education and screening. It is not a diagnosis and is not a substitute for advice from a doctor who has assessed you.',
     ),
-    h('telemedicine', 'Consultations are telemedicine'),
-    p('YHC consultations follow the Telemedicine Practice Guidelines, 2020. In practice, this means:'),
-    ul(
-      `The doctor identifies themselves with their name, qualifications and registration number. ${c.doctorName}’s registration number appears on every prescription.`,
-      'Your identity and consent are confirmed at the start of the consultation.',
-      'Video is the default. The doctor decides whether a concern can be managed remotely, and may ask for an in-person examination or tests.',
-      'The doctor may decline to prescribe if it is not appropriate.',
-      'Consultation records and prescriptions are kept as medical records.',
-    ),
+    ...(c.consultations
+      ? [
+          h('telemedicine', 'Consultations are telemedicine'),
+          p('YHC consultations follow the Telemedicine Practice Guidelines, 2020. In practice, this means:'),
+          ul(
+            `The doctor identifies themselves with their name, qualifications and registration number. ${c.doctorName}’s registration number appears on every prescription.`,
+            'Your identity and consent are confirmed at the start of the consultation.',
+            'Video is the default. The doctor decides whether a concern can be managed remotely, and may ask for an in-person examination or tests.',
+            'The doctor may decline to prescribe if it is not appropriate.',
+            'Consultation records and prescriptions are kept as medical records.',
+          ),
+        ]
+      : [
+          h('scan', 'The scalp scan is a photo check'),
+          ul(
+            'The scan estimates how much hair your photos show in each area. It is not a medical diagnosis and does not find the cause of hair loss.',
+            'Photo quality affects the result. If a photo is not clear enough, the result says we need a closer look.',
+            'Our hair-care team explains products and plans. They do not diagnose conditions or prescribe medicines.',
+            'Doctor consultations are not offered at the moment. If you are worried about your hair, scalp or general health, please see a doctor.',
+          ),
+        ]),
     h('no-promises', 'Results and expectations'),
     ul(
       'Hair responds slowly and differently for everyone. Individual results vary.',
@@ -584,8 +833,12 @@ function disclaimer(c: LegalContext): ContentBlock[] {
     ),
     h('safety', 'Using treatment safely'),
     ul(
-      'Tell your doctor about every medicine, supplement and health condition, and if you are pregnant, planning a pregnancy or breastfeeding.',
-      'Use products only as prescribed and read the leaflet that comes with them.',
+      c.consultations
+        ? 'Tell your doctor about every medicine, supplement and health condition, and if you are pregnant, planning a pregnancy or breastfeeding.'
+        : 'If you take other medicines or supplements, have a health condition, or are pregnant, planning a pregnancy or breastfeeding, check with a doctor before starting any treatment.',
+      c.consultations
+        ? 'Use products only as prescribed and read the leaflet that comes with them.'
+        : 'Use products only as the label or leaflet says.',
       'Like any treatment, products can cause side effects in some people. Stop and contact us, or see a doctor, if you have a reaction.',
     ),
     h('emergencies', 'Not for emergencies'),
@@ -594,7 +847,9 @@ function disclaimer(c: LegalContext): ContentBlock[] {
     ),
     h('association', 'Doctor association'),
     p(
-      `${c.doctorName} is associated with Your Hair Company. You are always free to use your prescription elsewhere and are never obliged to buy from YHC.`,
+      c.consultations
+        ? `${c.doctorName} is associated with Your Hair Company. You are always free to use your prescription elsewhere and are never obliged to buy from YHC.`
+        : `${c.doctorName} is associated with Your Hair Company. You are never obliged to buy from YHC.`,
     ),
   ];
 }
@@ -646,13 +901,13 @@ const DOCS: Record<
   terms: {
     title: 'Terms & Conditions',
     summary:
-      'The terms for using YHC: the scalp scan, telemedicine consultations, prescriptions, orders and payments.',
+      'The terms for using YHC: the scalp scan, our hair-care team, orders, payments and, when offered, doctor consultations.',
     build: terms,
   },
   'refund-cancellation': {
     title: 'Refund Policy',
     summary:
-      'Rescheduling and cancelling consultations, cancelling orders, returning damaged or wrong items, and how refunds are paid.',
+      'Cancelling orders, returning damaged or wrong items, and how refunds are paid.',
     build: refund,
   },
   shipping: {
@@ -667,7 +922,7 @@ const DOCS: Record<
   },
   'medical-disclaimer': {
     title: 'Medical Disclaimer',
-    summary: 'What the information on this site is, and is not, and how telemedicine consultations work.',
+    summary: 'What the information on this site and the scalp scan are, and are not, and how to use treatment safely.',
     build: disclaimer,
   },
   grievance: {

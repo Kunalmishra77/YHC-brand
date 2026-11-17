@@ -19,7 +19,7 @@ import {
 } from '@/server/content/legal';
 import { LEGAL_SEO_DESCRIPTION } from '@/server/content/seo-copy';
 import { tocFromBlocks } from '@/server/content/types';
-import { getSettingNumber } from '@/server/demo/store';
+import { getSetting, getSettingNumber } from '@/server/demo/store';
 
 // Fees, reschedule window and guarantee visibility come from live settings.
 export const dynamic = 'force-dynamic';
@@ -38,6 +38,8 @@ export async function generateMetadata({ params }: PageProps<'/legal/[slug]'>): 
 function legalContext(): LegalContext {
   const terms = getConsultTerms();
   return {
+    consultations: getSetting('features.doctor_consult') === 'true',
+    onlineShop: getSetting('features.shop') === 'true',
     consultFee: terms.fee,
     freeRescheduleHours: getSettingNumber('consult.free_reschedule_hours'),
     creditLine: terms.creditLine,
@@ -60,7 +62,9 @@ export default async function LegalPage({ params }: PageProps<'/legal/[slug]'>) 
   const ctx = legalContext();
   const doc = getLegalDocument(slug, ctx);
   const toc = tocFromBlocks(doc.blocks);
-  const otherPolicies = LEGAL_PAGES.filter((p) => p.slug !== doc.slug);
+  const otherPolicies = LEGAL_PAGES.filter(
+    (p) => p.slug !== doc.slug && (ctx.guarantee !== null || p.slug !== 'guarantee'),
+  );
 
   return (
     <>

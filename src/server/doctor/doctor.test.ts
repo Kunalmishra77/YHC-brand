@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { db, resetDemo } from '@/server/demo/store';
+import { db, resetDemo, updateSetting } from '@/server/demo/store';
 import { decideClaim, listClaimReviews } from './claims';
 import { PROTOCOLS } from './protocols';
 import { getCalendarWeek, getFollowUps, getToday, getWorkspace, mondayOf, searchPatients } from './queries';
@@ -68,6 +68,9 @@ describe('doctor read models', () => {
 });
 
 describe('guarantee decisions (FR-M5-11)', () => {
+  // The guarantee is off by default (ADR-38); the doctor's claim review is exercised with it on.
+  beforeEach(() => updateSetting('guarantee.enabled', 'true', 'test'));
+
   it('records a decision once and audits it', () => {
     const before = listClaimReviews();
     const claim = before?.reviews[0]?.claim;
