@@ -24,7 +24,7 @@ export const DOCTOR: Doctor = {
   qualifications: 'Dermatologist', // TODO(client): full qualifications — docs/16 C1
   registrationNo: 'to be added', // TODO(client): medical registration number — docs/16 C1
   council: 'State Medical Council', // TODO(client): exact council name — docs/16 C1
-  bio: 'Dr. Tyagi is a dermatologist who focuses on hair and scalp health. Every YHC plan starts with a one-to-one video consultation, a look at your history and scalp photos, and a routine chosen for you — not a one-size-fits-all kit.',
+  bio: 'Dr. Tyagi is a dermatologist who focuses on hair and scalp health. He helped develop YHC’s products and our roots-first approach: look at the scalp first, then suggest a routine only if it can help.',
 };
 
 export const PLANS: Plan[] = [
@@ -36,7 +36,7 @@ export const PLANS: Plan[] = [
     pricePaise: 599900,
     compareAtPaise: null,
     isRecommended: false,
-    description: 'One month of your doctor-recommended routine.',
+    description: 'One month of your routine.',
   },
   {
     id: 'plan-2',
@@ -56,7 +56,7 @@ export const PLANS: Plan[] = [
     pricePaise: 1499900,
     compareAtPaise: 1799700,
     isRecommended: true,
-    description: 'Three months. Saves ₹2,998 compared with buying monthly. Doctor-recommended duration.',
+    description: 'Three months. Saves ₹2,998 compared with buying monthly.',
   },
 ];
 
@@ -86,7 +86,7 @@ export const PRODUCTS: Product[] = [
     name: 'Hair Regrowth Solution',
     tagline: 'Scalp solution · 60 ml · prescription only',
     description:
-      'A solution you put on your scalp and leave on. Its label lists branded cosmetic actives and finasteride, a prescription medicine. So you can get it only if Dr. Tyagi prescribes it after a consultation. Your doctor tells you how to use it.',
+      'A solution you put on your scalp and leave on. Its label lists branded cosmetic actives and finasteride, a prescription medicine. So you can get it only with a doctor’s prescription. Your doctor tells you how to use it.',
     ingredients: [
       { name: 'Redensyl', role: 'Branded cosmetic active listed on the label' },
       { name: 'Anagain', role: 'Pea-sprout extract (branded active) listed on the label' },
@@ -110,7 +110,7 @@ export const PRODUCTS: Product[] = [
     name: 'Hair Nourishing Tablets',
     tagline: 'Daily tablet · 30 tablets · plants, vitamins and minerals',
     description:
-      'One tablet a day with 3 plant extracts, vitamins and minerals. Dr. Tyagi adds it if your answers suggest your diet may be missing something. It does not replace healthy food.',
+      'One tablet a day with 3 plant extracts, vitamins and minerals. It may help if your diet is missing something. It does not replace healthy food. Our hair-care team can tell you if it suits you.',
     ingredients: [
       { name: 'Green tea (Camellia sinensis)', role: 'Botanical listed on the label' },
       { name: 'Bhringraj (Eclipta prostrata)', role: 'Herb traditionally used in Ayurvedic hair care' },
@@ -138,7 +138,7 @@ export const PRODUCTS: Product[] = [
     name: 'Hair Regrowth Capsules',
     tagline: 'Ayurvedic capsules · 30 capsules · with amla and bhringraj',
     description:
-      'An Ayurvedic mix of 6 plants, mainly amla and bhringraj, in a capsule. Dr. Tyagi decides if you need it and how to take it.',
+      'An Ayurvedic mix of 6 plants, mainly amla and bhringraj, in a capsule. Our hair-care team can tell you if it suits you.',
     ingredients: AYURVEDIC_BLEND,
     howToUse: 'Take it the way your doctor tells you.',
     whatToExpect: EXPECT,
@@ -286,9 +286,9 @@ export const CONCERNS: Concern[] = [
 ];
 
 /*
- * Categories, in display order (the FAQ page groups by first appearance): scan · consultation · results ·
- * plans · guarantee · delivery · privacy. Journey order per ADR-26: details → 3D scan → assessment →
- * health form → slot + ₹500 → consultation.
+ * Categories, in display order (the FAQ page groups by first appearance): scan · results · plans ·
+ * guarantee · delivery · privacy. Journey per ADR-36: details + email code → scalp scan → result → our
+ * team calls. The consultation questions return with the doctor consultation.
  */
 export const FAQS: Faq[] = [
   {
@@ -296,56 +296,35 @@ export const FAQS: Faq[] = [
     category: 'scan',
     question: 'Why do you start with a scalp scan instead of a product?',
     answer:
-      'Hair grows from roots. Treatment can only help roots that are still alive. A scarred root cannot grow hair again. And hair fall, pattern thinning and scarring can look the same in a mirror. Looking at your roots first lets us tell you early, and honestly, if treatment is likely to help — before you book or pay for anything.',
+      'Hair grows from roots. Treatment can only help roots that are still alive. A scarred root cannot grow hair again. And hair fall, pattern thinning and scarring can look the same in a mirror. Looking at your roots first lets us tell you early, and honestly, if treatment is likely to help, before you spend anything.',
   },
   {
     id: 'faq-scan-how',
     category: 'scan',
-    question: 'What is the 3D scalp scan, and how do I do it?',
+    question: 'What is the scalp scan, and how do I do it?',
     answer:
-      'First you share a few details (name, mobile and address). Then we guide you, step by step, to photograph your hairline, crown and parting with your phone. Use soft daylight. Keep your hair clean, dry and loose. Turn off filters and beauty mode. The scan gives a first look at your roots and scalp. The doctor always makes the final call.',
+      'Enter your name, mobile, email and age. We email you a 6-digit code to confirm it. Then you answer 4 short questions, and your phone guides you through up to 7 areas of your scalp, one close-up at a time (at least 4). Use soft daylight. Keep your hair clean, dry and loose. Turn off filters and beauty mode. It is free and takes a few minutes.',
   },
   {
     id: 'faq-scan-result',
     category: 'scan',
-    question: 'What does the personalised assessment tell me?',
+    question: 'What does the result tell me?',
     answer:
-      'You see 1 of 3 results, with the reasons in plain words: treatment looks suitable, a doctor should look first, or treatment is unlikely to help the scanned areas. It looks at how thick and active your roots seem, whether hairs are getting finer, and how your scalp looks. It helps you decide what to do next. It is not a diagnosis.',
+      'You see 1 of 3 results, with the reasons in plain words: hair roots are still visible, we need a closer look, or treatment is unlikely to help the bare areas. It is a photo check, not a medical diagnosis. Then our hair-care team calls you to talk through your options.',
   },
   {
     id: 'faq-scan-not-suitable',
     category: 'scan',
-    question: 'What happens if the assessment says treatment is unlikely to help?',
+    question: 'What happens if the result says treatment is unlikely to help?',
     answer:
-      'We tell you clearly and explain why — for example, an area that has been bald for many years with very few active roots left. We will not push you to buy a plan. You can download your summary, ask us on WhatsApp, or still book a consultation to learn the cause and talk about other options with the doctor (the ₹500 fee applies).',
+      'We tell you clearly and explain why, for example an area that has been bald for many years with no hair left. We will not push you to buy anything. Our team can still call you to answer your questions.',
   },
   {
-    id: 'faq-consult-how',
-    category: 'consultation',
-    question: 'How does the consultation work?',
+    id: 'faq-scan-call',
+    category: 'scan',
+    question: 'Who calls me after the scan, and does it cost anything?',
     answer:
-      'After your assessment, you fill in a short health form: your health, medicines, past treatments and what you have noticed. Then you pick a time and pay the ₹500 fee. Dr. Tyagi looks at your scan, assessment and form first. Then you meet on a 30-minute video call, just the two of you. If treatment can help, we send your prescription and plan on WhatsApp after the call.',
-  },
-  {
-    id: 'faq-consult-no-obligation',
-    category: 'consultation',
-    question: 'Do I have to buy a plan after the consultation?',
-    answer:
-      'No. Your prescription is yours, whether or not you buy from YHC. You can buy the medicines anywhere you like. Dr. Tyagi works with Your Hair Company, and we say so on every plan page.',
-  },
-  {
-    id: 'faq-consult-credit',
-    category: 'consultation',
-    question: 'Is the ₹500 adjusted if I buy a plan?',
-    answer:
-      'Yes. Buy your recommended plan within 7 days of your consultation and ₹500 comes off the plan price.',
-  },
-  {
-    id: 'faq-consult-reschedule',
-    category: 'consultation',
-    question: 'Can I reschedule or cancel my consultation?',
-    answer:
-      'You can change your time for free up to 6 hours before it. Cancel more than 24 hours ahead and you get the full fee back. Later cancellations are not refunded, but you get 1 free change of time. Missed consultations are not refunded.',
+      'A person from our hair-care team calls you on the mobile number you gave, during working hours. The scan and the call are free. If you miss the call, we try again or send you a WhatsApp message.',
   },
   {
     id: 'faq-results-when',
@@ -353,41 +332,12 @@ export const FAQS: Faq[] = [
     question: 'How soon will I see a difference?',
     answer:
       'Hair changes slowly. It grows about 1 cm a month, and each hair grows for years. So doctors judge progress over months, not weeks. Skin-doctor research says pattern hair loss usually needs at least 4 to 6 months of daily use before people notice a change — and some people do not respond. Individual results vary. We never promise a timeline.',
-  },
-  {
-    id: 'faq-results-shedding',
-    category: 'results',
-    question: 'Is it normal to shed more when starting treatment?',
-    answer:
-      'With some treatments, more hair can fall for a short time in the first few weeks. Resting hairs fall to make way for new ones. It can be worrying. If it happens, message us or mention it at your check-in. Please do not stop or change your routine before you talk to the doctor.',
-  },
-  {
-    id: 'faq-results-ongoing',
-    category: 'results',
-    question: 'Will I need to keep using treatment?',
-    answer:
-      'For pattern hair loss, most treatments help only while you keep using them. Skin doctors say that if you stop, you tend to lose the benefit over time. That is why Dr. Tyagi picks a routine you can keep up, and reviews it with you at follow-up.',
-  },
-  {
-    id: 'faq-results-supplements',
-    category: 'results',
-    question: 'Will supplements or vitamins help my hair?',
-    answer:
-      'They can help if something is really low, such as iron — and that should be fixed. There is little proof they help if nothing is low. Too much of some can even make hair loss worse. Biotin can also upset some blood tests, so mention it before a test. Your plan includes a supplement only if the doctor thinks you need it.',
-  },
-  {
-    id: 'faq-plans-cost',
+  },  {
+    id: 'faq-plans-buy',
     category: 'plans',
-    question: 'What do the plans cost?',
+    question: 'How do I buy YHC products?',
     answer:
-      '1 month ₹5,999 · 2 months ₹10,999 · 3 months ₹14,999. Prices include GST. Your plan has only what the doctor recommends for you.',
-  },
-  {
-    id: 'faq-plans-without-consult',
-    category: 'plans',
-    question: 'Can I buy products without a consultation?',
-    answer:
-      'Not right now. Every YHC product comes after a consultation. The right choice — and, for the solution, the prescription — depends on your scan, your health and the doctor’s check.',
+      'Products are not sold online right now. After your scan, our hair-care team talks you through your options by phone and helps you order. The Hair Regrowth Solution is supplied only with a doctor’s prescription.',
   },
   {
     id: 'faq-guarantee',
@@ -395,19 +345,18 @@ export const FAQS: Faq[] = [
     question: 'How does the money-back guarantee work?',
     answer:
       'You can claim a full refund of your plan payments if you see no visible improvement and you did all of this: used your prescribed plan without a break for at least 3 months, replied to at least 75% of check-ins, sent progress photos every month and joined your follow-up consultation. Claim within 30 days of finishing the plan. A doctor reviews every claim.',
-  },
-  {
+  },  {
     id: 'faq-delivery',
     category: 'delivery',
     question: 'How long does delivery take?',
-    answer: 'Usually a few working days after you pay. We send tracking on WhatsApp as soon as it ships.',
+    answer: 'Usually a few working days after your order is confirmed. Our team tells you when it ships.',
   },
   {
     id: 'faq-privacy-who',
     category: 'privacy',
-    question: 'Who can see my scan, photos and health details?',
+    question: 'Who can see my scan, photos and answers?',
     answer:
-      'Your scan, photos, health form and consultation notes are for your care. Your doctor sees them. Our support team helps with bookings, orders and delivery, and cannot see your health details. We never put health details in WhatsApp messages, email subject lines or marketing. Our messages just link to your private account.',
+      'You can see them in your account. If you agreed to share them when you took the scan, our hair-care team can also see them, to advise you on your call. We never put health details in WhatsApp messages, email subject lines or marketing.',
   },
   {
     id: 'faq-privacy-photos',
@@ -415,8 +364,7 @@ export const FAQS: Faq[] = [
     question: 'Will my photos be used in before-and-after images?',
     answer:
       'Only if you agree in writing, separately. We never use your scan or progress photos for marketing without that clear yes, and you can take it back at any time. We never show stock or AI-made images as patient results.',
-  },
-];
+  },];
 
 // TODO(client): approved terms — see docs/15 D-P1. Values are our recommendation, shown as DRAFT.
 export const GUARANTEE_POLICY: GuaranteePolicy = {

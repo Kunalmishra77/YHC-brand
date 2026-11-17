@@ -64,8 +64,8 @@ export default async function LegalPage({ params }: PageProps<'/legal/[slug]'>) 
 
   return (
     <>
-      <header className="border-b border-line">
-        <div className="container-yhc py-14 md:py-20">
+      <header className="border-line lg:border-b">
+        <div className="container-yhc pt-14 pb-4 md:pt-20 lg:pb-20">
           <nav aria-label="Breadcrumb" className="text-[13px] text-muted-foreground">
             <Link href="/legal" className="underline decoration-steel underline-offset-4 hover:text-ink">
               Legal and policies

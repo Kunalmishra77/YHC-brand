@@ -7,13 +7,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { SITE } from '@/lib/site';
 
 const schema = z.object({
   name: z.string().trim().min(2, 'Please enter your name.'),
   phone: z
     .string()
     .trim()
-    .regex(/^[6-9]\d{9}$/, 'Enter a 10-digit Indian mobile number.'),
+    .transform((v) => v.replace(/[\s-]/g, '').replace(/^(\+91|91|0)(?=\d{10}$)/, ''))
+    .pipe(z.string().regex(/^[6-9]\d{9}$/, 'Enter a 10-digit Indian mobile number.')),
   email: z.union([z.literal(''), z.email('Enter a valid email address, or leave it blank.')]),
   message: z
     .string()
@@ -25,8 +27,9 @@ const schema = z.object({
 type Field = keyof z.infer<typeof schema>;
 
 /**
- * Demo contact form: validates on the client and shows a confirmation. Nothing is sent.
- * Asks people not to share medical details here.
+ * Contact form: checks the fields, then opens the visitor's own email app with the message ready to
+ * send to our support inbox (no email provider needed, nothing is lost). Asks people not to share
+ * medical details here.
  */
 export function ContactForm() {
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
@@ -48,8 +51,12 @@ export function ContactForm() {
       return;
     }
     setErrors({});
-    // TODO(client): route to support inbox / CRM once the support channel is confirmed — see docs/12 C
-    setSentTo(parsed.data.name.split(' ')[0] ?? parsed.data.name);
+    const d = parsed.data;
+    const lines = [d.message, '', `Name: ${d.name}`, `Mobile: +91 ${d.phone}`];
+    if (d.email) lines.push(`Email: ${d.email}`);
+    const body = lines.join('\n');
+    window.location.href = `mailto:${SITE.supportEmail}?subject=${encodeURIComponent(`Website message from ${d.name}`)}&body=${encodeURIComponent(body)}`;
+    setSentTo(d.name.split(' ')[0] ?? d.name);
   }
 
   if (sentTo) {
@@ -57,10 +64,14 @@ export function ContactForm() {
       <div role="status" className="rounded-xl border border-line bg-success-bg p-6">
         <p className="flex items-center gap-2 font-semibold text-success">
           <CheckCircle2 className="size-5" aria-hidden />
-          Thank you, {sentTo}. Your message is with our team.
+          Thank you, {sentTo}. Your email app has opened with your message.
         </p>
         <p className="mt-2 text-body">
-          We reply on WhatsApp or by phone, usually within one working day. Demo: nothing was actually sent.
+          Press send there to reach our team. If nothing opened, email us at{' '}
+          <a href={`mailto:${SITE.supportEmail}`} className="font-medium text-ink underline underline-offset-4">
+            {SITE.supportEmail}
+          </a>
+          . We usually reply within one working day.
         </p>
         <Button variant="outline" className="mt-4 h-11 px-5" onClick={() => setSentTo(null)}>
           Send another message
@@ -95,7 +106,7 @@ export function ContactForm() {
             name="phone"
             inputMode="numeric"
             autoComplete="tel-national"
-            maxLength={10}
+            maxLength={16}
             className={`${fieldClass} rounded-l-none`}
             aria-invalid={errors.phone ? true : undefined}
             aria-describedby={errors.phone ? 'contact-phone-error' : undefined}
@@ -135,7 +146,7 @@ export function ContactForm() {
         instead.
       </p>
       <Button type="submit" className="h-12 w-full px-8 text-base sm:w-auto">
-        Send message
+        Send by email
       </Button>
     </form>
   );

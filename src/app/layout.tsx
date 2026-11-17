@@ -23,9 +23,9 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL(clientEnv.NEXT_PUBLIC_SITE_URL),
-  title: { default: 'Your Hair Company — Doctor-led hair care', template: '%s · Your Hair Company' },
+  title: { default: 'Your Hair Company — Science-first hair care', template: '%s · Your Hair Company' },
   description:
-    'Video consultation with Dr. Tyagi, a personalised hair plan, delivery to your door and follow-up care: doctor-led hair care from Your Hair Company.',
+    'Science-first hair care: a free scalp scan with your phone, your result straight away, and a call back from our hair-care team.',
 };
 
 export const viewport: Viewport = {

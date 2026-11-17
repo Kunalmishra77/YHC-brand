@@ -48,7 +48,7 @@ export function ResultsCarousel({ results }: { results: ResultCardData[] }) {
         label="Patient photos, before and after"
         durationSec={perHalf * SECONDS_PER_CARD}
         minItems={MIN_CARDS}
-        className="text-center"
+        className="text-center [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]"
         itemClassName="w-[19rem] min-[400px]:w-[21rem] sm:w-[26rem] lg:w-[32rem]"
       >
         {results.map((r, i) => (

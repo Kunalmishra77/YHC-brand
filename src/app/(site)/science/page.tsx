@@ -184,7 +184,7 @@ export default function SciencePage() {
           title="Every ingredient has a job"
           lede="What each product contains and why. Every ingredient is listed."
         />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:gap-6">
           {products.map((p, i) => (
             <Reveal
               key={p.id}
@@ -193,7 +193,7 @@ export default function SciencePage() {
             >
               <p className="text-[12px] font-medium text-muted-foreground">
                 {REGULATORY_LABEL[p.regulatoryCategory]} ·{' '}
-                {p.requiresConsultation ? 'Needs a doctor’s prescription' : 'No prescription needed'}
+                {p.regulatoryCategory === 'drug' ? 'Needs a doctor’s prescription' : 'No prescription needed'}
               </p>
               <h3 className="mt-2 text-lg font-semibold text-ink">
                 <Link

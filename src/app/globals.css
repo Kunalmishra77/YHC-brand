@@ -164,6 +164,11 @@
     @apply font-display font-medium text-ink;
     line-height: 1.1;
   }
+  /* Cormorant's default old-style figures make "01" read as "OI" and "1" as "I": use lining numbers. */
+  .display,
+  .font-display {
+    font-variant-numeric: lining-nums;
+  }
   .price {
     @apply font-sans font-semibold;
     font-variant-numeric: tabular-nums;

@@ -141,7 +141,7 @@ export default function ContactPage() {
                   </a>
                 </dd>
                 <dd className="mt-1 text-sm text-body">
-                  We reply within 48 hours and solve it within 1 month.
+                  We reply within 48 hours and solve it within 1 month.
                 </dd>
               </div>
             </div>
@@ -176,7 +176,7 @@ export default function ContactPage() {
                 delayMs={i * 70}
                 className="grid gap-2 border-b border-line py-6 md:grid-cols-[minmax(0,5fr)_minmax(0,5fr)_auto] md:items-baseline md:gap-8"
               >
-                <p className="text-lg font-semibold text-ink">{r.need}</p>
+                <p className="text-lg font-semibold text-balance text-ink">{r.need}</p>
                 <p className="text-body">{r.where}</p>
                 {r.external ? (
                   <a

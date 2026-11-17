@@ -149,7 +149,7 @@ export function ScienceStory() {
           })}
         </ul>
 
-        <div className="mt-8 flex flex-col gap-4 border-t border-line-dark pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-4 border-t border-line-dark pt-6 lg:flex-row lg:items-center lg:justify-between">
           <p className="max-w-xl text-sm leading-relaxed text-on-dark-muted">
             General facts from published skin and hair research. Not medical advice, and not a claim about our
             products.

@@ -64,7 +64,7 @@ export function OutcomeCard({
         <PhoneCall className="mt-0.5 size-5 shrink-0 text-ink" aria-hidden />
         <p className="text-[15px] leading-relaxed text-ink">
           <span className="font-semibold">What happens next:</span> our hair-care team will call you on{' '}
-          <span className="price whitespace-nowrap">{phone}</span> during working hours to talk through your
+          <span className="price whitespace-nowrap">{phone}</span> during working hours (10 am–7 pm) to talk through your
           options. There is no charge for the scan or the call.
         </p>
       </div>

@@ -61,7 +61,7 @@ export default function ProductsPage() {
               </Link>
             }
           />
-          <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 md:grid-cols-3">
             {prescribed.map((p, i) => (
               <Reveal key={p.id} delayMs={(i % 3) * 100}>
                 <ProductTile product={p} />
@@ -79,7 +79,7 @@ export default function ProductsPage() {
               title="Everyday hair care"
               lede="Gentle on a scalp under treatment. Ask our team about them after your scan."
             />
-            <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 md:grid-cols-3">
               {open.map((p, i) => (
                 <Reveal key={p.id} delayMs={(i % 3) * 100}>
                   <ProductTile product={p} />

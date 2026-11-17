@@ -20,7 +20,7 @@ export function HeroStacked({ trust }: { trust: React.ReactNode }) {
         className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_70%_30%,rgba(237,168,100,0.14),transparent_70%),radial-gradient(50%_40%_at_10%_90%,rgba(153,176,199,0.1),transparent_70%)]"
       />
 
-      <div className="container-yhc grid gap-10 pt-24 pb-14 sm:pt-28 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-center md:gap-10 lg:gap-16 lg:pb-20">
+      <div className="container-yhc grid gap-10 pt-24 pb-14 sm:pt-28 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-16 lg:pb-20">
         <div className="max-w-xl">
           <h1
             id="hero-heading-stacked"
@@ -38,7 +38,7 @@ export function HeroStacked({ trust }: { trust: React.ReactNode }) {
             Begin my free scalp scan
             <ArrowDown className="size-4" aria-hidden />
           </a>
-          <div className={`mt-8 hidden md:block ${ENTER} delay-500`}>{trust}</div>
+          <div className={`mt-8 hidden lg:block ${ENTER} delay-500`}>{trust}</div>
         </div>
 
         {/* Portrait + form */}
@@ -74,7 +74,7 @@ export function HeroStacked({ trust }: { trust: React.ReactNode }) {
           </div>
         </div>
 
-        <div className="md:hidden">{trust}</div>
+        <div className="lg:hidden">{trust}</div>
       </div>
 
       {/* The story, as swipe cards */}

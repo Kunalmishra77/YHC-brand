@@ -7,6 +7,7 @@ import { useEffect, useId, useState, useTransition } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { sendCodeAction, verifyCodeAction } from '@/app/(site)/start/actions';
 import { OtpInput } from '@/components/booking/otp-input';
+import { SignInPanel } from '@/components/journey/sign-in-panel';
 import { Checkbox } from '@/components/ui/checkbox';
 import { track } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
@@ -14,13 +15,14 @@ import { type StartScanForm, type StartScanFormInput, startScanFormSchema } from
 
 /**
  * "Free scalp scan" start form (homepage hero and /start). CONTRACT — keep the export name and props:
- *   <HeroStartForm className? />
+ *   <HeroStartForm className? signIn? />  (signIn: open on the returning-customer sign-in)
  * Flow (ADR-36): name, mobile, email, age → a 6-digit code by email → the server signs the customer in,
  * creates the lead and redirects to /start/scan.
  */
-export function HeroStartForm({ className }: { className?: string }) {
+export function HeroStartForm({ className, signIn = false }: { className?: string; signIn?: boolean }) {
   const uid = useId();
   const [otpFor, setOtpFor] = useState<{ values: StartScanForm; sentTo: string } | null>(null);
+  const [signingIn, setSigningIn] = useState(signIn);
   const [serverError, setServerError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -54,7 +56,9 @@ export function HeroStartForm({ className }: { className?: string }) {
         className,
       )}
     >
-      {otpFor ? (
+      {signingIn ? (
+        <SignInPanel onBack={() => setSigningIn(false)} />
+      ) : otpFor ? (
         <OtpStep
           sentTo={otpFor.sentTo}
           values={otpFor.values}
@@ -88,37 +92,25 @@ export function HeroStartForm({ className }: { className?: string }) {
               />
             </GlassField>
 
-            <GlassField id={`${uid}-mobile`} label="Mobile number" error={errors.mobile?.message}>
-              <div className="flex">
-                <span className="inline-flex h-12 items-center rounded-l-xl border border-r-0 border-white/20 bg-white/5 px-3 text-[15px] text-white/80">
-                  +91
-                </span>
-                <input
-                  id={`${uid}-mobile`}
-                  type="tel"
-                  inputMode="numeric"
-                  autoComplete="tel-national"
-                  maxLength={10}
-                  className={cn(inputClass(Boolean(errors.mobile)), 'price rounded-l-none')}
-                  aria-invalid={errors.mobile ? true : undefined}
-                  aria-describedby={`${uid}-mobile-err`}
-                  {...register('mobile')}
-                />
-              </div>
-            </GlassField>
-
+            {/* Mobile + age share a row; the email gets the full width (it is the longest value). */}
             <div className="grid grid-cols-[minmax(0,1fr)_6.5rem] gap-3">
-              <GlassField id={`${uid}-email`} label="Email (for your code)" error={errors.email?.message}>
-                <input
-                  id={`${uid}-email`}
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  className={inputClass(Boolean(errors.email))}
-                  aria-invalid={errors.email ? true : undefined}
-                  aria-describedby={`${uid}-email-err`}
-                  {...register('email')}
-                />
+              <GlassField id={`${uid}-mobile`} label="Mobile number" error={errors.mobile?.message}>
+                <div className="flex">
+                  <span className="inline-flex h-12 items-center rounded-l-xl border border-r-0 border-white/20 bg-white/5 px-3 text-[15px] text-white/80">
+                    +91
+                  </span>
+                  <input
+                    id={`${uid}-mobile`}
+                    type="tel"
+                    inputMode="numeric"
+                    autoComplete="tel-national"
+                    maxLength={16}
+                    className={cn(inputClass(Boolean(errors.mobile)), 'price rounded-l-none')}
+                    aria-invalid={errors.mobile ? true : undefined}
+                    aria-describedby={`${uid}-mobile-err`}
+                    {...register('mobile')}
+                  />
+                </div>
               </GlassField>
               <GlassField id={`${uid}-age`} label="Age" error={errors.age?.message}>
                 <input
@@ -135,6 +127,19 @@ export function HeroStartForm({ className }: { className?: string }) {
               </GlassField>
             </div>
 
+            <GlassField id={`${uid}-email`} label="Email (for your code)" error={errors.email?.message}>
+              <input
+                id={`${uid}-email`}
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                className={inputClass(Boolean(errors.email))}
+                aria-invalid={errors.email ? true : undefined}
+                aria-describedby={`${uid}-email-err`}
+                {...register('email')}
+              />
+            </GlassField>
+
             <Controller
               control={control}
               name="consent"
@@ -148,11 +153,11 @@ export function HeroStartForm({ className }: { className?: string }) {
                       onBlur={field.onBlur}
                       aria-invalid={errors.consent ? true : undefined}
                       aria-describedby={errors.consent ? `${uid}-consent-err` : undefined}
-                      className="mt-0.5 size-5 border-white/40 bg-white/5 data-[state=checked]:border-white data-[state=checked]:bg-white data-[state=checked]:text-obsidian"
+                      className="relative mt-0.5 size-5 border-white/40 bg-white/5 after:absolute after:-inset-3 after:content-[''] data-[state=checked]:border-white data-[state=checked]:bg-white data-[state=checked]:text-obsidian"
                     />
                     <label htmlFor={`${uid}-consent`} className="text-[13px] leading-snug text-white/75">
                       I agree to the{' '}
-                      <Link href="/legal/privacy" className="text-white underline underline-offset-2">
+                      <Link href="/legal/privacy" className="py-1 text-white underline underline-offset-2">
                         privacy policy
                       </Link>{' '}
                       and to a call or WhatsApp from Your Hair Company about my scan.
@@ -187,9 +192,19 @@ export function HeroStartForm({ className }: { className?: string }) {
             Begin my free scalp scan
             {!pending ? <ArrowRight className="size-4" aria-hidden /> : null}
           </button>
-          <p className="mt-3.5 flex items-center justify-center gap-1.5 text-center text-[12px] leading-snug text-white/60">
-            <ShieldCheck className="size-3.5" aria-hidden />
+          <p className="mt-3.5 text-center text-[12px] leading-snug text-balance text-white/60">
+            <ShieldCheck className="mr-1 inline size-3.5 align-[-2px]" aria-hidden />
             Free. Takes about 4 minutes. Your photos stay private.
+          </p>
+          <p className="mt-2 text-center text-[13px] text-white/75">
+            Took the scan before?{' '}
+            <button
+              type="button"
+              onClick={() => setSigningIn(true)}
+              className="py-1.5 font-medium text-white underline underline-offset-4"
+            >
+              Sign in with your email
+            </button>
           </p>
         </form>
       )}

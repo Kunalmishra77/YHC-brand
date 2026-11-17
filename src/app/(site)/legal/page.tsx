@@ -35,8 +35,8 @@ export default function LegalIndexPage() {
         </div>
       </section>
 
-      <section className="container-yhc py-14 lg:py-20">
-        <ol className="border-t border-line">
+      <section className="container-yhc pt-2 pb-14 lg:pt-6 lg:pb-20">
+        <ol>
           {docs.map((d, i) => (
             <li key={d.slug} className="group relative border-b border-line">
               <div className="grid gap-2 py-7 md:grid-cols-[64px_minmax(0,1fr)] md:items-baseline md:gap-x-8 md:py-9 lg:grid-cols-[64px_minmax(0,5fr)_minmax(0,6fr)_auto]">
@@ -70,7 +70,7 @@ export default function LegalIndexPage() {
             {SITE.supportEmail}
           </a>{' '}
           or the{' '}
-          <Link href="/legal/grievance" className="text-ink underline decoration-steel underline-offset-4">
+          <Link href="/legal/grievance" className="whitespace-nowrap text-ink underline decoration-steel underline-offset-4">
             grievance officer
           </Link>
           .

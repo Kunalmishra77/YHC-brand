@@ -21,7 +21,7 @@ export function PlanLadder({
 }) {
   const Heading = headingLevel;
   return (
-    <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:items-end lg:gap-0">
+    <ol className="grid gap-4 md:grid-cols-3 md:items-stretch lg:gap-0">
       {plans.map((plan, i) => {
         const eligible = guarantee ? plan.months >= guarantee.minPlanMonths : false;
         return (

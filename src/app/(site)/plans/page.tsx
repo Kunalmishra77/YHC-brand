@@ -190,7 +190,7 @@ export default function PlansPage() {
       <CtaBand
         id="plans-cta-heading"
         image={SLOTS.H16}
-        imagePosition="45% 50%"
+        imagePosition="10% 50%"
         align="right"
         title="Your plan starts with a free scalp scan."
         bookLabel={terms.bookLabel}

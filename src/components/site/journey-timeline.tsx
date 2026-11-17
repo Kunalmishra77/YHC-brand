@@ -11,7 +11,7 @@ export interface JourneyStep {
 /** The visitor journey (2026-11-05: free scan, instant result, a call back from our team). Copy only. */
 export function buildTrustJourney(): JourneyStep[] {
   return [
-    { title: 'Basic details', body: 'Your name and mobile number — under a minute.', icon: UserRound },
+    { title: 'Basic details', body: 'Your name, mobile, email and age — under a minute.', icon: UserRound },
     {
       title: 'Scalp scan',
       body: 'A free, guided phone-camera scan of your scalp and roots, from home.',

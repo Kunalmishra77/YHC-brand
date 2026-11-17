@@ -15,7 +15,7 @@ export const startScanFormSchema = z.object({
   age: z.coerce
     .number({ error: 'Enter your age' })
     .int('Enter your age in years')
-    .min(MIN_AGE, `You need to be ${MIN_AGE} or older`)
+    .min(MIN_AGE, `You need to be ${MIN_AGE} or older. A parent can email care@yourhaircompany.com for you.`)
     .max(100, 'Please check your age'),
   consent: z.boolean().refine((v) => v, 'Please agree to continue'),
 });

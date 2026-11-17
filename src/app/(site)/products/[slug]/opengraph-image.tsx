@@ -25,7 +25,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   return brandCard({
     eyebrow: 'YHC product',
     title: product.name,
-    subtitle: product.requiresConsultation
+    subtitle: product.regulatoryCategory === 'drug'
       ? 'Supplied only with a doctor’s prescription.'
       : 'Every ingredient listed on the page.',
     chips: [...(media ? [media.pack] : []), ...lines.map((l) => LINE_LABEL[l])],

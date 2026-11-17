@@ -87,7 +87,7 @@ export default async function AccountLayout({ children }: LayoutProps<'/account'
             Enter your details on the start page. We email you a code, and you are in.
           </p>
           <Button asChild className="mt-6 h-11 px-6">
-            <Link href="/start">Sign in with your email</Link>
+            <Link href="/start?signin=1">Sign in with your email</Link>
           </Button>
         </main>
       )}

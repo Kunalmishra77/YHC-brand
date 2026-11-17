@@ -217,7 +217,7 @@ export default async function ConcernPage({ params }: PageProps<'/concerns/[slug
           <section className="border-t border-line bg-[#efeeeb]/60">
             {/* 2 products: heading beside them; 3: heading above — always a full row. */}
             <div className={`container-yhc ${SECTION_Y}`}>
-              <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 md:grid-cols-3">
                 <div
                   className={
                     products.length === 2

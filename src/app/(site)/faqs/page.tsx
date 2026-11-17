@@ -99,7 +99,7 @@ export default function FaqsPage() {
             .map(([category, items]) => (
               <section
                 key={category}
-                className="grid gap-6 border-t border-line pt-10 first:border-t-0 first:pt-0 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-10"
+                className="grid gap-6 pt-10 first:pt-0 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-10"
                 aria-labelledby={`faq-${category}`}
               >
                 <h2

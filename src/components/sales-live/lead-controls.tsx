@@ -284,7 +284,7 @@ export function FollowUpPanel({ id, nextActionAt }: { id: string; nextActionAt: 
           type="datetime-local"
           value={custom}
           onChange={(e) => setCustom(e.target.value)}
-          className="h-11 min-w-0 flex-1 rounded-xl border border-line bg-white px-3 text-sm"
+          className="h-11 min-w-0 basis-full rounded-xl border border-line bg-white px-3 text-sm sm:flex-1 sm:basis-auto"
         />
         <button type="submit" disabled={pending || !custom} className={BTN}>
           <CalendarClock className="size-4" aria-hidden />

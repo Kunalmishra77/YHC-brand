@@ -59,6 +59,47 @@ export async function verifyEmailCode(
   return onboardCustomer({ userId: data.user.id, ...input }, ctx);
 }
 
+/**
+ * Returning customers sign in with their email and a code only (no new account is created). Staff
+ * emails and emails that never finished sign-up are refused after the code check.
+ */
+export async function sendSignInCode(email: string): Promise<{ sentTo: string }> {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
+  if (error) {
+    if (error.status === 429)
+      throw new AppError('rate_limited', 'Please wait a minute before asking for a new code.', 429);
+    throw new AppError(
+      'no_account',
+      'We could not find a scan with this email. Please start with your details instead.',
+      404,
+    );
+  }
+  return { sentTo: maskEmail(email) };
+}
+
+export async function verifySignInCode(email: string, code: string): Promise<void> {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.verifyOtp({ email, token: code, type: 'email' });
+  if (error || !data.user)
+    throw new AppError('otp_invalid', 'That code does not match or has expired. Please try again.', 422);
+  const admin = createSupabaseAdminClient();
+  const [{ data: profile }, { data: customer }] = await Promise.all([
+    admin.from('profiles').select('role').eq('id', data.user.id).maybeSingle(),
+    admin.from('customers').select('id').eq('profile_id', data.user.id).is('deleted_at', null).maybeSingle(),
+  ]);
+  if (profile?.role !== 'customer' || !customer) {
+    await supabase.auth.signOut();
+    throw new AppError(
+      'no_account',
+      profile && profile.role !== 'customer'
+        ? 'This email belongs to a staff account. Please use the team sign-in page.'
+        : 'We could not find a scan with this email. Please start with your details instead.',
+      404,
+    );
+  }
+}
+
 async function onboardCustomer(
   input: { userId: string; name: string; email: string; mobile: string; age: number },
   ctx: { ip: string | null; userAgent: string | null; utm: Record<string, string> },

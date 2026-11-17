@@ -42,10 +42,10 @@ export function ProductTile({
             dark ? 'bg-white/10 text-on-dark' : 'bg-white/70 text-ink',
           )}
         >
-          {product.requiresConsultation ? 'Ask our team first' : 'Everyday care'}
+          {product.regulatoryCategory === 'drug' ? 'Prescription only' : 'Ask our team'}
         </span>
       </div>
-      <div className="mt-4 flex items-start justify-between gap-4">
+      <div className="mt-4 flex items-start justify-between gap-4 max-sm:flex-col max-sm:gap-1">
         <div>
           <h3 className="font-semibold text-ink group-hover:text-brand">{product.name}</h3>
           <p className="mt-0.5 text-sm text-body">{product.tagline}</p>
@@ -56,7 +56,7 @@ export function ProductTile({
         {product.pricePaise !== null && !product.requiresConsultation ? (
           <span className="price shrink-0 text-ink">{formatINR(product.pricePaise)}</span>
         ) : (
-          <span className="shrink-0 text-[13px] text-muted-foreground">In your plan</span>
+          <span className="shrink-0 text-[13px] text-muted-foreground">Order by phone</span>
         )}
       </div>
     </Link>

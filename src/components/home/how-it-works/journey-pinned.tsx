@@ -88,7 +88,7 @@ export function JourneyPinned({ steps }: { steps: HowStep[]; terms: SlotTerms })
           </motion.div>
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-y-0 right-0 w-[54%] bg-[linear-gradient(to_right,rgba(18,19,21,0.92),rgba(18,19,21,0.15)_45%,transparent_70%)]"
+            className="pointer-events-none absolute inset-y-0 right-0 w-[54%] bg-[linear-gradient(to_right,rgba(18,19,21,1),rgba(18,19,21,0.15)_45%,transparent_70%)]"
           />
           {current?.image.note ? (
             <span className="absolute top-6 right-6 z-10 rounded-full bg-black/55 px-2.5 py-1 text-[12px] backdrop-blur">
@@ -155,7 +155,8 @@ export function JourneyPinned({ steps }: { steps: HowStep[]; terms: SlotTerms })
             </div>
 
             {/* Segmented step bar, filled by scroll. Each label jumps to its step. */}
-            <nav aria-label="Jump to a step">
+            {/* Kept to the dark left part of the card, so the labels never sit on the photo. */}
+            <nav aria-label="Jump to a step" className="lg:max-w-[44%]">
               <ol className="grid gap-3" style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}>
                 {steps.map((s, i) => (
                   <li key={s.id}>

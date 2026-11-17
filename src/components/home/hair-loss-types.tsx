@@ -205,7 +205,7 @@ export function HairLossTypes() {
 
         <HairLossExplorer types={types} />
 
-        <div className="mt-8 flex flex-col gap-5 border-t border-line pt-6 md:flex-row md:items-center md:justify-between">
+        <div className="mt-8 flex flex-col gap-5 border-t border-line pt-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="display text-[clamp(1.5rem,1.3rem+0.8vw,2rem)]">Not sure which? Take the scan.</p>
             <p className="mt-1 text-[13px] text-muted-foreground">

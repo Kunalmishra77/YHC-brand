@@ -11,7 +11,7 @@ import { getSessionUser } from '@/lib/rbac';
 import { listScans } from '@/server/live/scans';
 
 export const metadata: Metadata = pageMetadata({
-  title: 'Start your free hair assessment',
+  title: 'Start your free scalp scan',
   description:
     'Start your free hair check: a few details, a guided scalp scan with your phone and your result straight away. Our team then calls you.',
   path: '/start',
@@ -20,7 +20,8 @@ export const metadata: Metadata = pageMetadata({
 export const dynamic = 'force-dynamic';
 
 /** /start — step 1 (basic details) for visitors who did not use the homepage hero form. */
-export default async function StartPage() {
+export default async function StartPage(props: PageProps<'/start'>) {
+  const signIn = (await props.searchParams).signin === '1';
   const user = await getSessionUser();
   const scans = user?.role === 'customer' && user.customerId ? await listScans(user.customerId) : null;
   const resume = scans ? (scans.some((s) => s.status === 'submitted') ? '/start/result' : '/start/scan') : null;
@@ -34,22 +35,8 @@ export default async function StartPage() {
         aria-hidden
       />
       <div className="container-yhc relative pt-6 pb-14 md:pt-8 md:pb-24">
-        <JourneyStepper current="details" tone="dark" className="mb-10 md:mb-14" />
-        {resume ? (
-          <div className="mb-8 flex flex-col gap-3 rounded-2xl bg-white/5 p-4 ring-1 ring-white/15 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-on-dark">
-              {resume === '/start/result' ? 'Your scan result is ready.' : 'You have already started your scan.'}
-            </p>
-            <Link
-              href={resume}
-              className="bg-silver inline-flex h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold text-obsidian"
-            >
-              {resume === '/start/result' ? 'See my result' : 'Continue where you left off'}
-              <ArrowRight className="size-4" aria-hidden />
-            </Link>
-          </div>
-        ) : null}
-        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-16">
+        <JourneyStepper current="details" tone="dark" className="mb-8 md:mb-10 lg:mb-8" />
+        <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-16">
           <div className="min-w-0">
             <p className="eyebrow text-brand-on-dark">Free scalp scan</p>
             <h1 className="mt-4 font-display text-[clamp(2.375rem,1.7rem+2.8vw,3.75rem)] leading-[1.05] font-medium text-balance text-on-dark">
@@ -59,7 +46,8 @@ export default async function StartPage() {
               Scan your scalp with your phone and see your result straight away. Then our hair-care team calls you
               to talk through your options.
             </p>
-            <div className="group relative mt-7 aspect-[16/9] max-w-xl overflow-hidden rounded-[28px] bg-ink-2 ring-1 ring-white/10">
+            {/* Phones go straight to the form: the picture shows from `sm` up, and is shorter on laptops. */}
+            <div className="group relative mt-7 hidden aspect-[16/9] max-w-xl overflow-hidden rounded-[28px] bg-ink-2 ring-1 ring-white/10 sm:block lg:aspect-[21/9]">
               <Image
                 src={welcome.src}
                 alt={welcome.alt}
@@ -100,7 +88,30 @@ export default async function StartPage() {
               ))}
             </ul>
           </div>
-          <HeroStartForm className="mx-auto lg:mx-0" />
+          {resume ? (
+            // Already signed in: no form to fill again, just the way back in.
+            <div className="mx-auto w-full max-w-md rounded-[28px] bg-white/10 p-6 ring-1 ring-white/20 backdrop-blur-2xl sm:p-8 lg:mx-0">
+              <p className="font-display text-[28px] leading-[1.1] font-medium text-white">You&apos;re signed in</p>
+              <p className="mt-2 text-sm text-white/75">
+                {resume === '/start/result' ? 'Your scan result is ready.' : 'You have already started your scan.'}
+              </p>
+              <Link
+                href={resume}
+                className="bg-silver mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-[15px] font-semibold text-obsidian"
+              >
+                {resume === '/start/result' ? 'See my result' : 'Continue my scan'}
+                <ArrowRight className="size-4" aria-hidden />
+              </Link>
+              <Link
+                href="/account"
+                className="mt-2 inline-flex h-12 w-full items-center justify-center rounded-xl text-[15px] font-medium text-white ring-1 ring-white/25 hover:bg-white/10"
+              >
+                Go to my account
+              </Link>
+            </div>
+          ) : (
+            <HeroStartForm className="mx-auto lg:mx-0" signIn={signIn} />
+          )}
         </div>
       </div>
     </div>

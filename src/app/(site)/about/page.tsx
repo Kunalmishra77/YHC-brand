@@ -149,7 +149,7 @@ export default function AboutPage() {
               Each step in detail
             </Link>
           </div>
-          <ol className="mt-10 grid gap-px overflow-hidden rounded-2xl bg-line-dark sm:grid-cols-2 md:mt-14 lg:grid-cols-5">
+          <ol className="mt-10 grid gap-px overflow-hidden rounded-2xl bg-line-dark sm:grid-cols-2 md:mt-14 lg:grid-cols-5 sm:[&>li:last-child]:col-span-2 lg:[&>li:last-child]:col-span-1">
             {journey.map((step, i) => (
               <Reveal
                 as="li"

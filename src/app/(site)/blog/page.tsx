@@ -105,8 +105,8 @@ export default function BlogPage() {
           {/* Editorial list */}
           {rest.length > 0 ? (
             <section className="container-yhc pb-14 lg:pb-20">
-              <div className="grid gap-10 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
-                <div className="md:sticky md:top-28 md:self-start">
+              <div className="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
+                <div className="lg:sticky lg:top-28 lg:self-start">
                   <h2 className="display text-[clamp(2rem,1.5rem+2vw,2.75rem)] text-balance">More to read</h2>
                   <p className="mt-4 max-w-xs leading-relaxed text-body">
                     Not sure where to start? The hair concern pages cover the most common problems.

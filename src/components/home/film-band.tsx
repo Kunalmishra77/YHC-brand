@@ -162,7 +162,7 @@ function Beat({
   const y = useRamp(progress, [start + 0.02, start + 0.09], [first ? 0 : 36, 0]);
   return (
     <motion.div aria-hidden className={cn('absolute inset-x-0 top-0', align === 'right' && 'text-right')} style={{ opacity, y }}>
-      <p className="display text-[clamp(3rem,1.6rem+4.4vw,6rem)] leading-[0.95] text-balance text-on-dark">{beat.title}</p>
+      <p className={cn('display max-w-[min(42vw,36rem)] text-[clamp(3rem,1.6rem+4.4vw,6rem)] leading-[0.95] text-balance text-on-dark max-lg:max-w-none', align === 'right' && 'ml-auto')}>{beat.title}</p>
       <p className={cn('mt-5 max-w-md text-lg leading-relaxed text-on-dark-muted', align === 'right' && 'ml-auto')}>{beat.body}</p>
     </motion.div>
   );

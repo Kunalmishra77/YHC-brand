@@ -126,7 +126,7 @@ export default async function ProductPage({ params }: PageProps<'/products/[slug
             <p className="flex items-start gap-2 text-body">
               <ScanLine className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
               <span>
-                {product.requiresConsultation
+                {product.regulatoryCategory === 'drug'
                   ? 'This product has a prescription medicine, so it is supplied only with a doctor’s prescription. Start with a free scalp scan and our hair-care team will talk you through your options.'
                   : 'Products are not sold online right now. Start with a free scalp scan and our hair-care team will talk you through your options.'}
               </span>

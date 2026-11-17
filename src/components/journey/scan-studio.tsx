@@ -10,11 +10,13 @@ import { DURATION_ANSWERS, FAMILY_ANSWERS, LONG_BALD_ANSWERS, PATTERN_ANSWERS } 
 import { type CaptureZone, type ScanAnswers } from '@/lib/journey/types';
 import { track } from '@/lib/analytics';
 import { ISSUE_HINT, analysePhoto } from '@/lib/scan/analyse';
+import type { ZoneIssue } from '@/lib/scan/rules';
 import { cn } from '@/lib/utils';
 import { AngleGuide } from './angle-guide';
 import styles from './journey.module.css';
 import { ProgressRing } from './meters';
 import { type ZoneShots, ZoneCapture } from './scan/zone-capture';
+import type { ResumeScan } from '@/server/live/scans';
 
 /*
  * Guided scalp scan (ADR-36). 4 questions → photo consent → 7 guided zone captures (at least 4,
@@ -47,13 +49,38 @@ const QUESTIONS: [Question<'duration'>, Question<'pattern'>, Question<'longBald'
   { key: 'familyHistory', title: 'Does hair loss run in your family?', hint: 'Parents, grandparents or siblings.', options: FAMILY_ANSWERS },
 ];
 
-export function ScanStudio({ firstName, hasResult }: { firstName: string; hasResult: boolean }) {
+/** Photos already uploaded to an unfinished scan, shown from our photo route (ADR-36). */
+function resumedShots(resume: ResumeScan | null | undefined): ZoneShots {
+  if (!resume) return {};
+  return Object.fromEntries(
+    resume.saved.map(({ zone, issue }) => [
+      zone,
+      {
+        url: `/api/scan/photo/${resume.scanId}/${zone}`,
+        kb: 0,
+        state: 'saved' as const,
+        hint: issue && issue in ISSUE_HINT ? ISSUE_HINT[issue as ZoneIssue] : null,
+      },
+    ]),
+  );
+}
+
+export function ScanStudio({
+  firstName,
+  hasResult,
+  resume,
+}: {
+  firstName: string;
+  hasResult: boolean;
+  /** an unfinished scan: a refresh or the back button must not lose the photos already taken */
+  resume?: ResumeScan | null;
+}) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>('intro');
   const [qIndex, setQIndex] = useState(0);
-  const [answers, setAnswers] = useState<Partial<ScanAnswers>>({});
-  const [scanId, setScanId] = useState<string | null>(null);
-  const [shots, setShots] = useState<ZoneShots>({});
+  const [answers, setAnswers] = useState<Partial<ScanAnswers>>(() => (resume?.answers ?? {}) as Partial<ScanAnswers>);
+  const [scanId, setScanId] = useState<string | null>(resume?.scanId ?? null);
+  const [shots, setShots] = useState<ZoneShots>(() => resumedShots(resume));
   const [skipped, setSkipped] = useState<CaptureZone[]>([]);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const urls = useRef<string[]>([]);
@@ -104,10 +131,12 @@ export function ScanStudio({ firstName, hasResult }: { firstName: string; hasRes
         <Intro
           firstName={firstName}
           hasResult={hasResult}
+          savedCount={Object.keys(shots).length}
           headingRef={headingRef}
           onStart={() => {
             track('scan_started');
-            setPhase('questions');
+            // A resumed scan with its answers goes straight back to the photos.
+            setPhase(scanId && complete ? 'capture' : 'questions');
           }}
         />
       ) : null}
@@ -173,11 +202,13 @@ export function ScanStudio({ firstName, hasResult }: { firstName: string; hasRes
 function Intro({
   firstName,
   hasResult,
+  savedCount,
   headingRef,
   onStart,
 }: {
   firstName: string;
   hasResult: boolean;
+  savedCount: number;
   headingRef: React.Ref<HTMLHeadingElement>;
   onStart: () => void;
 }) {
@@ -215,7 +246,7 @@ function Intro({
             onClick={onStart}
             className="bg-silver inline-flex h-12 items-center justify-center gap-2 rounded-xl px-7 text-[15px] font-semibold text-obsidian hover:opacity-95"
           >
-            Start my scan
+            {savedCount ? 'Continue my scan' : 'Start my scan'}
             <ArrowRight className="size-4" aria-hidden />
           </button>
           {hasResult ? (
@@ -227,6 +258,11 @@ function Intro({
             </Link>
           ) : null}
         </div>
+        {savedCount ? (
+          <p className="mt-4 text-sm text-on-dark">
+            {savedCount} photo{savedCount === 1 ? ' is' : 's are'} already saved. You can carry on where you left off.
+          </p>
+        ) : null}
         <p className="mt-5 max-w-xl text-[13px] text-on-dark-muted">
           Use good light and hold the phone still. Your photos are stored privately. The result is a photo check,
           not a medical diagnosis.

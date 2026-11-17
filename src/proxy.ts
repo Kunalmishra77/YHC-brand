@@ -85,7 +85,7 @@ export async function proxy(request: NextRequest) {
   const response = { current: NextResponse.next({ request }) };
   const signedIn = await refreshSupabase(request, response);
   if (gate && !signedIn) {
-    const login = new URL(gate.prefix === '/account' ? '/start' : '/auth/login', request.url);
+    const login = new URL(gate.prefix === '/account' ? '/start?signin=1' : '/auth/login', request.url);
     if (gate.prefix !== '/account') login.searchParams.set('next', `${pathname}${search}`);
     return noindex(NextResponse.redirect(login));
   }

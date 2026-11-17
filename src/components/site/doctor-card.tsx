@@ -91,9 +91,9 @@ function CredentialCard({ doctor }: { doctor: Doctor }) {
         aria-hidden
       />
       <div className="overflow-hidden rounded-2xl bg-obsidian text-on-dark shadow-raised ring-1 ring-line-dark">
-        <div className="flex items-center justify-between border-b border-line-dark px-6 py-4">
-          <span className="font-display text-lg">Your Hair Company</span>
-          <span className="flex items-center gap-1.5 text-[12px] text-on-dark-muted">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-line-dark px-5 py-4 sm:px-6">
+          <span className="font-display text-lg whitespace-nowrap">Your Hair Company</span>
+          <span className="flex items-center gap-1.5 text-[12px] whitespace-nowrap text-on-dark-muted">
             <Stethoscope className="size-3.5" aria-hidden />
             Founding dermatologist
           </span>

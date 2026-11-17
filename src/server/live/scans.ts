@@ -242,3 +242,39 @@ export async function openScanId(customerId: string): Promise<string | null> {
     .maybeSingle();
   return data?.id ?? null;
 }
+
+export interface ResumeScan {
+  scanId: string;
+  /** the 4 answers, when they were saved and are complete */
+  answers: Record<string, string> | null;
+  /** zones already uploaded, with the retake tip when the photo check flagged one */
+  saved: { zone: CaptureZone; issue: string | null }[];
+}
+
+/**
+ * The customer's unfinished scan, so a refresh or the phone's back button does not lose the photos
+ * already uploaded: the scan page restores them (ADR-36).
+ */
+export async function getResumeScan(customerId: string): Promise<ResumeScan | null> {
+  const admin = createSupabaseAdminClient();
+  const { data: scan } = await admin
+    .from('scans')
+    .select('id, answers')
+    .eq('customer_id', customerId)
+    .eq('status', 'in_progress')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!scan) return null;
+  const { data: photos } = await admin.from('scan_photos').select('zone, quality').eq('scan_id', scan.id);
+  return {
+    scanId: scan.id,
+    answers: stringRecord(scan.answers),
+    saved: (photos ?? [])
+      .filter((p): p is typeof p & { zone: CaptureZone } => (CAPTURE_ZONES as readonly string[]).includes(p.zone))
+      .map((p) => {
+        const q = (p.quality ?? {}) as Record<string, unknown>;
+        return { zone: p.zone, issue: typeof q.issue === 'string' ? q.issue : null };
+      }),
+  };
+}

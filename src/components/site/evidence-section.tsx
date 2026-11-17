@@ -51,7 +51,7 @@ function FullEvidence() {
         </div>
 
         <ul
-          className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-3xl bg-line ring-1 ring-line sm:grid-cols-2 xl:grid-cols-4"
+          className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-3xl bg-line ring-1 ring-line sm:grid-cols-2 md:grid-cols-3"
           aria-label="Key figures"
         >
           {figures.map((fact) => (
@@ -91,7 +91,7 @@ function FullEvidence() {
           </ul>
         </div>
 
-        <div className="mt-20 border-t border-line pt-10">
+        <div className="mt-12 border-t border-line pt-8 lg:mt-20 lg:pt-10">
           <h3 id="evidence-references" className="text-sm font-semibold tracking-[0.12em] text-ink uppercase">
             References
           </h3>
@@ -106,8 +106,11 @@ function FullEvidence() {
                     className="inline-block min-h-6 py-0.5 font-medium text-ink underline decoration-steel underline-offset-4 hover:decoration-ink"
                   >
                     {ref.name}
-                    {ref.year ? ` (${ref.year})` : ''}
-                    <ArrowUpRight className="ml-0.5 inline size-3.5 align-[-2px]" aria-hidden />
+                    {/* year + arrow stay together so the arrow never sits alone on a line */}
+                    <span className="whitespace-nowrap">
+                      {ref.year ? ` (${ref.year})` : ''}
+                      <ArrowUpRight className="ml-0.5 inline size-3.5 align-[-2px]" aria-hidden />
+                    </span>
                     <span className="sr-only"> (opens in a new tab)</span>
                   </a>
                   <span className="block text-muted-foreground">{ref.title}</span>
@@ -165,8 +168,13 @@ function FigureBody({ fact, cite, compact }: { fact: EvidenceFact; cite?: number
     <>
       <p
         className={cn(
-          'price leading-none tracking-tight text-ink',
-          compact ? 'text-[clamp(2.25rem,1.9rem+1.4vw,3rem)]' : 'text-[clamp(2.5rem,2rem+2vw,3.5rem)]',
+          'price leading-none tracking-tight whitespace-nowrap text-ink',
+          // long figures such as "80,000–120,000" get a smaller size so they fit a phone card on one line
+          (fact.stat ?? '').length > 8
+            ? 'text-[clamp(1.75rem,1.4rem+1.6vw,2.75rem)]'
+            : compact
+              ? 'text-[clamp(2.25rem,1.9rem+1.4vw,3rem)]'
+              : 'text-[clamp(2.5rem,2rem+2vw,3.5rem)]',
         )}
       >
         {fact.stat}
@@ -207,12 +215,12 @@ function FigureBody({ fact, cite, compact }: { fact: EvidenceFact; cite?: number
 function Cite({ n }: { n: number }) {
   if (!n) return null;
   return (
-    <sup className="ml-0.5 leading-none">
+    <sup className="ml-0.5 leading-none whitespace-nowrap">
       {/* 24×24 tap target (WCAG 2.5.8); negative margins keep it from stretching the line box. */}
       <a
         href={`#ref-${n}`}
         aria-label={`Source ${n}`}
-        className="price -my-1.5 inline-flex min-h-6 min-w-6 items-center justify-center rounded-sm px-0.5 text-xs text-brand no-underline hover:underline"
+        className="price relative inline rounded-sm px-0.5 text-xs text-brand no-underline after:absolute after:-inset-1.5 after:content-[''] hover:underline"
       >
         [{n}]
       </a>

@@ -86,7 +86,7 @@ export function ExpectTimeline({ stages }: { stages: ExpectStage[] }) {
                   >
                     {i + 1}
                   </motion.span>
-                  <span className="text-sm font-medium text-brand">{s.when}</span>
+                  <span className="relative z-10 bg-card pr-3 text-sm font-medium text-brand">{s.when}</span>
                 </div>
 
                 <div className="group/stage relative aspect-square overflow-hidden rounded-[1.75rem] bg-mist ring-1 ring-line">

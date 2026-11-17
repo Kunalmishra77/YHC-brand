@@ -17,7 +17,7 @@ import { ScanPhoto } from './scan-invite/scan-photo';
  */
 
 const STEPS = [
-  'Your name and mobile number',
+  'Your name, mobile and email',
   `Up to ${CAPTURE_ZONES.length} photos. Your phone shows you how.`,
   'Your result, with the reasons',
 ];

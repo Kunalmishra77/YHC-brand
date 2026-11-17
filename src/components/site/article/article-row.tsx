@@ -35,8 +35,11 @@ export function ArticleMeta({ article, tone = 'light' }: { article: Article; ton
       </span>
       <span aria-hidden>·</span>
       <span>{article.readingMinutes} min read</span>
-      <span aria-hidden>·</span>
-      <time dateTime={article.publishedOn}>{formatContentDate(article.publishedOn)}</time>
+      {/* the dot travels with the date, so a line never ends on "·" */}
+      <span className="whitespace-nowrap">
+        <span aria-hidden>· </span>
+        <time dateTime={article.publishedOn}>{formatContentDate(article.publishedOn)}</time>
+      </span>
     </p>
   );
 }

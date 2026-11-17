@@ -15,7 +15,14 @@ import {
   submitScanIdSchema,
   verifyScanFormSchema,
 } from '@/lib/validation/scan';
-import { beginScan, sendEmailCode, submitScan, verifyEmailCode } from '@/server/live/journey';
+import {
+  beginScan,
+  sendEmailCode,
+  sendSignInCode,
+  submitScan,
+  verifyEmailCode,
+  verifySignInCode,
+} from '@/server/live/journey';
 
 /*
  * Real patient journey actions (ADR-36): email OTP → scan → result. Every action re-checks the
@@ -85,5 +92,22 @@ export async function submitScanAction(raw: { scanId: string }): Promise<Result<
     revalidatePath('/account');
     revalidatePath('/start/result');
     return res;
+  });
+}
+
+const signInSchema = z.object({ email: z.string().trim().toLowerCase().email('Enter a valid email address').max(120) });
+const signInVerifySchema = signInSchema.extend({ code: z.string().regex(/^\d{6}$/, 'Enter the 6-digit code') });
+
+/** Returning customer — email a sign-in code (no new account is made). */
+export async function signInSendAction(raw: { email: string }): Promise<Result<{ sentTo: string }>> {
+  return run(async () => sendSignInCode(signInSchema.parse(raw).email));
+}
+
+/** Returning customer — check the code and open their account. */
+export async function signInVerifyAction(raw: { email: string; code: string }): Promise<Result<never>> {
+  return run(async () => {
+    const input = signInVerifySchema.parse(raw);
+    await verifySignInCode(input.email, input.code);
+    redirect('/account');
   });
 }

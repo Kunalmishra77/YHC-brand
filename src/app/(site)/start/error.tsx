@@ -10,7 +10,7 @@ export default function StartError({ retry }: { error: Error & { digest?: string
   return (
     <div className="container-yhc py-16">
       <ErrorState
-        title="We couldn't load this step of your assessment"
+        title="We couldn't load this step of your scalp scan"
         body="Your progress so far is saved. Please try again, or message us and we will help."
         action={
           <div className="flex flex-wrap justify-center gap-2">

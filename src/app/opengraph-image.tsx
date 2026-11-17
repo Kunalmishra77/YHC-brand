@@ -7,9 +7,9 @@ export const contentType = OG_CONTENT_TYPE;
 
 export default function Image() {
   return brandCard({
-    eyebrow: 'Doctor-led hair care',
+    eyebrow: 'Science-first hair care',
     title: 'Hair care begins with science, not with products',
-    subtitle: 'A guided 3D scalp scan, then a video consultation with a doctor.',
+    subtitle: 'A free scalp scan with your phone. Your result straight away, then a call from our team.',
     backdrop: 'microscope',
   });
 }

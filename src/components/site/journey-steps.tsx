@@ -10,7 +10,7 @@ export function buildJourney(): JourneyStep[] {
   return [
     {
       title: 'Scan',
-      body: 'Take a free scalp scan with your phone camera, at home. Add your name and mobile number.',
+      body: 'Take a free scalp scan with your phone camera, at home. Add your name, mobile and email.',
     },
     {
       title: 'Result',
@@ -36,18 +36,18 @@ export function JourneySteps({ steps, className }: { steps: JourneyStep[]; class
   return (
     <ol
       className={cn(
-        'relative grid gap-0 md:grid-cols-5 md:gap-6',
+        'relative grid gap-0 lg:grid-cols-5 lg:gap-6',
         // vertical rail on mobile, horizontal rail on desktop
-        'before:absolute before:top-2 before:bottom-2 before:left-[15px] before:w-px before:bg-line md:before:top-[15px] md:before:right-0 md:before:bottom-auto md:before:left-0 md:before:h-px md:before:w-auto',
+        'before:absolute before:top-2 before:bottom-2 before:left-[15px] before:w-px before:bg-line lg:before:top-[15px] lg:before:right-0 lg:before:bottom-auto lg:before:left-0 lg:before:h-px lg:before:w-auto',
         className,
       )}
     >
       {steps.map((step, i) => (
-        <li key={step.title} className="relative grid grid-cols-[32px_1fr] gap-4 pb-8 md:block md:pb-0">
+        <li key={step.title} className="relative grid grid-cols-[32px_1fr] gap-4 pb-8 lg:block lg:pb-0">
           <span className="price relative z-10 flex size-8 items-center justify-center rounded-full border border-platinum bg-pearl text-sm text-ink">
             {i + 1}
           </span>
-          <div className="md:mt-5">
+          <div className="lg:mt-5">
             <h3 className="font-semibold text-ink">{step.title}</h3>
             <p className="mt-1.5 text-sm text-body">{step.body}</p>
           </div>

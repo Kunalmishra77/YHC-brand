@@ -95,7 +95,7 @@ export function PageIntro({
           className,
         )}
       >
-        <div className="relative aspect-[16/10] sm:aspect-[16/8] md:absolute md:inset-0 md:-z-10 md:aspect-auto">
+        <div className="relative aspect-[16/10] sm:aspect-[16/8] lg:absolute lg:inset-0 lg:-z-10 lg:aspect-auto">
           <Parallax mode="exit" strength={10}>
             <Image
               src={image.src}
@@ -103,31 +103,31 @@ export function PageIntro({
               fill
               priority
               sizes="100vw"
-              className={cn(styles.kenburns, 'object-cover object-[75%_50%] md:object-[100%_35%]')}
+              className={cn(styles.kenburns, 'object-cover object-[75%_50%] lg:object-[100%_35%]')}
             />
           </Parallax>
-          {/* desktop: calm fade on the left for the text */}
+          {/* desktop (lg+): calm fade on the left for the text */}
           <div
             aria-hidden
             className={cn(
-              'absolute inset-0 hidden bg-gradient-to-r md:block',
+              'absolute inset-0 hidden bg-gradient-to-r lg:block',
               dark
-                ? 'from-obsidian via-obsidian/85 via-35% to-obsidian/0 to-75%'
-                : 'from-pearl via-pearl/85 via-35% to-pearl/0 to-75%',
+                ? 'from-obsidian via-obsidian/85 via-45% to-obsidian/0 to-85%'
+                : 'from-pearl via-pearl/85 via-45% to-pearl/0 to-85%',
             )}
           />
-          {/* phones: fade the picture into the page below */}
+          {/* phones and tablets: fade the picture into the page below */}
           <div
             aria-hidden
             className={cn(
-              'absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t md:hidden',
+              'absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t lg:hidden',
               dark ? 'from-obsidian to-transparent' : 'from-pearl to-transparent',
             )}
           />
           {chip}
         </div>
-        <div className="container-yhc relative pt-6 pb-12 md:flex md:min-h-[30rem] md:items-center md:py-20 lg:min-h-[34rem]">
-          <div className="max-w-xl lg:max-w-2xl">{text}</div>
+        <div className="container-yhc relative pt-6 pb-12 md:pb-16 lg:flex lg:min-h-[34rem] lg:items-center lg:py-20">
+          <div className="max-w-xl">{text}</div>
         </div>
       </section>
     );

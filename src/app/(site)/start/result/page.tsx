@@ -26,7 +26,7 @@ export default async function ResultPage() {
       current="assessment"
       eyebrow="Free scalp scan"
       title={firstName ? `${firstName}, here is your result` : 'Here is your result'}
-      lede="Based on the photos you took just now."
+      lede="Based on your latest scalp scan."
     >
       <OutcomeCard outcome={scan.outcome} reasons={scan.reasons} phone={customer.phone.replace(/^\+91/, '+91 ')} />
       <ZoneGrid zones={scan.zones} teamVisible={scan.teamVisible} />

@@ -51,9 +51,10 @@ const ORBIT = [
   { pos: '-left-[10%] top-[8%] lg:-left-[14%]', float: 5.2 },
   { pos: '-right-[10%] top-[20%] lg:-right-[16%]', float: 6.1 },
   { pos: '-left-[12%] top-[44%] lg:-left-[18%]', float: 5.7 },
-  { pos: '-right-[10%] top-[54%] lg:-right-[14%]', float: 6.6 },
-  { pos: '-left-[6%] bottom-[22%] lg:-left-[8%]', float: 5.9 },
-  { pos: '-right-[4%] bottom-[30%] lg:-right-[6%]', float: 6.3 },
+  { pos: '-right-[10%] top-[54%] max-sm:top-[44%] lg:-right-[14%]', float: 6.6 },
+  // The lower two would sit on the For men / For women switch on small screens, so they show from `sm` up.
+  { pos: 'max-sm:hidden -left-[6%] bottom-[22%] lg:-left-[8%]', float: 5.9 },
+  { pos: 'max-sm:hidden -right-[4%] bottom-[30%] lg:-right-[6%]', float: 6.3 },
 ] as const;
 
 /**
@@ -152,7 +153,7 @@ export function IngredientsSpread({ products, headingId }: { products: SpreadPro
               <div
                 role="group"
                 aria-label="Pack"
-                className="absolute bottom-4 left-1/2 flex -translate-x-1/2 rounded-full bg-black/45 p-1 ring-1 ring-white/15 backdrop-blur-md"
+                className="absolute bottom-4 left-1/2 flex -translate-x-1/2 rounded-full bg-black/45 p-1 max-sm:bottom-2 ring-1 ring-white/15 backdrop-blur-md"
               >
                 {product.packs.map((p) => {
                   const on = p.line === (pack?.line ?? 'men');
@@ -342,10 +343,12 @@ export function IngredientsSpread({ products, headingId }: { products: SpreadPro
               </div>
             ) : null}
 
-            <p className="mt-4 flex items-start gap-2.5 text-sm leading-relaxed text-body">
-              <Stethoscope className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
-              <span>Prescription only: a doctor decides if you need it, and how strong.</span>
-            </p>
+            {product.rx ? (
+              <p className="mt-4 flex items-start gap-2.5 text-sm leading-relaxed text-body">
+                <Stethoscope className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
+                <span>Prescription only: a doctor decides if you need it, and how strong.</span>
+              </p>
+            ) : null}
             <Link href={`/products/${product.slug}`} className={cn('mt-2 text-ink', TEXT_LINK)}>
               See {product.name} <ArrowRight className="size-4" aria-hidden />
             </Link>

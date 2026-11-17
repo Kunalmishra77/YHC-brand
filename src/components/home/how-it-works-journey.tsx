@@ -31,7 +31,7 @@ export function HowItWorksJourney() {
     {
       id: 'details',
       title: 'Your details',
-      body: 'Your name and mobile number. We send a code to confirm it.',
+      body: 'Your name, mobile, email and age. We email you a 6-digit code to confirm it.',
       meta: 'About 1 minute',
       image: stepImage(SLOTS.H06),
     },

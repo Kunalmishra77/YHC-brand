@@ -33,7 +33,7 @@ export default function HowItWorksPage() {
     {
       title: 'Scan',
       points: [
-        'Add your name and mobile number. We send a code to confirm it.',
+        'Your name, mobile, email and age. We email you a 6-digit code to confirm it.',
         'Your phone guides you to take a few photos of your scalp, at home. It is free.',
         'Use soft daylight and hold the camera steady. The screen shows you where to point it.',
       ],
@@ -81,9 +81,12 @@ export default function HowItWorksPage() {
             only if it can help you.
           </p>
         }
-      >
+      />
+
+      {/* The steps get their own band, so they never sit on top of the intro photo. */}
+      <section className="container-yhc py-12 md:py-16" aria-label="The steps">
         <JourneySteps steps={buildJourney()} />
-      </PageIntro>
+      </section>
 
       {/* Why photos matter — dark split band to break up the two text-led sections */}
       <section className="bg-obsidian text-on-dark" aria-labelledby="photos-heading">

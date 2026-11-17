@@ -550,12 +550,12 @@ const ARTICLES: Article[] = [
       { type: 'heading', id: 'privacy', text: 'Where your photos go' },
       {
         type: 'paragraph',
-        text: 'We store the scalp photos you upload privately. Only your doctor sees them, for your care. We never use them in marketing unless you agree clearly and separately, in writing. You can take that agreement back at any time.',
+        text: 'We store the scalp photos you upload privately. Only you and our hair-care team see them, to advise you. We never use them in marketing unless you agree clearly and separately, in writing. You can take that agreement back at any time.',
       },
       { type: 'heading', id: 'when-to-see-a-doctor', text: 'When to see a doctor' },
       {
         type: 'paragraph',
-        text: 'Notice something unusual while taking photos? Patches with no hair, broken hairs, redness, flakes, shiny skin along the hairline, sores or a sore scalp — mention it at your consultation. If it is painful or spreading, see a doctor soon.',
+        text: 'Notice something unusual while taking photos? Patches with no hair, broken hairs, redness, flakes, shiny skin along the hairline, sores or a sore scalp — mention it to our hair-care team. If it is painful or spreading, see a doctor soon.',
       },
       { type: 'heading', id: 'next-step', text: 'The next step' },
       {
@@ -663,11 +663,18 @@ const ARTICLES: Article[] = [
 ];
 
 /** Newest first. */
+/**
+ * Articles about the doctor consultation are hidden while the consultation is (ADR-36): not listed,
+ * not in the sitemap, and their URL returns 404. They come back with the consultation.
+ */
+const HIDDEN_SLUGS = new Set(['what-happens-in-a-video-consultation']);
+
 export function getArticles(): Article[] {
-  return [...ARTICLES].sort((a, b) => b.publishedOn.localeCompare(a.publishedOn));
+  return ARTICLES.filter((a) => !HIDDEN_SLUGS.has(a.slug)).sort((a, b) => b.publishedOn.localeCompare(a.publishedOn));
 }
 
 export function getArticle(slug: string): Article | null {
+  if (HIDDEN_SLUGS.has(slug)) return null;
   return ARTICLES.find((a) => a.slug === slug) ?? null;
 }
 
